@@ -3,6 +3,7 @@
 set -e
 
 suite=unstable # FIXME
+data_root=$(pwd)/data
 log_root=$(pwd)/data/log
 status_root=$(pwd)/data/status
 date=$(date --rfc-3339=date)
@@ -18,7 +19,8 @@ trap cleanup INT TERM EXIT
 
 process_all_packages() {
   # get list of package with DEP-8 tests
-  for pkg in $(./scripts/list-dep8-packages); do
+  packages=$(./scripts/list-dep8-packages)
+  for pkg in $packages; do
     process_package "$pkg"
   done
 }
@@ -162,5 +164,16 @@ EOF
   cp "$history_file" "$status_dir/history.json"
 }
 
+generate_index() {
+  local prefix=""
+  echo "["
+  for pkg in $(find "${data_root}/status" -name latest.json | sort); do
+    echo "$prefix"
+    cat $pkg
+    prefix=","
+  done
+  echo "]"
+}
 
 process_all_packages
+generate_index > "${data_root}/packages.json"
