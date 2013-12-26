@@ -71,7 +71,7 @@ needs_processing() {
     record_status "$pkg" fail "Uninstallable"
   fi
   if [ -f "$status_dir/dependencies.txt" ]; then
-    if diff -u "$status_dir/dependencies.txt" "$tmp_dir/dependencies.txt" > "$tmp_dir/dependencies.diff"; then
+    if diff -u --label last-run/dependencies.txt "$status_dir/dependencies.txt" --label current-run/dependencies.txt "$tmp_dir/dependencies.txt" > "$tmp_dir/dependencies.diff"; then
       # no changes in dependencies
       banner "No dependency changes for $pkg"
       return 1
