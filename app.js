@@ -3,14 +3,20 @@ jQuery(function($) {
   $.get('/data/packages.json', function(data) {
     $.each(data, function(index, item) {
 
-      $('.packages').append("<a class='" + item.status + "' data-package='" + item.package + "'href='#" + item.package + "'>" + item.package + " (" + item.version  + ")</a> ");
+      $('.packages').append("<a class='" + item.status + "' href='#" + item.package + "'>" + item.package + " (" + item.version  + ")</a> ");
     });
 
-    if (window.location.hash != "") {
+  });
+
+  $(window).on('hashchange', function() {
+    if (window.location.hash == "") {
+      $('.details').html('');
+    } else {
       pkg = window.location.hash.replace(/^#/, '');
       display_details(pkg);
     }
   });
+  $(window).trigger('hashchange');
 
   function display_details(pkg) {
     var pkg_dir = pkg.replace(/^((lib)?.)/, "$1/$&");
@@ -24,13 +30,9 @@ jQuery(function($) {
         var log = '/data/log/' + pkg_dir + '/' + entry.date + ".txt";
         $('.details table').append("<tr><td>" + entry.date + "</td><td class='" + entry.status + "'>" + entry.status + "</td><td><a href='" + log + "'>view log</a></td></tr>")
       });
+    }).fail(function() {
+      $('.details').html('<h1 class="fail">Package <em>' + pkg + '</em> not found</h1>');
     });
   }
-
-  $('.packages a').live('click', function() {
-    var pkg = $(this).attr('data-package');
-    display_details(pkg);
-  });
-
 
 });
