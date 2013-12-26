@@ -17,7 +17,6 @@ cleanup() {
 trap cleanup INT TERM EXIT
 
 suite=unstable # FIXME this should be a parameter (?)
-log_root=$(pwd)/log
 
 cd $tmpdir
 apt-get source $package
