@@ -62,7 +62,7 @@ do_process_package() {
 
 needs_processing() {
   # FIXME check if dependencies changed since last run
-  if test "$1" != pstreams; then
+  if test "$1" != pstreams -a "$1" != unar; then
     return 1
   fi
 
@@ -129,6 +129,8 @@ record_status() {
   status="$2"
   message="$3"
   version=$(grep_sources -n -s Version -F Package -X "$pkg")
+
+  banner "Status: $status"
 
   # latest entry
   cat > "$status_dir/${date}.json" <<EOF
