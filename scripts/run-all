@@ -44,7 +44,13 @@ process_package() {
     echo "$pkg"
   fi
 
-  do_process_package "$pkg" > "$log_file" 2>&1
+  if ! already_processed; then
+    do_process_package "$pkg" > "$log_file" 2>&1
+  fi
+}
+
+already_processed() {
+  [ -f "$status_dir/${date}.json" ]
 }
 
 do_process_package() {
@@ -67,9 +73,6 @@ needs_processing() {
   fi
 
   check_dependencies "$pkg" > "$tmp_dir/dependencies.txt"
-  if [ $? -ne 0 ]; then
-    record_status "$pkg" fail "Uninstallable"
-  fi
   if [ -f "$status_dir/dependencies.txt" ]; then
     if diff -u --label last-run/dependencies.txt "$status_dir/dependencies.txt" --label current-run/dependencies.txt "$tmp_dir/dependencies.txt" > "$tmp_dir/dependencies.diff"; then
       # no changes in dependencies
@@ -112,12 +115,12 @@ grep_sources() {
   grep-dctrl "$@" /var/lib/apt/lists/*_debian_dists_${suite}_main_source_Sources
 }
 
-first_banner=yes
+first_banner=
 banner() {
-  if [ "$first_banner" = 'no' ]; then
+  if [ "$first_banner" = "$pkg" ]; then
     echo
   fi
-  first_banner="no"
+  first_banner="$pkg"
   echo "$@" | sed -e 's/./=/g'
   echo "$@"
   echo "$@" | sed -e 's/./=/g'
@@ -130,7 +133,7 @@ record_status() {
   message="$3"
   version=$(grep_sources -n -s Version -F Package -X "$pkg")
 
-  banner "Status: $status"
+  banner "Status: $status ($message)"
 
   # latest entry
   cat > "$status_dir/${date}.json" <<EOF
