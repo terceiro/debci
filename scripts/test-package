@@ -6,30 +6,21 @@ if [ $# -ne 1 ]; then
   echo "usage: $0 PACKAGE"
   exit 1
 fi
-
 package="$1"
-suite=unstable # FIXME this should be a parameter
-source_root=$(pwd)/source # FIXME (?)
-log_root=$(pwd)/log
 
-init() {
-  source_version=$(apt-cache showsrc pstreams | sed "/^Version:/!d; s/.*: //")
-  package_subdir=$(echo "$package" | sed -e 's/\(\(lib\)\?.\).*/\1\/&/')
-  package_source_dir="${source_root}/${package_subdir}"
-  mkdir -p "$package_source_dir"
-}
-
-download_source() {
-  source_package="$package_source_dir/$source_version"
-  if ! test -d "$source_package"; then
-    dpkg-source -x "${package_source_dir}/${package}_${source_version}.dsc" "$source_package"
+tmpdir=$(mktemp -d)
+cleanup() {
+  if [ -d "$tmpdir" ]; then
+    rm -rf "$tmpdir"
   fi
 }
+trap cleanup INT TERM EXIT
 
-run_dep8_tests() {
-  adt-run --built-tree "$source_package" --- adt-virt-schroot "$suite"
-}
+suite=unstable # FIXME this should be a parameter (?)
+log_root=$(pwd)/log
 
-init
-download_source
-run_dep8_tests
+cd $tmpdir
+apt-get source $package
+source=$(find . -mindepth 1 -maxdepth 1 -type d)
+cd "$source"
+adt-run --built-tree . --- adt-virt-schroot "$suite"
