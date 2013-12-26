@@ -1,3 +1,5 @@
 #!/bin/sh
 
-grep-dctrl -n -s Package -F Testsuite autopkgtest /var/lib/apt/lists/*dists_unstable_main_source_Sources | sort | uniq
+suite=unstable # FIXME should be an optional parameter
+
+grep-dctrl -n -s Package -F Testsuite autopkgtest /var/lib/apt/lists/*dists_${suite}_main_source_Sources | sort | uniq
