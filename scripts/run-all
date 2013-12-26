@@ -112,7 +112,12 @@ grep_sources() {
   grep-dctrl "$@" /var/lib/apt/lists/*_debian_dists_${suite}_main_source_Sources
 }
 
+first_banner=yes
 banner() {
+  if [ "$first_banner" = 'no' ]; then
+    echo
+  fi
+  first_banner="no"
   echo "$@" | sed -e 's/./=/g'
   echo "$@"
   echo "$@" | sed -e 's/./=/g'
