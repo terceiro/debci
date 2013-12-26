@@ -101,7 +101,7 @@ check_dependencies() {
 
 list_binaries() {
   pkg="$1"
-  grep_packages -n -s Package -F Source -X "$pkg"
+  grep_packages -n -s Package -F Source,Package -X "$pkg"
 }
 
 grep_packages() {
