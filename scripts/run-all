@@ -1,0 +1,156 @@
+#!/bin/sh
+
+set -e
+
+suite=unstable # FIXME
+log_root=$(pwd)/data/log
+status_root=$(pwd)/data/status
+date=$(date --rfc-3339=date)
+
+global_tmp_dir=$(mktemp -d)
+cleanup() {
+  if [ -d "$global_tmp_dir" ]; then
+    rm -rf "$global_tmp_dir"
+  fi
+  find "$log_root" -empty -delete
+}
+trap cleanup INT TERM EXIT
+
+process_all_packages() {
+  # get list of package with DEP-8 tests
+  for pkg in $(./scripts/list-dep8-packages); do
+    process_package "$pkg"
+  done
+}
+
+process_package() {
+  pkg="$1"
+  pkg_dir=$(echo "$pkg" | sed -e 's/\(\(lib\)\?.\).*/\1\/&/')
+
+  # setup tmp dir
+  tmp_dir="$global_tmp_dir/$pkg"
+  mkdir "$tmp_dir"
+
+  # setup log
+  log_dir="${log_root}/${pkg_dir}"
+  mkdir -p "$log_dir"
+  log_file="$log_dir/${date}.txt"
+
+  # setup status "DB"
+  status_dir="${status_root}/${pkg_dir}"
+  mkdir -p "$status_dir"
+
+  if [ -t 1 ]; then
+    echo "$pkg"
+  fi
+
+  do_process_package "$pkg" > "$log_file" 2>&1
+}
+
+do_process_package() {
+  pkg="$1"
+  if needs_processing $pkg; then
+    banner "Started: $(date --rfc-3339=seconds)"
+    if ./scripts/test-package $pkg; then
+      record_status "$pkg" pass "Tests passed"
+    else
+      record_status "$pkg" fail "Tests failed"
+    fi
+    banner "Finished: $(date --rfc-3339=seconds)"
+  fi
+}
+
+needs_processing() {
+  # FIXME check if dependencies changed since last run
+  if test "$1" != pstreams; then
+    return 1
+  fi
+
+  check_dependencies "$pkg" > "$tmp_dir/dependencies.txt"
+  if [ $? -ne 0 ]; then
+    record_status "$pkg" fail "Uninstallable"
+  fi
+  if [ -f "$status_dir/dependencies.txt" ]; then
+    if diff -u "$status_dir/dependencies.txt" "$tmp_dir/dependencies.txt" > "$tmp_dir/dependencies.diff"; then
+      # no changes in dependencies
+      banner "No dependency changes for $pkg"
+      return 1
+    else
+      banner "Changed dependencies for $pkg"
+      cat "$tmp_dir/dependencies.diff"
+
+      cp "$tmp_dir/dependencies.txt" "${status_dir}/dependencies.txt"
+      banner "Full dependency chain for $pkg"
+      cat "$status_dir/dependencies.txt"
+
+      return 0
+    fi
+  else
+    banner "First test run for $pkg"
+    cp "$tmp_dir/dependencies.txt" "${status_dir}/dependencies.txt"
+    return 0
+  fi
+}
+
+check_dependencies() {
+  pkg="$1"
+  binaries=$(list_binaries "$pkg")
+  schroot -c "$suite" -u root -- apt-get -q -y --simulate  install $binaries | \
+    awk '{ if ($1 == "Inst") { sub("^.", "", $3); print($2, $3) } }' | sort
+}
+
+list_binaries() {
+  pkg="$1"
+  grep_packages -n -s Package -F Source -X "$pkg"
+}
+
+grep_packages() {
+  grep-dctrl "$@" /var/lib/apt/lists/*_debian_dists_${suite}_main_binary-`dpkg-architecture -qDEB_HOST_ARCH`_Packages
+}
+
+grep_sources() {
+  grep-dctrl "$@" /var/lib/apt/lists/*_debian_dists_${suite}_main_source_Sources
+}
+
+banner() {
+  echo "$@" | sed -e 's/./=/g'
+  echo "$@"
+  echo "$@" | sed -e 's/./=/g'
+  echo
+}
+
+record_status() {
+  pkg="$1"
+  status="$2"
+  message="$3"
+  version=$(grep_sources -n -s Version -F Package -X "$pkg")
+
+  # latest entry
+  cat > "$status_dir/${date}.json" <<EOF
+{
+  "package": "${pkg}",
+  "version": "${version}",
+  "date": "${date}",
+  "status": "${status}",
+  "reason": "${message}"
+}
+EOF
+  ln -sf "$status_dir/${date}.json" "$status_dir/latest.json"
+
+  # TODO cleanup old entries (?)
+
+  # history
+  history_file="$tmp_dir/history.json"
+  echo '[' > "$history_file"
+  sep=''
+  for entry in $(find "$status_dir" -name '*.json' -and -not -name latest.json -and -not -name history.json | sort); do
+    echo "$sep" >> "$history_file"
+    sep=,
+    cat $entry >> "$history_file"
+  done
+  echo ']' >> "$history_file"
+  cp "$history_file" "$status_dir/history.json"
+}
+
+
+process_all_packages
