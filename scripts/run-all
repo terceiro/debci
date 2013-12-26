@@ -58,13 +58,13 @@ already_processed() {
 do_process_package() {
   pkg="$1"
   if needs_processing $pkg; then
-    banner "Started: $(date --rfc-3339=seconds)"
+    banner "Started: $(date -R)"
     if ./scripts/test-package $pkg; then
       record_status "$pkg" pass "Tests passed"
     else
       record_status "$pkg" fail "Tests failed"
     fi
-    banner "Finished: $(date --rfc-3339=seconds)"
+    banner "Finished: $(date -R)"
   fi
 }
 
