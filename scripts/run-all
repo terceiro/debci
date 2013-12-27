@@ -14,7 +14,7 @@ cleanup() {
   if [ -d "$global_tmp_dir" ]; then
     rm -rf "$global_tmp_dir"
   fi
-  find "$log_root" -empty -delete
+  find "$data_root" -empty -delete
 }
 trap cleanup INT TERM EXIT
 
