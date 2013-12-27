@@ -25,13 +25,28 @@ jQuery(function($) {
     $('.details').html('');
     $.get(url, function(history) {
       $('.details').append("<h1>Package: " + pkg + "</h1>");
+
       $('.details').append("<table><tr><th>Date</th><th>Status</th><th>Log</th></tr></table>");
       $.each(history, function(index, entry) {
         var log = '/data/log/' + pkg_dir + '/' + entry.date + ".txt";
         $('.details table').append("<tr><td>" + entry.date + "</td><td class='" + entry.status + "'>" + entry.status + "</td><td><a href='" + log + "'>view log</a></td></tr>")
       });
+
+      var data_base = window.location.href.replace(/\/#.*/, '');
+      var automation_info =
+        "<p>Automate:</p>" +
+        "<pre><code>" +
+        "# latest status of the package\n" +
+        "$ curl " + data_base + "/data/status/" + pkg_dir + '/latest.json\n' +
+        "\n" +
+        "# test run history of the package\n" +
+        "$ curl " + data_base + "/data/status/" + pkg_dir + '/history.json\n' +
+        "</code></pre>";
+      $('.details').append(automation_info);
+
     }).fail(function() {
-      $('.details').html('<h1 class="fail">Package <em>' + pkg + '</em> not found</h1>');
+      $('.details').html(
+        '<h1 class="fail">Package <em>' + pkg + '</em> not found</h1>');
     });
   }
 
