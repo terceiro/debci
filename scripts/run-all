@@ -169,7 +169,9 @@ generate_index() {
   local prefix=""
   echo "["
   for pkg in $(find "${data_root}/status" -name latest.json | sort); do
-    echo "$prefix"
+    if [ -n "$prefix" ]; then
+      echo "$prefix"
+    fi
     cat $pkg
     prefix=","
   done
