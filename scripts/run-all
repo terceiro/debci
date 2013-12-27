@@ -3,6 +3,7 @@
 set -e
 
 suite=unstable # FIXME
+root=$(pwd)
 data_root=$(pwd)/data
 log_root=$(pwd)/data/log
 status_root=$(pwd)/data/status
@@ -69,8 +70,8 @@ do_process_package() {
 }
 
 needs_processing() {
-  # FIXME check if dependencies changed since last run
-  if test "$1" != pstreams -a "$1" != unar; then
+  # FIXME remove this whitelist
+  if ! grep -q "^$1\$" "${root}/whitelist"; then
     return 1
   fi
 
