@@ -148,7 +148,7 @@ record_status() {
   "reason": "${message}"
 }
 EOF
-  ln -sf "$status_dir/${date}.json" "$status_dir/latest.json"
+  ln -sf "${date}.json" "$status_dir/latest.json"
 
   # TODO cleanup old entries (?)
 
