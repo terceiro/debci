@@ -71,8 +71,10 @@ do_process_package() {
 
 needs_processing() {
   whitelist="${root}/.whitelist"
-  if -f "${whitelist}" -a ! grep -q "^$1\$" "${whitelist}"; then
-    return 1
+  if [ -f "${whitelist}" ]; then
+    if ! grep -q "^$1\$" "${whitelist}"; then
+      return 1
+    fi
   fi
 
   check_dependencies "$pkg" > "$tmp_dir/dependencies.txt"
