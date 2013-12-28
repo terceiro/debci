@@ -26,10 +26,10 @@ jQuery(function($) {
     $.get(url, function(history) {
       $('.details').append("<h1>Package: " + pkg + "</h1>");
 
-      $('.details').append("<table><tr><th>Date</th><th>Duration</th><th>Status</th><th>Log</th></tr></table>");
+      $('.details').append("<table><tr><th>Version</th><th>Date</th><th>Duration</th><th>Status</th><th>Log</th></tr></table>");
       $.each(history, function(index, entry) {
         var log = '/data/log/' + pkg_dir + '/' + entry.date + ".txt";
-        $('.details table').append("<tr><td>" + entry.date + "</td><td>" + entry.duration_human + "</td><td class='" + entry.status + "'>" + entry.status + "</td><td><a href='" + log + "'>view log</a></td></tr>")
+        $('.details table').append("<tr><td>" + entry.version + "</td><td>" + entry.date + "</td><td>" + entry.duration_human + "</td><td class='" + entry.status + "'>" + entry.status + "</td><td><a href='" + log + "'>view log</a></td></tr>")
       });
 
       var data_base = window.location.href.replace(/\/#.*/, '');
