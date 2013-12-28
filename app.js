@@ -28,7 +28,7 @@ jQuery(function($) {
 
       $('.details').append("<table><tr><th>Version</th><th>Date</th><th>Duration</th><th>Status</th><th>Log</th></tr></table>");
       $.each(history, function(index, entry) {
-        var log = '/data/log/' + pkg_dir + '/' + entry.date + ".txt";
+        var log = '/data/log/' + pkg_dir + '/' + entry.date + ".log";
         $('.details table').append("<tr><td>" + entry.version + "</td><td>" + entry.date + "</td><td>" + entry.duration_human + "</td><td class='" + entry.status + "'>" + entry.status + "</td><td><a href='" + log + "'>view log</a></td></tr>")
       });
 
