@@ -88,22 +88,25 @@ needs_processing() {
   check_dependencies "$pkg" > "$tmp_dir/dependencies.txt"
   if [ -f "$status_dir/dependencies.txt" ]; then
     if diff -u --label last-run/dependencies.txt "$status_dir/dependencies.txt" --label current-run/dependencies.txt "$tmp_dir/dependencies.txt" > "$tmp_dir/dependencies.diff"; then
-      # no changes in dependencies
-      banner "No dependency changes for $pkg"
+      # no changes in dependencies = no need to run tests
       return 1
     else
-      banner "Changed dependencies for $pkg"
+      banner "Change in dependency chain for $pkg since last test run"
       cat "$tmp_dir/dependencies.diff"
 
       cp "$tmp_dir/dependencies.txt" "${status_dir}/dependencies.txt"
-      banner "Full dependency chain for $pkg"
+      banner "Full dependency chain for $pkg at the moment"
       cat "$status_dir/dependencies.txt"
 
       return 0
     fi
   else
     banner "First test run for $pkg"
+
     cp "$tmp_dir/dependencies.txt" "${status_dir}/dependencies.txt"
+    banner "Full dependency chain for $pkg at the moment"
+    cat "$status_dir/dependencies.txt"
+
     return 0
   fi
 }
