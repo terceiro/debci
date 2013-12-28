@@ -60,11 +60,19 @@ do_process_package() {
   pkg="$1"
   if needs_processing $pkg; then
     banner "Started: $(date -R)"
-    if ./scripts/test-package $pkg; then
-      record_status "$pkg" pass "Tests passed"
+
+    start_time=$(date +%s)
+    ./scripts/test-package $pkg
+    exitstatus=$?
+    finish_time=$(date +%s)
+    duration=$(($finish_time - $start_time))
+
+    if [ $exitstatus -eq 0 ]; then
+      record_status "$pkg" pass "$duration" "Tests passed"
     else
-      record_status "$pkg" fail "Tests failed"
+      record_status "$pkg" fail "$duration" "Tests failed"
     fi
+
     banner "Finished: $(date -R)"
   fi
 }
@@ -142,10 +150,15 @@ banner() {
 record_status() {
   pkg="$1"
   status="$2"
-  message="$3"
+  duration="$3"
+  message="$4"
   version=$(grep_sources -n -s Version -F Package -X "$pkg")
 
-  banner "Status: $status ($message)"
+  hours=$(( $duration / 3600 ))
+  minutes=$(( ($duration % 3600) / 60 ))
+  seconds=$(( $duration - ($hours * 3600) - ($minutes * 60) ))
+  duration_human="${hours}h ${minutes}m ${seconds}s"
+  banner "Status: $status ($message); duration: ${duration_human}"
 
   # latest entry
   cat > "$status_dir/${date}.json" <<EOF
@@ -154,7 +167,9 @@ record_status() {
   "version": "${version}",
   "date": "${date}",
   "status": "${status}",
-  "reason": "${message}"
+  "duration_seconds": "${duration}",
+  "duration_human": "${duration_human}",
+  "message": "${message}"
 }
 EOF
   ln -sf "${date}.json" "$status_dir/latest.json"
