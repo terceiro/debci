@@ -99,9 +99,10 @@ needs_processing() {
 
 check_dependencies() {
   pkg="$1"
-  binaries=$(list_binaries "$pkg")
-  schroot -c "$suite" -u root -- apt-get -q -y --simulate  install $binaries | \
-    awk '{ if ($1 == "Inst") { sub("^.", "", $3); print($2, $3) } }' | sort
+  for binary in $(list_binaries "$pkg"); do
+    schroot -c "$suite" -u root -- apt-get -q -y --simulate  install $binary | \
+      awk '{ if ($1 == "Inst") { sub("^.", "", $3); print($2, $3) } }'
+  done | sort | uniq
 }
 
 list_binaries() {
