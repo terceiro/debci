@@ -70,8 +70,7 @@ do_process_package() {
 }
 
 needs_processing() {
-  # FIXME remove this whitelist
-  if ! grep -q "^$1\$" "${root}/whitelist"; then
+  if -f "${root}/whitelist" -a ! grep -q "^$1\$" "${root}/whitelist"; then
     return 1
   fi
 
