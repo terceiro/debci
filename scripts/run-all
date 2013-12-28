@@ -70,7 +70,8 @@ do_process_package() {
 }
 
 needs_processing() {
-  if -f "${root}/whitelist" -a ! grep -q "^$1\$" "${root}/whitelist"; then
+  whitelist="${root}/.whitelist"
+  if -f "${whitelist}" -a ! grep -q "^$1\$" "${whitelist}"; then
     return 1
   fi
 
