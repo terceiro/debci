@@ -62,16 +62,14 @@ do_process_package() {
     banner "Started: $(date -R)"
 
     start_time=$(date +%s)
-    ./scripts/test-package $pkg
-    exitstatus=$?
+    status=fail
+    if ./scripts/test-package $pkg; then
+      status=pass
+    fi
     finish_time=$(date +%s)
     duration=$(($finish_time - $start_time))
 
-    if [ $exitstatus -eq 0 ]; then
-      record_status "$pkg" pass "$duration" "Tests passed"
-    else
-      record_status "$pkg" fail "$duration" "Tests failed"
-    fi
+    record_status "$pkg" $status "$duration" "Tests ${status}ed"
 
     banner "Finished: $(date -R)"
   fi
