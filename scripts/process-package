@@ -7,6 +7,7 @@ root=$(pwd)
 data_root=$(pwd)/data
 log_root=$(pwd)/data/log
 status_root=$(pwd)/data/status
+chroot_root=$(pwd)/data/chroots
 date=$(date --rfc-3339=date)
 
 global_tmp_dir=$(mktemp -d)
@@ -124,11 +125,11 @@ list_binaries() {
 }
 
 grep_packages() {
-  grep-dctrl "$@" /var/lib/apt/lists/*_debian_dists_${suite}_main_binary-`dpkg-architecture -qDEB_HOST_ARCH`_Packages
+  grep-dctrl "$@" "$chroot_root"/"$suite"/var/lib/apt/lists/*_debian_dists_${suite}_main_binary-`dpkg-architecture -qDEB_HOST_ARCH`_Packages
 }
 
 grep_sources() {
-  grep-dctrl "$@" /var/lib/apt/lists/*_debian_dists_${suite}_main_source_Sources
+  grep-dctrl "$@" "$chroot_root"/"$suite"/var/lib/apt/lists/*_debian_dists_${suite}_main_source_Sources
 }
 
 first_banner=

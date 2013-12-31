@@ -1,4 +1,4 @@
-[_] use Packages/Sources indexes from chroot instead of the ones in the system
+[X] use Packages/Sources indexes from chroot instead of the ones in the system
 [X] automate creation/maintainance of chroot
 [X] wrapper script to be called from cron
   [X] updates chroot
