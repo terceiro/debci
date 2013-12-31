@@ -178,7 +178,9 @@ EOF
   echo '[' > "$history_file"
   sep=''
   for entry in $(find "$status_dir" -name '*.json' -and -not -name latest.json -and -not -name history.json | sort -r); do
-    echo "$sep" >> "$history_file"
+    if [ -n "$sep" ]; then
+      echo "$sep" >> "$history_file"
+    fi
     sep=,
     cat $entry >> "$history_file"
   done
