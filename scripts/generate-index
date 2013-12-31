@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+
+data_root=$(pwd)/data
+
+generate_index() {
+  local prefix=""
+  echo "["
+  for pkg in $(find "${data_root}/status" -name latest.json | sort); do
+    if [ -n "$prefix" ]; then
+      echo "$prefix"
+    fi
+    cat $pkg
+    prefix=","
+  done
+  echo "]"
+}
+
+generate_index > "${data_root}/packages.json"
+

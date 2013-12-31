@@ -190,18 +190,5 @@ EOF
   cp "$history_file" "$status_dir/history.json"
 }
 
-generate_index() {
-  local prefix=""
-  echo "["
-  for pkg in $(find "${data_root}/status" -name latest.json | sort); do
-    if [ -n "$prefix" ]; then
-      echo "$prefix"
-    fi
-    cat $pkg
-    prefix=","
-  done
-  echo "]"
-}
-
 process_all_packages
-generate_index > "${data_root}/packages.json"
+./scripts/generate-index
