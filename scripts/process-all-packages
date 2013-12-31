@@ -1,0 +1,11 @@
+#!/usr/bin/make -f
+
+packages = $(shell ./scripts/list-dep8-packages)
+
+.PHONY: $(packages)
+
+all: $(packages)
+
+$(packages):
+	@if test -t 1; then echo $@ ; fi
+	@./scripts/process-package $@
