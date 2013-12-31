@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+
+data_root=$(pwd)/data
+
+find "$data_root" -empty -delete

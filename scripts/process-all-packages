@@ -5,6 +5,8 @@ packages = $(shell ./scripts/list-dep8-packages)
 .PHONY: $(packages)
 
 all: $(packages)
+	@./scripts/cleanup
+	@./scripts/generate-index
 
 $(packages):
 	@if test -t 1; then echo $@ ; fi
