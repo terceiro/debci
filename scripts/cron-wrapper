@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ "$(whoami)" != root ]; then
+  echo "This script must be run as root"
+  exit 1
+fi
+
+base=$(dirname $0)/..
+user=$(stat -c %U "${base}/data")
+
+$base/scripts/setup
+
+su "$user" -c "$base/scripts/process-all-packages"
