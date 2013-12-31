@@ -177,7 +177,7 @@ EOF
   history_file="$tmp_dir/history.json"
   echo '[' > "$history_file"
   sep=''
-  for entry in $(find "$status_dir" -name '*.json' -and -not -name latest.json -and -not -name history.json | sort); do
+  for entry in $(find "$status_dir" -name '*.json' -and -not -name latest.json -and -not -name history.json | sort -r); do
     echo "$sep" >> "$history_file"
     sep=,
     cat $entry >> "$history_file"
