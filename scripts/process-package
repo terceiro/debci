@@ -43,10 +43,6 @@ process_package() {
   status_dir="${status_root}/${pkg_dir}"
   mkdir -p "$status_dir"
 
-  if [ -t 1 ]; then
-    echo "$pkg"
-  fi
-
   if ! already_processed; then
     do_process_package "$pkg" > "$log_file" 2>&1
   fi
