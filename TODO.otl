@@ -1,8 +1,7 @@
-[_] use a local copy of Packages/Sources indexes instead of the ones in the system
-[_] automate creation/maintainance of chroot
-[_] wrapper script to be called from cron/jenkins
-  [_] updates Packages/Sources
-  [_] updates chroot
+[_] use Packages/Sources indexes from chroot instead of the ones in the system
+[X] automate creation/maintainance of chroot
+[X] wrapper script to be called from cron
+  [X] updates chroot
 [_] automate deployment (package it)
 [_] arrange definitive hosting
   [_] setup https
