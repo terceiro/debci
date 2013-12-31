@@ -6,8 +6,15 @@ if [ "$(whoami)" != root ]; then
 fi
 
 base=$(dirname $0)/..
+
+# default configuration
+concurrency=$(($(nproc) - 1))
 user=$(stat -c %U "${base}/data")
 
-$base/scripts/setup
+if [ -r /etc/default/dep8runner ]; then
+  . /etc/default/dep8runner
+fi
 
-su "$user" -c "$base/scripts/process-all-packages"
+$base/scripts/setup > /dev/null
+
+su "$user" -c "$base/scripts/process-all-packages -j $concurrency"
