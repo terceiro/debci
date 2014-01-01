@@ -23,4 +23,4 @@ schroot --chroot dep8-$suite -- apt-get source --download-only $package
 dpkg-source -x *.dsc
 source=$(find . -mindepth 1 -maxdepth 1 -type d)
 cd "$source"
-adt-run --built-tree . --- adt-virt-schroot "$suite"
+adt-run --built-tree . --- adt-virt-schroot "dep8-$suite"
