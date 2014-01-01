@@ -15,6 +15,8 @@ if [ -r /etc/default/dep8runner ]; then
   . /etc/default/dep8runner
 fi
 
-$base/scripts/setup > /dev/null
+cd $base
 
-su "$user" -c "$base/scripts/process-all-packages -j $concurrency"
+./scripts/setup > /dev/null
+
+su "$user" -c "./scripts/process-all-packages -j $concurrency"
