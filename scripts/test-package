@@ -19,7 +19,8 @@ trap cleanup INT TERM EXIT
 suite=unstable # FIXME this should be a parameter (?)
 
 cd $tmpdir
-apt-get source $package
+schroot --chroot dep8-$suite -- apt-get source --download-only $package
+dpkg-source -x *.dsc
 source=$(find . -mindepth 1 -maxdepth 1 -type d)
 cd "$source"
 adt-run --built-tree . --- adt-virt-schroot "$suite"
