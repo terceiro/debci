@@ -15,12 +15,17 @@ create_chroot() {
 
   echo "Creating $suite chroot (may take a while)"
 
-  # prefer local apt-cacher-ng
-  if nc -z -w 1 127.0.0.1 3142; then
-    debootstrap "$suite" "$path" http://127.0.0.1:3142/debian
-  else
-    debootstrap "$suite" "$path" http://127.0.0.1:3142/debian
-  fi
+  # detect a local apt-cacher-ng cache running.
+  # 10.0.2.2 = default IP assigned to host system as seen from a kvm/virtualbox
+  # virtual machine
+  mirror=
+  for ip in 127.0.0.1 10.0.2.2; do
+    if nc -z -w 1 $ip 3142; then
+      mirror=http://$ip:3142/debian
+    fi
+  done
+
+  debootstrap "$suite" "$path" $mirror
 
   # do not download translations
   echo 'Acquire::Languages "none";' > "${path}/etc/apt/apt.conf.d/99translations"
