@@ -16,7 +16,7 @@ create_chroot() {
   echo "Creating $suite chroot (may take a while)"
 
   # prefer local apt-cacher-ng
-  if nc -z -w 0 127.0.0.1 3142; then
+  if nc -z -w 1 127.0.0.1 3142; then
     debootstrap "$suite" "$path" http://127.0.0.1:3142/debian
   else
     debootstrap "$suite" "$path" http://127.0.0.1:3142/debian
