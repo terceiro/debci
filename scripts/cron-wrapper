@@ -5,7 +5,8 @@ if [ "$(whoami)" != root ]; then
   exit 1
 fi
 
-base=$(dirname $0)/..
+script=$(readlink -f $0)
+base=$(readlink -f $(dirname $script)/..)
 
 # default configuration
 concurrency=$(($(nproc) - 1))
