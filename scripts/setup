@@ -50,7 +50,7 @@ setup_schroot() {
   local chroot_name="$2"
   local chroot_path="$3"
 
-  local user="$SUDO_USER"
+  local user=$(stat -c %U "${base}/data")
   if [ -z "$user" ]; then
     user=dep8-runner
   fi
