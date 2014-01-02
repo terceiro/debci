@@ -3,11 +3,12 @@
 set -e
 
 data_root=$(pwd)/data
+packages_root=${data_root}/packages
 
 generate_index() {
   local prefix=""
   echo "["
-  for pkg in $(find "${data_root}/status" -name latest.json | sort); do
+  for pkg in $(find "${packages_root}" -name latest.json | sort); do
     if [ -n "$prefix" ]; then
       echo "$prefix"
     fi

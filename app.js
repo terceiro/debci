@@ -20,7 +20,7 @@ jQuery(function($) {
 
   function display_details(pkg) {
     var pkg_dir = pkg.replace(/^((lib)?.)/, "$1/$&");
-    var url = '/data/status/' + pkg_dir + '/history.json';
+    var url = 'data/packages/' + pkg_dir + '/history.json';
 
     $('.details').html('');
     $.get(url, function(history) {
@@ -28,7 +28,7 @@ jQuery(function($) {
 
       $('.details').append("<table><tr><th>Version</th><th>Date</th><th>Duration</th><th>Status</th><th>Log</th></tr></table>");
       $.each(history, function(index, entry) {
-        var log = '/data/log/' + pkg_dir + '/' + entry.date + ".log";
+        var log = 'data/packages/' + pkg_dir + '/' + entry.date + ".log";
         $('.details table').append("<tr><td>" + entry.version + "</td><td>" + entry.date + "</td><td>" + entry.duration_human + "</td><td class='" + entry.status + "'>" + entry.status + "</td><td><a href='" + log + "'>view log</a></td></tr>")
       });
 
@@ -37,10 +37,10 @@ jQuery(function($) {
         "<p>Automate:</p>" +
         "<pre><code>" +
         "# latest status of the package\n" +
-        "$ curl " + data_base + "/data/status/" + pkg_dir + '/latest.json\n' +
+        "$ curl " + data_base + "/data/packages/" + pkg_dir + '/latest.json\n' +
         "\n" +
         "# test run history of the package\n" +
-        "$ curl " + data_base + "/data/status/" + pkg_dir + '/history.json\n' +
+        "$ curl " + data_base + "/data/packages/" + pkg_dir + '/history.json\n' +
         "</code></pre>";
       $('.details').append(automation_info);
 

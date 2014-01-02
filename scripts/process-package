@@ -5,8 +5,7 @@ set -e
 suite=unstable # FIXME
 root=$(pwd)
 data_root=$(pwd)/data
-log_root=$(pwd)/data/log
-status_root=$(pwd)/data/status
+packages_root=$(pwd)/data/packages
 chroot_root=$(pwd)/data/chroots
 date=$(date --rfc-3339=date)
 
@@ -34,14 +33,12 @@ process_package() {
   tmp_dir="$global_tmp_dir/$pkg"
   mkdir "$tmp_dir"
 
-  # setup log
-  log_dir="${log_root}/${pkg_dir}"
-  mkdir -p "$log_dir"
-  log_file="$log_dir/${date}.log"
-
   # setup status "DB"
-  status_dir="${status_root}/${pkg_dir}"
+  status_dir="${packages_root}/${pkg_dir}"
   mkdir -p "$status_dir"
+
+  # setup log
+  log_file="${status_dir}/${date}.log"
 
   if ! already_processed; then
     do_process_package "$pkg" > "$log_file" 2>&1

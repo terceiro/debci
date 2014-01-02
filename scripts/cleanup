@@ -2,7 +2,6 @@
 
 set -e
 
-log_root=$(pwd)/data/log
-status_root=$(pwd)/data/status
+packages_root=$(pwd)/data/packages
 
-find "$log_root" "$status_root" -empty -delete
+find "$packages_root" -empty -delete
