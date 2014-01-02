@@ -10,6 +10,9 @@ base=$(readlink -f $(dirname $script)/..)
 
 # default configuration
 concurrency=$(($(nproc) - 1))
+if [ "$concurrency" -lt 1 ]; then
+  concurrency=1
+fi
 user=$(stat -c %U "${base}/data")
 
 if [ -r /etc/default/dep8runner ]; then
