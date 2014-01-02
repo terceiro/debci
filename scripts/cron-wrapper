@@ -21,6 +21,14 @@ fi
 
 cd $base
 
-./scripts/setup > /dev/null
+log() {
+  logger -t dep8 -i "$@"
+}
 
+log "Starting setup phase"
+./scripts/setup > /dev/null
+log "Finished setup phase"
+
+log "start processing of all packages"
 su "$user" -c "./scripts/process-all-packages -j $concurrency"
+log "finished processing of all packages"
