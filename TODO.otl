@@ -4,5 +4,6 @@
   [X] updates chroot
 [_] automate deployment (package it)
 [_] unify status and log directories
-[_] arrange definitive hosting
-  [_] setup https
+[X] arrange definitive^Winitial hosting
+  : ssh admin@ec2-54-200-162-39.us-west-2.compute.amazonaws.com
+[_] setup https
