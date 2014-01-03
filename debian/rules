@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+%:
+	dh $@
+
+override_dh_clean:
+	dh_clean --dirs-only
+	$(RM) debian/dep8.debhelper.log
+	$(RM) debian/dep8.substvars
+	$(RM) debian/files

@@ -1,0 +1,3 @@
+var/lib/dep8                                usr/share/dep8/data
+usr/share/javascript/jquery/jquery.min.js   usr/share/dep8/jquery.js
+usr/share/dep8/scripts/cron-wrapper         usr/sbin/dep8-run
