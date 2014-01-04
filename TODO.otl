@@ -9,3 +9,5 @@
 [_] setup https
 [_] first adt-run execution will sometimes hang
   : waiting for gpg key generation due to low entropy
+[_] add timeout to guard against unbehaving test suites
+[_] add latest.log symlink as well
