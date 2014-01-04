@@ -7,3 +7,5 @@
 [X] arrange definitive^Winitial hosting
   : ssh admin@ec2-54-200-162-39.us-west-2.compute.amazonaws.com
 [_] setup https
+[_] first adt-run execution will sometimes hang
+  : waiting for gpg key generation due to low entropy
