@@ -35,6 +35,8 @@ create_chroot() {
   sed -e 's/^deb\s/deb-src /' "${path}/etc/apt/sources.list" > "${path}/etc/apt/sources.list.d/sources.list"
 
   chroot "$path" apt-get update
+
+  echo 'debconf debconf/frontend select noninteractive' | chroot "$path" debconf-set-selections
 }
 
 update_chroot() {
