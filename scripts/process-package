@@ -17,14 +17,6 @@ cleanup() {
 }
 trap cleanup INT TERM EXIT
 
-process_all_packages() {
-  # get list of package with DEP-8 tests
-  packages=$(./scripts/list-dep8-packages)
-  for pkg in $packages; do
-    process_package "$pkg"
-  done
-}
-
 process_package() {
   pkg="$1"
   pkg_dir=$(echo "$pkg" | sed -e 's/\(\(lib\)\?.\).*/\1\/&/')
