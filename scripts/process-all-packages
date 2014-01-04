@@ -10,4 +10,6 @@ all: $(packages)
 
 $(packages):
 	@if test -t 1; then echo $@ ; fi
+	@logger -t dep8 -i "started processing package $@"
 	@./scripts/process-package $@
+	@logger -t dep8 -i "finished processing package $@"
