@@ -1,3 +1,10 @@
+dep8 (0.1.1) UNRELEASED; urgency=medium
+
+  * Add basic test suite
+  * add `set -e` to all shell scripts
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 04 Jan 2014 14:20:53 -0300
+
 dep8 (0.1.0) unstable; urgency=low
 
   * Initial Release.
