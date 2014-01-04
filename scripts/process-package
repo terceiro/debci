@@ -137,12 +137,20 @@ banner() {
   echo
 }
 
+check_version() {
+  # check source version for (available for this architecture) by looking at
+  # the first binary package built from that source package
+  local pkg="$1"
+  first_binary=$(list_binaries "$pkg" | head -n 1)
+  grep_packages -n -s Version -F Package -X "$first_binary"
+}
+
 record_status() {
   pkg="$1"
   status="$2"
   duration="$3"
   message="$4"
-  version=$(grep_sources -n -s Version -F Package -X "$pkg")
+  version=$(check_version "$pkg")
 
   hours=$(( $duration / 3600 ))
   minutes=$(( ($duration % 3600) / 60 ))
