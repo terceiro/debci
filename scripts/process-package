@@ -3,6 +3,7 @@
 set -e
 
 suite=unstable # FIXME
+chroot_name="dep8-$suite"
 root=$(pwd)
 data_root=$(pwd)/data
 packages_root=$(pwd)/data/packages
@@ -101,9 +102,9 @@ check_dependencies() {
   pkg="$1"
   binaries=$(list_binaries "$pkg")
   {
-    if ! schroot -c "$suite" -u root -- apt-get install --quiet --assume-yes --simulate $binaries 2>&1; then
+    if ! schroot -c "$chroot_name" -u root -- apt-get install --quiet --assume-yes --simulate $binaries 2>&1; then
       for binary in $binaries; do
-        schroot -c "$suite" -u root -- apt-get -q -y --simulate  install $binary 2>&1
+        schroot -c "$chroot_name" -u root -- apt-get -q -y --simulate  install $binary 2>&1
       done
     fi
   } | \
