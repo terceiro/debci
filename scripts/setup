@@ -7,7 +7,8 @@ fi
 
 
 suite='unstable' # FIXME
-chroot_root=$(pwd)/data/chroots
+data_root=$(pwd)/data
+chroot_root=${data_root}/chroots
 
 create_chroot() {
   local suite="$1"
@@ -50,9 +51,10 @@ setup_schroot() {
   local chroot_name="$2"
   local chroot_path="$3"
 
-  local user=$(stat -c %U "${base}/data")
+  local data_dir=$(readlink -f ${data_root})
+  local user=$(stat -c %U "${data_dir}")
   if [ -z "$user" ]; then
-    user=dep8-runner
+    user=dep8
   fi
 
   cat > /etc/schroot/chroot.d/"${chroot_name}" <<EOF
