@@ -5,6 +5,9 @@ if [ "$(whoami)" != root ]; then
   exit 1
 fi
 
+export LANG=C
+export LC_ALL=C
+
 script=$(readlink -f $0)
 base=$(readlink -f $(dirname $script)/..)
 
