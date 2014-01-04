@@ -11,4 +11,4 @@
   : waiting for gpg key generation due to low entropy
 [_] add timeout to guard against unbehaving test suites
 [_] support for blacklisting packages
-[_] add latest.log symlink as well
+[X] add latest.log symlink as well

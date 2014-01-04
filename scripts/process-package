@@ -34,6 +34,9 @@ process_package() {
 
   if ! already_processed; then
     do_process_package "$pkg" > "$log_file" 2>&1
+    if [ -s "$log_file" ]; then
+      ln -sf "${date}.log" "${status_dir}/latest.log"
+    fi
   fi
 }
 
