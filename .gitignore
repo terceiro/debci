@@ -1,3 +1,4 @@
 /data
-/doc.html
+/public/doc
+/public/jquery.js
 /.whitelist
