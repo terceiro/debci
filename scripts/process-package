@@ -102,9 +102,9 @@ check_dependencies() {
   pkg="$1"
   binaries=$(list_binaries "$pkg")
   {
-    if ! schroot -c "$chroot_name" -u root -- apt-get install --quiet --assume-yes --simulate $binaries 2>&1; then
+    if ! schroot -d / -c "$chroot_name" -u root -- apt-get install --quiet --assume-yes --simulate $binaries 2>&1; then
       for binary in $binaries; do
-        schroot -c "$chroot_name" -u root -- apt-get -q -y --simulate  install $binary 2>&1
+        schroot -d / -c "$chroot_name" -u root -- apt-get -q -y --simulate  install $binary 2>&1
       done
     fi
   } | \
