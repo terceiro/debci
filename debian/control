@@ -2,7 +2,9 @@ Source: dep8
 Section: devel
 Priority: optional
 Maintainer: Antonio Terceiro <terceiro@debian.org>
-Build-Depends: debhelper (>= 9.0.0)
+Build-Depends:
+ debhelper (>= 9.0.0),
+ devscripts,
 Standards-Version: 3.9.5
 Homepage: http://dep8.debian.net/
 Vcs-Git: git://git.debian.org/users/terceiro/dep8.git
