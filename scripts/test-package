@@ -2,6 +2,9 @@
 
 set -e
 
+base=$(readlink -f $(dirname $(readlink -f $0))/..)
+. $base/lib/environment.sh
+
 if [ $# -ne 1 ]; then
   echo "usage: $0 PACKAGE"
   exit 1
@@ -16,11 +19,9 @@ cleanup() {
 }
 trap cleanup INT TERM EXIT
 
-suite=unstable # FIXME this should be a parameter (?)
-
 cd $tmpdir
-schroot --chroot dep8-$suite -- apt-get source --download-only $package
+schroot --chroot "${dep8_chroot_name}" -- apt-get source --download-only $package
 dpkg-source -x *.dsc
 source=$(find . -mindepth 1 -maxdepth 1 -type d)
 cd "$source"
-adt-run --built-tree . --- adt-virt-schroot "dep8-$suite"
+adt-run --built-tree . --- adt-virt-schroot "${dep8_chroot_name}"

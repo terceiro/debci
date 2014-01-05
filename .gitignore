@@ -1,4 +1,5 @@
 /data
 /public/doc
 /public/jquery.js
-/.whitelist
+/config/whitelist
+/chroots/*

@@ -2,7 +2,8 @@
 
 set -e
 
-suite=unstable # FIXME should be an optional parameter
-chroot_path="$(pwd)/data/chroots/${suite}"
+base=$(readlink -f $(dirname $(readlink -f $0))/..)
+. $base/lib/environment.sh
+. $base/lib/functions.sh
 
-grep-dctrl -n -s Package -F Testsuite autopkgtest "$chroot_path"/var/lib/apt/lists/*dists_${suite}_main_source_Sources | sort | uniq
+grep_sources -n -s Package -F Testsuite -X autopkgtest | sort | uniq
