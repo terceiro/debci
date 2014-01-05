@@ -1,2 +1,3 @@
-public       usr/share/dep8
-scripts      usr/share/dep8
+lib           usr/share/dep8
+public        usr/share/dep8
+scripts       usr/share/dep8

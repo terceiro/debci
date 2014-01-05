@@ -12,3 +12,6 @@
 [_] add timeout to guard against unbehaving test suites
 [_] support for blacklisting packages
 [X] add latest.log symlink as well
+[_] add a postrm to remove all traces on package purge
+  [_] remove data directory
+  [_] remove schroot setup
