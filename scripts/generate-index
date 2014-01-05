@@ -2,8 +2,9 @@
 
 set -e
 
-data_root=$(pwd)/data
-packages_root=${data_root}/packages
+data_root="$(pwd)/data"
+packages_root="${data_root}/packages"
+history_root="${data_root}/history"
 
 generate_index() {
   local prefix=""
@@ -17,6 +18,42 @@ generate_index() {
   done
   echo "]"
 }
+
+generate_history_entry() {
+  pass=$(grep -l '"status":\s*"pass",' ${packages_root}/*/*/latest.json | wc -l)
+  fail=$(grep -l '"status":\s*"fail",' ${packages_root}/*/*/latest.json | wc -l)
+  total=$(($pass + $fail))
+  date="$(date --rfc-3339=date)"
+  if [ -f "${history_root}/${date}.json" ]; then
+    return
+  fi
+  mkdir -p "${history_root}"
+  cat > "${history_root}/${date}.json" <<EOF
+{
+  "date": "$date",
+  "pass": $pass,
+  "fail": $fail,
+  "total": $total
+}
+EOF
+  ln -sf "history/${date}.json" "${data_root}/status.json"
+}
+
+generate_history() {
+  local prefix=""
+  echo "["
+  for entry in $(find "${history_root}" -name '*.json' | sort); do
+    if [ -n "$prefix" ]; then
+      echo "$prefix"
+    fi
+    cat $entry
+    prefix=","
+  done
+  echo "]"
+}
+
+generate_history_entry
+generate_history > "${data_root}/history.json"
 
 generate_index > "${data_root}/packages.json"
 
