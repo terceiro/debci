@@ -2,6 +2,9 @@
 
 set -e
 
+base=$(readlink -f $(dirname $(readlink -f $0))/..)
+. $base/lib/environment.sh
+
 if [ "$(whoami)" != root ]; then
   echo "This script must be run as root"
   exit 1
@@ -10,16 +13,11 @@ fi
 export LANG=C
 export LC_ALL=C
 
-script=$(readlink -f $0)
-base=$(readlink -f $(dirname $script)/..)
-
 # default configuration
 concurrency=$(($(nproc) - 1))
 if [ "$concurrency" -lt 1 ]; then
   concurrency=1
 fi
-data_dir=$(readlink -f ${base}/data)
-user=$(stat -c %U "${data_dir}")
 
 if [ -r /etc/default/dep8runner ]; then
   . /etc/default/dep8runner
@@ -37,7 +35,7 @@ run() {
   log "Finished setup phase"
 
   log "start processing of all packages"
-  su "$user" -c "./scripts/process-all-packages -j $concurrency"
+  su "$dep8_user" -c "./scripts/process-all-packages -j $concurrency"
   log "finished processing of all packages"
 }
 

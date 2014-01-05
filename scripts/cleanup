@@ -2,6 +2,7 @@
 
 set -e
 
-packages_root=$(pwd)/data/packages
+base=$(readlink -f $(dirname $(readlink -f $0))/..)
+. $base/lib/environment.sh
 
-find "$packages_root" -empty -delete
+find "$dep8_packages_dir" -empty -delete
