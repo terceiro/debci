@@ -1,5 +1,5 @@
 /data
 /public/doc
-/public/jquery.js
+/public/*.js
 /config/whitelist
 /chroots/*

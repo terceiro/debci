@@ -15,6 +15,7 @@ Architecture: all
 Depends:
  adduser,
  libjs-jquery,
+ libjs-jquery-flot,
  autopkgtest,
  dpkg-dev,
  schroot,
