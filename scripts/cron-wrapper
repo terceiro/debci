@@ -3,6 +3,7 @@
 set -e
 
 base=$(readlink -f $(dirname $(readlink -f $0))/..)
+cd $base
 . $base/lib/environment.sh
 
 if [ "$(whoami)" != root ]; then
@@ -23,7 +24,6 @@ if [ -r /etc/default/dep8runner ]; then
   . /etc/default/dep8runner
 fi
 
-cd $base
 
 log() {
   logger -t dep8 -i "$@"
