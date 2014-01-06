@@ -1,4 +1,20 @@
-dep8 (0.1.1) UNRELEASED; urgency=medium
+dep8 (0.2.0) unstable; urgency=medium
+
+  * keep track of the archive-wide status
+  * process-package: set directory for schroot invocation
+  * generate-index: better naming for status entries
+  * cron-wrapper: fix user detection
+  * Move web UI to public/ subdirectory
+  * add test to check for bashisms
+  * major reorganization for reuse and consolidation
+  * webui: display global status in time series chart
+  * Use explicit directory for gnupg home
+  * Also install a config directory in /etc
+  * ignore new top-level directories
+
+ -- Antonio Terceiro <terceiro@debian.org>  Mon, 06 Jan 2014 15:44:29 -0300
+
+dep8 (0.1.1) unstable; urgency=medium
 
   * Add basic test suite
   * add `set -e` to all shell scripts
