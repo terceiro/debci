@@ -7,16 +7,30 @@ setup_system() {
     if [ ! -d /var/lib/dep8 ]; then
         mkdir /var/lib/dep8
     fi
-    chgrp dep8 /var/lib/dep8 2>/dev/null ||
+
+    if [ ! -d /var/lib/dep8/data ]; then
+        mkdir /var/lib/dep8/data
+    fi
+
+    chgrp dep8 /var/lib/dep8/data 2>/dev/null ||
         {
             addgroup --system dep8
-            chgrp dep8 /var/lib/dep8
+            chgrp dep8 /var/lib/dep8/data
         }
-    chown dep8 /var/lib/dep8 2>/dev/null ||
+    chown dep8 /var/lib/dep8/data 2>/dev/null ||
         {
             adduser --system --home /usr/share/dep8 --shell /bin/sh --no-create-home --disabled-password --ingroup dep8 dep8
-            chown dep8 /var/lib/dep8
+            chown dep8 /var/lib/dep8/data
         }
+
+    if [ ! -d /var/lib/dep8/chroots ]; then
+        mkdir /var/lib/dep8/chroots
+    fi
+
+    if [ ! -d /var/lib/dep8/gnupg ]; then
+        mkdir /var/lib/dep8/gnupg
+        chown dep8:dep8 /var/lib/dep8/gnupg
+    fi
 }
 
 case "$1" in

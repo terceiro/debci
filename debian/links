@@ -1,2 +1,4 @@
-var/lib/dep8                                usr/share/dep8/data
+var/lib/dep8/data                           usr/share/dep8/data
+var/lib/dep8/chroots                        usr/share/dep8/chroots
+var/lib/dep8/gnupg                          usr/share/dep8/gnupg
 usr/share/dep8/scripts/cron-wrapper         usr/sbin/dep8-run
