@@ -1,3 +1,10 @@
+dep8 (0.2.1) unstable; urgency=medium
+
+  * environment.sh: print error when dep8_base_dir is not set
+  * cron-wrapper: change to base directory before loading environment
+
+ -- Antonio Terceiro <terceiro@debian.org>  Mon, 06 Jan 2014 16:22:18 -0300
+
 dep8 (0.2.0) unstable; urgency=medium
 
   * keep track of the archive-wide status
