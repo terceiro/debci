@@ -4,6 +4,7 @@ if [ -z "$dep8_base_dir" ]; then
   if [ -f scripts/process-all-packages -a -f lib/environment.sh ]; then
     dep8_base_dir="$(pwd)"
   else
+    echo "E: no \$dep8_base_dir not set!"
     return 1
   fi
 fi
