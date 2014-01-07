@@ -16,3 +16,5 @@
 [_] add a postrm to remove all traces on package purge
   [_] remove data directory
   [_] remove schroot setup
+[_] add option to force reprocessing all packages
+  : (say when the system itself changes)
