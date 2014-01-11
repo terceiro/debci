@@ -5,6 +5,11 @@ generated = \
 	public/jquery.flot.stack.js \
 	public/jquery.flot.time.js
 
+.PHONY: tags
+
+tags:
+	ctags -R --exclude=chroots .
+
 all: $(generated)
 
 public/doc/index.html: README.md
@@ -27,4 +32,4 @@ publish: all
 	rsync -avp --delete --copy-links public/ dep8.debian.net:/srv/dep8.debian.net/htdocs/
 
 clean:
-	$(RM) $(generated)
+	$(RM) $(generated) tags
