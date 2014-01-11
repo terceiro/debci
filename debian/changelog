@@ -1,3 +1,9 @@
+dep8 (0.2.3) unstable; urgency=medium
+
+  * Makefile: fix creating symlinks for JS files
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 11 Jan 2014 15:47:00 -0300
+
 dep8 (0.2.2) unstable; urgency=medium
 
   * check_version: handle package with more than 1 version
