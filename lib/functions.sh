@@ -12,7 +12,7 @@ grep_sources() {
 
 list_binaries() {
   pkg="$1"
-  grep_packages -n -s Package -F Source,Package -X "$pkg"
+  grep_packages -n -s Package -F Source,Package -X "$pkg" | sort | uniq
 }
 
 
@@ -21,5 +21,5 @@ check_version() {
   # the first binary package built from that source package
   local pkg="$1"
   first_binary=$(list_binaries "$pkg" | head -n 1)
-  grep_packages -n -s Version -F Package -X "$first_binary"
+  grep_packages -n -s Version -F Package -X "$first_binary" | sort -V | tail -n 1
 }
