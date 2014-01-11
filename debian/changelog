@@ -1,3 +1,9 @@
+dep8 (0.2.2) unstable; urgency=medium
+
+  * check_version: handle package with more than 1 version
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 11 Jan 2014 15:41:00 -0300
+
 dep8 (0.2.1) unstable; urgency=medium
 
   * environment.sh: print error when dep8_base_dir is not set
