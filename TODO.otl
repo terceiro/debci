@@ -18,3 +18,12 @@
   [_] remove schroot setup
 [_] add option to force reprocessing all packages
   : (say when the system itself changes)
+[_] figure out how to deal with test suites that leave garbage behind
+  : schroot sessions are left behind. some of them I can just terminate if
+  : `schroot --end-session --chroot $SESSIONID`; others won't go away because
+  : there are processes left running in them, for example sometimes there is a
+  : leftover /usr/bin/gdomap daemon running (didn't figure out which package
+  : leaves that yet).
+  :
+  : maybe the cleanest solution is going full virtualization with either kvm
+  : or lxc instead of schroot.
