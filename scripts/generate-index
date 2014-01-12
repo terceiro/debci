@@ -19,17 +19,16 @@ generate_index() {
 }
 
 generate_status_entry() {
+  local duration="$1"
   pass=$(grep -l '"status":\s*"pass",' ${dep8_packages_dir}/*/*/latest.json | wc -l)
   fail=$(grep -l '"status":\s*"fail",' ${dep8_packages_dir}/*/*/latest.json | wc -l)
   total=$(($pass + $fail))
-  date="$(date --rfc-3339=date)"
-  if [ -f "${dep8_status_dir}/${date}.json" ]; then
-    return
-  fi
+  date="$(date +%Y-%m-%dT%H:%M:%S)"
   mkdir -p "${dep8_status_dir}"
   cat > "${dep8_status_dir}/${date}.json" <<EOF
 {
   "date": "$date",
+  "duration": ${duration},
   "pass": $pass,
   "fail": $fail,
   "total": $total
@@ -51,7 +50,7 @@ generate_history() {
   echo "]"
 }
 
-generate_status_entry
+generate_status_entry "$@"
 generate_history > "${dep8_status_dir}/history.json"
 
 generate_index > "${dep8_data_dir}/packages.json"

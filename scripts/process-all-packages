@@ -1,12 +1,14 @@
 #!/usr/bin/make -f
 
 packages = $(shell ./scripts/list-dep8-packages)
+start := $(shell date +%s)
 
 .PHONY: $(packages)
 
 all: $(packages)
 	@./scripts/cleanup
-	@./scripts/generate-index
+	@finish=$$(date +%s); \
+		./scripts/generate-index $$(($$finish - $(start)))
 
 $(packages):
 	@if test -t 1; then echo $@ ; fi
