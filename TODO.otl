@@ -27,3 +27,4 @@
   :
   : maybe the cleanest solution is going full virtualization with either kvm
   : or lxc instead of schroot.
+[_] add status chart showing run duration over time
