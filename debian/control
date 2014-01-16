@@ -16,7 +16,7 @@ Depends:
  adduser,
  libjs-jquery,
  libjs-jquery-flot,
- autopkgtest,
+ autopkgtest (>= 2.5),
  dpkg-dev,
  schroot,
  ${shlibs:Depends},
