@@ -1,30 +1,98 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Debian autopkgtest results</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Debian Continuous Integration Results">
+    <meta name="author" content="The Debian Project">
+    <title>Debian Continuous Integration</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap-theme.css"/>
     <link rel="stylesheet" type="text/css" href="style.css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   </head>
   <body>
 
-    <div class='status'>
-      <h1>Status</h1>
-      <div id='chart'></div>
-    </div>
+  <div id='wrap'>
 
-    <div class='packages'>
-      <h1>Packages</h1>
-    </div>
+      <!-- Fixed navbar -->
+      <div class="navbar navbar-inverse">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="">Debian Continuous Integration</a>
+          </div>
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="#">Status</a></li>
+              <li><a href="#packages">Packages</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
 
-    <div class='details'>
-    </div>
+      <div id='main' class='container'>
 
-    <h1>More information</h1>
-      <ul>
-        <li><a href="http://anonscm.debian.org/gitweb/?p=users/terceiro/dep8.git;a=summary">Browse source code</a></li>
-        <li><a href='doc'>Documentation</a></li>
-        <li>See also the <a href="data/">raw data</a></li>
-      </ul>
+        <div id='status'>
+          <h1>Status</h1>
+
+          <h2>Pass/fail</h2>
+          <div class='chart' id='chart-pass-fail'></div>
+
+          <h2>Run duration</h2>
+          <div class='chart' id='chart-run-duration'><strong>TODO</strong></div>
+        </div>
+
+        <div id='packages'>
+          <div class='row'>
+            <div id='package-list' class='col-sm-3'>
+              <h1>Package:</h1>
+              <form id='package-filter' class='form-inline'>
+                <input type='text' id='package-search' name='q' autocomplete="off"
+                        placeholder='Search packages (regex welcome)' class='form-control'/>
+              </form>
+              <div class='request-search'>
+                <p class='text-muted'>
+                <em>Type at least 2 characters.</em>
+                </p>
+              </div>
+              <div class='search-count' style='display: none'>
+                <p class='text-muted'>
+                <em><span class='count'>X</span> packages found.</em>
+                </p>
+              </div>
+              <ul id='package-select' class='nav nav-list'>
+              </ul>
+            </div>
+            <div id='package-details' class='col-sm-9'>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- id='main' -->
+
+    </div> <!-- id='wrap' -->
+
+    <div id="footer">
+      <div class="container">
+        <div class='row'>
+          <ul class='col-sm-6'>
+            <li><a href="http://anonscm.debian.org/gitweb/?p=users/terceiro/debci.git;a=summary">Browse source code</a></li>
+            <li><a href='doc'>Documentation</a></li>
+            <li></li><a href="data/">Raw data</a></li>
+          </ul>
+          <div class='col-sm-6'>
+            <p class='text-muted credit'>
+            Copyright © 2014 Antonio Terceiro. This is free software licensed
+            under the GNU General Public License version 3 or later.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script type="text/javascript" src="jquery.js"></script>

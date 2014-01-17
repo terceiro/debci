@@ -1,15 +1,61 @@
-#chart {
-  height: 240px;
+.chart {
+  height: 180px;
+  width: 100%;
 }
 
-.pass {
-  color: green;
+/* -----------------------------------------------------------------
+ * pass/fail marks
+ * ----------------------------------------------------------------- */
+
+.pass:before, .fail:before {
+  content: "● ";
 }
 
-.fail {
-  color: red;
+.pass:before {
+  color: #8ae234;
 }
 
-.pass, .fail {
-  font-weight: bold;
+.fail:before {
+  color: #ef2929;
+}
+
+/* -----------------------------------------------------------------
+ * navbar
+ * ----------------------------------------------------------------- */
+
+.navbar-brand {
+  background: transparent url(debian.png) 10px 50% no-repeat;
+  padding-left: 50px !important;
+}
+
+/* -----------------------------------------------------------------
+ * footer
+ * ----------------------------------------------------------------- */
+#wrap {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -60px;
+  padding: 0 0 60px;
+}
+#footer {
+  margin-top: 3em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  min-height: 60px;
+  background-color: #f5f5f5;
+}
+#footer li {
+  list-style: none;
+}
+#footer a {
+  color: #888a85;
+}
+
+/* -----------------------------------------------------------------
+ * package listing
+ * ----------------------------------------------------------------- */
+
+.request-search, .search-count {
+  margin: 1em auto;
 }
