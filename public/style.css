@@ -7,15 +7,14 @@
  * pass/fail marks
  * ----------------------------------------------------------------- */
 
-.pass:before, .fail:before {
-  content: "● ";
-}
 
 .pass:before {
+  content: "▲ ";
   color: #8ae234;
 }
 
 .fail:before {
+  content: "▼ ";
   color: #ef2929;
 }
 
