@@ -63,13 +63,6 @@ do_process_package() {
 }
 
 needs_processing() {
-  local whitelist="${debci_config_dir}/whitelist"
-  if [ -f "${whitelist}" ]; then
-    if ! grep -q "^$1\$" "${whitelist}"; then
-      return 1
-    fi
-  fi
-
   check_dependencies "$pkg" > "$tmp_dir/dependencies.txt"
   if [ -f "$status_dir/dependencies.txt" ]; then
     if diff -u --label last-run/dependencies.txt "$status_dir/dependencies.txt" --label current-run/dependencies.txt "$tmp_dir/dependencies.txt" > "$tmp_dir/dependencies.diff"; then
