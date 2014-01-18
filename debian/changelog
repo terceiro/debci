@@ -1,11 +1,14 @@
-debci (0.4.0) unstable; urgency=medium
+debci (0.4.0) UNRELEASED; urgency=medium
 
   * Package renamed to debci
   * Require a newer autopkgtest.
-    In general we should always be using the same version as in stable,
-    backported.
+    - In general we should always be using a backport of the most recent
+      version in unstable.
   * Visual facelift
     - embedding a copy of bootstrap 3 for now :-(
+  * Add backend support for multiple architectures. For now unstable/amd64 is
+    hardcoded, but reading them from the command line or from the environment
+    will not require a large change.
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 17 Jan 2014 12:09:02 +0100
 
