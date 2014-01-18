@@ -33,3 +33,9 @@
     : maybe it's better to re-run all packages periodically instead
   [_] store the state of the base system
   [_] log differences in the base system
+[_] publish atom feeds
+  [_] global status changes: daily, weekly, monthly
+    : which packages started to tail their tests, which packages started
+    : passing their tests.
+  [_] package status changes: daily, weekly, monthly
+    : status changes
