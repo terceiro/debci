@@ -1,5 +1,7 @@
 jQuery(function($) {
 
+  var DATA_DIR = 'data/unstable-amd64'; // FIXME generalize this later
+
   var handlers = {};
   function on(hash, f) {
     handlers[hash] = f;
@@ -34,7 +36,7 @@ jQuery(function($) {
   on('', function() {
     switch_to('#status');
 
-    $.get('data/status/history.json', function(data) {
+    $.get(DATA_DIR + '/status/history.json', function(data) {
 
       var pass = [];
       var fail = [];
@@ -111,7 +113,7 @@ jQuery(function($) {
   });
 
 
-  $.get('data/packages.json', function(data) {
+  $.get(DATA_DIR + '/packages.json', function(data) {
     $.each(data, function(index, item) {
       $('#package-select').append("<li data-package='" + item.package + "'><a class='" + item.status + "' href='#package/" + item.package + "'>" + item.package + " (" + item.version  + ")</a></li>");
     });
@@ -142,7 +144,7 @@ jQuery(function($) {
 
   function display_details(pkg) {
     var pkg_dir = pkg.replace(/^((lib)?.)/, "$1/$&");
-    var url = 'data/packages/' + pkg_dir + '/history.json';
+    var url = DATA_DIR + '/packages/' + pkg_dir + '/history.json';
 
     var $target = $('#package-details')
     $target.html('');
@@ -155,7 +157,7 @@ jQuery(function($) {
 
       $target.append("<table class='table table-condensed'><tr><th>Version</th><th>Date</th><th>Duration</th><th>Status</th><th>Log</th></tr></table>");
       $.each(history, function(index, entry) {
-        var log = 'data/packages/' + pkg_dir + '/' + entry.date + ".log";
+        var log = DATA_DIR + '/packages/' + pkg_dir + '/' + entry.date + ".log";
         $target.find('table').append("<tr><td>" + entry.version + "</td><td>" + entry.date + "</td><td>" + entry.duration_human + "</td><td class='" + entry.status + "'>" + entry.status + "</td><td><a href='" + log + "'>view log</a></td></tr>")
       });
 
@@ -164,10 +166,10 @@ jQuery(function($) {
         "<p>Automate:</p>" +
         "<pre><code>" +
         "# latest status of the package\n" +
-        "$ curl " + data_base + "/data/packages/" + pkg_dir + '/latest.json\n' +
+        "$ curl " + data_base + "/" + DATA_DIR + "/packages/" + pkg_dir + '/latest.json\n' +
         "\n" +
         "# test run history of the package\n" +
-        "$ curl " + data_base + "/data/packages/" + pkg_dir + '/history.json\n' +
+        "$ curl " + data_base + "/" + DATA_DIR + "/packages/" + pkg_dir + '/history.json\n' +
         "</code></pre>";
       $target.append(automation_info);
 

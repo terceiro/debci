@@ -11,10 +11,6 @@ if [ $(whoami) != root ]; then
   exit 1
 fi
 
-
-data_root=$(pwd)/data
-chroot_root=${data_root}/chroots
-
 create_chroot() {
   echo "Creating $debci_suite chroot (may take a while)"
 
@@ -51,7 +47,7 @@ update_chroot() {
 }
 
 setup_schroot() {
-  local data_dir=$(readlink -f ${data_root})
+  local data_dir=$(readlink -f ${debci_data_basedir})
   local user=$(stat -c %U "${data_dir}")
   if [ -z "$user" ]; then
     user=debci
