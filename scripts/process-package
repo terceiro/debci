@@ -25,7 +25,7 @@ process_package() {
   mkdir "$tmp_dir"
 
   # setup status "DB"
-  status_dir="${dep8_packages_dir}/${pkg_dir}"
+  status_dir="${debci_packages_dir}/${pkg_dir}"
   mkdir -p "$status_dir"
 
   # setup log
@@ -63,7 +63,7 @@ do_process_package() {
 }
 
 needs_processing() {
-  local whitelist="${dep8_config_dir}/whitelist"
+  local whitelist="${debci_config_dir}/whitelist"
   if [ -f "${whitelist}" ]; then
     if ! grep -q "^$1\$" "${whitelist}"; then
       return 1
@@ -100,9 +100,9 @@ check_dependencies() {
   pkg="$1"
   binaries=$(list_binaries "$pkg")
   {
-    if ! schroot -d / -c "$dep8_chroot_name" -u root -- apt-get install --quiet --assume-yes --simulate $binaries 2>&1; then
+    if ! schroot -d / -c "$debci_chroot_name" -u root -- apt-get install --quiet --assume-yes --simulate $binaries 2>&1; then
       for binary in $binaries; do
-        schroot -d / -c "$dep8_chroot_name" -u root -- apt-get -q -y --simulate  install $binary 2>&1
+        schroot -d / -c "$debci_chroot_name" -u root -- apt-get -q -y --simulate  install $binary 2>&1
       done
     fi
   } | \

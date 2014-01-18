@@ -20,13 +20,13 @@ if [ "$concurrency" -lt 1 ]; then
   concurrency=1
 fi
 
-if [ -r /etc/default/dep8runner ]; then
-  . /etc/default/dep8runner
+if [ -r /etc/default/debci ]; then
+  . /etc/default/debci
 fi
 
 
 log() {
-  logger -t dep8 -i "$@"
+  logger -t debci -i "$@"
 }
 
 run() {
@@ -35,7 +35,7 @@ run() {
   log "Finished setup phase"
 
   log "start processing of all packages"
-  su "$dep8_user" -c "./scripts/process-all-packages -j $concurrency"
+  su "$debci_user" -c "./scripts/process-all-packages -j $concurrency"
   log "finished processing of all packages"
 }
 
@@ -43,5 +43,5 @@ run() {
 (
   flock -n 9 || exit 0
   run
-) 9>/var/lock/dep8.lock
+) 9>/var/lock/debci.lock
 

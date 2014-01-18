@@ -1,35 +1,35 @@
 #!/bin/sh
-# postinst script for dep8
+# postinst script for debci
 
 set -e
 
 setup_system() {
-    if [ ! -d /var/lib/dep8 ]; then
-        mkdir /var/lib/dep8
+    if [ ! -d /var/lib/debci ]; then
+        mkdir /var/lib/debci
     fi
 
-    if [ ! -d /var/lib/dep8/data ]; then
-        mkdir /var/lib/dep8/data
+    if [ ! -d /var/lib/debci/data ]; then
+        mkdir /var/lib/debci/data
     fi
 
-    chgrp dep8 /var/lib/dep8/data 2>/dev/null ||
+    chgrp debci /var/lib/debci/data 2>/dev/null ||
         {
-            addgroup --system dep8
-            chgrp dep8 /var/lib/dep8/data
+            addgroup --system debci
+            chgrp debci /var/lib/debci/data
         }
-    chown dep8 /var/lib/dep8/data 2>/dev/null ||
+    chown debci /var/lib/debci/data 2>/dev/null ||
         {
-            adduser --system --home /usr/share/dep8 --shell /bin/sh --no-create-home --disabled-password --ingroup dep8 dep8
-            chown dep8 /var/lib/dep8/data
+            adduser --system --home /usr/share/debci --shell /bin/sh --no-create-home --disabled-password --ingroup debci debci
+            chown debci /var/lib/debci/data
         }
 
-    if [ ! -d /var/lib/dep8/chroots ]; then
-        mkdir /var/lib/dep8/chroots
+    if [ ! -d /var/lib/debci/chroots ]; then
+        mkdir /var/lib/debci/chroots
     fi
 
-    if [ ! -d /var/lib/dep8/gnupg ]; then
-        mkdir /var/lib/dep8/gnupg
-        chown dep8:dep8 /var/lib/dep8/gnupg
+    if [ ! -d /var/lib/debci/gnupg ]; then
+        mkdir /var/lib/debci/gnupg
+        chown debci:debci /var/lib/debci/gnupg
     fi
 }
 

@@ -1,5 +1,5 @@
-var/lib/dep8/data                           usr/share/dep8/data
-var/lib/dep8/chroots                        usr/share/dep8/chroots
-var/lib/dep8/gnupg                          usr/share/dep8/gnupg
-etc/dep8                                    usr/share/dep8/config
-usr/share/dep8/scripts/cron-wrapper         usr/sbin/dep8-run
+var/lib/debci/data                           usr/share/debci/data
+var/lib/debci/chroots                        usr/share/debci/chroots
+var/lib/debci/gnupg                          usr/share/debci/gnupg
+etc/debci                                    usr/share/debci/config
+usr/share/debci/scripts/cron-wrapper         usr/sbin/debci-run

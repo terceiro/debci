@@ -1,26 +1,26 @@
 #!/bin/sh
 
-if [ -z "$dep8_base_dir" ]; then
+if [ -z "$debci_base_dir" ]; then
   if [ -f scripts/process-all-packages -a -f lib/environment.sh ]; then
-    dep8_base_dir="$(pwd)"
+    debci_base_dir="$(pwd)"
   else
-    echo "E: no \$dep8_base_dir not set!"
+    echo "E: no \$debci_base_dir not set!"
     return 1
   fi
 fi
 
-dep8_suite='unstable' # FIXME
+debci_suite='unstable' # FIXME
 
-dep8_data_dir=$(readlink -f "${dep8_base_dir}/data")
-dep8_packages_dir="${dep8_data_dir}/packages"
-dep8_status_dir="${dep8_data_dir}/status"
+debci_data_dir=$(readlink -f "${debci_base_dir}/data")
+debci_packages_dir="${debci_data_dir}/packages"
+debci_status_dir="${debci_data_dir}/status"
 
-dep8_config_dir="${dep8_base_dir}/config"
+debci_config_dir="${debci_base_dir}/config"
 
-dep8_gnupg_dir="${dep8_base_dir}/gnupg"
+debci_gnupg_dir="${debci_base_dir}/gnupg"
 
-dep8_chroots_dir="${dep8_base_dir}/chroots"
-dep8_chroot_name="dep8-${dep8_suite}"
-dep8_chroot_path="${dep8_chroots_dir}/${dep8_suite}"
+debci_chroots_dir="${debci_base_dir}/chroots"
+debci_chroot_name="debci-${debci_suite}"
+debci_chroot_path="${debci_chroots_dir}/${debci_suite}"
 
-dep8_user=$(stat -c %U "${dep8_data_dir}")
+debci_user=$(stat -c %U "${debci_data_dir}")

@@ -8,7 +8,7 @@ base=$(readlink -f $(dirname $(readlink -f $0))/..)
 generate_index() {
   local prefix=""
   echo "["
-  for pkg in $(find "${dep8_packages_dir}" -name latest.json | sort); do
+  for pkg in $(find "${debci_packages_dir}" -name latest.json | sort); do
     if [ -n "$prefix" ]; then
       echo "$prefix"
     fi
@@ -20,12 +20,12 @@ generate_index() {
 
 generate_status_entry() {
   local duration="$1"
-  pass=$(grep -l '"status":\s*"pass",' ${dep8_packages_dir}/*/*/latest.json | wc -l)
-  fail=$(grep -l '"status":\s*"fail",' ${dep8_packages_dir}/*/*/latest.json | wc -l)
+  pass=$(grep -l '"status":\s*"pass",' ${debci_packages_dir}/*/*/latest.json | wc -l)
+  fail=$(grep -l '"status":\s*"fail",' ${debci_packages_dir}/*/*/latest.json | wc -l)
   total=$(($pass + $fail))
   date="$(date +%Y-%m-%dT%H:%M:%S)"
-  mkdir -p "${dep8_status_dir}"
-  cat > "${dep8_status_dir}/${date}.json" <<EOF
+  mkdir -p "${debci_status_dir}"
+  cat > "${debci_status_dir}/${date}.json" <<EOF
 {
   "date": "$date",
   "duration": ${duration},
@@ -34,13 +34,13 @@ generate_status_entry() {
   "total": $total
 }
 EOF
-  ln -sf "status/${date}.json" "${dep8_data_dir}/status.json"
+  ln -sf "status/${date}.json" "${debci_data_dir}/status.json"
 }
 
 generate_history() {
   local prefix=""
   echo "["
-  for entry in $(find "${dep8_status_dir}" -name '*.json' -and -not -name history.json | sort); do
+  for entry in $(find "${debci_status_dir}" -name '*.json' -and -not -name history.json | sort); do
     if [ -n "$prefix" ]; then
       echo "$prefix"
     fi
@@ -51,7 +51,7 @@ generate_history() {
 }
 
 generate_status_entry "$@"
-generate_history > "${dep8_status_dir}/history.json"
+generate_history > "${debci_status_dir}/history.json"
 
-generate_index > "${dep8_data_dir}/packages.json"
+generate_index > "${debci_data_dir}/packages.json"
 

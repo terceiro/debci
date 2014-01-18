@@ -20,8 +20,8 @@ cleanup() {
 trap cleanup INT TERM EXIT
 
 cd $tmpdir
-schroot --chroot "${dep8_chroot_name}" -- apt-get source --download-only $package
+schroot --chroot "${debci_chroot_name}" -- apt-get source --download-only $package
 dpkg-source -x *.dsc
 source=$(find . -mindepth 1 -maxdepth 1 -type d)
 cd "$source"
-adt-run --gnupg-home="$dep8_gnupg_dir" --built-tree . --- adt-virt-schroot "${dep8_chroot_name}"
+adt-run --gnupg-home="$debci_gnupg_dir" --built-tree . --- adt-virt-schroot "${debci_chroot_name}"

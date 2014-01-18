@@ -10,7 +10,7 @@ Homepage: http://ci.debian.net/
 Vcs-Git: git://git.debian.org/users/terceiro/debci.git
 Vcs-Browser: http://git.debian.org/?p=users/terceiro/debci.git;a=summary
 
-Package: depci
+Package: debci
 Architecture: all
 Depends:
  adduser,

@@ -1,12 +1,12 @@
 #!/bin/sh
 
 grep_packages() {
-  grep-dctrl "$@" "$dep8_chroot_path"/var/lib/apt/lists/*_debian_dists_${dep8_suite}_main_binary-`dpkg-architecture -qDEB_HOST_ARCH`_Packages
+  grep-dctrl "$@" "$debci_chroot_path"/var/lib/apt/lists/*_debian_dists_${debci_suite}_main_binary-`dpkg-architecture -qDEB_HOST_ARCH`_Packages
 }
 
 
 grep_sources() {
-  grep-dctrl "$@" "$dep8_chroot_path"/var/lib/apt/lists/*_debian_dists_${dep8_suite}_main_source_Sources
+  grep-dctrl "$@" "$debci_chroot_path"/var/lib/apt/lists/*_debian_dists_${debci_suite}_main_source_Sources
 }
 
 

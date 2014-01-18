@@ -16,7 +16,7 @@ data_root=$(pwd)/data
 chroot_root=${data_root}/chroots
 
 create_chroot() {
-  echo "Creating $dep8_suite chroot (may take a while)"
+  echo "Creating $debci_suite chroot (may take a while)"
 
   # detect a local apt-cacher-ng cache running.
   # 10.0.2.2 = default IP assigned to host system as seen from a kvm/virtualbox
@@ -28,17 +28,17 @@ create_chroot() {
     fi
   done
 
-  debootstrap "$dep8_suite" "$dep8_chroot_path" $mirror
+  debootstrap "$debci_suite" "$debci_chroot_path" $mirror
 
   # do not download translations
-  echo 'Acquire::Languages "none";' > "${dep8_chroot_path}/etc/apt/apt.conf.d/99translations"
+  echo 'Acquire::Languages "none";' > "${debci_chroot_path}/etc/apt/apt.conf.d/99translations"
 
   # add APT Source URIs
-  sed -e 's/^deb\s/deb-src /' "${dep8_chroot_path}/etc/apt/sources.list" > "${dep8_chroot_path}/etc/apt/sources.list.d/sources.list"
+  sed -e 's/^deb\s/deb-src /' "${debci_chroot_path}/etc/apt/sources.list" > "${debci_chroot_path}/etc/apt/sources.list.d/sources.list"
 
-  chroot "$dep8_chroot_path" apt-get update
+  chroot "$debci_chroot_path" apt-get update
 
-  echo 'debconf debconf/frontend select noninteractive' | chroot "$dep8_chroot_path" debconf-set-selections
+  echo 'debconf debconf/frontend select noninteractive' | chroot "$debci_chroot_path" debconf-set-selections
 }
 
 update_chroot() {
@@ -54,14 +54,14 @@ setup_schroot() {
   local data_dir=$(readlink -f ${data_root})
   local user=$(stat -c %U "${data_dir}")
   if [ -z "$user" ]; then
-    user=dep8
+    user=debci
   fi
 
-  cat > /etc/schroot/chroot.d/"${dep8_chroot_name}" <<EOF
-[$dep8_chroot_name]
+  cat > /etc/schroot/chroot.d/"${debci_chroot_name}" <<EOF
+[$debci_chroot_name]
 type=directory
-description=DEP-8 $dep8_suite chroot
-directory=${dep8_chroot_path}
+description=DEP-8 $debci_suite chroot
+directory=${debci_chroot_path}
 users=$user
 groups=$user
 root-users=$user
@@ -73,25 +73,25 @@ EOF
 
 setup_suite() {
   # create chroot directory
-  if [ ! -d "${dep8_chroots_dir}" ]; then
-    mkdir "${dep8_chroots_dir}"
+  if [ ! -d "${debci_chroots_dir}" ]; then
+    mkdir "${debci_chroots_dir}"
   fi
 
-  if schroot --list --all | grep -q "^source:${dep8_chroot_name}\$"; then
-    echo "schroot setup for ${dep8_suite} already done, skipping"
+  if schroot --list --all | grep -q "^source:${debci_chroot_name}\$"; then
+    echo "schroot setup for ${debci_suite} already done, skipping"
   else
     setup_schroot
   fi
 
-  local actual_chroot_path=$(schroot --config --chroot "$dep8_chroot_name" | grep '^directory=' | cut -d = -f 2)
+  local actual_chroot_path=$(schroot --config --chroot "$debci_chroot_name" | grep '^directory=' | cut -d = -f 2)
 
   if [ -d "${actual_chroot_path}" ]; then
     update_chroot "$actual_chroot_path"
   else
-    if [ "$actual_chroot_path" = "${dep8_chroot_path}" ]; then
+    if [ "$actual_chroot_path" = "${debci_chroot_path}" ]; then
       create_chroot
     else
-      echo "Chroot ${dep8_chroot_name} does not exit in custom location ${actual_chroot_path}. Please create it first."
+      echo "Chroot ${debci_chroot_name} does not exit in custom location ${actual_chroot_path}. Please create it first."
       exit 1
     fi
   fi

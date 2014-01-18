@@ -7,7 +7,7 @@ the execution of automated tests against packages in the
 ## How it works
 
 TODO. For now look at
-[source](http://anonscm.debian.org/gitweb/?p=users/terceiro/dep8.git;a=summary)
+[source](http://anonscm.debian.org/gitweb/?p=users/terceiro/debci.git;a=summary)
 
 ## Contact
 

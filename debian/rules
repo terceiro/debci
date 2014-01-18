@@ -12,6 +12,6 @@ override_dh_auto_build:
 
 override_dh_clean:
 	dh_clean --dirs-only
-	$(RM) debian/dep8.debhelper.log
-	$(RM) debian/dep8.substvars
+	$(RM) debian/debci.debhelper.log
+	$(RM) debian/debci.substvars
 	$(RM) debian/files

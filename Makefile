@@ -23,9 +23,6 @@ public/jquery.flot.stack.js:
 public/jquery.flot.time.js:
 	ln -s /usr/share/javascript/jquery-flot/jquery.flot.time.min.js $@
 
-publish: all
-	rsync -avp --delete --copy-links public/ dep8.debian.net:/srv/dep8.debian.net/htdocs/
-
 .PHONY: tags
 
 tags:
