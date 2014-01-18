@@ -27,4 +27,9 @@
   :
   : maybe the cleanest solution is going full virtualization with either kvm
   : or lxc instead of schroot.
-[_] add status chart showing run duration over time
+[X] add status chart showing run duration over time
+[_] take base system into consideration (?)
+  [_] re-process all packages when the base system changes
+    : maybe it's better to re-run all packages periodically instead
+  [_] store the state of the base system
+  [_] log differences in the base system
