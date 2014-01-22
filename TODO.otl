@@ -40,3 +40,5 @@
   [_] package status changes: daily, weekly, monthly
     : status changes
 [_] notity test suite status changes to fedmsg
+[_] investigate random download failures
+  : e.g. http://ci.debian.net/data/packages/a/adequate/2014-01-18.log
