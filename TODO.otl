@@ -43,3 +43,5 @@
 [_] investigate random download failures
   : e.g. http://ci.debian.net/data/packages/a/adequate/2014-01-18.log
 [_] generate a dd-list of failing packages
+[_] graceful degradation for user with JS disabled
+  : or generate only static HTML
