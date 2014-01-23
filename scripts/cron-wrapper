@@ -31,13 +31,13 @@ run() {
   log "Finished setup phase"
 
   log "start processing of all packages"
-  su "$debci_user" -c "./scripts/process-all-packages -j $concurrency"
+  su "$debci_user" -c "./scripts/process-all-packages -j $concurrency CMDLINE='$@'"
   log "finished processing of all packages"
 }
 
 
 (
   flock -n 9 || exit 0
-  run
+  run "$@"
 ) 9>/var/lock/debci.lock
 

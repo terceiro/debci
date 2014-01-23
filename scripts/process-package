@@ -32,7 +32,13 @@ process_package() {
   log_file="${status_dir}/${date}.log"
 
   if ! already_processed; then
-    do_process_package "$pkg" > "$log_file" 2>&1
+    if [ -t 1 ]; then
+      # stdout is a tty, show the output and also send it to the log file
+      do_process_package "$pkg" 2>&1 | tee "$log_file"
+    else
+      # running on background, just send everything to the log file
+      do_process_package "$pkg" > "$log_file" 2>&1
+    fi
     if [ -s "$log_file" ]; then
       ln -sf "${date}.log" "${status_dir}/latest.log"
     fi
@@ -64,7 +70,8 @@ do_process_package() {
 
 needs_processing() {
   check_dependencies "$pkg" > "$tmp_dir/dependencies.txt"
-  if [ -f "$status_dir/dependencies.txt" ]; then
+
+  if [ -f "$status_dir/dependencies.txt" -a -z "$cmdline_force" ]; then
     if diff -u --label last-run/dependencies.txt "$status_dir/dependencies.txt" --label current-run/dependencies.txt "$tmp_dir/dependencies.txt" > "$tmp_dir/dependencies.diff"; then
       # no changes in dependencies = no need to run tests
       return 1
@@ -79,7 +86,12 @@ needs_processing() {
       return 0
     fi
   else
-    banner "First test run for $pkg"
+
+    if [ -z "$cmdline_force" ]; then
+      banner "First test run for $pkg"
+    else
+      banner "Forced test run for $pkg"
+    fi
 
     cp "$tmp_dir/dependencies.txt" "${status_dir}/dependencies.txt"
     banner "Full dependency chain for $pkg at the moment"
@@ -160,10 +172,37 @@ EOF
   cp "$history_file" "$status_dir/history.json"
 }
 
+TEMP=`getopt -o f --long force -- "$@"`
+
+if [ $? != 0 ]; then
+  exit 1
+fi
+
+eval set -- "$TEMP"
+
+# defaults
+cmdline_force=''
+
+while true; do
+  case "$1" in
+    -f|--force)
+      shift
+      cmdline_force="yes"
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      echo "Internall error ($1)!"
+      exit 1
+      ;;
+  esac
+done
 
 if [ $# -eq 1 ]; then
   process_package "$1"
 else
-  echo "usage: $0 PACKAGE"
+  echo "usage: $0 [OPTIONS] PACKAGE"
   exit 1
 fi

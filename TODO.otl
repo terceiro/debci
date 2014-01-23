@@ -16,7 +16,7 @@
 [_] add a postrm to remove all traces on package purge
   [_] remove data directory
   [_] remove schroot setup
-[_] add option to force reprocessing all packages
+[X] add option to force reprocessing all packages
   : (say when the system itself changes)
 [_] figure out how to deal with test suites that leave garbage behind
   : schroot sessions are left behind. some of them I can just terminate if
