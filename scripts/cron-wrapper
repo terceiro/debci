@@ -15,15 +15,11 @@ export LANG=C
 export LC_ALL=C
 
 # default configuration
-concurrency=$(($(nproc) - 1))
-if [ "$concurrency" -lt 1 ]; then
-  concurrency=1
-fi
+concurrency=1
 
 if [ -r /etc/default/debci ]; then
   . /etc/default/debci
 fi
-
 
 log() {
   logger -t debci -i "$@"
