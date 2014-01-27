@@ -45,3 +45,22 @@
 [_] generate a dd-list of failing packages
 [_] graceful degradation for user with JS disabled
   : or generate only static HTML
+[_] record reason for the test being run
+  : <zack>      jcristau: does http://ci.debian.net/data/packages.json satisfy
+  :             release team need about knowing which packages pass/fail
+  :             autopkgtest?
+  : <jcristau>  i think we need to be able to know when something changed from
+  :             pass to fail
+  : <nthykier>  zack: terceiro: I think we need to know why the test was run as
+  :             well (ie. "new version of the package" vs. "retest because it
+  :             is an rdep of X, which got a new version")
+  : [...]
+  :             <nthykier> terceiro: zack: Re: the ci.debian.net output - I
+  :             already mentioned that I believed we needed the "blame" in the
+  :             output (i.e. which package is to blame for this failure).
+  :             Come to think of it, it will probably need to "remember" the
+  :             blame across fails so the blame is not reassigned)
+[_] procenv
+  : <doko>  and could you run procenv after setting up the chroot?
+  : <doko>  my experience is that a lot of time goes into setting up the
+  :         environement and understanding the env
