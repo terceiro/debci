@@ -64,3 +64,9 @@
   : <doko>  and could you run procenv after setting up the chroot?
   : <doko>  my experience is that a lot of time goes into setting up the
   :         environement and understanding the env
+[_] add SKIP result
+  : differentiate a problem in the environment (mirror failure, tested skipped
+  : because of missing features in testbed etc) from actual failures.
+  :
+  : add better handling of adt-run exit statuses
+[_] setup a BTS !!
