@@ -70,3 +70,4 @@
   :
   : add better handling of adt-run exit statuses
 [_] setup a BTS !!
+[_] move command line processing to lib/environment.sh
