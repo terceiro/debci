@@ -27,7 +27,11 @@ log() {
 
 run() {
   log "Starting setup phase"
-  ./scripts/setup > /dev/null
+  if [ -t 1 ]; then
+    ./scripts/setup
+  else
+    ./scripts/setup > /dev/null
+  fi
   log "Finished setup phase"
 
   log "start processing of all packages"
