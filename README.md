@@ -12,3 +12,10 @@ TODO. For now look at
 ## Contact
 
 Write to terceiro@debian.org
+
+## Copyright and Licensing information
+
+Copyright © 2014 Antonio Terceiro.
+
+debci is free software licensed under the GNU General Public License version 3
+or later.
