@@ -1,4 +1,4 @@
-debci (0.4.0) UNRELEASED; urgency=medium
+debci (0.4.0) unstable; urgency=medium
 
   * Package renamed to debci
   * Require a newer autopkgtest.
@@ -10,7 +10,7 @@ debci (0.4.0) UNRELEASED; urgency=medium
     hardcoded, but reading them from the command line or from the environment
     will not require a large change.
 
- -- Antonio Terceiro <terceiro@debian.org>  Fri, 17 Jan 2014 12:09:02 +0100
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 28 Jan 2014 14:40:22 -0300
 
 dep8 (0.3.1) unstable; urgency=medium
 
