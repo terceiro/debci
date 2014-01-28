@@ -56,7 +56,7 @@ setup_schroot() {
   cat > /etc/schroot/chroot.d/"${debci_chroot_name}" <<EOF
 [$debci_chroot_name]
 type=directory
-description=DEP-8 $debci_suite chroot
+description=debci $debci_suite/$debci_arch chroot
 directory=${debci_chroot_path}
 users=$user
 groups=$user
