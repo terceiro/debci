@@ -1,6 +1,6 @@
-# DEP-8 automated test runner service
+# Debian continuou integration
 
-THE [DEP-8 automated test runner](.) is an automated system that coordinates
+THE [Debian continuous integration](.) is an automated system that coordinates
 the execution of automated tests against packages in the
 [Debian](http://www.debian.org/) system.
 
@@ -11,7 +11,9 @@ TODO. For now look at
 
 ## Contact
 
-Write to terceiro@debian.org
+* mailing list: [debian-qa@lists.debian.org](http://lists.debian.org/debian-qa/)
+* IRC: `#debian-qa` in the OFTC network (a.k.a `irc.debian.org`). Feel free to
+  highlight `terceiro`.
 
 ## Copyright and Licensing information
 
