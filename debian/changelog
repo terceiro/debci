@@ -1,3 +1,9 @@
+debci (0.4.1) UNRELEASED; urgency=medium
+
+  * 
+
+ -- Antonio Terceiro <terceiro@debian.org>  Wed, 29 Jan 2014 17:39:03 -0300
+
 debci (0.4.0) unstable; urgency=medium
 
   * Package renamed to debci

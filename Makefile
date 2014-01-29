@@ -7,6 +7,11 @@ generated = \
 
 all: $(generated)
 
+check:
+	sh test/runall.sh
+
+test: check
+
 public/doc/index.html: README.md
 	mkdir -p public/doc
 	pandoc -f markdown -t html5 -s -o $@ $<
