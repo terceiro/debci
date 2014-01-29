@@ -1,5 +1,5 @@
 tar-ignore = data
 tar-ignore = chroots
 tar-ignore = gnupg
-tar-ignore = .whitelist
+tar-ignore = config/whitelist
 tar-ignore = tags
