@@ -15,9 +15,9 @@ TODO. For now look at
 Install the dependencies (look at debian/control). You probably also want to
 install `apt-cacher-ng` to cache package downloads
 
-Trun the following command as root:
+Run the following command as root:
 
-    $ ./scripts/setup
+    $ ./bin/debci-setup
 
 Restrict the list of packages you want to run for testing by creating
 `config/whitelist` containing one package per line. You will usually want to
@@ -29,7 +29,6 @@ you can view the web interface.
 To run debci:
 
     $ ./bin/debci
-
 
 ## Contact
 
