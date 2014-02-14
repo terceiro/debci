@@ -7,12 +7,12 @@ base=$(readlink -f $(dirname $(readlink -f $0))/..)
 
 
 if [ $(whoami) != root ]; then
-  echo "This script must be run as root"
+  echo "E: This script must be run as root"
   exit 1
 fi
 
 create_chroot() {
-  echo "Creating $debci_suite chroot (may take a while)"
+  echo "I: creating $debci_suite chroot (may take a while)"
 
   # detect a local apt-cacher-ng cache running.
   # 10.0.2.2 = default IP assigned to host system as seen from a kvm/virtualbox
@@ -35,15 +35,6 @@ create_chroot() {
   chroot "$debci_chroot_path" apt-get update
 
   echo 'debconf debconf/frontend select noninteractive' | chroot "$debci_chroot_path" debconf-set-selections
-}
-
-update_chroot() {
-  local chroot_path="$1"
-
-  echo "Updating $chroot_path (may take a while)"
-
-  chroot "$chroot_path" apt-get update
-  DEBIAN_FRONTEND=noninteractive chroot "$chroot_path" apt-get dist-upgrade -q -y
 }
 
 setup_schroot() {
@@ -74,7 +65,7 @@ setup_suite() {
   fi
 
   if schroot --list --all | grep -q "^source:${debci_chroot_name}\$"; then
-    echo "schroot setup for ${debci_suite} already done, skipping"
+    echo "I: schroot setup for ${debci_suite} already done, skipping"
   else
     setup_schroot
   fi
@@ -82,12 +73,12 @@ setup_suite() {
   local actual_chroot_path=$(schroot --config --chroot "$debci_chroot_name" | grep '^directory=' | cut -d = -f 2)
 
   if [ -d "${actual_chroot_path}" ]; then
-    update_chroot "$actual_chroot_path"
+    echo "I: chroot $debci_chroot_name already created, skipping"
   else
     if [ "$actual_chroot_path" = "${debci_chroot_path}" ]; then
       create_chroot
     else
-      echo "Chroot ${debci_chroot_name} does not exit in custom location ${actual_chroot_path}. Please create it first."
+      echo "E: chroot ${debci_chroot_name} does not exit in custom location ${actual_chroot_path}. Please create it first."
       exit 1
     fi
   fi

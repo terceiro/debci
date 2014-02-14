@@ -2,7 +2,7 @@
 
 set -e
 
-base=$(readlink -f $(dirname $(readlink -f $0))/..)
+base=$(readlink -f $(dirname $(readlink -f $0))/../..)
 . $base/lib/environment.sh
 
 if [ $# -ne 1 ]; then

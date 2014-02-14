@@ -6,11 +6,6 @@ base=$(readlink -f $(dirname $(readlink -f $0))/..)
 cd $base
 . $base/lib/environment.sh
 
-if [ "$(whoami)" != root ]; then
-  echo "This script must be run as root"
-  exit 1
-fi
-
 export LANG=C
 export LC_ALL=C
 
@@ -26,16 +21,16 @@ log() {
 }
 
 run() {
-  log "Starting setup phase"
+  log "Updating backend testbed"
   if [ -t 1 ]; then
-    ./scripts/setup
+    update-testbed
   else
-    ./scripts/setup > /dev/null
+    update-testbed
   fi
-  log "Finished setup phase"
+  log "Finished update of backend testbed"
 
   log "start processing of all packages"
-  su "$debci_user" -c "./scripts/process-all-packages -j $concurrency CMDLINE='$@'"
+  ./scripts/process-all-packages -j $concurrency CMDLINE="$@"
   log "finished processing of all packages"
 }
 

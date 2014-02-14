@@ -26,3 +26,14 @@ debci_chroot_name="debci-${debci_suite}-${debci_arch}"
 debci_chroot_path="${debci_chroots_dir}/${debci_suite}-${debci_arch}"
 
 debci_user=$(stat -c %U "${debci_data_basedir}")
+
+debci_backend=schroot # FIXME
+
+case "$PATH" in
+  "${debci_base_dir}/backends/{$debci_backend}:*")
+    true
+    ;;
+  *)
+    export PATH="${debci_base_dir}/backends/${debci_backend}:${PATH}"
+    ;;
+esac

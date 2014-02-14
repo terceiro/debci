@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+base=$(readlink -f $(dirname $(readlink -f $0))/../..)
+cd $base
+. $base/lib/environment.sh
+
+echo "Updating $debci_chroot_name (may take a while)"
+
+schroot --chroot "source:${debci_chroot_name}" --user root -- apt-get update || true
+DEBIAN_FRONTEND=noninteractive schroot --chroot "source:${debci_chroot_name}" --user root -- apt-get dist-upgrade -q -y
