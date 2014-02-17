@@ -38,6 +38,11 @@ jQuery(function($) {
 
     $.get(DATA_DIR + '/status/history.json', function(data) {
 
+      if (data.length < 2) {
+        $('.chart').html("Not enough data for plot. Wait until the next run");
+        return;
+      }
+
       var pass = [];
       var fail = [];
       var duration = [];
