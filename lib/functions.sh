@@ -36,3 +36,7 @@ banner() {
   echo "$@" | sed -e 's/./—/g'
   echo
 }
+
+indent() {
+  sed -e 's/^/    /'
+}

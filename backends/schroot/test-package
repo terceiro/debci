@@ -20,7 +20,4 @@ cleanup() {
 }
 trap cleanup INT TERM EXIT
 
-
-banner "$(dpkg-query --show autopkgtest)"
-
 adt-run "$package" --- adt-virt-schroot "${debci_chroot_name}"

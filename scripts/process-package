@@ -55,6 +55,11 @@ already_processed() {
 do_process_package() {
   pkg="$1"
   if needs_processing $pkg; then
+    banner "System information"
+    echo "Package versions:"
+    dpkg-query --show debci autopkgtest | indent
+    echo "Backend: $debci_backend"
+
     banner "Started: $(date -R)"
 
     start_time=$(date +%s)
