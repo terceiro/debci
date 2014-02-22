@@ -32,9 +32,11 @@ create_chroot() {
   # add APT Source URIs
   sed -e 's/^deb\s/deb-src /' "${debci_chroot_path}/etc/apt/sources.list" > "${debci_chroot_path}/etc/apt/sources.list.d/sources.list"
 
-  chroot "$debci_chroot_path" apt-get update
-
+  # never ask for input
   echo 'debconf debconf/frontend select noninteractive' | chroot "$debci_chroot_path" debconf-set-selections
+
+  chroot "$debci_chroot_path" apt-get update
+  chroot "$debci_chroot_path" apt-get install -qy eatmydata
 }
 
 setup_schroot() {
@@ -55,6 +57,7 @@ root-users=$user
 source-root-users=$user
 root-groups=root
 union-type=aufs
+command-prefix=eatmydata
 EOF
 }
 
