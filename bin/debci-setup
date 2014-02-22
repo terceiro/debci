@@ -14,17 +14,22 @@ fi
 create_chroot() {
   echo "I: creating $debci_suite chroot (may take a while)"
 
-  # detect a local apt-cacher-ng cache running.
-  # 10.0.2.2 = default IP assigned to host system as seen from a kvm/virtualbox
-  # virtual machine
-  local mirror=
-  for ip in 127.0.0.1 10.0.2.2; do
-    if nc -z -w 1 $ip 3142; then
-      mirror=http://$ip:3142/debian
-    fi
-  done
+  if [ -z "$http_proxy" ]; then
+    # detect a local apt-cacher-ng cache running.  10.0.2.2 = default IP
+    # assigned to host system as seen from a kvm/virtualbox virtual machine
+    for ip in 127.0.0.1 10.0.2.2; do
+      if nc -z -w 1 $ip 3142; then
+        export http_proxy=http://$ip:3142/debian
+      fi
+    done
+  fi
 
-  debootstrap "$debci_suite" "$debci_chroot_path" $mirror
+  debootstrap "$debci_suite" "$debci_chroot_path"
+
+  # use proxy
+  if [ -n "$http_proxy" ]; then
+    echo "Acquire::http::Proxy \"$http_proxy\";" > /etc/apt/apt.conf.d/01proxy
+  fi
 
   # do not download translations
   echo 'Acquire::Languages "none";' > "${debci_chroot_path}/etc/apt/apt.conf.d/99translations"
