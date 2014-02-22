@@ -1,5 +1,8 @@
 #!/bin/sh
 
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+
 if [ -z "$debci_base_dir" ]; then
   if [ -f scripts/process-all-packages -a -f lib/environment.sh ]; then
     debci_base_dir="$(pwd)"
