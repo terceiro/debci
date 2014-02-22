@@ -4,6 +4,7 @@ set -e
 
 base=$(readlink -f $(dirname $(readlink -f $0))/../..)
 . $base/lib/environment.sh
+. $base/lib/functions.sh
 
 if [ $# -ne 1 ]; then
   echo "usage: $0 PACKAGE"
@@ -18,5 +19,8 @@ cleanup() {
   fi
 }
 trap cleanup INT TERM EXIT
+
+
+banner "$(dpkg-query --show autopkgtest)"
 
 adt-run "$package" --- adt-virt-schroot "${debci_chroot_name}"

@@ -23,3 +23,16 @@ check_version() {
   first_binary=$(list_binaries "$pkg" | head -n 1)
   grep_packages -n -s Version -F Package -X "$first_binary" | sort -V | tail -n 1
 }
+
+
+first_banner=
+banner() {
+  if [ "$first_banner" = "$pkg" ]; then
+    echo
+  fi
+  first_banner="$pkg"
+  echo "$@" | sed -e 's/./—/g'
+  echo "$@"
+  echo "$@" | sed -e 's/./—/g'
+  echo
+}

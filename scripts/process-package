@@ -124,19 +124,6 @@ check_dependencies() {
     sort | uniq
 }
 
-
-first_banner=
-banner() {
-  if [ "$first_banner" = "$pkg" ]; then
-    echo
-  fi
-  first_banner="$pkg"
-  echo "$@" | sed -e 's/./=/g'
-  echo "$@"
-  echo "$@" | sed -e 's/./=/g'
-  echo
-}
-
 record_status() {
   pkg="$1"
   status="$2"
