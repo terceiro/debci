@@ -64,6 +64,7 @@
   : <doko>  and could you run procenv after setting up the chroot?
   : <doko>  my experience is that a lot of time goes into setting up the
   :         environement and understanding the env
+[_] display autopkgtest version in the logs
 [_] add SKIP result
   : differentiate a problem in the environment (mirror failure, tested skipped
   : because of missing features in testbed etc) from actual failures.
@@ -76,4 +77,4 @@
   : - <CAL6k_Ax+NWmZJY_km_Mfn6YOsb7mJDNEdii4PuxM4E2fZkB65g@mail.gmail.com>
   : - <20140129011445.GA6418@debian.org>
 [_] ci.debian.net: also test packages from experimenal
-[_] ci.debian.net: upgrade autopkgtest to the version in jessie
+[X] ci.debian.net: upgrade autopkgtest to the version in jessie (2.7)
