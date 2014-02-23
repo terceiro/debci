@@ -38,14 +38,18 @@ get_json() {
 
 get_status() {
   local pkg="$1"
-  local length="$2"
+  local length="${2:-0}"
 
   local status_file=$(get_status_file "$pkg")
 
   if [ -f "$status_file" ]; then
-    perl -e "\$length = $length; "'use Data::Dumper; use JSON; @input = <>; $data = decode_json(join("", @input)); printf("%-${length}s %s\n", $data->{package}, $data->{status});' "$status_file"
+    perl -e "\$length = $length; "'use Data::Dumper; use JSON; @input = <>; $data = decode_json(join("", @input)); if ($length) { printf("%-${length}s %s\n", $data->{package}, $data->{status}) } else { printf("%s\n", $data->{status}) };' "$status_file"
   else
-    printf "%-${length}s unknown\n" "$pkg"
+    if [ "$length" -eq 0 ]; then
+      echo "unknown"
+    else
+      printf "%-${length}s unknown\n" "$pkg"
+    fi
   fi
 }
 
@@ -101,7 +105,13 @@ if [ $json ]; then
   exit
 fi
 
-# regular listing
+# single package
+if [ $# -eq 1 ]; then
+  get_status "$1"
+  exit
+fi
+
+# multiple packages
 max_length=$(for pkg in $@; do echo "$pkg"; done | wc -L)
 for pkg in $@; do
   get_status "$pkg" "$max_length"
