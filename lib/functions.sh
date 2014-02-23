@@ -40,3 +40,9 @@ banner() {
 indent() {
   sed -e 's/^/    /'
 }
+
+status_dir_for_package() {
+  local pkg="$1"
+  pkg_dir=$(echo "$pkg" | sed -e 's/\(\(lib\)\?.\).*/\1\/&/')
+  echo "${debci_packages_dir}/${pkg_dir}"
+}

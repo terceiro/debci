@@ -1,0 +1,67 @@
+#!/bin/sh
+
+set -e
+
+base=$(readlink -f $(dirname $(readlink -f $0))/..)
+cd $base
+. $base/lib/environment.sh
+. $base/lib/functions.sh
+
+usage() {
+  cat <<EOF
+usage: debci-status [OPTIONS] PACKAGE
+
+Options:
+
+  -f, --full    show the full status file, not only the actual status
+  --help        show this usage message
+
+EOF
+  exit "$1"
+}
+
+# defaults
+full=''
+
+while true; do
+  case "$1" in
+    --full|-f)
+      full=true
+      shift
+      ;;
+    --help)
+      usage 0
+      ;;
+    -*)
+      echo "Invalid option: $1"
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if [ $# -ne 1 -o -z "$1" ]; then
+  echo "usage: $0 [OPTIONS] PACKAGE"
+  exit 1
+fi
+
+pkg="$1"
+status_dir=$(status_dir_for_package "$1")
+
+status_file="${status_dir}/latest.json"
+
+if [ -f "$status_file" ]; then
+  if [ $full ]; then
+    cat "$status_file"
+  else
+    perl -e 'use Data::Dumper; use JSON; @input = <>; $data = decode_json(join("", @input)); print($data->{status}, "\n");' "$status_file"
+  fi
+else
+  if [ $full ]; then
+    echo "No status file available for $pkg"
+    exit 1
+  else
+    echo "unknown"
+  fi
+fi
