@@ -65,7 +65,7 @@
   : <doko>  my experience is that a lot of time goes into setting up the
   :         environement and understanding the env
 [_] display autopkgtest version in the logs
-[_] add SKIP result
+[X] add tmpfail result
   : differentiate a problem in the environment (mirror failure, tested skipped
   : because of missing features in testbed etc) from actual failures.
   :
