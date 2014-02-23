@@ -120,7 +120,17 @@ jQuery(function($) {
 
   $.get(DATA_DIR + '/packages.json', function(data) {
     $.each(data, function(index, item) {
-      $('#package-select').append("<li data-package='" + item.package + "'><a class='" + item.status + "' href='#package/" + item.package + "'>" + item.package + " (" + item.version  + ")</a></li>");
+      var $link = $('<a></a>');
+      $link.addClass(item.status)
+      $link.attr('href', '#package/' + item.package);
+      $link.attr('title', item.message);
+      $link.html(item.package + ' (' + item.version + ')')
+
+      var $list_item = $('<li></li>');
+      $list_item.attr('data-package', item.package);
+      $list_item.append($link);
+
+      $('#package-select').append($list_item);
     });
   });
 
