@@ -9,24 +9,58 @@ cd $base
 
 usage() {
   cat <<EOF
-usage: debci-status [OPTIONS] PACKAGE
+usage: debci-status [OPTIONS] PACKAGE [PACKAGE ...]
 
 Options:
 
-  -f, --full    show the full status file, not only the actual status
+  -a, -all      show status for all packages
+  -j, --json    show the full JSON status file
   --help        show this usage message
+
+If PACKAGE is "all", the status of all packages will be listed.
 
 EOF
   exit "$1"
 }
 
+get_status_file() {
+  local pkg="$1"
+  local status_dir=$(status_dir_for_package "$1")
+  echo "${status_dir}/latest.json"
+}
+
+get_json() {
+  local status_file=$(get_status_file "$1")
+  if [ -f "$status_file" ]; then
+    cat "$status_file"
+  fi
+}
+
+get_status() {
+  local pkg="$1"
+  local length="$2"
+
+  local status_file=$(get_status_file "$pkg")
+
+  if [ -f "$status_file" ]; then
+    perl -e "\$length = $length; "'use Data::Dumper; use JSON; @input = <>; $data = decode_json(join("", @input)); printf("%-${length}s %s\n", $data->{package}, $data->{status});' "$status_file"
+  else
+    printf "%-${length}s unknown\n" "$pkg"
+  fi
+}
+
 # defaults
-full=''
+all=''
+json=''
 
 while true; do
   case "$1" in
-    --full|-f)
-      full=true
+    --json|-j)
+      json=true
+      shift
+      ;;
+    --all|-a)
+      all=true
       shift
       ;;
     --help)
@@ -34,6 +68,7 @@ while true; do
       ;;
     -*)
       echo "Invalid option: $1"
+      exit 1
       ;;
     *)
       break
@@ -41,27 +76,33 @@ while true; do
   esac
 done
 
-if [ $# -ne 1 -o -z "$1" ]; then
+if [ $all ]; then
+  pkgs=$(find "$debci_packages_dir" -mindepth 2 -maxdepth 2 | xargs -n 1 basename)
+  eval set -- $pkgs
+fi
+
+if [ $# -lt 1 ]; then
   echo "usage: $0 [OPTIONS] PACKAGE"
   exit 1
 fi
 
-pkg="$1"
-status_dir=$(status_dir_for_package "$1")
-
-status_file="${status_dir}/latest.json"
-
-if [ -f "$status_file" ]; then
-  if [ $full ]; then
-    cat "$status_file"
-  else
-    perl -e 'use Data::Dumper; use JSON; @input = <>; $data = decode_json(join("", @input)); print($data->{status}, "\n");' "$status_file"
-  fi
-else
-  if [ $full ]; then
-    echo "No status file available for $pkg"
-    exit 1
-  else
-    echo "unknown"
-  fi
+# JSON data
+if [ $json ]; then
+  [ $# -gt 1 ] && echo "["
+  prefix=''
+  for pkg in $@; do
+    if [ $prefix ]; then
+      echo "$prefix" | indent
+    fi
+    get_json "$pkg" | indent
+    prefix=','
+  done
+  [ $# -gt 1 ] && echo "]"
+  exit
 fi
+
+# regular listing
+max_length=$(for pkg in $@; do echo "$pkg"; done | wc -L)
+for pkg in $@; do
+  get_status "$pkg" "$max_length"
+done

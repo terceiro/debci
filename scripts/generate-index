@@ -5,23 +5,11 @@ set -e
 base=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $base/lib/environment.sh
 
-generate_index() {
-  local prefix=""
-  echo "["
-  for pkg in $(find "${debci_packages_dir}" -name latest.json | sort); do
-    if [ -n "$prefix" ]; then
-      echo "$prefix"
-    fi
-    cat $pkg
-    prefix=","
-  done
-  echo "]"
-}
-
 generate_status_entry() {
   local duration="$1"
   pass=$(grep -l '"status":\s*"pass",' ${debci_packages_dir}/*/*/latest.json | wc -l)
   fail=$(grep -l '"status":\s*"fail",' ${debci_packages_dir}/*/*/latest.json | wc -l)
+  tmpfail=$(grep -l '"status":\s*"tmpfail",' ${debci_packages_dir}/*/*/latest.json | wc -l)
   total=$(($pass + $fail))
   date="$(date +%Y-%m-%dT%H:%M:%S)"
   mkdir -p "${debci_status_dir}"
@@ -31,6 +19,7 @@ generate_status_entry() {
   "duration": ${duration},
   "pass": $pass,
   "fail": $fail,
+  "pending": $
   "total": $total
 }
 EOF
@@ -53,5 +42,5 @@ generate_history() {
 generate_status_entry "$@"
 generate_history > "${debci_status_dir}/history.json"
 
-generate_index > "${debci_data_dir}/packages.json"
+$base/bin/debci-status --all --json > "${debci_data_dir}/packages.json"
 
