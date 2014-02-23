@@ -21,14 +21,13 @@ touch -d '1 month ago' "${one_month_ago}"
 
 process_package() {
   pkg="$1"
-  pkg_dir=$(echo "$pkg" | sed -e 's/\(\(lib\)\?.\).*/\1\/&/')
 
   # setup tmp dir
   tmp_dir="$global_tmp_dir/$pkg"
   mkdir "$tmp_dir"
 
   # setup status "DB"
-  status_dir="${debci_packages_dir}/${pkg_dir}"
+  status_dir=$(status_dir_for_package "$pkg")
   mkdir -p "$status_dir"
 
   # setup log
@@ -63,14 +62,39 @@ do_process_package() {
     banner "Started: $(date -R)"
 
     start_time=$(date +%s)
-    status=fail
-    if test-package $pkg; then
-      status=pass
-    fi
+
+    set +e
+    test-package "$pkg"
+    exit_status=$?
+    set -e
+
+    # ref: adt-run(1)
+    case "$exit_status" in
+      0)
+        status=pass
+        message='All tests passed'
+        ;;
+      2)
+        status=pass
+        message='Tests passed, but at least one test skipped'
+        ;;
+      4)
+        status=fail
+        message='Tests failed'
+        ;;
+      6)
+        status=fail
+        message='Tests failed, and at least one test skipped'
+        ;;
+      *)
+        status=tmpfail
+        message='Could not run tests due to a temporary failure'
+        ;;
+    esac
     finish_time=$(date +%s)
     duration=$(($finish_time - $start_time))
 
-    record_status "$pkg" $status "$duration" "Tests ${status}ed"
+    record_status "$pkg" $status "$duration" "$message"
 
     banner "Finished: $(date -R)"
   fi
