@@ -170,11 +170,30 @@ jQuery(function($) {
         $('#package-details h1').addClass(history[0].status);
       }
 
-      $target.append("<table class='table table-condensed'><tr><th>Version</th><th>Date</th><th>Duration</th><th>Status</th><th>Log</th></tr></table>");
+      var $table = $("<table>");
+      $table.addClass('table table-condensed');
+
+      var $header = $("<tr>");
+      $header.append($('<th>').html('Version'));
+      $header.append($('<th>').html('Date'));
+      $header.append($('<th>').html('Duration'));
+      $header.append($('<th>').html('Status'));
+      $header.append($('<th>').html('Log'));
+      $table.append($header);
+
       $.each(history, function(index, entry) {
         var log = DATA_DIR + '/packages/' + pkg_dir + '/' + entry.date + ".log";
-        $target.find('table').append("<tr><td>" + entry.version + "</td><td>" + entry.date + "</td><td>" + entry.duration_human + "</td><td class='" + entry.status + "'>" + entry.status + "</td><td><a href='" + log + "'>view log</a></td></tr>")
+
+        var $row = $('<tr>');
+        $row.append($('<td>').html(entry.version));
+        $row.append($('<td>').html(entry.date));
+        $row.append($('<td>').html(entry.duration_human));
+        $row.append($('<td>').html(entry.status));
+        $row.append($('<td>').html($('<a>').attr('href', log).html('view log')));
+
+        $table.append($row);
       });
+      $target.append($table);
 
       var data_base = window.location.href.replace(/\/#.*/, '');
       var automation_info =
