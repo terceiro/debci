@@ -2,27 +2,30 @@
 
 set -e
 
-base=$(readlink -f $(dirname $(readlink -f $0))/..)
-cd $base
-. $base/lib/environment.sh
-. $base/lib/functions.sh
+short_options='jlf:'
+long_options='json,all,field:'
 
 usage() {
   cat <<EOF
 usage: debci-status [OPTIONS] [PACKAGE] [PACKAGE ...]
 
-When not using -a/--all, one or more PACKAGEs have to be specified.
+When not using -l/--all, one or more PACKAGEs have to be specified.
 
 Options:
 
-  -a, -all                  show status for all packages
+  -l, -all                  show status for all packages
   -j, --json                show the full JSON status file
   -f FIELD, --field FIELD   display FIELD from the status file (default: status)
-  --help                    show this usage message
 
+$@
 EOF
-  exit "$1"
 }
+
+base=$(readlink -f $(dirname $(readlink -f $0))/..)
+cd $base
+. $base/lib/environment.sh
+. $base/lib/functions.sh
+
 
 get_status_file() {
   local pkg="$1"
@@ -75,49 +78,51 @@ while true; do
       json=true
       shift
       ;;
-    --all|-a)
+    --all|-l)
       all=true
       shift
       ;;
     --field|-f)
       field="$2"
-      if [ ! $field ]; then
-        echo "Option -f/--field requires an argument!"
-        exit 1
-      fi
       shift 2
       ;;
-    --help)
-      usage 0
-      ;;
-    -*)
-      echo "Invalid option: $1"
-      exit 1
+    --)
+      shift
+      break
       ;;
     *)
-      break
+      shift
       ;;
   esac
 done
 
 if [ $all ]; then
-  pkgs=$(find "$debci_packages_dir" -mindepth 2 -maxdepth 2 | xargs -n 1 basename)
-  eval set -- $pkgs
+  if [ -d "$debci_packages_dir" ]; then
+    pkgs=$(find "$debci_packages_dir" -mindepth 2 -maxdepth 2 | xargs -n 1 basename)
+    eval set -- $pkgs
+  else
+    exit 0
+  fi
 fi
 
 if [ $# -lt 1 ]; then
-  usage 1
+  usage
+  exit 1
 fi
 
 # JSON data
+indent='cat'
 if [ $json ]; then
-  [ $# -gt 1 ] && echo "["
+  if [ $# -gt 1 ]; then
+    echo "["
+    indent=indent
+  fi
   prefix=''
   for pkg in $@; do
     if [ $prefix ]; then
-      echo "$prefix" | indent
+      echo "$prefix" | $indent
     fi
-    get_json "$pkg" | indent
+    get_json "$pkg" | $indent
     prefix=','
   done
   [ $# -gt 1 ] && echo "]"

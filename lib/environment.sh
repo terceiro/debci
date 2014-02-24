@@ -12,8 +12,59 @@ if [ -z "$debci_base_dir" ]; then
   fi
 fi
 
-debci_suite='unstable' # FIXME allow passing in via command line
-debci_arch=$(dpkg-architecture -qDEB_HOST_ARCH) # FIXME allow passing in via command line
+# default values
+debci_suite='unstable'
+debci_arch=$(dpkg-architecture -qDEB_HOST_ARCH)
+debci_backend=schroot
+
+shared_short_options='s:a:b:h'
+shared_long_options='suite:,arch:,backend:,help'
+
+usage_shared_options='Common options:
+
+  -a, --arch ARCH           selects the architecture to run tests run
+                            (default: native architecture)
+  -n, --backend BACKEND     selects the backends to use to run the tests
+                            (default: schroot)
+  -s, --suite SUITE         selects suite to run tests for
+                            (default: unstable)
+  --help                    show this usage message
+'
+
+TEMP=`getopt -o ${shared_short_options}${short_options} --long ${shared_long_options},${long_options} -- "$@"`
+
+if [ $? != 0 ]; then
+  exit 1
+fi
+
+eval set -- "$TEMP"
+
+for arg in "$@"; do
+  if [ $var ]; then
+    eval "$var=\"$arg\""
+    var=''
+  else
+    case "$arg" in
+      -s|--suite)
+        var=debci_suite
+        ;;
+      -a|--arch)
+        var=debci_arch
+        ;;
+      -b|--backend)
+        var=debci_backend
+        ;;
+      -h|--help)
+        usage "$usage_shared_options"
+        exit 0
+        ;;
+      *)
+        var=''
+        ;;
+    esac
+  fi
+done
+
 
 debci_data_basedir=$(readlink -f "${debci_base_dir}/data")
 debci_data_dir="${debci_data_basedir}/${debci_suite}-${debci_arch}"
@@ -31,8 +82,6 @@ debci_chroot_path="${debci_chroots_dir}/${debci_suite}-${debci_arch}"
 debci_bin_dir="${debci_base_dir}/bin"
 
 debci_user=$(stat -c %U "${debci_data_basedir}")
-
-debci_backend=schroot # FIXME
 
 for dir in \
   "${debci_base_dir}/backends/${debci_backend}" \

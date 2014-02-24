@@ -2,6 +2,9 @@
 
 set -e
 
+short_options='f'
+long_options='force'
+
 base=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $base/lib/environment.sh
 . $base/lib/functions.sh
@@ -234,14 +237,6 @@ EOF
   cp "$history_file" "$status_dir/history.json"
 }
 
-TEMP=`getopt -o f --long force -- "$@"`
-
-if [ $? != 0 ]; then
-  exit 1
-fi
-
-eval set -- "$TEMP"
-
 # defaults
 cmdline_force=''
 
@@ -256,8 +251,7 @@ while true; do
       break
       ;;
     *)
-      echo "Internall error ($1)!"
-      exit 1
+      shift
       ;;
   esac
 done
