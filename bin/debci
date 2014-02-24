@@ -6,19 +6,39 @@ if [ -r /etc/default/debci ]; then
   . /etc/default/debci
 fi
 
+usage() {
+  cat <<EOF
+usage: debci [OPTIONS]
+
+Options:
+
+  -f, --force               Force test run on packages, even if no package in
+                            its dependency chain changed. A package will still
+                            not be tested if it was already tested today.
+  -c N, --concurrency N     Test N packages in parallel
+                            (default: 1)
+  -d, --debug               Turn debug mode on.
+
+$@
+EOF
+}
+
+short_options='c:df'
+long_options='concurrency:,force,debug'
+
 base=$(readlink -f $(dirname $(readlink -f $0))/..)
 cd $base
 . lib/environment.sh
 
-# default configuration
-concurrency=1
-
 log() {
+  if [ $debug ]; then
+    echo 'debug:' "$@"
+  fi
   logger -t debci -i "$@"
 }
 
 run() {
-  if type update-testbed >/dev/null 2>/dev/null; then
+  if [ ! $debug ] && type update-testbed >/dev/null 2>/dev/null; then
     log "Updating backend testbed"
     update-testbed
   else
@@ -27,17 +47,30 @@ run() {
   log "Finished update of backend testbed"
 
   log "start processing of all packages"
-  ./scripts/process-all-packages -j $concurrency CMDLINE="$@"
+  ./scripts/process-all-packages -j $concurrency
   log "finished processing of all packages"
 }
 
+# default configuration
+concurrency=1
+debug=''
+
 while true; do
-  if [ "$1" = '--' ]; then
-    shift
-    break
-  else
-    shift
-  fi
+  arg="$1"
+  shift
+  case "$arg" in
+    -c|--concurrency)
+      concurrency="$1"
+      shift
+      ;;
+    -d|--debug)
+      debug=true
+      export debci_debug=true
+      ;;
+    --)
+      break
+      ;;
+  esac
 done
 
 (

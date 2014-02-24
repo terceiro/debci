@@ -3,7 +3,7 @@
 use strict;
 
 print("Not really running anything ...\n");
-print("This will fail, pass or tmpfail randomly");
+print("This will fail, pass or tmpfail randomly.\n");
 
 my $rand = int(rand(10));
 

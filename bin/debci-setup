@@ -5,6 +5,7 @@ set -e
 base=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $base/lib/environment.sh
 
+prepare_args
 
 if [ $(whoami) != root ]; then
   echo "E: This script must be run as root"

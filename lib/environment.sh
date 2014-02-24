@@ -13,18 +13,18 @@ if [ -z "$debci_base_dir" ]; then
 fi
 
 # default values
-debci_suite='unstable'
-debci_arch=$(dpkg-architecture -qDEB_HOST_ARCH)
-debci_backend=schroot
+debci_suite=${debci_suite:-unstable}
+debci_arch=${debci_arch:-$(dpkg-architecture -qDEB_HOST_ARCH)}
+debci_backend=${debci_backend:-schroot}
 
 shared_short_options='s:a:b:h'
 shared_long_options='suite:,arch:,backend:,help'
 
 usage_shared_options='Common options:
 
-  -a, --arch ARCH           selects the architecture to run tests run
-                            (default: native architecture)
-  -n, --backend BACKEND     selects the backends to use to run the tests
+  -a, --arch ARCH           selects the architecture to run tests for
+                            (default: host architecture)
+  -n, --backend BACKEND     selects the backends to run tests on
                             (default: schroot)
   -s, --suite SUITE         selects suite to run tests for
                             (default: unstable)
@@ -41,7 +41,7 @@ eval set -- "$TEMP"
 
 for arg in "$@"; do
   if [ $var ]; then
-    eval "$var=\"$arg\""
+    eval "export $var=\"$arg\""
     var=''
   else
     case "$arg" in
@@ -65,6 +65,7 @@ for arg in "$@"; do
   fi
 done
 
+alias prepare_args='while [ "$1" != '--' ]; do shift; done; shift'
 
 debci_data_basedir=$(readlink -f "${debci_base_dir}/data")
 debci_data_dir="${debci_data_basedir}/${debci_suite}-${debci_arch}"

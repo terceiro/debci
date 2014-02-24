@@ -39,6 +39,8 @@ generate_history() {
   echo "]"
 }
 
+prepare_args
+
 generate_status_entry "$@"
 generate_history > "${debci_status_dir}/history.json"
 

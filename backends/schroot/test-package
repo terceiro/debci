@@ -2,12 +2,22 @@
 
 set -e
 
+usage() {
+  cat <<EOF
+usage: backends/schroot/test-package [OPTIONS] PACKAGE
+
+$@
+EOF
+}
+
 base=$(readlink -f $(dirname $(readlink -f $0))/../..)
 . $base/lib/environment.sh
 . $base/lib/functions.sh
 
+prepare_args
+
 if [ $# -ne 1 ]; then
-  echo "usage: $0 PACKAGE"
+  usage
   exit 1
 fi
 package="$1"

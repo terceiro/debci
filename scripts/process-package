@@ -54,8 +54,9 @@ process_package() {
     fi
   fi
 
-  if [ -t 1 ]; then
-    # stdout is a tty, show the output and also send it to the log file
+  if [ -t 1 -o "$debci_debug" ]; then
+    # stdout is a tty, or we are in debug mode; show the output and also send
+    # it to the log file
     do_process_package 2>&1 | tee "$log_file"
   else
     # running on background, just send everything to the log file

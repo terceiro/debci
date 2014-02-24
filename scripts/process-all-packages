@@ -13,5 +13,5 @@ all: $(packages)
 $(packages):
 	@if test -t 1; then echo $@ ; fi
 	@logger -t debci -i "started processing package $@"
-	@./scripts/process-package $(CMDLINE) $@
+	@./scripts/process-package $@
 	@logger -t debci -i "finished processing package $@"
