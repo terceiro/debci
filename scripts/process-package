@@ -20,8 +20,6 @@ one_month_ago="${global_tmp_dir}/one_month_ago"
 touch -d '1 month ago' "${one_month_ago}"
 
 process_package() {
-  pkg="$1"
-
   # setup tmp dir
   tmp_dir="$global_tmp_dir/$pkg"
   mkdir "$tmp_dir"
@@ -55,10 +53,10 @@ process_package() {
 
   if [ -t 1 ]; then
     # stdout is a tty, show the output and also send it to the log file
-    do_process_package "$pkg" 2>&1 | tee "$log_file"
+    do_process_package 2>&1 | tee "$log_file"
   else
     # running on background, just send everything to the log file
-    do_process_package "$pkg" > "$log_file" 2>&1
+    do_process_package > "$log_file" 2>&1
   fi
 
   if [ -s "$log_file" ]; then
@@ -68,8 +66,7 @@ process_package() {
 
 
 do_process_package() {
-  pkg="$1"
-  if needs_processing $pkg; then
+  if needs_processing; then
     banner "System information"
     echo "Package versions:"
     dpkg-query --show debci autopkgtest | indent
@@ -110,7 +107,7 @@ do_process_package() {
     finish_time=$(date +%s)
     duration=$(($finish_time - $start_time))
 
-    record_status "$pkg" $status "$duration" "$message"
+    record_status
 
     banner "Finished: $(date -R)"
   fi
@@ -129,7 +126,7 @@ reason_for_run() {
 # XXX this function must not output anything unless there is a need for the
 # package to be processed.
 needs_processing() {
-  check_dependencies "$pkg" > "$tmp_dir/dependencies.txt"
+  check_dependencies > "$tmp_dir/dependencies.txt"
 
   run=1
 
@@ -172,7 +169,6 @@ needs_processing() {
 }
 
 check_dependencies() {
-  pkg="$1"
   binaries=$(list_binaries "$pkg")
   {
     if ! schroot -d / -c "$debci_chroot_name" -u root -- apt-get install --quiet --assume-yes --simulate $binaries 2>&1; then
@@ -186,10 +182,6 @@ check_dependencies() {
 }
 
 record_status() {
-  pkg="$1"
-  status="$2"
-  duration="$3"
-  message="$4"
   version=$(check_version "$pkg")
 
   hours=$(( $duration / 3600 ))
@@ -271,7 +263,8 @@ while true; do
 done
 
 if [ $# -eq 1 ]; then
-  process_package "$1"
+  pkg="$1"
+  process_package
 else
   echo "usage: $0 [OPTIONS] PACKAGE"
   exit 1
