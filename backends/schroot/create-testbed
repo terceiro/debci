@@ -2,4 +2,4 @@
 
 set -e
 
-echo "I: schroot backend already set up"
+echo "I: schroot backend already set up by the debci core"

@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+
+use strict;
+
+print("Not really running anything ...\n");
+print("This will fail, pass or tmpfail randomly");
+
+my $rand = int(rand(10));
+
+if ($rand <= 5) {
+  print("Passed :-)\n");
+  exit(0);
+} elsif ($rand <= 7) {
+  print("Failed :-(\n");
+  exit(4);
+} else {
+  print("Some error ocurred");
+  exit 16;
+}
+
+

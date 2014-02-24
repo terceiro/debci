@@ -2,27 +2,27 @@
 
 set -e
 
-base=$(readlink -f $(dirname $(readlink -f $0))/..)
-cd $base
-. $base/lib/environment.sh
-
-# default configuration
-concurrency=1
-
 if [ -r /etc/default/debci ]; then
   . /etc/default/debci
 fi
+
+base=$(readlink -f $(dirname $(readlink -f $0))/..)
+cd $base
+. lib/environment.sh
+
+# default configuration
+concurrency=1
 
 log() {
   logger -t debci -i "$@"
 }
 
 run() {
-  log "Updating backend testbed"
-  if [ -t 1 ]; then
+  if type update-testbed >/dev/null 2>/dev/null; then
+    log "Updating backend testbed"
     update-testbed
   else
-    update-testbed
+    log "Backend $debci_backend does not provide a way to update testbed!"
   fi
   log "Finished update of backend testbed"
 
@@ -31,6 +31,14 @@ run() {
   log "finished processing of all packages"
 }
 
+while true; do
+  if [ "$1" = '--' ]; then
+    shift
+    break
+  else
+    shift
+  fi
+done
 
 (
   flock -n 9 || exit 0
