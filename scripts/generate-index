@@ -10,7 +10,7 @@ generate_status_entry() {
   pass=$(grep -l '"status":\s*"pass",' ${debci_packages_dir}/*/*/latest.json | wc -l)
   fail=$(grep -l '"status":\s*"fail",' ${debci_packages_dir}/*/*/latest.json | wc -l)
   tmpfail=$(grep -l '"status":\s*"tmpfail",' ${debci_packages_dir}/*/*/latest.json | wc -l)
-  total=$(($pass + $fail))
+  total=$(($pass + $fail + $tmpfail))
   date="$(date +%Y-%m-%dT%H:%M:%S)"
   mkdir -p "${debci_status_dir}"
   cat > "${debci_status_dir}/${date}.json" <<EOF
@@ -19,7 +19,7 @@ generate_status_entry() {
   "duration": ${duration},
   "pass": $pass,
   "fail": $fail,
-  "pending": $
+  "tmpfail": $tmpfail,
   "total": $total
 }
 EOF
