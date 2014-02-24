@@ -198,6 +198,11 @@ record_status() {
   duration_human="${hours}h ${minutes}m ${seconds}s"
   banner "Status: $status ($message); duration: ${duration_human}"
 
+  local previous_status="${last_status}"
+  if [ "${previous_status}" = 'tmpfail' ]; then
+    previous_status=$(debci-status --field previous_status "$pkg")
+  fi
+
   # latest entry
   cat > "${status_file}" <<EOF
 {
@@ -206,6 +211,7 @@ record_status() {
   "version": "${version}",
   "date": "$(date --rfc-3339=seconds)",
   "status": "${status}",
+  "previous_status": "${previous_status}",
   "duration_seconds": "${duration}",
   "duration_human": "${duration_human}",
   "message": "${message}"
