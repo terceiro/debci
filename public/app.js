@@ -45,20 +45,35 @@ jQuery(function($) {
 
       var pass = [];
       var fail = [];
+      var tmpfail = [];
       var duration = [];
       var max_duration = 0;
       $.each(data, function(index, entry) {
         pass.push([Date.parse(entry.date), entry.pass]);
         fail.push([Date.parse(entry.date), entry.fail]);
+        tmpfail.push([Date.parse(entry.date), entry.tmpfail || 0]);
         duration.push([Date.parse(entry.date), entry.duration]);
         if (entry.duration && entry.duration > max_duration) {
           max_duration = entry.duration;
         }
       });
 
-      var pass_fail_data= [ { label: "Pass", data: pass }, { label: "Fail", data: fail }];
+      var status_data = [
+        {
+          label: "Pass",
+          data: pass
+        },
+        {
+          label: "Fail",
+          data: fail
+        },
+        {
+          label: "Temporary failure",
+          data: tmpfail
+        }
+      ];
 
-      $.plot("#chart-pass-fail", pass_fail_data, {
+      $.plot("#chart-pass-fail", status_data, {
         series: {
           stack: true,
           lines: {
@@ -67,7 +82,7 @@ jQuery(function($) {
             steps: false,
           }
         },
-        colors: [ '#8ae234', '#ef2929' ],
+        colors: [ '#8ae234', '#ef2929', '#babdb6' ],
         legend: {
           show: true,
 
