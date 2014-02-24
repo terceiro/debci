@@ -38,7 +38,7 @@ log() {
 }
 
 run() {
-  if [ ! $debug ] && type update-testbed >/dev/null 2>/dev/null; then
+  if [ ! $debug ] && which update-testbed >/dev/null 2>/dev/null; then
     log "Updating backend testbed"
     update-testbed
   else

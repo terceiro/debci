@@ -95,6 +95,6 @@ setup_suite() {
 
 setup_suite
 
-if type create-testbed >/dev/null 2>/dev/null; then
+if which create-testbed >/dev/null 2>/dev/null; then
   create-testbed
 fi
