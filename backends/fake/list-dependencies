@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+
+my $PROBABILITY = 0.2;
+
+# will randomly bump dependencies version numbers with a probability of
+# $PROBABILITY for each individual existing dependency.
+#
+# For packages without an existing list of dependencies, will just create a
+# bogus one.
+
+use strict;
+use FindBin qw($Bin);
+
+my $pkg = $ARGV[0];
+unless ($pkg) {
+  print("usage: list-packages PACKAGE");
+  exit(1);
+}
+
+my $pkgdir = $pkg;
+$pkgdir =~ s/((lib)?.).*/$1\/$&/;
+
+my $suite = $ENV{debci_suite} || 'unstable';
+my $arch = $ENV{debci_arch} || 'amd64';
+my $dependencies_file = "$Bin/../../data/$suite-$arch/packages/$pkgdir/dependencies.txt";
+
+if (-f $dependencies_file) {
+  open(my $file, '<', $dependencies_file);
+  my @lines = <$file>;
+  for my $line (@lines) {
+    chomp($line);
+    if (rand() <= $PROBABILITY) {
+      $line .= '+1';
+    }
+    print($line, "\n");
+  }
+  close($file);
+} else {
+  for my $fake_pkg (qw(foo bar baz qux)) {
+    printf("%s %d.%d-%d\n", $fake_pkg, int(rand(4)), int(rand(4)), int(rand(4)));
+  }
+}
+

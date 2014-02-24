@@ -130,7 +130,7 @@ reason_for_run() {
 # XXX this function must not output anything unless there is a need for the
 # package to be processed.
 needs_processing() {
-  check_dependencies > "$tmp_dir/dependencies.txt"
+  list-dependencies "$pkg" > "$tmp_dir/dependencies.txt"
 
   run=1
 
@@ -170,19 +170,6 @@ needs_processing() {
   fi
 
   return $run
-}
-
-check_dependencies() {
-  binaries=$(list_binaries "$pkg")
-  {
-    if ! schroot -d / -c "$debci_chroot_name" -u root -- apt-get install --quiet --assume-yes --simulate $binaries 2>&1; then
-      for binary in $binaries; do
-        schroot -d / -c "$debci_chroot_name" -u root -- apt-get -q -y --simulate  install $binary 2>&1
-      done
-    fi
-  } | \
-    awk '{ if ($1 == "Inst") { sub("^.", "", $3); print($2, $3) } }' | \
-    sort | uniq
 }
 
 record_status() {

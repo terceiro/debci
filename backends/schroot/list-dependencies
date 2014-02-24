@@ -1,0 +1,36 @@
+#!/bin/sh
+
+set -e
+
+usage() {
+  cat <<EOF
+usage: backends/schroot/list-dependencies [OPTIONS] PACKAGE
+
+EOF
+  if [ -n "$*" ]; then
+    echo "$@"
+  fi
+}
+
+base=$(readlink -f $(dirname $(readlink -f $0))/../..)
+. $base/lib/environment.sh
+. $base/lib/functions.sh
+
+prepare_args
+
+pkg="$1"
+if [ -z "$pkg" ]; then
+  usage
+  exit 1
+fi
+
+binaries=$(list_binaries "$pkg")
+{
+  if ! schroot -d / -c "$debci_chroot_name" -u root -- apt-get install --quiet --assume-yes --simulate $binaries 2>&1; then
+    for binary in $binaries; do
+      schroot -d / -c "$debci_chroot_name" -u root -- apt-get -q -y --simulate  install $binary 2>&1
+    done
+  fi
+} | \
+  awk '{ if ($1 == "Inst") { sub("^.", "", $3); print($2, $3) } }' | \
+  sort | uniq
