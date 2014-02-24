@@ -19,6 +19,8 @@ Depends:
  autopkgtest (>= 2.7),
  dpkg-dev,
  schroot,
+ perl,
+ libjson-perl,
  ${shlibs:Depends},
  ${misc:Depends},
 Recommends: apt-cacher-ng
