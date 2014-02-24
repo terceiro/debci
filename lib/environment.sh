@@ -28,15 +28,17 @@ debci_chroots_dir="${debci_base_dir}/chroots"
 debci_chroot_name="debci-${debci_suite}-${debci_arch}"
 debci_chroot_path="${debci_chroots_dir}/${debci_suite}-${debci_arch}"
 
+debci_bin_dir="${debci_base_dir}/bin"
+
 debci_user=$(stat -c %U "${debci_data_basedir}")
 
 debci_backend=schroot # FIXME
 
-case "$PATH" in
-  "${debci_base_dir}/backends/{$debci_backend}:*")
-    true
-    ;;
-  *)
-    export PATH="${debci_base_dir}/backends/${debci_backend}:${PATH}"
-    ;;
-esac
+for dir in \
+  "${debci_base_dir}/backends/${debci_backend}" \
+  "${debci_bin_dir}"
+do
+  if ! (echo "${PATH}" | sed 's/:/\n/g' | grep -q "^${dir}\$"); then
+    PATH="${dir}:${PATH}"
+  fi
+done

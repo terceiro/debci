@@ -182,13 +182,14 @@ jQuery(function($) {
       $table.append($header);
 
       $.each(history, function(index, entry) {
-        var log = DATA_DIR + '/packages/' + pkg_dir + '/' + entry.date + ".log";
+        var run_id = (entry.run_id || entry.date);
+        var log = DATA_DIR + '/packages/' + pkg_dir + '/' + run_id  + ".log";
 
         var $row = $('<tr>');
         $row.append($('<td>').html(entry.version));
         $row.append($('<td>').html(entry.date));
         $row.append($('<td>').html(entry.duration_human));
-        $row.append($('<td>').html(entry.status));
+        $row.append($('<td>').html(entry.status).addClass(entry.status));
         $row.append($('<td>').html($('<a>').attr('href', log).html('view log')));
 
         $table.append($row);

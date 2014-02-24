@@ -6,7 +6,7 @@ base=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $base/lib/environment.sh
 . $base/lib/functions.sh
 
-date=$(date --rfc-3339=date)
+run_id=$(date --rfc-3339=date)
 
 global_tmp_dir=$(mktemp -d)
 cleanup() {
@@ -30,26 +30,42 @@ process_package() {
   status_dir=$(status_dir_for_package "$pkg")
   mkdir -p "$status_dir"
 
-  # setup log
-  log_file="${status_dir}/${date}.log"
+  last_status=$($debci_bin_dir/debci-status "$pkg")
 
-  if ! already_processed; then
-    if [ -t 1 ]; then
-      # stdout is a tty, show the output and also send it to the log file
-      do_process_package "$pkg" 2>&1 | tee "$log_file"
+  log_file="${status_dir}/${run_id}.log"
+  status_file="${status_dir}/${run_id}.json"
+
+  # process packages at most once a day -- except if the first attempt failed
+  # for some external reason
+  if [ -f "$status_file" ]; then
+    if [ "$last_status" = 'tmpfail' ]; then
+      # find a new run id
+      i=1
+      local orig_run_id="$run_id"
+      while [ -f "$status_file" ]; do
+        run_id="${orig_run_id}-${i}"
+        log_file="${status_dir}/${run_id}.log"
+        status_file="${status_dir}/${run_id}.json"
+        i=$(($i + 1))
+      done
     else
-      # running on background, just send everything to the log file
-      do_process_package "$pkg" > "$log_file" 2>&1
+      return 0 # no need to check for this package
     fi
-    if [ -s "$log_file" ]; then
-      ln -sf "${date}.log" "${status_dir}/latest.log"
-    fi
+  fi
+
+  if [ -t 1 ]; then
+    # stdout is a tty, show the output and also send it to the log file
+    do_process_package "$pkg" 2>&1 | tee "$log_file"
+  else
+    # running on background, just send everything to the log file
+    do_process_package "$pkg" > "$log_file" 2>&1
+  fi
+
+  if [ -s "$log_file" ]; then
+    ln -sf "${run_id}.log" "${status_dir}/latest.log"
   fi
 }
 
-already_processed() {
-  [ -f "$status_dir/${date}.json" ]
-}
 
 do_process_package() {
   pkg="$1"
@@ -100,34 +116,50 @@ do_process_package() {
   fi
 }
 
+has_reasons_to_run=''
+reason_for_run() {
+  local reason="$*"
+  if [ ! $has_reasons_to_run ]; then
+    banner "Triggers for test run"
+  fi
+  echo "$reason"
+  has_reasons_to_run=true
+}
+
+# XXX this function must not output anything unless there is a need for the
+# package to be processed.
 needs_processing() {
   check_dependencies "$pkg" > "$tmp_dir/dependencies.txt"
 
   run=1
 
+  if [ "$last_status" = 'tmpfail' ]; then
+    run=0
+    reason_for_run "∙ Retrying run since last attempt failed"
+  fi
+
   if [ -n "$cmdline_force" ]; then
     run=0
-    banner "Forced test run for $pkg"
-  else
-    if [ -f "${status_dir}/latest.json" -a "${status_dir}/latest.json" -ot "${one_month_ago}" ]; then
-      run=0
-      banner 'Forced test run after 1 month without one'
-    fi
+    reason_for_run "∙ Forced test run for $pkg"
+  fi
+
+  if [ -f "${status_dir}/latest.json" -a "${status_dir}/latest.json" -ot "${one_month_ago}" ]; then
+    run=0
+    reason_for_run '∙ Forcing test run after 1 month without one'
   fi
 
   if [ -f "$status_dir/dependencies.txt" ]; then
     if diff -u --label last-run/dependencies.txt "$status_dir/dependencies.txt" --label current-run/dependencies.txt "$tmp_dir/dependencies.txt" > "$tmp_dir/dependencies.diff"; then
-      # don't signal need to run test. Tests will only run if any of the above
-      # conditions match
-      true
+      : # no need to run tests
     else
       run=0
+      reason_for_run "∙ There were changes in the dependency chain since last test run"
       banner "Change in dependency chain for $pkg since last test run"
       cat "$tmp_dir/dependencies.diff"
     fi
   else
     run=0
-    banner "First test run for $pkg"
+    reason_for_run "∙ First test run for $pkg"
   fi
 
   if [ "$run" -eq 0 ]; then
@@ -167,18 +199,19 @@ record_status() {
   banner "Status: $status ($message); duration: ${duration_human}"
 
   # latest entry
-  cat > "$status_dir/${date}.json" <<EOF
+  cat > "${status_file}" <<EOF
 {
+  "run_id": "${run_id}",
   "package": "${pkg}",
   "version": "${version}",
-  "date": "${date}",
+  "date": "$(date --rfc-3339=seconds)",
   "status": "${status}",
   "duration_seconds": "${duration}",
   "duration_human": "${duration_human}",
   "message": "${message}"
 }
 EOF
-  ln -sf "${date}.json" "$status_dir/latest.json"
+  ln -sf "${run_id}.json" "$status_dir/latest.json"
 
   # TODO cleanup old entries (?)
 
@@ -186,7 +219,13 @@ EOF
   history_file="$tmp_dir/history.json"
   echo '[' > "$history_file"
   sep=''
-  for entry in $(find "$status_dir" -name '*.json' -and -not -name latest.json -and -not -name history.json | sort -r); do
+  entries=$(
+    find "$status_dir" -name '*.json' \
+      -and -not -name latest.json \
+      -and -not -name history.json \
+      | sort -Vr
+  )
+  for entry in $entries; do
     if [ -n "$sep" ]; then
       echo "$sep" >> "$history_file"
     fi
