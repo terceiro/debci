@@ -9,15 +9,16 @@ cd $base
 
 usage() {
   cat <<EOF
-usage: debci-status [OPTIONS] PACKAGE [PACKAGE ...]
+usage: debci-status [OPTIONS] [PACKAGE] [PACKAGE ...]
+
+When not using -a/--all, one or more PACKAGEs have to be specified.
 
 Options:
 
-  -a, -all      show status for all packages
-  -j, --json    show the full JSON status file
-  --help        show this usage message
-
-If PACKAGE is "all", the status of all packages will be listed.
+  -a, -all                  show status for all packages
+  -j, --json                show the full JSON status file
+  -f FIELD, --field FIELD   display FIELD from the status file (default: status)
+  --help                    show this usage message
 
 EOF
   exit "$1"
@@ -43,7 +44,7 @@ get_status() {
   local status_file=$(get_status_file "$pkg")
 
   if [ -f "$status_file" ]; then
-    perl -e "\$length = $length; "'use Data::Dumper; use JSON; @input = <>; $data = decode_json(join("", @input)); if ($length) { printf("%-${length}s %s\n", $data->{package}, $data->{status}) } else { printf("%s\n", $data->{status}) };' "$status_file"
+    perl -e "\$field = \"$field\"; \$length = $length; "'use Data::Dumper; use JSON; @input = <>; $data = decode_json(join("", @input)); if ($length) { printf("%-${length}s %s\n", $data->{package}, $data->{$field}) } else { printf("%s\n", $data->{$field}) };' "$status_file"
   else
     if [ "$length" -eq 0 ]; then
       echo "unknown"
@@ -56,6 +57,7 @@ get_status() {
 # defaults
 all=''
 json=''
+field='status'
 
 while true; do
   case "$1" in
@@ -66,6 +68,14 @@ while true; do
     --all|-a)
       all=true
       shift
+      ;;
+    --field|-f)
+      field="$2"
+      if [ ! $field ]; then
+        echo "Option -f/--field requires an argument!"
+        exit 1
+      fi
+      shift 2
       ;;
     --help)
       usage 0
@@ -86,8 +96,7 @@ if [ $all ]; then
 fi
 
 if [ $# -lt 1 ]; then
-  echo "usage: $0 [OPTIONS] PACKAGE"
-  exit 1
+  usage 1
 fi
 
 # JSON data
