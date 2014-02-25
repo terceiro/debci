@@ -83,9 +83,9 @@ report_status() {
         color=5 # should never get here though
         ;;
     esac
-    printf "%s \033[38;5;${color}m%s\033[m\n" "$pkg" "$status"
+    log "${pkg} \033[38;5;${color}m${status}\033[m"
   else
-    echo "$pkg" "$status"
+    log "$pkg" "$status"
   fi
 }
 

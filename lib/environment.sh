@@ -16,9 +16,11 @@ fi
 debci_suite=${debci_suite:-unstable}
 debci_arch=${debci_arch:-$(dpkg-architecture -qDEB_HOST_ARCH)}
 debci_backend=${debci_backend:-schroot}
+debci_data_basedir=${debci_data_basedir:-$(readlink -f "${debci_base_dir}/data")}
+debci_quiet="${debci_quiet:-false}"
 
-shared_short_options='s:a:b:h'
-shared_long_options='suite:,arch:,backend:,help'
+shared_short_options='s:a:b:d:hq'
+shared_long_options='suite:,arch:,backend:,data-dir:,help,quiet'
 
 usage_shared_options='Common options:
 
@@ -28,6 +30,9 @@ usage_shared_options='Common options:
                             (default: schroot)
   -s, --suite SUITE         selects suite to run tests for
                             (default: unstable)
+  -d DIR, --data-dir DIR    the directory in which debci will store its data,
+                            and where it will read from
+  -q, --quiet               prevents debci from producing any output on stdout
   --help                    show this usage message
 '
 
@@ -54,6 +59,12 @@ for arg in "$@"; do
       -b|--backend)
         var=debci_backend
         ;;
+      -d|--data-dir)
+        var=debci_data_basedir
+        ;;
+      -q|--quiet)
+        export debci_quiet=true
+        ;;
       -h|--help)
         usage "$usage_shared_options"
         exit 0
@@ -67,7 +78,6 @@ done
 
 alias prepare_args='while [ "$1" != '--' ]; do shift; done; shift'
 
-debci_data_basedir=$(readlink -f "${debci_base_dir}/data")
 debci_data_dir="${debci_data_basedir}/${debci_suite}-${debci_arch}"
 debci_packages_dir="${debci_data_dir}/packages"
 debci_status_dir="${debci_data_dir}/status"

@@ -17,40 +17,33 @@ Options:
                             not be tested if it was already tested today.
   -c N, --concurrency N     Test N packages in parallel
                             (default: 1)
-  -d, --debug               Turn debug mode on.
 
 $@
 EOF
 }
 
-short_options='c:df'
-long_options='concurrency:,force,debug'
+short_options='c:f'
+long_options='concurrency:,force'
 
 base=$(readlink -f $(dirname $(readlink -f $0))/..)
 cd $base
 . lib/environment.sh
-
-log() {
-  if [ $debug ]; then
-    echo 'debug:' "$@"
-  fi
-  logger -t debci -i "$@"
-}
+. lib/functions.sh
 
 run() {
-  if [ ! $debug ] && which update-testbed >/dev/null 2>/dev/null; then
-    log "Updating backend testbed"
+  if which update-testbed >/dev/null 2>/dev/null; then
+    log "I: Updating backend testbed"
     update-testbed
   else
-    log "Backend $debci_backend does not provide a way to update testbed!"
+    log "W: Backend $debci_backend does not provide a way to update testbed!"
   fi
-  log "Finished update of backend testbed"
+  log "I: Finished update of backend testbed"
 
-  log "start processing of all packages"
+  log "I: start processing of all packages"
 
   process_all_packages
 
-  log "finished processing of all packages"
+  log "I: finished processing of all packages"
 }
 
 process_all_packages() {
@@ -75,7 +68,6 @@ process_all_packages() {
 
 # default configuration
 concurrency=1
-debug=''
 force=''
 
 while true; do
@@ -85,10 +77,6 @@ while true; do
     -c|--concurrency)
       concurrency="$1"
       shift
-      ;;
-    -d|--debug)
-      debug=true
-      export debci_debug=true
       ;;
     -f|--force)
       force="$arg"

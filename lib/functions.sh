@@ -4,7 +4,6 @@ grep_packages() {
   grep-dctrl "$@" "$debci_chroot_path"/var/lib/apt/lists/*_debian_dists_${debci_suite}_main_binary-`dpkg-architecture -qDEB_HOST_ARCH`_Packages
 }
 
-
 grep_sources() {
   grep-dctrl "$@" "$debci_chroot_path"/var/lib/apt/lists/*_debian_dists_${debci_suite}_main_source_Sources
 }
@@ -23,7 +22,6 @@ check_version() {
   first_binary=$(list_binaries "$pkg" | head -n 1)
   grep_packages -n -s Version -F Package -X "$first_binary" | sort -V | tail -n 1
 }
-
 
 first_banner=
 banner() {
@@ -45,4 +43,11 @@ status_dir_for_package() {
   local pkg="$1"
   pkg_dir=$(echo "$pkg" | sed -e 's/\(\(lib\)\?.\).*/\1\/&/')
   echo "${debci_packages_dir}/${pkg_dir}"
+}
+
+
+log() {
+  if [ "$debci_quiet" = 'false' ]; then
+    echo "$@"
+  fi
 }
