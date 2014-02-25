@@ -24,6 +24,7 @@ generate_status_entry() {
 }
 EOF
   ln -sf "status/${date}.json" "${debci_data_dir}/status.json"
+  ln -sf "${date}.json" "${debci_status_dir}/latest.json"
 }
 
 generate_history() {
