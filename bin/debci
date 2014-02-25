@@ -47,13 +47,36 @@ run() {
   log "Finished update of backend testbed"
 
   log "start processing of all packages"
-  ./scripts/process-all-packages -j $concurrency
+
+  process_all_packages
+
   log "finished processing of all packages"
+}
+
+process_all_packages() {
+  local packages="$(./scripts/list-dep8-packages)"
+
+  local start=$(date +%s)
+
+  if [ "$concurrency" -eq 1 ]; then
+    for pkg in $packages; do
+      ./scripts/process-package $force "$pkg"
+    done
+  else
+    parallel -j "$concurrency" ./scripts/process-package -- $packages
+  fi
+
+  local finish=$(date +%s)
+
+  ./scripts/cleanup
+
+  ./scripts/generate-index $(($finish - $start))
 }
 
 # default configuration
 concurrency=1
 debug=''
+force=''
 
 while true; do
   arg="$1"
@@ -66,6 +89,9 @@ while true; do
     -d|--debug)
       debug=true
       export debci_debug=true
+      ;;
+    -f|--force)
+      force="$arg"
       ;;
     --)
       break

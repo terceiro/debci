@@ -23,7 +23,9 @@ Depends:
  libjson-perl,
  ${shlibs:Depends},
  ${misc:Depends},
-Recommends: apt-cacher-ng
+Recommends:
+ apt-cacher-ng,
+ moreutils,
 Description: continuous integration system for Debian
  debci will scan the Debian archive for packages that contain DEP-8 compliant
  test suites, and run those test suites whenever a new version of the package,
