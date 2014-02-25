@@ -1,0 +1,25 @@
+#!/usr/bin/ruby
+
+require 'json'
+require 'tmpdir'
+require 'fileutils'
+
+tmpdir = Dir.mktmpdir
+failed = 0
+
+system('./bin/debci', '--quiet', '--data-dir', tmpdir, '--backend', 'fake')
+
+Dir.glob(File.join(tmpdir, '**/*.json')).each do |file|
+  begin
+    JSON.parse(File.read(file))
+  rescue JSON::ParseError => exc
+    puts "#{file} contains invalid JSON: #{exc.message}"
+    failed += 1
+  end
+end
+
+FileUtils.rm_rf(tmpdir)
+exit(failed)
+
+# system('faketime', '+1day', './bin/debci', '--data-dir', $tmpdir, '--backend', 'fake');
+

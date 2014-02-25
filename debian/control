@@ -5,6 +5,8 @@ Maintainer: Antonio Terceiro <terceiro@debian.org>
 Build-Depends:
  debhelper (>= 9.0.0),
  devscripts,
+ ruby,
+ faketime,
 Standards-Version: 3.9.5
 Homepage: http://ci.debian.net/
 Vcs-Git: git://git.debian.org/users/terceiro/debci.git
