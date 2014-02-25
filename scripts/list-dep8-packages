@@ -12,11 +12,7 @@ list_packages() {
 
 whitelist="${debci_config_dir}/whitelist"
 if [ -f "${whitelist}" ]; then
-  for pkg in $(list_packages); do
-    if grep -q "^${pkg}\$" "${whitelist}"; then
-      echo "${pkg}"
-    fi
-  done
+  sed -e '/^#/d' "${whitelist}"
 else
   list_packages
 fi
