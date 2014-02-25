@@ -50,24 +50,44 @@ process_package() {
         i=$(($i + 1))
       done
     else
+      report_status 'skip'
       return 0 # no need to check for this package
     fi
   fi
 
-  if [ -t 1 -o "$debci_debug" ]; then
-    # stdout is a tty, or we are in debug mode; show the output and also send
-    # it to the log file
-    do_process_package 2>&1 | tee "$log_file"
-  else
-    # running on background, just send everything to the log file
-    do_process_package > "$log_file" 2>&1
-  fi
+  do_process_package > "$log_file" 2>&1
+  report_status "${status:-skip}"
 
   if [ -s "$log_file" ]; then
     ln -sf "${run_id}.log" "${status_dir}/latest.log"
   fi
 }
 
+report_status() {
+  local status="$1"
+  if [ -t 1 ]; then
+    case "$status" in
+      skip)
+        color=8
+        ;;
+      pass)
+        color=2
+        ;;
+      fail)
+        color=1
+        ;;
+      tmpfail)
+        color=3
+        ;;
+      *)
+        color=5 # should never get here though
+        ;;
+    esac
+    printf "%s \033[38;5;${color}m%s\033[m\n" "$pkg" "$status"
+  else
+    echo "$pkg" "$status"
+  fi
+}
 
 do_process_package() {
   if needs_processing; then
