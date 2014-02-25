@@ -33,7 +33,7 @@ public/jquery.flot.time.js:
 .PHONY: tags
 
 tags:
-	ctags -R --exclude=chroots .
+	ctags -R --exclude=chroots --exclude='public/jquery*' --exclude=public/bootstrap .
 
 clean:
 	$(RM) $(generated) tags
