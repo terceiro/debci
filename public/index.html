@@ -38,21 +38,32 @@
       <div id='main' class='container'>
 
         <div id='status'>
+
           <h1>Status</h1>
 
-          <h2>Pass/fail</h2>
-          <div class='chart' id='chart-pass-fail'>
-            <noscript>Can't plot chart without Javascript.</noscript>
+          <div class='row'>
+            <div class='col-sm-6'>
+              <h2>Pass/fail</h2>
+              <div class='chart' id='chart-pass-fail'>
+                <noscript>Can't plot chart without Javascript.</noscript>
+              </div>
+            </div>
+
+            <div class='col-sm-6'>
+              <h2>Pass percentage</h2>
+              <div class='chart' id='chart-pass-percentage'>
+                <noscript>Can't plot chart without Javascript.</noscript>
+              </div>
+            </div>
           </div>
 
-          <h2>Pass percentage</h2>
-          <div class='chart' id='chart-pass-percentage'>
-            <noscript>Can't plot chart without Javascript.</noscript>
-          </div>
-
-          <h2>Run duration</h2>
-          <div class='chart' id='chart-run-duration'>
-            <noscript>Can't plot chart without Javascript.</noscript>
+          <div class='row'>
+            <h2>Run duration</h2>
+            <div class='col-sm-6'>
+              <div class='chart' id='chart-run-duration'>
+                <noscript>Can't plot chart without Javascript.</noscript>
+              </div>
+            </div>
           </div>
 
         </div>

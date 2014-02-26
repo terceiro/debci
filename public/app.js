@@ -88,7 +88,8 @@ jQuery(function($) {
         colors: [ '#8ae234', '#ef2929', '#babdb6' ],
         legend: {
           show: true,
-
+          backgroundOpacity: 0.2,
+          position: 'sw'
         },
         xaxis: {
           mode: "time"
@@ -115,15 +116,17 @@ jQuery(function($) {
       });
 
       var max_hours = Math.round(max_duration / 3600) + 1;
+      var step = Math.ceil(max_hours / 10);
+      max_hours = step * 10;
       var duration_ticks = [];
-      for (var i = 0; i <= max_hours; i++) {
+      for (var i = 0; i <= max_hours; i = i + step) {
         duration_ticks.push([i * 3600, i + 'h']);
         console.log(i);
       }
       console.log(duration_ticks);
       $.plot('#chart-run-duration', [duration], {
         series: {
-          lines: {
+          bars: {
             show: true
           }
         },
