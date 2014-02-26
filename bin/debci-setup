@@ -29,7 +29,7 @@ create_chroot() {
 
   # use proxy
   if [ -n "$http_proxy" ]; then
-    echo "Acquire::http::Proxy \"$http_proxy\";" > /etc/apt/apt.conf.d/01proxy
+    echo "Acquire::http::Proxy \"$http_proxy\";" > "${debci_chroot_path}/etc/apt/apt.conf.d/01proxy"
   fi
 
   # do not download translations
