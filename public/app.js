@@ -46,13 +46,16 @@ jQuery(function($) {
       var pass = [];
       var fail = [];
       var tmpfail = [];
+      var pass_percentage = [];
       var duration = [];
       var max_duration = 0;
       $.each(data, function(index, entry) {
-        pass.push([Date.parse(entry.date), entry.pass]);
-        fail.push([Date.parse(entry.date), entry.fail]);
-        tmpfail.push([Date.parse(entry.date), entry.tmpfail || 0]);
-        duration.push([Date.parse(entry.date), entry.duration]);
+        var date = Date.parse(entry.date);
+        pass.push([date, entry.pass]);
+        fail.push([date, entry.fail]);
+        tmpfail.push([date, entry.tmpfail || 0]);
+        pass_percentage.push([date, entry.pass / entry.total]);
+        duration.push([date, entry.duration]);
         if (entry.duration && entry.duration > max_duration) {
           max_duration = entry.duration;
         }
@@ -92,6 +95,22 @@ jQuery(function($) {
         },
         yaxis: {
           min: 0
+        }
+      });
+
+      $.plot('#chart-pass-percentage', [pass_percentage], {
+        series: {
+          lines: {
+            show: true
+          }
+        },
+        colors: [ '#8ae234' ],
+        xaxis: {
+          mode: 'time',
+        },
+        yaxis: {
+          min: 0,
+          max: 1
         }
       });
 
