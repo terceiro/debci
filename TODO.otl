@@ -78,3 +78,5 @@
   : - <20140129011445.GA6418@debian.org>
 [_] ci.debian.net: also test packages from experimenal
 [X] ci.debian.net: upgrade autopkgtest to the version in jessie (2.7)
+[_] list largest log files
+[_] list longest duration between test jobs
