@@ -93,6 +93,7 @@ debci_chroot_path="${debci_chroots_dir}/${debci_suite}-${debci_arch}"
 debci_bin_dir="${debci_base_dir}/bin"
 
 debci_user=$(stat -c %U "${debci_data_basedir}")
+debci_uid=$(stat -c %u "${debci_data_basedir}")
 
 for dir in \
   "${debci_base_dir}/backends/${debci_backend}" \

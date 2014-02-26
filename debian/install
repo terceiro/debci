@@ -2,3 +2,4 @@ lib           usr/share/debci
 public        usr/share/debci
 scripts       usr/share/debci
 bin           usr/share/debci
+etc           /

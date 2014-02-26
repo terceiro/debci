@@ -30,4 +30,4 @@ cleanup() {
 }
 trap cleanup INT TERM EXIT
 
-adt-run "$package" --- adt-virt-schroot "${debci_chroot_name}"
+adt-run "$package" --user debci --- adt-virt-schroot "${debci_chroot_name}"

@@ -41,6 +41,16 @@ create_chroot() {
   # never ask for input
   echo 'debconf debconf/frontend select noninteractive' | chroot "$debci_chroot_path" debconf-set-selections
 
+  # create debci user inside the chroot, with the same UID as the debci user on
+  # the host system
+  chroot "$debci_chroot_path" adduser \
+    --system \
+    --disabled-password \
+    --shell /bin/sh \
+    --home /home/debci \
+    --uid "$debci_uid" \
+    debci
+
   chroot "$debci_chroot_path" apt-get update
   chroot "$debci_chroot_path" apt-get install -qy eatmydata
 }
@@ -55,6 +65,7 @@ setup_schroot() {
   cat > /etc/schroot/chroot.d/"${debci_chroot_name}" <<EOF
 [$debci_chroot_name]
 type=directory
+profile=debci
 description=debci $debci_suite/$debci_arch chroot
 directory=${debci_chroot_path}
 users=$user
@@ -65,6 +76,10 @@ root-groups=root
 union-type=aufs
 command-prefix=eatmydata
 EOF
+
+  if [ ! -e /etc/schroot/debci ]; then
+    ln -s "$debci_base_dir/etc/schroot/debci" /etc/schroot/debci
+  fi
 }
 
 setup_suite() {
