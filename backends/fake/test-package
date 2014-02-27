@@ -7,10 +7,10 @@ print("This will fail, pass or tmpfail randomly.\n");
 
 my $rand = int(rand(10));
 
-if ($rand <= 5) {
+if ($rand <= 7) {
   print("Passed :-)\n");
   exit(0);
-} elsif ($rand <= 7) {
+} elsif ($rand <= 8.5) {
   print("Failed :-(\n");
   exit(4);
 } else {
