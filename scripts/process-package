@@ -129,9 +129,9 @@ do_process_package() {
     finish_time=$(date +%s)
     duration=$(($finish_time - $start_time))
 
-    record_status
-
     banner "Finished: $(date -R)"
+    echo "∙ Status: $status ($message)"
+    record_status
   fi
 }
 
@@ -231,7 +231,8 @@ record_status() {
   minutes=$(( ($duration % 3600) / 60 ))
   seconds=$(( $duration - ($hours * 3600) - ($minutes * 60) ))
   duration_human="${hours}h ${minutes}m ${seconds}s"
-  banner "Status: $status ($message); duration: ${duration_human}"
+
+  echo "∙ Duration: ${duration_human}"
 
   local previous_status="${last_status}"
   if [ "${previous_status}" = 'tmpfail' ]; then
