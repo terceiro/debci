@@ -5,8 +5,18 @@ set -e
 base=$(readlink -f $(dirname $(readlink -f $0))/../..)
 cd $base
 . $base/lib/environment.sh
+. $base/lib/functions.sh
 
-echo "Updating $debci_chroot_name (may take a while)"
+log "I: Updating $debci_chroot_name (may take a while)"
 
-schroot --chroot "source:${debci_chroot_name}" --user root -- apt-get update || true
-DEBIAN_FRONTEND=noninteractive schroot --chroot "source:${debci_chroot_name}" --user root -- apt-get dist-upgrade -q -y
+schroot \
+  --chroot "source:${debci_chroot_name}" \
+  --user root \
+  --directory / \
+  -- apt-get update || true
+
+DEBIAN_FRONTEND=noninteractive schroot \
+  --chroot "source:${debci_chroot_name}" \
+  --directory / \
+  --user root \
+  -- apt-get dist-upgrade -q -y
