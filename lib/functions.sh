@@ -51,3 +51,7 @@ log() {
     echo "$@"
   fi
 }
+
+command_available() {
+  which "$1" >/dev/null 2>/dev/null
+}

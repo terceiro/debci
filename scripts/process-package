@@ -91,10 +91,8 @@ report_status() {
 
 do_process_package() {
   if needs_processing; then
-    banner "System information"
-    echo "Package versions:"
-    dpkg-query --show debci autopkgtest | indent
-    echo "Backend: $debci_backend"
+    check_platform
+    check_base_system
 
     banner "Started: $(date -R)"
 
@@ -190,6 +188,40 @@ needs_processing() {
   fi
 
   return $run
+}
+
+check_base_system() {
+
+  if command_available list-base-system; then
+    list-base-system > "${tmp_dir}/base.txt"
+  else
+    return 0
+  fi
+
+  if [ -f "${status_dir}/base.txt" ]; then
+    if diff \
+      --label previous-run/base.txt "${status_dir}/base.txt" \
+      --label current-run/base.txt "${tmp_dir}/base.txt" \
+        > "${tmp_dir}/base.diff"; then
+      :
+    else
+      cp "${tmp_dir}/base.txt" "${status_dir}/base.txt"
+      banner "Change in the base system since last run"
+      cat "${tmp_dir}/base.diff"
+    fi
+  else
+    cp "${tmp_dir}/base.txt" "${status_dir}/base.txt"
+  fi
+
+  banner "Base system"
+  cat "${status_dir}/base.txt"
+}
+
+check_platform() {
+    banner "Platform information"
+    echo "Package versions:"
+    dpkg-query --show debci autopkgtest | indent
+    echo "Backend: $debci_backend"
 }
 
 record_status() {
