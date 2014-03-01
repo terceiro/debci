@@ -1,21 +1,18 @@
-#!/usr/bin/perl
+#!/usr/bin/ruby
 
-use strict;
+puts "Not really running anything .."
+puts "This will fail, pass or tmpfail randomly."
 
-print("Not really running anything ...\n");
-print("This will fail, pass or tmpfail randomly.\n");
+r = rand()
 
-my $rand = int(rand(10));
-
-if ($rand <= 7) {
-  print("Passed :-)\n");
-  exit(0);
-} elsif ($rand <= 8.5) {
-  print("Failed :-(\n");
-  exit(4);
-} else {
-  print("Some error ocurred");
-  exit 16;
-}
-
+if (r <= 0.7)
+  puts "Passed :-)"
+  exit 0
+elsif (r <= 0.85)
+  puts "Failed :-("
+  exit 4
+else
+  puts "Some error ocurred"
+  exit 16
+end
 

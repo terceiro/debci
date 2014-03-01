@@ -7,8 +7,6 @@ Build-Depends:
  devscripts,
  ruby,
  faketime,
- perl,
- libjson-perl,
  shunit2,
 Standards-Version: 3.9.5
 Homepage: http://ci.debian.net/
@@ -24,8 +22,7 @@ Depends:
  autopkgtest (>= 2.7),
  dpkg-dev,
  schroot,
- perl,
- libjson-perl,
+ ruby,
  ${shlibs:Depends},
  ${misc:Depends},
 Recommends:

@@ -47,17 +47,18 @@ get_status() {
   local status_file=$(get_status_file "$pkg")
 
   if [ -f "$status_file" ]; then
-    perl -e "
-      \$field = \"$field\";
-      \$length = $length; "'
-      use JSON;
-      @input = <>;
-      $data = decode_json(join("", @input));
-      if ($length) {
-        printf("%-${length}s %s\n", $data->{package}, $data->{$field} || "unknown")
-      } else {
-        printf("%s\n", $data->{$field} || "unknown")
-      };' "$status_file"
+    ruby -e "
+      field = \"$field\";
+      length = $length;"'
+      require "json"
+      data = JSON.parse(ARGF.read)
+      if length > 0
+        printf("%-#{length}s", data["package"])
+        puts(data[field] || "unknown")
+      else
+        puts(data[field] || "unknown")
+      end
+      ' "$status_file"
   else
     if [ "$length" -eq 0 ]; then
       echo "unknown"
