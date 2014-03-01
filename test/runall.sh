@@ -1,15 +1,12 @@
 set -e
 
-base=$(readlink -f $(dirname $0)/..)
-
 report() {
   local color="$1"
-  local test_name="$2"
-  local result="$3"
+  local message="$2"
   if test -t 1; then
-    printf "\033[38;5;${color}m%-40s %s\033[m\n" "$test_name" "$result"
+    printf "\033[0;${color};40m%s\033[m\n" "$message"
   else
-    printf "%-40s %s\n" "$test_name" "$result"
+    echo "$message"
   fi
 }
 
@@ -19,15 +16,15 @@ failed=0
 for test_script in $(find 'test/' -type f -executable); do
   tests=$(($tests + 1))
   test_name=$(basename $test_script)
+  tmpdir=$(mktemp -d)
   if $test_script; then
-    report 2 $test_name PASS
+    report 32 "☑ $test_name passed all tests"
     passed=$(($passed + 1))
   else
-    report 1 $test_name FAIL
+    report 31 "☐ $test_name failed at least one test"
     failed=$(($failed + 1))
   fi
+  rm -rf "$tmpdir"
 done
 
-echo
-echo "$tests tests, $passed passed, $failed failed"
 exit $failed

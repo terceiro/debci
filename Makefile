@@ -8,7 +8,7 @@ generated = \
 all: $(generated)
 
 check:
-	sh test/runall.sh
+	@sh test/runall.sh
 
 test: check
 
