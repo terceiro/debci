@@ -7,7 +7,8 @@ require 'fileutils'
 tmpdir = Dir.mktmpdir
 failed = 0
 
-system('./bin/debci', '--quiet', '--data-dir', tmpdir, '--backend', 'fake')
+command = ['./bin/debci', '--quiet', '--data-dir', tmpdir, '--backend', 'fake']
+system(*command) or raise("Command " + command.inspect + ' failed!')
 
 Dir.glob(File.join(tmpdir, '**/*.json')).each do |file|
   begin
