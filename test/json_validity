@@ -12,7 +12,7 @@ system('./bin/debci', '--quiet', '--data-dir', tmpdir, '--backend', 'fake')
 Dir.glob(File.join(tmpdir, '**/*.json')).each do |file|
   begin
     JSON.parse(File.read(file))
-  rescue JSON::ParseError => exc
+  rescue JSON::ParserError => exc
     puts "#{file} contains invalid JSON: #{exc.message}"
     failed += 1
   end
