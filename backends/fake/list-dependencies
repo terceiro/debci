@@ -7,6 +7,19 @@ PROBABILITY = 0.2
 #
 # For packages without an existing list of dependencies, it will just create a
 # bogus one.
+#
+# The caller can also use the environment variable DEBCI_FAKE_DEPS to
+# manutacture the desired dependency list (useful for testing). The expected
+# format it "pkg1 v2|pkg2 v2|...|pkgN vN"
+#
+#
+
+if ENV["DEBCI_FAKE_DEPS"]
+  ENV["DEBCI_FAKE_DEPS"].split('|').each do |line|
+    puts line
+  end
+  exit
+end
 
 bin = File.dirname(__FILE__);
 

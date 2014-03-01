@@ -1,17 +1,28 @@
 #!/usr/bin/ruby
 
 puts "Not really running anything .."
-puts "This will fail, pass or tmpfail randomly."
+puts "This will fail, pass or tmpfail randomly. Passing is twice as probable as fail and tmpfail"
 
-r = rand()
+r = nil
+case ENV['DEBCI_FAKE_RESULT']
+when 'pass'
+  r = 0
+when 'fail'
+  r = 2
+when 'tmpfail'
+  r = 3
+else
+  r = rand(4)
+end
 
-if (r <= 0.7)
+case r
+when 0..1
   puts "Passed :-)"
   exit 0
-elsif (r <= 0.85)
+when 2
   puts "Failed :-("
   exit 4
-else
+when 3
   puts "Some error ocurred"
   exit 16
 end
