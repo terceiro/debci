@@ -1,23 +1,12 @@
-[X] use Packages/Sources indexes from chroot instead of the ones in the system
-[X] automate creation/maintainance of chroot
-[X] wrapper script to be called from cron
-  [X] updates chroot
-[X] automate deployment (package it)
-[X] unify status and log directories
-[X] arrange definitive^Winitial hosting
-  : ssh admin@ec2-54-200-162-39.us-west-2.compute.amazonaws.com
 [_] setup https
 [_] first adt-run execution will sometimes hang
   : waiting for gpg key generation due to low entropy
 [_] add timeout to guard against unbehaving test suites
 [_] support for blacklisting packages
   [_] blacklist pyzmq: for some reason it is crashing the entire run
-[X] add latest.log symlink as well
 [_] add a postrm to remove all traces on package purge
   [_] remove data directory
   [_] remove schroot setup
-[X] add option to force reprocessing all packages
-  : (say when the system itself changes)
 [_] figure out how to deal with test suites that leave garbage behind
   : schroot sessions are left behind. some of them I can just terminate if
   : `schroot --end-session --chroot $SESSIONID`; others won't go away because
@@ -25,14 +14,8 @@
   : leftover /usr/bin/gdomap daemon running (didn't figure out which package
   : leaves that yet).
   :
-  : maybe the cleanest solution is going full virtualization with either kvm
-  : or lxc instead of schroot.
-[X] add status chart showing run duration over time
-[X] take base system into consideration (?)
-  [X] re-process all packages when the base system changes
-    : maybe it's better to re-run all packages periodically instead
-  [X] store the state of the base system
-  [X] log differences in the base system
+  : maybe the cleanest solution is going full virtualization with kvm or at
+  : least a lxc container instead of chroots despite how good schroot is.
 [_] publish atom feeds
   [_] global status changes: daily, weekly, monthly
     : which packages started to tail their tests, which packages started
@@ -45,38 +28,11 @@
 [_] generate a dd-list of failing packages
 [_] graceful degradation for user with JS disabled
   : or generate only static HTML
-[X] record reason for the test being run
-  : <zack>      jcristau: does http://ci.debian.net/data/packages.json satisfy
-  :             release team need about knowing which packages pass/fail
-  :             autopkgtest?
-  : <jcristau>  i think we need to be able to know when something changed from
-  :             pass to fail
-  : <nthykier>  zack: terceiro: I think we need to know why the test was run as
-  :             well (ie. "new version of the package" vs. "retest because it
-  :             is an rdep of X, which got a new version")
-  : [...]
-  :             <nthykier> terceiro: zack: Re: the ci.debian.net output - I
-  :             already mentioned that I believed we needed the "blame" in the
-  :             output (i.e. which package is to blame for this failure).
-  :             Come to think of it, it will probably need to "remember" the
-  :             blame across fails so the blame is not reassigned)
 [_] procenv
   : <doko>  and could you run procenv after setting up the chroot?
   : <doko>  my experience is that a lot of time goes into setting up the
   :         environement and understanding the env
-[X] display autopkgtest version in the logs
-[X] add tmpfail result
-  : differentiate a problem in the environment (mirror failure, tested skipped
-  : because of missing features in testbed etc) from actual failures.
-  :
-  : add better handling of adt-run exit statuses
 [_] setup a BTS !!
-[X] move command line processing to lib/environment.sh
-[X] packaging: make debci $HOME a directory that _will_ be available inside the chroot
-  : for context see
-  : - <CAL6k_Ax+NWmZJY_km_Mfn6YOsb7mJDNEdii4PuxM4E2fZkB65g@mail.gmail.com>
-  : - <20140129011445.GA6418@debian.org>
 [_] ci.debian.net: also test packages from experimenal
-[X] ci.debian.net: upgrade autopkgtest to the version in jessie (2.7)
 [_] list largest log files
 [_] list longest duration between test jobs
