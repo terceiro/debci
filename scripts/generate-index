@@ -45,5 +45,5 @@ prepare_args
 generate_status_entry "$@"
 generate_history > "${debci_status_dir}/history.json"
 
-$base/bin/debci-status --all --json > "${debci_data_dir}/packages.json"
+$base/bin/debci-status --all --status-file > "${debci_data_dir}/packages.json"
 

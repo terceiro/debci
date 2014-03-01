@@ -2,8 +2,8 @@
 
 set -e
 
-short_options='jlf:'
-long_options='json,all,field:'
+short_options='jlf:s'
+long_options='json,all,field:,status-file'
 
 usage() {
   cat <<EOF
@@ -14,7 +14,8 @@ When not using -l/--all, one or more PACKAGEs have to be specified.
 Options:
 
   -l, -all                  show status for all packages
-  -j, --json                show the full JSON status file
+  -j, --json                output JSON
+  --status-file         outputs the full status file (implies --json)
   -f FIELD, --field FIELD   display FIELD from the status file (default: status)
 
 $@
@@ -48,16 +49,19 @@ get_status() {
 
   if [ -f "$status_file" ]; then
     ruby -e "
-      field = \"$field\";
-      length = $length;"'
+      field = \"$field\"
+      length = $length
+      json = $json"'
       require "json"
       data = JSON.parse(ARGF.read)
-      if length > 0
-        printf("%-#{length}s", data["package"])
-        puts(data[field] || "unknown")
-      else
-        puts(data[field] || "unknown")
+      value = data[field] || "unknown"
+      if json
+        value = JSON.dump(value)
       end
+      if length > 0
+        printf("%-#{length}s ", data["package"])
+      end
+      puts(value)
       ' "$status_file"
   else
     if [ "$length" -eq 0 ]; then
@@ -70,13 +74,14 @@ get_status() {
 
 # defaults
 all=''
-json=''
+json='false'
 field='status'
+status_file=''
 
 while true; do
   case "$1" in
     --json|-j)
-      json=true
+      json='true'
       shift
       ;;
     --all|-l)
@@ -86,6 +91,11 @@ while true; do
     --field|-f)
       field="$2"
       shift 2
+      ;;
+    --status-file)
+      status_file='true'
+      json='true'
+      shift
       ;;
     --)
       shift
@@ -113,7 +123,7 @@ fi
 
 # JSON data
 indent='cat'
-if [ $json ]; then
+if [ $status_file ]; then
   if [ $# -gt 1 ]; then
     echo "["
     indent=indent
