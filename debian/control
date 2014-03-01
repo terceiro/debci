@@ -13,6 +13,7 @@ Standards-Version: 3.9.5
 Homepage: http://ci.debian.net/
 Vcs-Git: git://git.debian.org/users/terceiro/debci.git
 Vcs-Browser: http://git.debian.org/?p=users/terceiro/debci.git;a=summary
+Testsuite: autopkgtest
 
 Package: debci
 Architecture: all

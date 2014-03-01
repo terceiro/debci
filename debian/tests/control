@@ -1,0 +1,5 @@
+Tests: smoke-test
+
+Tests: test-suite
+Depends: @, @builddeps@
+Restrictions: allow-stderr
