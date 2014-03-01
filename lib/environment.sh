@@ -90,7 +90,7 @@ debci_gnupg_dir="${debci_base_dir}/gnupg"
 
 debci_chroots_dir="${debci_base_dir}/chroots"
 debci_chroot_name="debci-${debci_suite}-${debci_arch}"
-debci_chroot_path="${debci_chroots_dir}/${debci_suite}-${debci_arch}"
+debci_chroot_path="${debci_chroots_dir}/${debci_chroot_name}"
 
 debci_bin_dir="${debci_base_dir}/bin"
 
