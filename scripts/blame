@@ -1,0 +1,40 @@
+#!/usr/bin/ruby
+
+require 'json'
+
+updated_only = false
+if ARGV.first == '--update'
+  ARGV.shift
+  updated_only = true
+end
+
+if ARGV.length != 1
+  puts "usage: blame [--update] DIFF"
+  exit 1
+end
+
+diff=ARGV.first
+
+updated_pkgs = []
+blame = []
+File.open(diff).lines.each do |line|
+  line.strip!
+  if updated_only && line =~ /^-/ && line !~ /^---/
+    blame_line = line.gsub(/^-/, '')
+    pkg = blame_line.split.first
+    updated_pkgs << pkg
+  end
+  if line =~ /^\+/ && line !~ /^\+\+\+/
+    blame_line = line.gsub(/\+/, '')
+    if updated_only
+      pkg = blame_line.split.first
+      if updated_pkgs.include?(pkg)
+        blame << blame_line
+      end
+    else
+      blame << blame_line
+    end
+  end
+end
+
+puts JSON.dump(blame)

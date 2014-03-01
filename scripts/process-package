@@ -129,6 +129,8 @@ do_process_package() {
     finish_time=$(date +%s)
     duration=$(($finish_time - $start_time))
 
+    check_blame
+
     banner "Finished: $(date -R)"
     echo "∙ Status: $status ($message)"
     record_status
@@ -224,6 +226,42 @@ check_platform() {
     echo "Backend: $debci_backend"
 }
 
+check_blame() {
+  blame="$(debci-status --field blame --json "$pkg")"
+  if [ "$blame" = 'unknown' ]; then
+    blame='[]'
+  fi
+  case "$status" in
+    pass)
+      blame='[]'
+      ;;
+    fail)
+      diff="${tmp_dir}/dependencies.diff"
+      case "${last_status}" in
+        pass)
+          # identify the packages to be blamed
+          blame="$($base/scripts/blame "${diff}")"
+          ;;
+        fail)
+          # update blamed packages wrt old dependencies, if any
+          # but don't add any new dependencies since they were't around when
+          # the test failed for the first time
+          if [ -f "${status_dir}/dependencies.diff" ]; then
+            combinediff "${status_dir}/dependencies.diff" "${diff}" > "${diff}.new"
+            mv "${diff}.new" "${diff}"
+            blame="$($base/scripts/blame --update "${diff}")"
+          fi
+          ;;
+      esac
+      ;;
+  esac
+
+  if [ -f "${tmp_dir}/dependencies.diff" ]; then
+    # record dependency chain diff from now to be used in future runs
+    cp "${tmp_dir}/dependencies.diff" "${status_dir}/dependencies.diff"
+  fi
+}
+
 record_status() {
   version=$(check_version "$pkg")
 
@@ -247,6 +285,7 @@ record_status() {
   "version": "${version}",
   "date": "$(date --rfc-3339=seconds)",
   "status": "${status}",
+  "blame": $blame,
   "previous_status": "${previous_status}",
   "duration_seconds": "${duration}",
   "duration_human": "${duration_human}",

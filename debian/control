@@ -8,6 +8,7 @@ Build-Depends:
  ruby,
  faketime,
  shunit2,
+ patchutils,
 Standards-Version: 3.9.5
 Homepage: http://ci.debian.net/
 Vcs-Git: git://git.debian.org/users/terceiro/debci.git
@@ -23,6 +24,7 @@ Depends:
  dpkg-dev,
  schroot,
  ruby,
+ patchutils,
  ${shlibs:Depends},
  ${misc:Depends},
 Recommends:
