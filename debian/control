@@ -5,10 +5,10 @@ Maintainer: Antonio Terceiro <terceiro@debian.org>
 Build-Depends:
  debhelper (>= 9.0.0),
  devscripts,
- ruby,
  faketime,
- shunit2,
  patchutils,
+ ruby,
+ shunit2
 Standards-Version: 3.9.5
 Homepage: http://ci.debian.net/
 Vcs-Git: git://git.debian.org/users/terceiro/debci.git
@@ -19,15 +19,16 @@ Package: debci
 Architecture: all
 Depends:
  adduser,
+ autopkgtest (>= 2.7),
+ debootstrap,
+ dpkg-dev,
  libjs-jquery,
  libjs-jquery-flot,
- autopkgtest (>= 2.7),
- dpkg-dev,
- schroot,
- ruby,
  patchutils,
- ${shlibs:Depends},
+ ruby,
+ schroot,
  ${misc:Depends},
+ ${shlibs:Depends}
 Recommends:
  apt-cacher-ng,
  moreutils,
