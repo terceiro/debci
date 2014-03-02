@@ -6,13 +6,26 @@ base=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $base/lib/environment.sh
 . $base/lib/functions.sh
 
-list_packages() {
+list_packages_from_archive() {
   grep_sources -n -s Package -F Testsuite -X autopkgtest | sort | uniq
 }
 
-whitelist="${debci_config_dir}/whitelist"
-if [ -f "${whitelist}" ]; then
-  sed -e '/^#/d' "${whitelist}"
+list_packages() {
+  whitelist="${debci_config_dir}/whitelist"
+  if [ -f "${whitelist}" ]; then
+    sed -e '/^#/d' "${whitelist}"
+  else
+    list_packages_from_archive
+  fi
+}
+
+blacklist="${debci_config_dir}/blacklist"
+if [ -e "$blacklist" ]; then
+  for pkg in $(list_packages); do
+    if ! grep -q "^\s*${pkg}\s*$" "$blacklist"; then
+      echo "$pkg"
+    fi
+  done
 else
   list_packages
 fi

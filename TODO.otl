@@ -3,6 +3,7 @@
   : waiting for gpg key generation due to low entropy
 [_] add timeout to guard against unbehaving test suites
 [_] support for blacklisting packages
+  [X] write the code
   [_] blacklist pyzmq: for some reason it is crashing the entire run
 [_] add a postrm to remove all traces on package purge
   [_] remove data directory
