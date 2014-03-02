@@ -2,39 +2,46 @@
 
 require 'json'
 
-updated_only = false
-if ARGV.first == '--update'
-  ARGV.shift
-  updated_only = true
-end
-
-if ARGV.length != 1
-  puts "usage: blame [--update] DIFF"
-  exit 1
-end
-
-diff=ARGV.first
-
-updated_pkgs = []
-blame = []
-File.open(diff).lines.each do |line|
-  line.strip!
-  if updated_only && line =~ /^-/ && line !~ /^---/
-    blame_line = line.gsub(/^-/, '')
-    pkg = blame_line.split.first
-    updated_pkgs << pkg
+class Blame
+  def data
+    @data ||= []
   end
-  if line =~ /^\+/ && line !~ /^\+\+\+/
-    blame_line = line.gsub(/\+/, '')
-    if updated_only
-      pkg = blame_line.split.first
-      if updated_pkgs.include?(pkg)
-        blame << blame_line
-      end
-    else
-      blame << blame_line
+end
+
+class BlameCreator < Blame
+  def <<(line)
+    data << line
+  end
+end
+
+class BlameUpdater < Blame
+  def initialize(*pkgs)
+    @pkgs = pkgs
+  end
+  def <<(line)
+    pkg, version = line.split
+    if @pkgs.include?(pkg)
+      data << line
     end
   end
 end
 
-puts JSON.dump(blame)
+if ARGV.length == 0
+  puts "usage: blame DIFF [pkg1 pkg2 ... pkgN]"
+  exit 1
+end
+
+diff = ARGV.shift
+if ARGV.length == 0
+  blame = BlameCreator.new
+else
+  blame = BlameUpdater.new(*ARGV)
+end
+
+File.open(diff).lines.each do |line|
+  if line =~ /^\+/ && line !~ /^\+\+\+/
+    blame << line.strip.gsub(/\+/, '')
+  end
+end
+
+puts JSON.dump(blame.data)

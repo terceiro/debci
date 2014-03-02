@@ -231,34 +231,36 @@ check_blame() {
   if [ "$blame" = 'unknown' ]; then
     blame='[]'
   fi
+
+  diff="${tmp_dir}/dependencies.diff"
+  previous_diff="${status_dir}/dependencies.diff"
+
   case "$status" in
     pass)
       blame='[]'
       ;;
     fail)
-      diff="${tmp_dir}/dependencies.diff"
       case "${last_status}" in
         pass)
           # identify the packages to be blamed
           blame="$($base/scripts/blame "${diff}")"
           ;;
         fail)
-          # update blamed packages wrt old dependencies, if any
-          # but don't add any new dependencies since they were't around when
-          # the test failed for the first time
-          if [ -f "${status_dir}/dependencies.diff" ]; then
-            combinediff "${status_dir}/dependencies.diff" "${diff}" > "${diff}.new"
-            mv "${diff}.new" "${diff}"
-            blame="$($base/scripts/blame --update "${diff}")"
-          fi
+          # update versions from the blamed packages, but not include new
+          # packages in the blame list. the file pointed to by $previous_diff
+          # is guaranteed to exit at this point
+          blamed_pkgs="$(debci-status --field blame "$pkg" | awk '{print($1)}')"
+          combinediff "${previous_diff}" "${diff}" > "${diff}.new"
+          mv "${diff}.new" "${diff}"
+          blame=$($base/scripts/blame "${diff}" $blamed_pkgs)
           ;;
       esac
       ;;
   esac
 
-  if [ -f "${tmp_dir}/dependencies.diff" ]; then
+  if [ -f "${diff}" ]; then
     # record dependency chain diff from now to be used in future runs
-    cp "${tmp_dir}/dependencies.diff" "${status_dir}/dependencies.diff"
+    cp "${diff}" "${previous_diff}"
   fi
 }
 

@@ -42,6 +42,13 @@ test_failing_test_blames_dependencies() {
   assertEquals 'foo 1.3.1' "$blame"
 }
 
+test_updated_dependency_of_already_failing_package_is_not_blamed() {
+  process foobar pass 'foo 1.2.3|bar 4.5.6'
+  process foobar fail 'foo 2.0.0|bar 4.5.6'
+  process foobar fail 'foo 2.0.0|bar 4.5.7'
+  assertEquals 'foo 2.0.0' "$(debci-status --field blame foobar)"
+}
+
 test_new_dependency_of_already_failing_package_is_not_blamed() {
   process foobar pass 'foo 1.2.3'
   process foobar fail 'foo 1.2.4'
