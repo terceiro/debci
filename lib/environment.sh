@@ -19,13 +19,16 @@ debci_suite=${debci_suite:-unstable}
 debci_arch=${debci_arch:-$(dpkg-architecture -qDEB_HOST_ARCH)}
 debci_backend=${debci_backend:-schroot}
 debci_data_basedir=${debci_data_basedir:-$(readlink -f "${debci_base_dir}/data")}
+debci_config_dir="${debci_config_dir:-${debci_base_dir}/config}"
 debci_quiet="${debci_quiet:-false}"
 
-shared_short_options='s:a:b:d:hq'
-shared_long_options='suite:,arch:,backend:,data-dir:,help,quiet'
+shared_short_options='c:s:a:b:d:hq'
+shared_long_options='config:,suite:,arch:,backend:,data-dir:,help,quiet'
 
 usage_shared_options='Common options:
 
+  -c DIR, --config DIR      uses DIR as the debci configuration directory
+                            (default: /etc/debci)
   -a, --arch ARCH           selects the architecture to run tests for
                             (default: host architecture)
   -n, --backend BACKEND     selects the backends to run tests on
@@ -52,6 +55,9 @@ for arg in "$@"; do
     var=''
   else
     case "$arg" in
+      -c|--config)
+        var=debci_config_dir
+        ;;
       -s|--suite)
         var=debci_suite
         ;;
@@ -83,8 +89,6 @@ alias prepare_args='while [ "$1" != '--' ]; do shift; done; shift'
 debci_data_dir="${debci_data_basedir}/${debci_suite}-${debci_arch}"
 debci_packages_dir="${debci_data_dir}/packages"
 debci_status_dir="${debci_data_dir}/status"
-
-debci_config_dir="${debci_base_dir}/config"
 
 debci_gnupg_dir="${debci_base_dir}/gnupg"
 

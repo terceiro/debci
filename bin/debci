@@ -15,15 +15,15 @@ Options:
   -f, --force               Force test run on packages, even if no package in
                             its dependency chain changed. A package will still
                             not be tested if it was already tested today.
-  -c N, --concurrency N     Test N packages in parallel
+  -j N                      Test at most N packages in parallel
                             (default: 1)
 
 $@
 EOF
 }
 
-short_options='c:f'
-long_options='concurrency:,force'
+short_options='j:f'
+long_options='force'
 
 base=$(readlink -f $(dirname $(readlink -f $0))/..)
 cd $base
@@ -51,12 +51,12 @@ process_all_packages() {
 
   local start=$(date +%s)
 
-  if [ "$concurrency" -eq 1 ]; then
+  if [ "$maxjobs" -eq 1 ]; then
     for pkg in $packages; do
       ./scripts/process-package $force "$pkg"
     done
   else
-    parallel -j "$concurrency" ./scripts/process-package -- $packages
+    parallel -j "$maxjobs" ./scripts/process-package -- $packages
   fi
 
   local finish=$(date +%s)
@@ -67,15 +67,15 @@ process_all_packages() {
 }
 
 # default configuration
-concurrency=1
+maxjobs=1
 force=''
 
 while true; do
   arg="$1"
   shift
   case "$arg" in
-    -c|--concurrency)
-      concurrency="$1"
+    -j)
+      maxjobs="$1"
       shift
       ;;
     -f|--force)
