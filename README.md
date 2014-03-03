@@ -9,26 +9,49 @@ the execution of automated tests against packages in the
 TODO. For now look at
 [source](http://anonscm.debian.org/gitweb/?p=users/terceiro/debci.git;a=summary)
 
-## Setting up a development instance
+## Setting up a development environment
 
 
 Install the dependencies (look at debian/control). You probably also want to
-install `apt-cacher-ng` to cache package downloads
+install a few other packages:
 
-Run the following command as root:
+* `apt-cacher-ng` to cache package downloads.
+* `moreutils` if you want to test the supporting for testing packages in parallel.
+* `lighttpd` to run the web interface (see below for more information)
+  * Note: you might want to not have lighttpd running as a daemon on your system.
 
-    $ ./bin/debci-setup
+After having the dependencies installed, the first step is to set up the test
+environment. To do that, you need to run the following command (which needs
+root permissions):
 
-Restrict the list of packages you want to run for testing by creating
-`config/whitelist` containing one package per line. You will usually want to
-test this with small packages that have a small set of dependencies ;-).
+    $ sudo ./bin/debci-setup
 
-Setup a web server pointing to the `public/` directory inside the sources so
-you can view the web interface.
+If you run debci right now, it would run the tests for **every package** in
+Debian, and you don't want that for a development environment. To restrict
+debci to a list of packages, create a file named `whitelist` inside the
+`config` directory, containing one package name per line. Here is an example
+with packages whose tests are pretty fast:
 
-To run debci:
+```
+$ cat config/whitelist
+ruby
+rubygems-integration
+ruby-ffi
+```
+
+You might want to test with other packages, that's fine. Just take into
+consideration that the more packages you have, the longer debci will take to
+finish a run.
+
+Now you are ready to actually run debci:
 
     $ ./bin/debci
+
+To visualize the web interface, follow the following steps:
+
+* Run `make` as your regular user account at the root of debci sources
+* Run `./tools/server.sh`
+* Browse to [http://localhost:8888/](http://localhost:8888/)
 
 ## Contact
 
