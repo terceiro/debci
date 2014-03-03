@@ -11,9 +11,8 @@ TODO. For now look at
 
 ## Setting up a development environment
 
-
-Install the dependencies (look at debian/control). You probably also want to
-install a few other packages:
+Install the dependencies and build dependencies (look at debian/control). You
+probably also want to install a few other packages:
 
 * `apt-cacher-ng` to cache package downloads.
 * `moreutils` if you want to test the supporting for testing packages in parallel.
@@ -34,9 +33,10 @@ with packages whose tests are pretty fast:
 
 ```
 $ cat config/whitelist
-ruby
+ruby-defaults
 rubygems-integration
 ruby-ffi
+rake
 ```
 
 You might want to test with other packages, that's fine. Just take into
@@ -49,9 +49,17 @@ Now you are ready to actually run debci:
 
 To visualize the web interface, follow the following steps:
 
-* Run `make` as your regular user account at the root of debci sources
-* Run `./tools/server.sh`
-* Browse to [http://localhost:8888/](http://localhost:8888/)
+    $ make
+    $ ./tools/server.sh
+
+Now browse to [http://localhost:8888/](http://localhost:8888/)
+
+If you think the web interface looks empty, it is because a single debci run
+does not provide enough data to work with.  You might want to generate some
+fake data so the web interface will look a lot nicer:
+
+    $ ./tools/gen-fake-data.sh
+
 
 ## Contact
 
