@@ -1,4 +1,4 @@
-# Debian continuou integration
+# Debian continuous integration
 
 THE [Debian continuous integration](.) is an automated system that coordinates
 the execution of automated tests against packages in the
