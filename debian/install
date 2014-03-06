@@ -3,3 +3,4 @@ etc           /
 lib           usr/share/debci
 public        usr/share/debci
 scripts       usr/share/debci
+backends      usr/share/debci
