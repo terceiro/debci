@@ -4,7 +4,7 @@ set -e
 
 debci_status_dir=$(sh -c '. lib/environment.sh ; echo $debci_status_dir')
 
-for n in $(seq 0 15); do
+for n in $(seq 1 15); do
   faketime +${n}days ./bin/debci --backend fake -j 2
   # fake the duration with a "random" number of seconds up to 10h
   status_file="${debci_status_dir}/latest.json"
