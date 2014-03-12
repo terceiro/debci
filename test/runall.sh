@@ -1,4 +1,4 @@
-set -e
+set -eu
 
 report() {
   local color="$1"

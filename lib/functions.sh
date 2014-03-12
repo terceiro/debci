@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -eu
 
 grep_packages() {
   grep-dctrl "$@" "$debci_chroot_path"/var/lib/apt/lists/*_debian_dists_${debci_suite}_main_binary-`dpkg-architecture -qDEB_HOST_ARCH`_Packages

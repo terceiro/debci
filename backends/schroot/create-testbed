@@ -1,5 +1,5 @@
 #!/bin/sh
 
-set -e
+set -eu
 
 echo "I: schroot backend already set up by the debci core"

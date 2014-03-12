@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -eu
 
 debci_status_dir=$(sh -c '. lib/environment.sh ; echo $debci_status_dir')
 

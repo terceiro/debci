@@ -5,8 +5,8 @@ check_shell_usage() {
 
   failed_checks=0
 
-  if grep -q '#!/bin/sh' $script && ! grep -q 'set -e' $script; then
-    echo "$script: no 'set -e'!'"
+  if grep -q '#!/bin/sh' $script && ! grep -q 'set -eu' $script; then
+    echo "$script: no 'set -eu'!'"
     failed_checks=$(($failed_checks + 1))
   fi
 

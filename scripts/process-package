@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -eu
 
 short_options='f'
 long_options='force'
@@ -101,7 +101,7 @@ do_process_package() {
     set +e
     test-package "$pkg"
     exit_status=$?
-    set -e
+    set -eu
 
     # ref: adt-run(1)
     case "$exit_status" in
