@@ -1,8 +1,30 @@
-debci (0.4.1) UNRELEASED; urgency=medium
+debci (0.5.0) unstable; urgency=medium
 
-  * 
+  * Initial upload to Debian (Closes: #736416)
+  * Updated documentation
+    - instructions for setting up a development instance.
+    - Point traffic at debian-qa
+  * modularize behaviour of a backend
+    - existing implementation extracted as the `schroot` backend
+    - added a `fake` backend that helps with testing
+  * schroot backend optimization: always run with eatmydata
+  * Add blame support: when tests of a package start failing after some
+    dependencies were updated, those dependencies will be "blamed" for the
+    failure.
+  * improvements on autopkgtest usage:
+    - debci now uses the autopkgtest support for downloading the source
+      package instead of downloading manually and them calling adt-run
+    - debci now differentiates between the non-zero adt-run exit codes, so
+      that skipped tests will not count as failures. Also added a `tmpfail`
+      status, to be used when for some reason the tests could not be run for
+      some external failure (e.g. mirror failures, broken dependencies etc).
+  * debci now keeps track of the base system. Tests will be run again every 2
+    weeks even if no explicit dependency changes. Test logs will also display
+    the changes in the base system since the last run.
+  * Add DEP-8 support to debci itself \o/
+  * extra safety: add `set -u` to all shell scripts
 
- -- Antonio Terceiro <terceiro@debian.org>  Wed, 29 Jan 2014 17:39:03 -0300
+ -- Antonio Terceiro <terceiro@debian.org>  Thu, 13 Mar 2014 05:34:16 +0400
 
 debci (0.4.0) unstable; urgency=medium
 
