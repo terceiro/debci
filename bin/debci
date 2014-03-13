@@ -25,8 +25,8 @@ EOF
 short_options='j:f'
 long_options='force'
 
-base=$(readlink -f $(dirname $(readlink -f $0))/..)
-cd $base
+debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
+cd $debci_base_dir
 . lib/environment.sh
 . lib/functions.sh
 
@@ -47,23 +47,23 @@ run() {
 }
 
 process_all_packages() {
-  local packages="$(./scripts/list-dep8-packages)"
+  local packages="$(debci-list-packages)"
 
   local start=$(date +%s)
 
   if [ "$maxjobs" -eq 1 ]; then
     for pkg in $packages; do
-      ./scripts/process-package $force "$pkg"
+      debci-test $force "$pkg"
     done
   else
-    parallel -j "$maxjobs" ./scripts/process-package -- $packages
+    parallel -j "$maxjobs" debci-test -- $packages
   fi
 
   local finish=$(date +%s)
 
-  ./scripts/cleanup
+  $debci_base_dir/scripts/cleanup
 
-  ./scripts/generate-index $(($finish - $start))
+  $debci_base_dir/scripts/generate-index $(($finish - $start))
 }
 
 # default configuration

@@ -5,9 +5,20 @@ require 'tmpdir'
 require 'fileutils'
 
 tmpdir = Dir.mktmpdir
+datadir = File.join(tmpdir, 'data')
+FileUtils.mkdir_p(datadir)
+configdir = File.join(tmpdir, 'config')
+FileUtils.mkdir_p(configdir)
+
+File.open(File.join(configdir, 'whitelist'), 'w') do |f|
+  f.puts 'ruby'
+  f.puts 'ruby-ffi'
+  f.puts 'rubygems-integration'
+end
+
 failed = 0
 
-command = ['./bin/debci', '--quiet', '--data-dir', tmpdir, '--backend', 'fake']
+command = ['debci', '--quiet', '--data-dir', datadir, '--backend', 'fake', '--config', configdir]
 system(*command) or raise("Command " + command.inspect + ' failed!')
 
 Dir.glob(File.join(tmpdir, '**/*.json')).each do |file|

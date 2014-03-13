@@ -1,5 +1,11 @@
 #!/bin/sh
 
+set -e
+
 exec 2>&1
 
-make check
+tree=$(pwd)
+
+cd $ADTTMP
+
+sh $tree/test/runall.sh

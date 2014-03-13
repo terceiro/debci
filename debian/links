@@ -1,7 +1,10 @@
+#!/bin/sh
+
+cat <<EOF
 var/lib/debci/data                           usr/share/debci/data
 var/lib/debci/chroots                        usr/share/debci/chroots
 var/lib/debci/gnupg                          usr/share/debci/gnupg
 etc/debci                                    usr/share/debci/config
-usr/share/debci/bin/debci                    usr/bin/debci
-usr/share/debci/bin/debci-status             usr/bin/debci-status
-usr/share/debci/bin/debci-setup              usr/sbin/debci-setup
+EOF
+
+find bin/ -type f -executable | sed -e 's#bin/\(.*\)#usr/share/debci/bin/\1 usr/bin/\1#'

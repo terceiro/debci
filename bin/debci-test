@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -eu
+
+export debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
+. $debci_base_dir/lib/environment.sh
+. $debci_base_dir/lib/functions.sh
+
+$debci_base_dir/scripts/process-package "$@"
