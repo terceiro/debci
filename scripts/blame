@@ -3,40 +3,43 @@
 require 'json'
 
 class Blame
+  def initialize(pkg, *deps)
+    @pkg = pkg
+    @pkg_updated = false
+    @deps = deps
+  end
   def data
     @data ||= []
   end
-end
-
-class BlameCreator < Blame
   def <<(line)
-    data << line
+    dep, version = line.split
+    if dep == @pkg
+      @pkg_updated = true
+    else
+      if @deps.empty? || @deps.include?(dep)
+        data << line
+      end
+    end
+    self
   end
-end
 
-class BlameUpdater < Blame
-  def initialize(*pkgs)
-    @pkgs = pkgs
-  end
-  def <<(line)
-    pkg, version = line.split
-    if @pkgs.include?(pkg)
-      data << line
+  def to_json
+    if @pkg_updated
+      '[]'
+    else
+      JSON.dump(data)
     end
   end
 end
 
-if ARGV.length == 0
-  puts "usage: blame DIFF [pkg1 pkg2 ... pkgN]"
+if ARGV.length < 2
+  puts "usage: blame DIFF pkg [pkg1 pkg2 ... pkgN]"
   exit 1
 end
 
 diff = ARGV.shift
-if ARGV.length == 0
-  blame = BlameCreator.new
-else
-  blame = BlameUpdater.new(*ARGV)
-end
+pkg = ARGV.shift
+blame = Blame.new(pkg, *ARGV)
 
 File.open(diff).lines.each do |line|
   if line =~ /^\+/ && line !~ /^\+\+\+/
@@ -44,4 +47,4 @@ File.open(diff).lines.each do |line|
   end
 end
 
-puts JSON.dump(blame.data)
+puts blame.to_json

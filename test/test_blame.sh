@@ -70,4 +70,16 @@ test_blame_updated_dependency() {
   assertEquals 'foo 1.2.5' "$(debci-status --field blame foobar)"
 }
 
+test_updated_dependencies_dont_get_blamed_when_package_is_also_updated() {
+  process foobar pass 'foobar 1.0|foo 1.0|bar 1.0'
+  process foobar fail 'foobar 1.1|foo 1.1|bar 1.1'
+  assertEquals '' "$(debci-status --field blame foobar)"
+}
+
+test_package_is_not_blamed_for_its_own_failure() {
+  process foobar pass 'foobar 1.0|foo 1.0|bar 1.0'
+  process foobar fail 'foobar 1.1|foo 1.0|bar 1.0'
+  assertEquals '' "$(debci-status --field blame foobar)"
+}
+
 . shunit2

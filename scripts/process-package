@@ -243,7 +243,7 @@ check_blame() {
       case "${last_status}" in
         pass)
           # identify the packages to be blamed
-          blame="$($base/scripts/blame "${diff}")"
+          blame="$($base/scripts/blame "${diff}" "$pkg")"
           ;;
         fail)
           # update versions from the blamed packages, but not include new
@@ -252,7 +252,7 @@ check_blame() {
           blamed_pkgs="$(debci-status --field blame "$pkg" | awk '{print($1)}')"
           combinediff "${previous_diff}" "${diff}" > "${diff}.new"
           mv "${diff}.new" "${diff}"
-          blame=$($base/scripts/blame "${diff}" $blamed_pkgs)
+          blame=$($base/scripts/blame "${diff}" "$pkg" $blamed_pkgs)
           ;;
       esac
       ;;
