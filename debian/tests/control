@@ -1,3 +1,5 @@
 Tests: test-suite
-Depends: @, @builddeps@
+Depends: @, shunit2, faketime
 Restrictions: allow-stderr
+
+# vim: ft=debcontrol
