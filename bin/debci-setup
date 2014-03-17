@@ -15,6 +15,7 @@ fi
 create_chroot() {
   echo "I: creating $debci_suite chroot (may take a while)"
 
+  http_proxy="${http_proxy:-}"
   if [ -z "$http_proxy" ]; then
     # detect a local apt-cacher-ng cache running.  10.0.2.2 = default IP
     # assigned to host system as seen from a kvm/virtualbox virtual machine
