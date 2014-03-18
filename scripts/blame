@@ -27,7 +27,7 @@ class Blame
     if @pkg_updated
       '[]'
     else
-      JSON.dump(data)
+      data.to_json
     end
   end
 end
