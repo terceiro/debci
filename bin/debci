@@ -56,7 +56,7 @@ process_all_packages() {
       debci-test $force "$pkg"
     done
   else
-    parallel -j "$maxjobs" debci-test -- $packages
+    parallel -j "$maxjobs" debci-test $force -- $packages
   fi
 
   local finish=$(date +%s)
