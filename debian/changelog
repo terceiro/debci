@@ -1,6 +1,8 @@
 debci (0.5.0) unstable; urgency=medium
 
   * Initial upload to Debian (Closes: #736416)
+    The API is not set yet, but I am uploading anyway to allow for early
+    testing, improve contribution opportunities, to get a BTS etc.
   * Updated documentation
     - instructions for setting up a development instance.
     - Point traffic at debian-qa
