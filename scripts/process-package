@@ -249,10 +249,12 @@ check_blame() {
           # update versions from the blamed packages, but not include new
           # packages in the blame list. the file pointed to by $previous_diff
           # is guaranteed to exit at this point
-          blamed_pkgs="$(debci-status --field blame "$pkg" | awk '{print($1)}')"
-          combinediff "${previous_diff}" "${diff}" > "${diff}.new"
-          mv "${diff}.new" "${diff}"
-          blame=$($base/scripts/blame "${diff}" "$pkg" $blamed_pkgs)
+          if [ -e "${previous_diff}" ]; then
+            blamed_pkgs="$(debci-status --field blame "$pkg" | awk '{print($1)}')"
+            combinediff "${previous_diff}" "${diff}" > "${diff}.new"
+            mv "${diff}.new" "${diff}"
+            blame=$($base/scripts/blame "${diff}" "$pkg" $blamed_pkgs)
+          fi
           ;;
       esac
       ;;
