@@ -28,6 +28,7 @@ Depends:
  patchutils,
  ruby,
  schroot,
+ dctrl-tools,
  ${misc:Depends},
  ${shlibs:Depends}
 Recommends:

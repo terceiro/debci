@@ -1,3 +1,9 @@
+debci (0.5.1) UNRELEASED; urgency=medium
+
+  * Add missing dctrl-tools dependency.
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 20 Mar 2014 18:32:48 +0100
+
 debci (0.5.0) unstable; urgency=medium
 
   * Initial upload to Debian (Closes: #736416)
