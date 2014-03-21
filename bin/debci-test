@@ -1,5 +1,13 @@
 #!/bin/sh
 
+usage() {
+  cat <<EOF
+usage: debci-test [OPTIONS] srcpkg
+
+$@
+EOF
+}
+
 set -eu
 
 export debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)

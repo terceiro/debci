@@ -5,6 +5,8 @@ debci (0.5.1) UNRELEASED; urgency=medium
     dependency on dpkg-dev and the (undeclared) dependency on gcc.
   * Fix grep_packages() to actually use the configured architecture instead of
     the host architecture.
+  * Add --help output to debci-{list-packages,setup,test}, instead of failing
+    with an "usage: not found" error.
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 20 Mar 2014 18:32:48 +0100
 
