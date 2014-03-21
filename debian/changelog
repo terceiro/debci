@@ -1,6 +1,10 @@
 debci (0.5.1) UNRELEASED; urgency=medium
 
   * Add missing dctrl-tools dependency.
+  * Use "dpkg --print-architecture" instead of dpkg-architecture, to avoid a
+    dependency on dpkg-dev and the (undeclared) dependency on gcc.
+  * Fix grep_packages() to actually use the configured architecture instead of
+    the host architecture.
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 20 Mar 2014 18:32:48 +0100
 

@@ -16,7 +16,7 @@ fi
 
 # default values
 debci_suite=${debci_suite:-unstable}
-debci_arch=${debci_arch:-$(dpkg-architecture -qDEB_HOST_ARCH)}
+debci_arch=${debci_arch:-$(dpkg --print-architecture)}
 debci_backend=${debci_backend:-schroot}
 debci_data_basedir=${debci_data_basedir:-$(readlink -f "${debci_base_dir}/data")}
 debci_config_dir="${debci_config_dir:-${debci_base_dir}/config}"

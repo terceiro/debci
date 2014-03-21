@@ -22,7 +22,6 @@ Depends:
  adduser,
  autopkgtest (>= 2.7),
  debootstrap,
- dpkg-dev,
  libjs-jquery,
  libjs-jquery-flot,
  patchutils,
