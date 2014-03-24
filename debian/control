@@ -12,8 +12,8 @@ Build-Depends:
  shunit2
 Standards-Version: 3.9.5
 Homepage: http://ci.debian.net/
-Vcs-Git: git://git.debian.org/users/terceiro/debci.git
-Vcs-Browser: http://git.debian.org/?p=users/terceiro/debci.git;a=summary
+Vcs-Git: git://anonscm.debian.org/collab-maint/debci.git
+Vcs-Browser: http://anonscm.debian.org/gitweb?p=collab-maint/debci.git;a=summary
 Testsuite: autopkgtest
 
 Package: debci
