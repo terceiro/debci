@@ -1,4 +1,4 @@
-debci (0.5.0) unstable; urgency=medium
+debci (0.5.0) UNRELEASED; urgency=medium
 
   [ Martin Pitt ]
   * Add missing dctrl-tools dependency.
