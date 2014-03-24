@@ -3,3 +3,4 @@ tar-ignore = chroots
 tar-ignore = gnupg
 tar-ignore = config
 tar-ignore = tags
+tar-ignore = .git
