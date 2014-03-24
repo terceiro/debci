@@ -1,4 +1,4 @@
-debci (0.5.0) UNRELEASED; urgency=medium
+debci (0.5.0) unstable; urgency=medium
 
   [ Martin Pitt ]
   * Add missing dctrl-tools dependency.
@@ -36,7 +36,7 @@ debci (0.5.0) UNRELEASED; urgency=medium
   * Add DEP-8 support to debci itself \o/
   * extra safety: add `set -u` to all shell scripts
 
- -- Antonio Terceiro <terceiro@debian.org>  Thu, 13 Mar 2014 05:34:16 +0400
+ -- Antonio Terceiro <terceiro@debian.org>  Mon, 24 Mar 2014 20:06:56 -0300
 
 debci (0.4.0) unstable; urgency=medium
 
