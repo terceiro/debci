@@ -3,6 +3,6 @@
 /sys            /sys            none    rw,bind         0       0
 /dev            /dev            none    rw,bind         0       0
 /dev/pts        /dev/pts        none    rw,bind         0       0
-/tmp            /tmp            none    rw,bind         0       0
+tmpfs           /dev/shm        tmpfs   defaults        0       0
 
 # NOT bind mounting /home on purpose

@@ -1,3 +1,11 @@
+debci (0.5.1) UNRELEASED; urgency=medium
+
+  * etc/schroot/debci/fstab: improve schroot isolation
+    - do not share /tmp with host
+    - mount tmpfs at /dev/shm as quite some software needs it
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 30 Mar 2014 15:18:11 -0300
+
 debci (0.5.0) unstable; urgency=medium
 
   [ Martin Pitt ]
