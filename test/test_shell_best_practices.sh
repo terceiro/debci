@@ -1,3 +1,8 @@
+if ! which checkbashisms >/dev/null 2>&1; then
+  echo "SKIP: checkbashisms not available"
+  exit 0
+fi
+
 base=$(readlink -f $(dirname $0)/..)
 
 check_shell_usage() {

@@ -3,6 +3,10 @@ debci (0.5.1) UNRELEASED; urgency=medium
   * etc/schroot/debci/fstab: improve schroot isolation
     - do not share /tmp with host
     - mount tmpfs at /dev/shm as quite some software needs it
+  * test_shell_best_practices.sh: skip when checkbashisms is not available.
+    - You don't want to install devscripts and all its dependencies when
+      running as-installed tests
+    - checking for best practices is only useful in development environments.
 
  -- Antonio Terceiro <terceiro@debian.org>  Sun, 30 Mar 2014 15:18:11 -0300
 
