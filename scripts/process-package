@@ -201,7 +201,7 @@ check_base_system() {
   fi
 
   if [ -f "${status_dir}/base.txt" ]; then
-    if diff \
+    if diff -u \
       --label previous-run/base.txt "${status_dir}/base.txt" \
       --label current-run/base.txt "${tmp_dir}/base.txt" \
         > "${tmp_dir}/base.diff"; then

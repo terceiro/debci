@@ -7,6 +7,7 @@ debci (0.5.1) UNRELEASED; urgency=medium
     - You don't want to install devscripts and all its dependencies when
       running as-installed tests
     - checking for best practices is only useful in development environments.
+  * Use unified diff in "Change in the base system since last run"
 
  -- Antonio Terceiro <terceiro@debian.org>  Sun, 30 Mar 2014 15:18:11 -0300
 
