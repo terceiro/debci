@@ -2,4 +2,109 @@
 
 set -eu
 
-echo "I: schroot backend already set up by the debci core"
+base=$(readlink -f $(dirname $(readlink -f $0))/../..)
+. $base/lib/environment.sh
+
+if [ $(whoami) != root ]; then
+  echo "E: This script must be run as root"
+  exit 1
+fi
+
+create_chroot() {
+  echo "I: creating $debci_suite chroot (may take a while)"
+
+  http_proxy="${http_proxy:-}"
+  if [ -z "$http_proxy" ]; then
+    # detect a local apt-cacher-ng cache running.  10.0.2.2 = default IP
+    # assigned to host system as seen from a kvm/virtualbox virtual machine
+    for ip in 127.0.0.1 10.0.2.2; do
+      if nc -z -w 1 $ip 3142; then
+        export http_proxy=http://$ip:3142/debian
+      fi
+    done
+  fi
+
+  debootstrap "$debci_suite" "$debci_chroot_path"
+
+  # use proxy
+  if [ -n "$http_proxy" ]; then
+    echo "Acquire::http::Proxy \"$http_proxy\";" > "${debci_chroot_path}/etc/apt/apt.conf.d/01proxy"
+  fi
+
+  # do not download translations
+  echo 'Acquire::Languages "none";' > "${debci_chroot_path}/etc/apt/apt.conf.d/99translations"
+
+  # add APT Source URIs
+  sed -e 's/^deb\s/deb-src /' "${debci_chroot_path}/etc/apt/sources.list" > "${debci_chroot_path}/etc/apt/sources.list.d/sources.list"
+
+  # never ask for input
+  echo 'debconf debconf/frontend select noninteractive' | chroot "$debci_chroot_path" debconf-set-selections
+
+  # create debci user inside the chroot, with the same UID as the debci user on
+  # the host system
+  chroot "$debci_chroot_path" adduser \
+    --system \
+    --disabled-password \
+    --shell /bin/sh \
+    --home /home/debci \
+    --uid "$debci_uid" \
+    debci
+
+  chroot "$debci_chroot_path" apt-get update
+  chroot "$debci_chroot_path" apt-get install -qy eatmydata
+}
+
+setup_schroot() {
+  local data_dir=$(readlink -f ${debci_data_basedir})
+  local user=$(stat -c %U "${data_dir}")
+  if [ -z "$user" ]; then
+    user=debci
+  fi
+
+  cat > /etc/schroot/chroot.d/"${debci_chroot_name}" <<EOF
+[$debci_chroot_name]
+type=directory
+profile=debci
+description=debci $debci_suite/$debci_arch chroot
+directory=${debci_chroot_path}
+users=$user
+groups=$user
+root-users=$user
+source-root-users=$user
+root-groups=root
+union-type=aufs
+command-prefix=eatmydata
+EOF
+
+  if [ ! -e /etc/schroot/debci ]; then
+    ln -s "$debci_base_dir/etc/schroot/debci" /etc/schroot/debci
+  fi
+}
+
+setup_suite() {
+  # create chroot directory
+  if [ ! -d "${debci_chroots_dir}" ]; then
+    mkdir "${debci_chroots_dir}"
+  fi
+
+  if schroot --list --all | grep -q "^source:${debci_chroot_name}\$"; then
+    echo "I: schroot setup for ${debci_suite} already done, skipping"
+  else
+    setup_schroot
+  fi
+
+  local actual_chroot_path=$(schroot --config --chroot "$debci_chroot_name" | grep '^directory=' | cut -d = -f 2)
+
+  if [ -d "${actual_chroot_path}" ]; then
+    echo "I: chroot $debci_chroot_name already created, skipping"
+  else
+    if [ "$actual_chroot_path" = "${debci_chroot_path}" ]; then
+      create_chroot
+    else
+      echo "E: chroot ${debci_chroot_name} does not exit in custom location ${actual_chroot_path}. Please create it first."
+      exit 1
+    fi
+  fi
+}
+
+setup_suite
