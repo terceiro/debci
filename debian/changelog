@@ -1,4 +1,4 @@
-debci (0.5.1) UNRELEASED; urgency=medium
+debci (0.5.1) unstable; urgency=medium
 
   * etc/schroot/debci/fstab: improve schroot isolation
     - do not share /tmp with host
@@ -9,7 +9,7 @@ debci (0.5.1) UNRELEASED; urgency=medium
     - checking for best practices is only useful in development environments.
   * Use unified diff in "Change in the base system since last run"
 
- -- Antonio Terceiro <terceiro@debian.org>  Sun, 30 Mar 2014 15:18:11 -0300
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 01 Apr 2014 12:23:15 -0300
 
 debci (0.5.0) unstable; urgency=medium
 
