@@ -1,6 +1,12 @@
 #!/bin/sh
 
-set -eu
+case $- in
+  *i*)
+    ;;
+  *)
+    set -eu
+    ;;
+esac
 
 grep_packages() {
   grep-dctrl "$@" "$debci_chroot_path"/var/lib/apt/lists/*_debian_dists_${debci_suite}_main_binary-${debci_arch}_Packages

@@ -1,6 +1,12 @@
 #!/bin/sh
 
-set -eu
+case $- in
+  *i*)
+    ;;
+  *)
+    set -eu
+    ;;
+esac
 
 export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
