@@ -3,6 +3,11 @@ debci (0.6) UNRELEASED; urgency=medium
   * Move schroot creation from bin/debci-setup to
     backends/schroot/create-testbed, as it is schroot backend specific and
     other backends will need different setup.
+  * process-package: Call backend test-package with second argument that
+    specifies the adt-run output directory. Implement that in schroot backend
+    with adt-run --output-dir, and fake backend when passing $DEBCI_FAKE_DEPS.
+    This will be used to collect and present log files, artifacts,
+    package/version lists, etc.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 05 Apr 2014 12:18:39 +0100
 

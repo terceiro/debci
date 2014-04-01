@@ -4,7 +4,7 @@ set -eu
 
 usage() {
   cat <<EOF
-usage: backends/schroot/test-package [OPTIONS] PACKAGE
+usage: backends/schroot/test-package [OPTIONS] PACKAGE OUTPUTDIR
 
 $@
 EOF
@@ -16,11 +16,12 @@ base=$(readlink -f $(dirname $(readlink -f $0))/../..)
 
 prepare_args
 
-if [ $# -ne 1 ]; then
+if [ $# -ne 2 ]; then
   usage
   exit 1
 fi
 package="$1"
+outdir="$2"
 
 tmpdir=$(mktemp -d)
 cleanup() {
@@ -30,4 +31,4 @@ cleanup() {
 }
 trap cleanup INT TERM EXIT
 
-adt-run --gnupg-home="$debci_gnupg_dir" --user debci "$package" --- adt-virt-schroot "${debci_chroot_name}"
+adt-run --gnupg-home="$debci_gnupg_dir" --user debci --output-dir "$outdir" "$package" --- adt-virt-schroot "${debci_chroot_name}"

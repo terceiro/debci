@@ -99,7 +99,7 @@ do_process_package() {
     start_time=$(date +%s)
 
     set +e
-    test-package "$pkg"
+    test-package "$pkg" "$tmp_dir/out"
     exit_status=$?
     set -e
 
