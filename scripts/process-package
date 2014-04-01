@@ -92,7 +92,6 @@ report_status() {
 do_process_package() {
   if needs_processing; then
     check_platform
-    check_base_system
 
     banner "Started: $(date -R)"
 
@@ -129,6 +128,7 @@ do_process_package() {
     finish_time=$(date +%s)
     duration=$(($finish_time - $start_time))
 
+    check_base_system
     check_blame
 
     banner "Finished: $(date -R)"
@@ -194,25 +194,23 @@ needs_processing() {
 
 check_base_system() {
 
-  if command_available list-base-system; then
-    list-base-system > "${tmp_dir}/base.txt"
-  else
+  if [ ! -e "${tmp_dir}/out/testbed-packages" ]; then
     return 0
   fi
 
   if [ -f "${status_dir}/base.txt" ]; then
     if diff -u \
       --label previous-run/base.txt "${status_dir}/base.txt" \
-      --label current-run/base.txt "${tmp_dir}/base.txt" \
+      --label current-run/base.txt "${tmp_dir}/out/testbed-packages" \
         > "${tmp_dir}/base.diff"; then
       :
     else
-      cp "${tmp_dir}/base.txt" "${status_dir}/base.txt"
+      cp "${tmp_dir}/out/testbed-packages" "${status_dir}/base.txt"
       banner "Change in the base system since last run"
       cat "${tmp_dir}/base.diff"
     fi
   else
-    cp "${tmp_dir}/base.txt" "${status_dir}/base.txt"
+    cp "${tmp_dir}/out/testbed-packages" "${status_dir}/base.txt"
   fi
 
   banner "Base system"

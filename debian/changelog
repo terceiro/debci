@@ -8,6 +8,9 @@ debci (0.6) UNRELEASED; urgency=medium
     with adt-run --output-dir, and fake backend when passing $DEBCI_FAKE_DEPS.
     This will be used to collect and present log files, artifacts,
     package/version lists, etc.
+  * Eliminate list-base-system and use autopkgtest's testbed-packages output
+    file instead. This will also work with remote workers and other virt
+    servers.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 05 Apr 2014 12:18:39 +0100
 
