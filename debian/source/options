@@ -1,4 +1,4 @@
-tar-ignore = data
+tar-ignore = data/*
 tar-ignore = chroots
 tar-ignore = gnupg
 tar-ignore = config

@@ -8,6 +8,8 @@ debci (0.5.1) unstable; urgency=medium
       running as-installed tests
     - checking for best practices is only useful in development environments.
   * Use unified diff in "Change in the base system since last run"
+  * debian/source/options: fix to include publib/data in the source tarball,
+    but not data/*
 
  -- Antonio Terceiro <terceiro@debian.org>  Tue, 01 Apr 2014 12:23:15 -0300
 
