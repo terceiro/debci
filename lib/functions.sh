@@ -19,7 +19,7 @@ grep_sources() {
 
 list_binaries() {
   pkg="$1"
-  grep_packages -n -s Package -F Source,Package -X "$pkg" | sort | uniq
+  grep_sources -n -s Binary -F Package -X "$pkg" | sed -s 's/, /\n/g' | sort | uniq
 }
 
 
