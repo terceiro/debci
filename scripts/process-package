@@ -235,6 +235,10 @@ check_blame() {
   diff="${tmp_dir}/dependencies.diff"
   previous_diff="${status_dir}/dependencies.diff"
 
+  if [ ! -e "$diff" ]; then
+    return
+  fi
+
   case "$status" in
     pass)
       blame='[]'
