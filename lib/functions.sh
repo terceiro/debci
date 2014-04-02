@@ -17,14 +17,6 @@ list_binaries() {
 }
 
 
-check_version() {
-  # check source version for (available for this architecture) by looking at
-  # the first binary package built from that source package
-  local pkg="$1"
-  first_binary=$(list_binaries "$pkg" | head -n 1)
-  grep_packages -n -s Version -F Package -X "$first_binary" | sort -V | tail -n 1
-}
-
 first_banner=
 banner() {
   if [ "$first_banner" = "$pkg" ]; then

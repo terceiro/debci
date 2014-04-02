@@ -20,7 +20,7 @@ Package: debci
 Architecture: all
 Depends:
  adduser,
- autopkgtest (>= 2.7),
+ autopkgtest (>= 2.10),
  debootstrap,
  libjs-jquery,
  libjs-jquery-flot,

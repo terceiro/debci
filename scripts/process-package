@@ -265,7 +265,12 @@ check_blame() {
 }
 
 record_status() {
-  version=$(check_version "$pkg")
+  if [ -e ${tmp_dir}/out/testpkg-version ]; then
+      version=$(cut -f2 -d' ' ${tmp_dir}/out/testpkg-version)
+  else
+      # test did not run, or backend forgets --output-dir
+      version="n/a"
+  fi
 
   hours=$(( $duration / 3600 ))
   minutes=$(( ($duration % 3600) / 60 ))
