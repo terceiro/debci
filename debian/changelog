@@ -15,6 +15,12 @@ debci (0.6) UNRELEASED; urgency=medium
     output.
   * Move report_status() into lib/functions.sh as we'll need it in more places
     than just process-package.
+  * Move "run needed" policy from process-package to bin/debci. With this,
+    debci-test can be called manually at any time to retry tests or get called
+    by e. g. britney which already evaluates when to run tests. Remove the
+    "run test at most once a day" check completely as package updates can
+    happen several times a day. As a by-product this also fixes debci's -f
+    option to force a test run.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 05 Apr 2014 12:18:39 +0100
 

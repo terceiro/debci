@@ -2,14 +2,12 @@
 
 set -eu
 
-short_options='f'
-long_options='force'
+short_options='r:'
+long_options='reason:'
 
 base=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $base/lib/environment.sh
 . $base/lib/functions.sh
-
-run_id=$(date --rfc-3339=date)
 
 global_tmp_dir=$(mktemp -d)
 cleanup() {
@@ -18,9 +16,6 @@ cleanup() {
   fi
 }
 trap cleanup INT TERM EXIT
-
-one_month_ago="${global_tmp_dir}/one_month_ago"
-touch -d '1 month ago' "${one_month_ago}"
 
 process_package() {
   # setup tmp dir
@@ -33,27 +28,17 @@ process_package() {
 
   last_status=$($debci_bin_dir/debci-status "$pkg")
 
-  log_file="${status_dir}/${run_id}.log"
+  # find next available run id
+  local base_run_id=$(date --rfc-3339=date)
+  run_id="$base_run_id"
   status_file="${status_dir}/${run_id}.json"
-
-  # process packages at most once a day -- except if the first attempt failed
-  # for some external reason
-  if [ -f "$status_file" ]; then
-    if [ "$last_status" = 'tmpfail' ]; then
-      # find a new run id
-      i=1
-      local orig_run_id="$run_id"
-      while [ -f "$status_file" ]; do
-        run_id="${orig_run_id}-${i}"
-        log_file="${status_dir}/${run_id}.log"
-        status_file="${status_dir}/${run_id}.json"
-        i=$(($i + 1))
-      done
-    else
-      report_status "$pkg" 'skip'
-      return 0 # no need to check for this package
-    fi
-  fi
+  i=1
+  while [ -f "$status_file" ]; do
+    run_id="${base_run_id}-${i}"
+    status_file="${status_dir}/${run_id}.json"
+    i=$(($i + 1))
+  done
+  log_file="${status_dir}/${run_id}.log"
 
   do_process_package > "$log_file" 2>&1
   report_status "$pkg" "${status:-skip}"
@@ -64,106 +49,51 @@ process_package() {
 }
 
 do_process_package() {
-  if needs_processing; then
-    check_platform
+  check_platform
+  check_reason
 
-    banner "Started: $(date -R)"
+  banner "Started: $(date -R)"
 
-    start_time=$(date +%s)
+  start_time=$(date +%s)
 
-    set +e
-    test-package "$pkg" "$tmp_dir/out"
-    exit_status=$?
-    set -e
+  set +e
+  test-package "$pkg" "$tmp_dir/out"
+  exit_status=$?
+  set -e
 
-    # ref: adt-run(1)
-    case "$exit_status" in
-      0)
-        status=pass
-        message='All tests passed'
-        ;;
-      2)
-        status=pass
-        message='Tests passed, but at least one test skipped'
-        ;;
-      4)
-        status=fail
-        message='Tests failed'
-        ;;
-      6)
-        status=fail
-        message='Tests failed, and at least one test skipped'
-        ;;
-      *)
-        status=tmpfail
-        message='Could not run tests due to a temporary failure'
-        ;;
-    esac
-    finish_time=$(date +%s)
-    duration=$(($finish_time - $start_time))
+  # ref: adt-run(1)
+  case "$exit_status" in
+    0)
+      status=pass
+      message='All tests passed'
+      ;;
+    2)
+      status=pass
+      message='Tests passed, but at least one test skipped'
+      ;;
+    4)
+      status=fail
+      message='Tests failed'
+      ;;
+    6)
+      status=fail
+      message='Tests failed, and at least one test skipped'
+      ;;
+    *)
+      status=tmpfail
+      message='Could not run tests due to a temporary failure'
+      ;;
+  esac
+  finish_time=$(date +%s)
+  duration=$(($finish_time - $start_time))
 
-    check_base_system
-    check_blame
+  check_dependencies
+  check_base_system
+  check_blame
 
-    banner "Finished: $(date -R)"
-    echo "∙ Status: $status ($message)"
-    record_status
-  fi
-}
-
-has_reasons_to_run=''
-reason_for_run() {
-  local reason="$*"
-  if [ ! $has_reasons_to_run ]; then
-    banner "Triggers for test run"
-  fi
-  echo "$reason"
-  has_reasons_to_run=true
-}
-
-# XXX this function must not output anything unless there is a need for the
-# package to be processed.
-needs_processing() {
-  list-dependencies "$pkg" > "$tmp_dir/dependencies.txt"
-
-  run=1
-
-  if [ "$last_status" = 'tmpfail' ]; then
-    run=0
-    reason_for_run "∙ Retrying run since last attempt failed"
-  fi
-
-  if [ -n "$cmdline_force" ]; then
-    run=0
-    reason_for_run "∙ Forced test run for $pkg"
-  fi
-
-  if [ -f "${status_dir}/latest.json" -a "${status_dir}/latest.json" -ot "${one_month_ago}" ]; then
-    run=0
-    reason_for_run '∙ Forcing test run after 1 month without one'
-  fi
-
-  if [ -f "$status_dir/dependencies.txt" ]; then
-    if diff -u --label last-run/dependencies.txt "$status_dir/dependencies.txt" --label current-run/dependencies.txt "$tmp_dir/dependencies.txt" > "$tmp_dir/dependencies.diff"; then
-      : # no need to run tests
-    else
-      run=0
-      reason_for_run "∙ There were changes in the dependency chain since last test run"
-      banner "Change in dependency chain for $pkg since last test run"
-      cat "$tmp_dir/dependencies.diff"
-    fi
-  else
-    run=0
-    reason_for_run "∙ First test run for $pkg"
-  fi
-
-  if [ "$run" -eq 0 ]; then
-    cp "$tmp_dir/dependencies.txt" "${status_dir}/dependencies.txt"
-    banner "Full dependency chain for $pkg at the moment"
-    cat "$status_dir/dependencies.txt"
-  fi
-
-  return $run
+  banner "Finished: $(date -R)"
+  echo "∙ Status: $status ($message)"
+  record_status
 }
 
 check_base_system() {
@@ -191,11 +121,36 @@ check_base_system() {
   cat "${status_dir}/base.txt"
 }
 
+check_dependencies() {
+  deps=$(cat ${tmp_dir}/out/*t-*-packages | sort -u)
+
+  if [ -n "$deps" ]; then
+    banner "Test dependencies"
+    echo "$deps"
+    if [ -e "$status_dir/test-packages.txt" ]; then
+      if echo "$deps" | diff -u --label last-run/test-packages.txt "$status_dir/test-packages.txt" --label current-run/test-packages.txt - > "$tmp_dir/test-packages.diff"; then
+        : # no changes
+      else
+        banner "Change in test packages for $pkg since last test run"
+        cat "$tmp_dir/test-packages.diff"
+      fi
+    fi
+    echo "$deps" > "${status_dir}/test-packages.txt"
+  fi
+}
+
 check_platform() {
     banner "Platform information"
     echo "Package versions:"
     dpkg-query --show debci autopkgtest | indent
     echo "Backend: $debci_backend"
+}
+
+check_reason() {
+  if [ -s "$cmdline_reason" ]; then
+    banner "Triggers for test run"
+    cat "$cmdline_reason"
+  fi
 }
 
 check_blame() {
@@ -204,8 +159,8 @@ check_blame() {
     blame='[]'
   fi
 
-  diff="${tmp_dir}/dependencies.diff"
-  previous_diff="${status_dir}/dependencies.diff"
+  diff="${tmp_dir}/test-packages.diff"
+  previous_diff="${status_dir}/test-packages.diff"
 
   case "$status" in
     pass)
@@ -299,13 +254,14 @@ EOF
 }
 
 # defaults
-cmdline_force=''
+cmdline_reason=''
 
 while true; do
   case "$1" in
-    -f|--force)
+    -r|--reason)
       shift
-      cmdline_force="yes"
+      cmdline_reason="$1"
+      shift
       ;;
     --)
       shift
