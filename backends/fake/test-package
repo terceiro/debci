@@ -1,5 +1,15 @@
 #!/usr/bin/ruby
 
+require 'fileutils'
+
+if ARGV.length != 2
+  puts "usage: test-package [OPTIONS] PACKAGE OUTPUTDIR"
+  exit 1
+end
+
+pkg = ARGV.shift
+outdir = ARGV.shift
+
 puts "Not really running anything .."
 puts "This will fail, pass or tmpfail randomly. Passing is twice as probable as fail and tmpfail"
 
@@ -13,6 +23,15 @@ when 'tmpfail'
   r = 3
 else
   r = rand(4)
+end
+
+if ENV["DEBCI_FAKE_DEPS"]
+  FileUtils.mkdir_p(outdir)
+  File.open(File.join(outdir, 'foo0t-mytest-packages'), 'w') do |f|
+    ENV["DEBCI_FAKE_DEPS"].split('|').each do |line|
+      f.puts line.gsub(" ", "\t")
+    end
+  end
 end
 
 case r

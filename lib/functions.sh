@@ -23,14 +23,6 @@ list_binaries() {
 }
 
 
-check_version() {
-  # check source version for (available for this architecture) by looking at
-  # the first binary package built from that source package
-  local pkg="$1"
-  first_binary=$(list_binaries "$pkg" | head -n 1)
-  grep_packages -n -s Version -F Package -X "$first_binary" | sort -V | tail -n 1
-}
-
 first_banner=
 banner() {
   if [ "$first_banner" = "$pkg" ]; then
@@ -59,6 +51,35 @@ log() {
     echo "$@"
   fi
 }
+
+
+report_status() {
+  local pkg="$1"
+  local status="$2"
+  if [ -t 1 ]; then
+    case "$status" in
+      skip)
+        color=8
+        ;;
+      pass)
+        color=2
+        ;;
+      fail)
+        color=1
+        ;;
+      tmpfail)
+        color=3
+        ;;
+      *)
+        color=5 # should never get here though
+        ;;
+    esac
+    log "${pkg} \033[38;5;${color}m${status}\033[m"
+  else
+    log "$pkg" "$status"
+  fi
+}
+
 
 command_available() {
   which "$1" >/dev/null 2>/dev/null

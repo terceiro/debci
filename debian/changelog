@@ -1,3 +1,29 @@
+debci (0.6) UNRELEASED; urgency=medium
+
+  * Move schroot creation from bin/debci-setup to
+    backends/schroot/create-testbed, as it is schroot backend specific and
+    other backends will need different setup.
+  * process-package: Call backend test-package with second argument that
+    specifies the adt-run output directory. Implement that in schroot backend
+    with adt-run --output-dir, and fake backend when passing $DEBCI_FAKE_DEPS.
+    This will be used to collect and present log files, artifacts,
+    package/version lists, etc.
+  * Eliminate list-base-system and use autopkgtest's testbed-packages output
+    file instead. This will also work with remote workers and other virt
+    servers.
+  * Eliminate check_version() and take this information from autopkgtest's
+    output.
+  * Move report_status() into lib/functions.sh as we'll need it in more places
+    than just process-package.
+  * Move "run needed" policy from process-package to bin/debci. With this,
+    debci-test can be called manually at any time to retry tests or get called
+    by e. g. britney which already evaluates when to run tests. Remove the
+    "run test at most once a day" check completely as package updates can
+    happen several times a day. As a by-product this also fixes debci's -f
+    option to force a test run.
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 05 Apr 2014 12:18:39 +0100
+
 debci (0.5.2) unstable; urgency=medium
 
   * scripts/process-package: skip blame check without a dependencies diff

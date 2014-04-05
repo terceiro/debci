@@ -30,6 +30,18 @@ cd $debci_base_dir
 . lib/environment.sh
 . lib/functions.sh
 
+tmp_dir=$(mktemp -d)
+cleanup() {
+  if [ -d "$tmp_dir" ]; then
+    rm -rf "$tmp_dir"
+  fi
+}
+trap cleanup INT TERM EXIT
+
+one_month_ago="${tmp_dir}/one_month_ago"
+touch -d '1 month ago' "${one_month_ago}"
+
+
 run() {
   if which update-testbed >/dev/null 2>/dev/null; then
     log "I: Updating backend testbed"
@@ -47,16 +59,28 @@ run() {
 }
 
 process_all_packages() {
-  local packages="$(debci-list-packages)"
-
   local start=$(date +%s)
+
+  # determine packages which need to be tested
+  packages=''
+  for pkg in $(debci-list-packages); do
+    if needs_processing $pkg; then
+      packages="$packages $pkg"
+    else
+      report_status "$pkg" "skip"
+    fi
+  done
 
   if [ "$maxjobs" -eq 1 ]; then
     for pkg in $packages; do
-      debci-test $force "$pkg"
+      debci-test -r "$tmp_dir/${pkg}-reason.txt" "$pkg"
     done
   else
-    parallel -j "$maxjobs" debci-test $force -- $packages
+    args=''
+    for pkg in $packages; do
+      args="$args -r $tmp_dir/${pkg}-reason.txt $pkg"
+    done
+    parallel -n 3 -j "$maxjobs" debci-test -- $args
   fi
 
   local finish=$(date +%s)
@@ -64,6 +88,51 @@ process_all_packages() {
   $debci_base_dir/scripts/cleanup
 
   $debci_base_dir/scripts/generate-index $(($finish - $start))
+}
+
+needs_processing() {
+  status_dir=$(status_dir_for_package "$pkg")
+  last_status=$($debci_bin_dir/debci-status "$pkg")
+
+  list-dependencies "$pkg" > "$tmp_dir/${pkg}-deps.txt"
+  reason="$tmp_dir/${pkg}-reason.txt"
+
+  run=1
+
+  if [ "$last_status" = 'tmpfail' ]; then
+    run=0
+    echo "∙ Retrying run since last attempt failed" >> $reason
+  fi
+
+  if [ -n "$force" ]; then
+    run=0
+    echo "∙ Forced test run for $pkg" >> $reason
+  fi
+
+  if [ -f "${status_dir}/latest.json" -a "${status_dir}/latest.json" -ot "${one_month_ago}" ]; then
+    run=0
+    echo '∙ Forcing test run after 1 month without one' >> $reason
+  fi
+
+  if [ -f "$status_dir/dependencies.txt" ]; then
+    if diff -u --label last-run/dependencies.txt "$status_dir/dependencies.txt" --label current-run/dependencies.txt "$tmp_dir/${pkg}-deps.txt" > "$tmp_dir/${pkg}-changed-deps.diff"; then
+      : # no need to run tests
+    else
+      run=0
+      echo "∙ There were changes in the dependency chain since last test run:" >> $reason
+      cat "$tmp_dir/${pkg}-changed-deps.diff" >> $reason
+    fi
+  else
+    run=0
+    echo "∙ First test run for $pkg" >> $reason
+  fi
+
+  if [ "$run" -eq 0 ]; then
+    mkdir -p "${status_dir}"
+    cp "$tmp_dir/${pkg}-deps.txt" "${status_dir}/dependencies.txt"
+  fi
+
+  return $run
 }
 
 # default configuration
