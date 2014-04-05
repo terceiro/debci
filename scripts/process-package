@@ -50,42 +50,16 @@ process_package() {
         i=$(($i + 1))
       done
     else
-      report_status 'skip'
+      report_status "$pkg" 'skip'
       return 0 # no need to check for this package
     fi
   fi
 
   do_process_package > "$log_file" 2>&1
-  report_status "${status:-skip}"
+  report_status "$pkg" "${status:-skip}"
 
   if [ -s "$log_file" ]; then
     ln -sf "${run_id}.log" "${status_dir}/latest.log"
-  fi
-}
-
-report_status() {
-  local status="$1"
-  if [ -t 1 ]; then
-    case "$status" in
-      skip)
-        color=8
-        ;;
-      pass)
-        color=2
-        ;;
-      fail)
-        color=1
-        ;;
-      tmpfail)
-        color=3
-        ;;
-      *)
-        color=5 # should never get here though
-        ;;
-    esac
-    log "${pkg} \033[38;5;${color}m${status}\033[m"
-  else
-    log "$pkg" "$status"
   fi
 }
 
