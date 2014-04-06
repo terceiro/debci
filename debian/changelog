@@ -26,6 +26,9 @@ debci (0.6) UNRELEASED; urgency=medium
   [ Antonio Terceiro ]
   * schroot backend: pass --session-id to adt-virt-schroot. This makes it
     easier to debug test suite that leave rogue schroot sessions behind.
+  * rename `debci` binary to `debci-batch`. `debci` stays reserved for
+    providing a entry point binary like `git` that will invoke subcommands
+    that are kept out of $PATH to avoid cluttering the namespace.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 05 Apr 2014 12:18:39 +0100
 
