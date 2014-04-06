@@ -30,6 +30,9 @@ debci (0.6) UNRELEASED; urgency=medium
     providing a entry point binary like `git` that will invoke subcommands
     that are kept out of $PATH to avoid cluttering the namespace.
   * debci-batch: make batch locking suite- and architecture-specific
+  * debci-batch: add --offline and --online options. --offline will prevent
+    new test runs from being started, and --online will revert to normal
+    operation.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 05 Apr 2014 12:18:39 +0100
 

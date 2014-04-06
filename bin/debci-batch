@@ -17,13 +17,17 @@ Options:
                             not be tested if it was already tested today.
   -j N                      Test at most N packages in parallel
                             (default: 1)
+  --offline                 Puts debci-batch offline. New test runs will not be
+                            tarted.
+  --online                  Puts debci-batch online. New test runs will be
+                            started.
 
 $@
 EOF
 }
 
 short_options='j:f'
-long_options='force'
+long_options='force,offline,online'
 
 debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 cd $debci_base_dir
@@ -150,6 +154,14 @@ while true; do
     -f|--force)
       force="$arg"
       ;;
+    --offline)
+      touch /var/lock/debci-batch.offline
+      exit 0
+      ;;
+    --online)
+      rm -f /var/lock/debci-batch.offline
+      exit 0
+      ;;
     --)
       break
       ;;
@@ -158,6 +170,9 @@ done
 
 (
   flock -n 9 || exit 0
+  if [ -e /var/lock/debci-batch.offline ]; then
+    exit 0
+  fi
   run "$@"
 ) 9> /var/lock/debci-batch-${debci_suite}-${debci_arch}.lock
 
