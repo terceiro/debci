@@ -18,9 +18,9 @@ Options:
   -j N                      Test at most N packages in parallel
                             (default: 1)
   --offline                 Puts debci-batch offline. New test runs will not be
-                            tarted.
-  --online                  Puts debci-batch online. New test runs will be
                             started.
+  --online                  Puts debci-batch online. New test runs will be
+                            started normally.
 
 $@
 EOF
