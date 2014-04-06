@@ -45,7 +45,7 @@ finish a run.
 
 Now you are ready to actually run debci:
 
-    $ ./bin/debci
+    $ ./bin/debci-batch
 
 To visualize the web interface, follow the following steps:
 
