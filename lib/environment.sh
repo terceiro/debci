@@ -25,16 +25,17 @@ debci_suite=${debci_suite:-unstable}
 debci_arch=${debci_arch:-$(dpkg --print-architecture)}
 debci_backend=${debci_backend:-schroot}
 debci_data_basedir=${debci_data_basedir:-$(readlink -f "${debci_base_dir}/data")}
-debci_config_dir="${debci_config_dir:-${debci_base_dir}/config}"
+debci_default_config_dir=$(readlink -f "${debci_base_dir}/config")
+debci_config_dir="${debci_config_dir:-${debci_default_config_dir}}"
 debci_quiet="${debci_quiet:-false}"
 
 shared_short_options='c:s:a:b:d:hq'
 shared_long_options='config:,suite:,arch:,backend:,data-dir:,help,quiet'
 
-usage_shared_options='Common options:
+usage_shared_options="Common options:
 
   -c DIR, --config DIR      uses DIR as the debci configuration directory
-                            (default: /etc/debci)
+                            (default: ${debci_default_config_dir})
   -a, --arch ARCH           selects the architecture to run tests for
                             (default: host architecture)
   -n, --backend BACKEND     selects the backends to run tests on
@@ -45,7 +46,7 @@ usage_shared_options='Common options:
                             and where it will read from
   -q, --quiet               prevents debci from producing any output on stdout
   --help                    show this usage message
-'
+"
 
 TEMP=`getopt -o ${shared_short_options}${short_options:-} --long ${shared_long_options},${long_options:-} -- "$@"`
 
