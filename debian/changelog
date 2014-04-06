@@ -29,6 +29,7 @@ debci (0.6) UNRELEASED; urgency=medium
   * rename `debci` binary to `debci-batch`. `debci` stays reserved for
     providing a entry point binary like `git` that will invoke subcommands
     that are kept out of $PATH to avoid cluttering the namespace.
+  * debci-batch: make batch locking suite- and architecture-specific
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 05 Apr 2014 12:18:39 +0100
 

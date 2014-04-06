@@ -159,5 +159,5 @@ done
 (
   flock -n 9 || exit 0
   run "$@"
-) 9>/var/lock/debci.lock
+) 9> /var/lock/debci-batch-${debci_suite}-${debci_arch}.lock
 
