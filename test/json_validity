@@ -18,7 +18,7 @@ end
 
 failed = 0
 
-command = ['debci', '--quiet', '--data-dir', datadir, '--backend', 'fake', '--config', configdir]
+command = ['debci-batch', '--quiet', '--data-dir', datadir, '--backend', 'fake', '--config', configdir]
 system(*command) or raise("Command " + command.inspect + ' failed!')
 
 Dir.glob(File.join(tmpdir, '**/*.json')).each do |file|
@@ -33,5 +33,5 @@ end
 FileUtils.rm_rf(tmpdir)
 exit(failed)
 
-# system('faketime', '+1day', './bin/debci', '--data-dir', $tmpdir, '--backend', 'fake');
+# system('faketime', '+1day', './bin/debci-batch', '--data-dir', $tmpdir, '--backend', 'fake');
 
