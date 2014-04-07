@@ -22,6 +22,9 @@ debci (0.6) UNRELEASED; urgency=medium
     "run test at most once a day" check completely as package updates can
     happen several times a day. As a by-product this also fixes debci's -f
     option to force a test run.
+  * backends/schroot/list-dependencies: Ignore individual apt-get failures as
+    that gets called for binaries which don't exist on the selected
+    architecture. Fixes operation for e. g. glib2.0.
 
   [ Antonio Terceiro ]
   * schroot backend: pass --session-id to adt-virt-schroot. This makes it

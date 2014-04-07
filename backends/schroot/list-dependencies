@@ -28,7 +28,8 @@ binaries=$(list_binaries "$pkg")
 {
   if ! schroot -d / -c "$debci_chroot_name" -u root -- apt-get install --quiet --assume-yes --simulate $binaries 2>&1; then
     for binary in $binaries; do
-      schroot -d / -c "$debci_chroot_name" -u root -- apt-get -q -y --simulate  install $binary 2>&1
+      # this can fail for binaries which don't exist on this architecture
+      schroot -d / -c "$debci_chroot_name" -u root -- apt-get -q -y --simulate install $binary 2>&1 || true
     done
   fi
 } | \
