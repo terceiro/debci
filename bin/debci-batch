@@ -55,6 +55,9 @@ run() {
   fi
   log "I: Finished update of backend testbed"
 
+  log "I: building/updating chdist for $debci_suite"
+  $debci_base_dir/scripts/setup-chdist
+
   log "I: start processing of all packages"
 
   process_all_packages
@@ -98,7 +101,7 @@ needs_processing() {
   status_dir=$(status_dir_for_package "$pkg")
   last_status=$($debci_bin_dir/debci-status "$pkg")
 
-  list-dependencies "$pkg" > "$tmp_dir/${pkg}-deps.txt"
+  $debci_base_dir/scripts/list-dependencies "$pkg" > "$tmp_dir/${pkg}-deps.txt"
   reason="$tmp_dir/${pkg}-reason.txt"
 
   run=1

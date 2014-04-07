@@ -25,6 +25,14 @@ debci (0.6) UNRELEASED; urgency=medium
   * backends/schroot/list-dependencies: Ignore individual apt-get failures as
     that gets called for binaries which don't exist on the selected
     architecture. Fixes operation for e. g. glib2.0.
+  * Use chdist instead of the local schroot for package queries:
+    - Add scripts/setup-chdist to create/update a chdist for the selected release.
+    - Use that in list-dependencies instead of querying the schroot. Move that
+      script to scripts/ as it is now not backend specific any more.
+    - Update lib/functions.sh to use chdist instead of the schroot.
+    - Add devscripts dependency for chdist, and demote schroot dependency to
+      recommends.
+    This allows us to use other backends, like QEMU or remote ones.
 
   [ Antonio Terceiro ]
   * schroot backend: pass --session-id to adt-virt-schroot. This makes it

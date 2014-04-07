@@ -4,7 +4,7 @@ set -eu
 
 usage() {
   cat <<EOF
-usage: backends/schroot/list-dependencies [OPTIONS] PACKAGE
+usage: $0 [OPTIONS] PACKAGE
 
 EOF
   if [ -n "$*" ]; then
@@ -12,7 +12,7 @@ EOF
   fi
 }
 
-base=$(readlink -f $(dirname $(readlink -f $0))/../..)
+base=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $base/lib/environment.sh
 . $base/lib/functions.sh
 
@@ -25,13 +25,15 @@ if [ -z "$pkg" ]; then
 fi
 
 binaries=$(list_binaries "$pkg")
+APT_CHDIST="chdist -d $debci_data_basedir/chdist apt-get $debci_suite-$debci_arch --simulate --quiet install"
+
 {
-  if ! schroot -d / -c "$debci_chroot_name" -u root -- apt-get install --quiet --assume-yes --simulate $binaries 2>&1; then
+  if ! $APT_CHDIST $binaries 2>&1; then
     for binary in $binaries; do
       # this can fail for binaries which don't exist on this architecture
-      schroot -d / -c "$debci_chroot_name" -u root -- apt-get -q -y --simulate install $binary 2>&1 || true
+      $APT_CHDIST $binary 2>&1 || true
     done
   fi
 } | \
   awk '{ if ($1 == "Inst") { sub("^.", "", $3); print($2, $3) } }' | \
-  sort | uniq
+  sort -u

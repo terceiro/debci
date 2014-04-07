@@ -26,13 +26,14 @@ Depends:
  libjs-jquery-flot,
  patchutils,
  ruby,
- schroot,
+ devscripts,
  dctrl-tools,
  ${misc:Depends},
  ${shlibs:Depends}
 Recommends:
  apt-cacher-ng,
  moreutils,
+ schroot
 Description: continuous integration system for Debian
  debci will scan the Debian archive for packages that contain DEP-8 compliant
  test suites, and run those test suites whenever a new version of the package,

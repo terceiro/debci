@@ -9,17 +9,17 @@ case $- in
 esac
 
 grep_packages() {
-  grep-dctrl "$@" "$debci_chroot_path"/var/lib/apt/lists/*_debian_dists_${debci_suite}_main_binary-${debci_arch}_Packages
+  chdist -d "${debci_data_basedir}/chdist" grep-dctrl-packages ${debci_suite}-${debci_arch} "$@"
 }
 
 grep_sources() {
-  grep-dctrl "$@" "$debci_chroot_path"/var/lib/apt/lists/*_debian_dists_${debci_suite}_main_source_Sources
+  chdist -d "${debci_data_basedir}/chdist" grep-dctrl-sources ${debci_suite}-${debci_arch} "$@"
 }
 
 
 list_binaries() {
   pkg="$1"
-  grep_sources -n -s Binary -F Package -X "$pkg" | sed -s 's/, /\n/g' | sort | uniq
+  grep_sources -n -s Binary -F Package -X "$pkg" | sed -s 's/, /\n/g' | sort -u
 }
 
 
