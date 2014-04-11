@@ -50,6 +50,9 @@ debci (0.6) UNRELEASED; urgency=medium
     - Move status.json into status/ directory and remove the redundant
       latest.json.
     - Move packages.json into status/ directory.
+  * Add tools/convert-data: Convert data/ directory to changed format from
+    above. This can be dropped again after running it on the production debci
+    instance.
 
   [ Antonio Terceiro ]
   * schroot backend: pass --session-id to adt-virt-schroot. This makes it

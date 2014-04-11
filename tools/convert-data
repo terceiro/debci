@@ -1,0 +1,89 @@
+#!/bin/sh
+# Convert data/ directory after "Reorganize data directory" from Apr 13
+
+set -eu
+
+base=$(readlink -f $(dirname $(readlink -f $0))/..)
+. $base/lib/environment.sh
+
+dnew="${debci_data_dir}.new"
+
+if [ -e "${debci_data_dir}.old" ]; then
+    echo "${debci_data_dir}.old already exists, aborting" >&1
+    exit 1
+fi
+
+if [ -e "$dnew" ]; then
+    echo "$dnew already exists, aborting" >&1
+    exit 1
+fi
+
+echo "Coyping original data dir to $dnew..."
+cp -a "${debci_data_dir}" "$dnew"
+
+# status/: latest.json was renamed to status.json, redundant root-dir
+# status.json got dropped
+echo "Converting status/..."
+mv "$dnew/status/latest.json" "$dnew/status/status.json"
+rm "$dnew/status.json"
+# packages.json moved from root dir to status/; we ignore it here as the run
+# IDs change; we regenerate it at the end
+rm "$dnew/packages.json"
+
+# packages: *.log moves to new autopkgtest/ hierarchy; run IDs changed
+# to date_time stamps
+echo "Converting packages/..."
+cd "$dnew/packages"
+for p in */*; do
+    mkdir -p "$dnew/autopkgtest/$p"
+
+    # convert per-run *.log/*.json files
+    for log in $(ls $p/[0-9]*.log); do
+        run_id=$(basename "$log" .log)
+        json="${log%.log}.json"
+        # convert time in .json to our new timestamp format
+        json_time=$(sed -n '/"date"/ { s/^.*"\(20[^"]*\).*$/\1/; p}' "$json")
+        time=$(date -u -d "$json_time" '+%Y%m%d_%H%M%S')
+
+        # .log goes into autopkgtest/; it's not quite precise as that also
+        # contains the debci header and footer, but it's good enough
+        mkdir "$dnew/autopkgtest/$p/$time"
+        cp "$log" "$dnew/autopkgtest/$p/$time/log"
+
+        # *.log is also duplicated into debci/, but with the new timestamp format
+        mv "$log" "$p/${time}.log"
+
+        # json needs update of the run ID
+        sed "s/\"$run_id\"/\"$time\"/g" < "$json" > "$p/${time}.json"
+        rm "$json"
+        sed -i "s/\"$run_id\"/\"$time\"/g" "$p/history.json"
+
+        if [ "$(readlink $p/latest.log)" = "$(basename $log)" ]; then
+            ln -s "../../../autopkgtest/$p/$time" "$p/latest-autopkgtest"
+            ln -s -f "${time}.log" "$p/latest.log"
+            ln -s -f "${time}.json" "$p/latest.json"
+        fi
+    done
+
+    # some tests don't have a base.txt
+    if [ -e "$p/base.txt" ]; then
+        mv "$p/base.txt" "$p/latest-autopkgtest/testbed-packages"
+    fi
+    # no way to reconstruct the per-test package lists, so just use a
+    # synthetic test name
+    if [ -e "$p/test-packages.txt" ]; then
+        mv "$p/test-packages.txt" "$p/latest-autopkgtest/apt0t-unknown-packages"
+    fi
+done
+
+# do the final renaming as atomically as possible
+echo "Renaming original data dir to ${debci_data_dir}.old ..."
+mv "${debci_data_dir}" "${debci_data_dir}.old"
+echo "Renaming converted dir $dnew to ${debci_data_dir} ..."
+mv "$dnew" "${debci_data_dir}"
+
+# would be better to do that in $dnew, but we can't specify that as option
+echo "Regenerating packages.json..."
+$base/bin/debci-status --all --status-file > "${debci_status_dir}/packages.json"
+
+echo "All done"
