@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -eu
+
+bindir=$(dirname $(readlink -f $0))
+
+program="${1:-}"
+if [ -z "$program" ]; then
+  echo "usage: debci COMMAND [ARGS]"
+  exit 1
+fi
+shift
+
+PATH=$bindir:$PATH debci-$program "$@"
