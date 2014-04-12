@@ -34,7 +34,7 @@ if [ ! -e "$root/$name" ]; then
 
   # enable all components
   if [ "${DEF_MIRROR%ubuntu*}" = "$DEF_MIRROR" ]; then
-    COMPONENTS="main contrib non-free"  # Debian
+    COMPONENTS="main"  # Debian
   else
     COMPONENTS="main restricted universe multiverse"  # Ubuntu
   fi
