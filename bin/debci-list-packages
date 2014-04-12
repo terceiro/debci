@@ -14,4 +14,26 @@ export debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $debci_base_dir/lib/environment.sh
 . $debci_base_dir/lib/functions.sh
 
-$debci_base_dir/scripts/list-dep8-packages
+list_packages_from_archive() {
+  grep_sources -n -s Package -F Testsuite -X autopkgtest | sort | uniq
+}
+
+list_packages() {
+  whitelist="${debci_config_dir}/whitelist"
+  if [ -f "${whitelist}" ]; then
+    sed -e '/^#/d' "${whitelist}"
+  else
+    list_packages_from_archive
+  fi
+}
+
+blacklist="${debci_config_dir}/blacklist"
+if [ -e "$blacklist" ]; then
+  for pkg in $(list_packages); do
+    if ! grep -q "^\s*${pkg}\s*$" "$blacklist"; then
+      echo "$pkg"
+    fi
+  done
+else
+  list_packages
+fi

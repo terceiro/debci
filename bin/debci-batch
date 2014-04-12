@@ -92,9 +92,9 @@ process_all_packages() {
 
   local finish=$(date +%s)
 
-  $debci_base_dir/scripts/cleanup
+  debci-cleanup
 
-  $debci_base_dir/scripts/generate-index $(($finish - $start))
+  debci-generate-index $(($finish - $start))
 }
 
 needs_processing() {

@@ -47,8 +47,13 @@ debci (0.6) UNRELEASED; urgency=medium
   * Rename scripts/*:
     - scripts/process-package: absorbed by the previously almost empty
       bin/debci-test
-    - scripts/list-dependencies → bin/debci-list-dependencies
-    - scripts/setup-chdist → bin/debci-setup-chdist
+    - scripts/list-dep8-packages: absorbed by the previously almost empty
+      bin/debci-list-packages
+    - scripts/list-dependencies  → bin/debci-list-dependencies
+    - scripts/setup-chdist       → bin/debci-setup-chdist
+    - scripts/blame              → bin/debci-blame
+    - scripts/cleanup            → bin/debci-cleanup
+    - scripts/generate-index     → bin/debci-generate-index
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 05 Apr 2014 12:18:39 +0100
 

@@ -21,7 +21,7 @@ check_shell_usage() {
 
   return $failed_checks
 }
-scripts="$(cd $base && grep -l '#!/bin/sh' bin/* scripts/* backends/*/*) $(cd $base && echo lib/*.sh)"
+scripts="$(cd $base && grep -l '#!/bin/sh' bin/* backends/*/*) $(cd $base && echo lib/*.sh)"
 script_test_names=""
 
 for f in $scripts lib/*.sh; do
