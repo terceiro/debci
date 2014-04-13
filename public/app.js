@@ -233,7 +233,7 @@ jQuery(function($) {
       });
       $target.append($table);
 
-      var data_base = window.location.href.replace(/\/#.*/, '');
+      var data_base = window.location.href.replace(/\/[#?].*/, '');
       var automation_info =
         "<p>Automate:</p>" +
         "<pre><code>" +

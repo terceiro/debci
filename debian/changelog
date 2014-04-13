@@ -53,6 +53,8 @@ debci (0.6) UNRELEASED; urgency=medium
   * Add tools/convert-data: Convert data/ directory to changed format from
     above. This can be dropped again after running it on the production debci
     instance.
+  * app.js: Filter out query strings from URL for constructing the .json URLs.
+    Fixes wrong URLs after using the package search field.
 
   [ Antonio Terceiro ]
   * schroot backend: pass --session-id to adt-virt-schroot. This makes it
