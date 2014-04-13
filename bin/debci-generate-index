@@ -23,14 +23,13 @@ generate_status_entry() {
   "total": $total
 }
 EOF
-  ln -sf "status/${date}.json" "${debci_data_dir}/status.json"
-  ln -sf "${date}.json" "${debci_status_dir}/latest.json"
+  ln -sf "${date}.json" "${debci_status_dir}/status.json"
 }
 
 generate_history() {
   local prefix=""
   echo "["
-  for entry in $(find "${debci_status_dir}" -name '*.json' -and -not -name history.json | sort); do
+  for entry in "${debci_status_dir}"/[0-9]*.json; do
     if [ -n "$prefix" ]; then
       echo "$prefix"
     fi
@@ -42,8 +41,13 @@ generate_history() {
 
 prepare_args
 
+if [ ! -d "${debci_packages_dir}" ]; then
+    echo "${debci_packages_dir} does not exist, nothing to do."
+    exit 0
+fi
+
 generate_status_entry "$@"
 generate_history > "${debci_status_dir}/history.json"
 
-$base/bin/debci-status --all --status-file > "${debci_data_dir}/packages.json"
+$base/bin/debci-status --all --status-file > "${debci_status_dir}/packages.json"
 

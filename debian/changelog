@@ -33,6 +33,23 @@ debci (0.6) UNRELEASED; urgency=medium
     - Add devscripts dependency for chdist, and demote schroot dependency to
       recommends.
     This allows us to use other backends, like QEMU or remote ones.
+  * Reorganize data directory:
+    - Split out autopkgtest output into ${debci_data_dir}/autopkgtest/:
+      This now contains a full directory for each test run with all of
+      adt-run's --output-dir files. This provides access to individual test
+      stdout/err logs, the package version lists, and additional artifacts
+      that tests produce. With this, autopkgtest/ becomes eligible for being
+      on a remote file system and can be synced/rebuilt independently of the
+      metadata.
+    - Use run IDs with format YYYYMMDD_HHMMSS[machine or tags] instead of the
+      old YYYYMMDD-n as the former works for a distributed file system and
+      remote workers.
+    - base.txt is now replaced with adt-run's testbed-packages output file.
+    - test-packages.txt gets dropped as there is no need to keep it around
+      permanently. Build it from the per-test -packages logs from adt-run.
+    - Move status.json into status/ directory and remove the redundant
+      latest.json.
+    - Move packages.json into status/ directory.
 
   [ Antonio Terceiro ]
   * schroot backend: pass --session-id to adt-virt-schroot. This makes it

@@ -155,7 +155,7 @@ jQuery(function($) {
   });
 
 
-  $.get(DATA_DIR + '/packages.json', function(data) {
+  $.get(DATA_DIR + '/status/packages.json', function(data) {
     $.each(data, function(index, item) {
       var $link = $('<a></a>');
       $link.addClass(item.status)

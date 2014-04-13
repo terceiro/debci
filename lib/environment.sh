@@ -95,6 +95,7 @@ done
 alias prepare_args='while [ "$1" != '--' ]; do shift; done; shift'
 
 debci_data_dir="${debci_data_basedir}/${debci_suite}-${debci_arch}"
+debci_autopkgtest_dir="${debci_data_dir}/autopkgtest"
 debci_packages_dir="${debci_data_dir}/packages"
 debci_status_dir="${debci_data_dir}/status"
 

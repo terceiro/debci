@@ -39,23 +39,23 @@ process_package() {
 
   last_status=$($debci_bin_dir/debci-status "$pkg")
 
-  # find next available run id
-  local base_run_id=$(date --rfc-3339=date)
-  run_id="$base_run_id"
+  # output directory for test-package/adt-run
+  run_id=$(date +%Y%m%d_%H%M%S)
+  adt_out_dir="$(autopkgtest_dir_for_package "$pkg")/$run_id"
+  mkdir -p "$adt_out_dir"
   status_file="${status_dir}/${run_id}.json"
-  i=1
-  while [ -f "$status_file" ]; do
-    run_id="${base_run_id}-${i}"
-    status_file="${status_dir}/${run_id}.json"
-    i=$(($i + 1))
-  done
   log_file="${status_dir}/${run_id}.log"
 
   do_process_package > "$log_file" 2>&1
   report_status "$pkg" "${status:-skip}"
 
   if [ -s "$log_file" ]; then
+    # we actually ran, update "latest" links
     ln -sf "${run_id}.log" "${status_dir}/latest.log"
+    ln -sf "${run_id}.json" "${status_dir}/latest.json"
+    rm -f "${status_dir}/latest-autopkgtest"
+    # generate relative symlink for relocatability
+    ln -s "../../..${adt_out_dir#$debci_data_dir}" "${status_dir}/latest-autopkgtest"
   fi
 }
 
@@ -68,7 +68,7 @@ do_process_package() {
   start_time=$(date +%s)
 
   set +e
-  test-package "$pkg" "$tmp_dir/out"
+  test-package "$pkg" "$adt_out_dir"
   exit_status=$?
   set -e
 
@@ -109,44 +109,39 @@ do_process_package() {
 
 check_base_system() {
 
-  if [ ! -e "${tmp_dir}/out/testbed-packages" ]; then
+  if [ ! -e "$adt_out_dir/testbed-packages" ]; then
     return 0
   fi
 
-  if [ -f "${status_dir}/base.txt" ]; then
-    if diff -u \
-      --label previous-run/base.txt "${status_dir}/base.txt" \
-      --label current-run/base.txt "${tmp_dir}/out/testbed-packages" \
+  if [ -f "${status_dir}/latest-autopkgtest/testbed-packages" ]; then
+    if ! diff -u \
+      --label previous-run/testbed-packages "${status_dir}/latest-autopkgtest/testbed-packages" \
+      --label current-run/testbed-packages "${adt_out_dir}/testbed-packages" \
         > "${tmp_dir}/base.diff"; then
-      :
-    else
-      cp "${tmp_dir}/out/testbed-packages" "${status_dir}/base.txt"
       banner "Change in the base system since last run"
       cat "${tmp_dir}/base.diff"
     fi
-  else
-    cp "${tmp_dir}/out/testbed-packages" "${status_dir}/base.txt"
   fi
 
   banner "Base system"
-  cat "${status_dir}/base.txt"
+  cat "${adt_out_dir}/testbed-packages"
 }
 
 check_dependencies() {
-  deps=$(cat ${tmp_dir}/out/*t-*-packages | sort -u)
+  deps=$(cat $adt_out_dir/*t-*-packages | sort -u)
 
   if [ -n "$deps" ]; then
     banner "Test dependencies"
     echo "$deps"
-    if [ -e "$status_dir/test-packages.txt" ]; then
-      if echo "$deps" | diff -u --label last-run/test-packages.txt "$status_dir/test-packages.txt" --label current-run/test-packages.txt - > "$tmp_dir/test-packages.diff"; then
-        : # no changes
-      else
-        banner "Change in test packages for $pkg since last test run"
-        cat "$tmp_dir/test-packages.diff"
+    if [ -d ${status_dir}/latest-autopkgtest ]; then
+      cat ${status_dir}/latest-autopkgtest/*t-*-packages | sort -u > $tmp_dir/last_test_packages
+      if [ -s "$tmp_dir/last_test_packages" ]; then
+        if ! echo "$deps" | diff -u --label last-run/test-packages "$tmp_dir/last_test_packages" --label current-run/test-packages - > "$tmp_dir/test-packages.diff"; then
+          banner "Change in test packages for $pkg since last test run"
+          cat "$tmp_dir/test-packages.diff"
+        fi
       fi
     fi
-    echo "$deps" > "${status_dir}/test-packages.txt"
   fi
 }
 
@@ -209,8 +204,8 @@ check_blame() {
 }
 
 record_status() {
-  if [ -e ${tmp_dir}/out/testpkg-version ]; then
-      version=$(cut -f2 -d' ' ${tmp_dir}/out/testpkg-version)
+  if [ -e "$adt_out_dir/testpkg-version" ]; then
+      version=$(cut -f2 -d' ' "$adt_out_dir/testpkg-version")
   else
       # test did not run, or backend forgets --output-dir
       version="n/a"
@@ -243,7 +238,6 @@ record_status() {
   "message": "${message}"
 }
 EOF
-  ln -sf "${run_id}.json" "$status_dir/latest.json"
 
   # TODO cleanup old entries (?)
 
