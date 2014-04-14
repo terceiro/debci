@@ -36,17 +36,21 @@ end
 
 case r
 when 0..1
-  puts "Passed :-)"
+  log = "Passed :-)"
   rc = 0
 when 2
-  puts "Failed :-("
+  log = "Failed :-("
   rc = 4
 when 3
-  puts "Some error ocurred"
+  log = "Some error ocurred"
   rc = 16
 end
 
+File.open(File.join(outdir, 'log'), 'w') do |f|
+  f.puts log
+end
 File.open(File.join(outdir, 'exitcode'), 'w') do |f|
   f.puts rc
 end
+puts log
 exit rc

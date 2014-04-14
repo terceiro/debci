@@ -59,6 +59,7 @@ debci (0.6) UNRELEASED; urgency=medium
   * backends/*/test-package: Write exit code into "exitcode" file in output
     dir, so that we retain it even when we switch to asynchronous/remote
     processing.
+  * backends/fake/test-package: Write log file into output dir, like adt-run.
 
   [ Antonio Terceiro ]
   * schroot backend: pass --session-id to adt-virt-schroot. This makes it
