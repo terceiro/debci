@@ -2,8 +2,273 @@
 
 set -eu
 
-base=$(readlink -f $(dirname $(readlink -f $0))/..)
-. $base/lib/environment.sh
+debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
+. $debci_base_dir/lib/environment.sh
+. $debci_base_dir/lib/functions.sh
+
+tmp_dir=$(mktemp -d)
+cleanup() {
+  if [ -d "$tmp_dir" ]; then
+    rm -rf "$tmp_dir"
+  fi
+}
+trap cleanup INT TERM EXIT
+
+
+# check for new autopkgtest outputs and generate debci metadata for those
+generate_packages() {
+  for adtpkgdir in "$debci_autopkgtest_dir"/*/*; do
+    status_dir=$(status_dir_for_package $(basename "$adtpkgdir"))
+    mkdir -p "$status_dir"
+    if [ -e "$status_dir/latest-autopkgtest" ]; then
+      latest_run=$(basename $(readlink "$status_dir/latest-autopkgtest"))
+    else
+      # first seen, process all runs
+      latest_run=0
+    fi
+
+    # find all results which are newer than latest_run; ignore ones which are
+    # currently running, i. e. don't have an exitcode yet
+    for run in "$adtpkgdir"/*; do
+      if expr $(basename "$run") '>' $latest_run >/dev/null && [ -s "$run/exitcode" ]; then
+        generate_package_run "$run" "$status_dir"
+      fi
+    done
+  done
+}
+
+# generate debci metadata for autopkgtest output $1 into status dir $2
+generate_package_run() {
+  adtresult="$1"
+  status_dir="$2"
+  run_id=$(basename "$adtresult")
+  pkg=$(basename "$status_dir")
+  last_status=$($debci_bin_dir/debci-status "$pkg")
+  status_file="${status_dir}/${run_id}.json"
+  log_file="${status_dir}/${run_id}.log"
+  log "${pkg}: new run $run_id (last status: $last_status)"
+
+  # parse duration out of log file
+  local timestamps="$(sed -ns '/^adt-run \[/ { s/^adt-run \[\([0-9: -]*\)\].*$/\1/; p}' "$adtresult/log")"
+  local last_timestamp="$(echo "$timestamps" | tail -n 1)"
+  local start_time=$(date -d "$(echo "$timestamps" | head -n 1)" +%s)
+  local finish_time=$(date -d "$last_timestamp" +%s)
+  duration=$(($finish_time - $start_time))
+
+  hours=$(( $duration / 3600 ))
+  minutes=$(( ($duration % 3600) / 60 ))
+  seconds=$(( $duration - ($hours * 3600) - ($minutes * 60) ))
+  duration_human="${hours}h ${minutes}m ${seconds}s"
+
+  generate_package_run_log_file > "$log_file"
+
+  generate_package_blame
+  generate_package_json "$last_timestamp"
+
+  # update "latest" links
+  ln -sf "${run_id}.log" "${status_dir}/latest.log"
+  ln -sf "${run_id}.json" "${status_dir}/latest.json"
+  rm -f "${status_dir}/latest-autopkgtest"
+  # generate relative symlink for relocatability
+  ln -s "../../..${adtresult#$debci_data_dir}" "${status_dir}/latest-autopkgtest"
+}
+
+# write package test log to stdout (gets redirected to $log_file)
+generate_package_run_log_file()
+{
+  # platform information
+  banner "Platform information"
+  echo "Package versions:"
+  dpkg-query --show debci autopkgtest 2>/dev/null| indent
+  echo "Backend: $debci_backend"
+
+  # reason for run
+  if [ -s "${status_dir}/reason.txt" ]; then
+    banner "Triggers for test run"
+    cat "${status_dir}/reason.txt"
+    rm "${status_dir}/reason.txt"
+  fi
+
+  # adt log
+  banner "autopkgtest log"
+  cat "$adtresult/log"
+
+  # package versions
+  generate_package_run_dependencies
+  generate_package_run_testbed_packages
+
+  # result
+  exitcode_to_statusmsg
+  banner "Result"
+  echo "∙ Status: $status ($message)"
+  echo "∙ Duration: ${duration_human}"
+}
+
+# set $status and $message from $adtresult's exit code
+exitcode_to_statusmsg()
+{
+  case $(cat "$adtresult/exitcode") in
+    0)
+      status=pass
+      message='All tests passed'
+      ;;
+    2)
+      status=pass
+      message='Tests passed, but at least one test skipped'
+      ;;
+    4)
+      status=fail
+      message='Tests failed'
+      ;;
+    6)
+      status=fail
+      message='Tests failed, and at least one test skipped'
+      ;;
+    *)
+      status=tmpfail
+      message='Could not run tests due to a temporary failure'
+      ;;
+  esac
+}
+
+# part of generate_package_run_log_file, show packages and differences in
+# testbed base system
+generate_package_run_testbed_packages() {
+  if [ ! -e "$adtresult/testbed-packages" ]; then
+    return 0
+  fi
+
+  if [ -f "${status_dir}/latest-autopkgtest/testbed-packages" ]; then
+    if ! diff -u \
+      --label previous-run/testbed-packages "${status_dir}/latest-autopkgtest/testbed-packages" \
+      --label current-run/testbed-packages "${adtresult}/testbed-packages" \
+        > "${tmp_dir}/base.diff"; then
+      banner "Change in the base system since last run"
+      cat "${tmp_dir}/base.diff"
+    fi
+  fi
+
+  banner "Base system"
+  cat "${adtresult}/testbed-packages"
+}
+
+# part of generate_package_run_log_file, show packages and differences test
+# dependencies
+generate_package_run_dependencies() {
+  deps=$(cat $adtresult/*t-*-packages 2>/dev/null| sort -u)
+
+  if [ -n "$deps" ]; then
+    banner "Test dependencies"
+    echo "$deps"
+    if [ -d ${status_dir}/latest-autopkgtest ]; then
+      cat ${status_dir}/latest-autopkgtest/*t-*-packages | sort -u > $tmp_dir/last_test_packages
+      if [ -s "$tmp_dir/last_test_packages" ]; then
+        if ! echo "$deps" | diff -u --label last-run/test-packages "$tmp_dir/last_test_packages" --label current-run/test-packages - > "$tmp_dir/test-packages.diff"; then
+          banner "Change in test packages for $pkg since last test run"
+          cat "$tmp_dir/test-packages.diff"
+        fi
+      fi
+    fi
+  fi
+}
+
+# compute $blame for current $pkg, from tmp_dir/test-packages.diff
+generate_package_blame() {
+  blame="$(debci-status --field blame --json "$pkg")"
+  if [ "$blame" = 'unknown' ]; then
+    blame='[]'
+  fi
+
+  diff="${tmp_dir}/test-packages.diff"
+  previous_diff="${status_dir}/test-packages.diff"
+
+  if [ ! -e "$diff" ]; then
+    return
+  fi
+
+  case "$status" in
+    pass)
+      blame='[]'
+      ;;
+    fail)
+      case "${last_status}" in
+        pass)
+          # identify the packages to be blamed
+          blame="$(debci-blame "${diff}" "$pkg")"
+          ;;
+        fail)
+          # update versions from the blamed packages, but not include new
+          # packages in the blame list. the file pointed to by $previous_diff
+          # is guaranteed to exit at this point
+          if [ -e "${previous_diff}" ]; then
+            blamed_pkgs="$(debci-status --field blame "$pkg" | awk '{print($1)}')"
+            combinediff "${previous_diff}" "${diff}" > "${diff}.new"
+            mv "${diff}.new" "${diff}"
+            blame=$(debci-blame "${diff}" "$pkg" $blamed_pkgs)
+          fi
+          ;;
+      esac
+      ;;
+  esac
+
+  if [ -f "${diff}" ]; then
+    # record dependency chain diff from now to be used in future runs
+    cp "${diff}" "${previous_diff}"
+  fi
+}
+
+# arguments: <timestamp>
+generate_package_json() {
+  local timestamp="$1"
+  # test did not run
+  local version="n/a"
+  if [ -e "$adtresult/testpkg-version" ]; then
+      version=$(cut -f2 -d' ' "$adtresult/testpkg-version")
+  fi
+
+  local previous_status="${last_status}"
+  if [ "${previous_status}" = 'tmpfail' ]; then
+    previous_status=$(debci-status --field previous_status "$pkg")
+  fi
+
+  # latest entry
+  cat > "${status_file}" <<EOF
+{
+  "run_id": "${run_id}",
+  "package": "${pkg}",
+  "version": "${version}",
+  "date": "${timestamp}",
+  "status": "${status}",
+  "blame": $blame,
+  "previous_status": "${previous_status}",
+  "duration_seconds": "${duration}",
+  "duration_human": "${duration_human}",
+  "message": "${message}"
+}
+EOF
+
+  # TODO cleanup old entries (?)
+
+  # history
+  history_file="$tmp_dir/history.json"
+  echo '[' > "$history_file"
+  sep=''
+  entries=$(
+    find "$status_dir" -name '*.json' \
+      -and -not -name latest.json \
+      -and -not -name history.json \
+      | sort -Vr
+  )
+  for entry in $entries; do
+    if [ -n "$sep" ]; then
+      echo "$sep" >> "$history_file"
+    fi
+    sep=,
+    cat $entry >> "$history_file"
+  done
+  echo ']' >> "$history_file"
+  cp "$history_file" "$status_dir/history.json"
+}
 
 generate_status_entry() {
   local duration="$1"
@@ -41,13 +306,10 @@ generate_history() {
 
 prepare_args
 
-if [ ! -d "${debci_packages_dir}" ]; then
-    echo "${debci_packages_dir} does not exist, nothing to do."
-    exit 0
-fi
-
+generate_packages
+log "Updating global status..."
 generate_status_entry "$@"
 generate_history > "${debci_status_dir}/history.json"
 
-$base/bin/debci-status --all --status-file > "${debci_status_dir}/packages.json"
+$debci_base_dir/bin/debci-status --all --status-file > "${debci_status_dir}/packages.json"
 

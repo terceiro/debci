@@ -74,7 +74,7 @@ report_status() {
       fail)
         color=1
         ;;
-      tmpfail)
+      tmpfail|requested)
         color=3
         ;;
       *)

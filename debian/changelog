@@ -60,6 +60,10 @@ debci (0.6) UNRELEASED; urgency=medium
     dir, so that we retain it even when we switch to asynchronous/remote
     processing.
   * backends/fake/test-package: Write log file into output dir, like adt-run.
+  * Move test result evaluation, log and meta data creation from debci-test to
+    debci-generate-indexes. This prepares the way for running adt-run
+    asynchronously or remotely, and picking up the results from the
+    autopkgtest/ data directory.
 
   [ Antonio Terceiro ]
   * schroot backend: pass --session-id to adt-virt-schroot. This makes it
