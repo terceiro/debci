@@ -55,6 +55,7 @@ debci (0.6) UNRELEASED; urgency=medium
     instance.
   * app.js: Filter out query strings from URL for constructing the .json URLs.
     Fixes wrong URLs after using the package search field.
+  * backends/schroot/test-package: Drop unused temporary dir.
 
   [ Antonio Terceiro ]
   * schroot backend: pass --session-id to adt-virt-schroot. This makes it
