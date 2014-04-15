@@ -64,6 +64,8 @@ debci (0.6) UNRELEASED; urgency=medium
     debci-generate-indexes. This prepares the way for running adt-run
     asynchronously or remotely, and picking up the results from the
     autopkgtest/ data directory.
+  * app.js: In the per-package test list, add link to autopkgtest files
+    (artifacts).
 
   [ Antonio Terceiro ]
   * schroot backend: pass --session-id to adt-virt-schroot. This makes it

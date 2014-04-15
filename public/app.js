@@ -215,19 +215,21 @@ jQuery(function($) {
       $header.append($('<th>').html('Date'));
       $header.append($('<th>').html('Duration'));
       $header.append($('<th>').html('Status'));
-      $header.append($('<th>').html('Log'));
+      $header.append($('<th colspan="2">').html('Results'));
       $table.append($header);
 
       $.each(history, function(index, entry) {
         var run_id = (entry.run_id || entry.date);
         var log = DATA_DIR + '/packages/' + pkg_dir + '/' + run_id  + ".log";
+        var test_out = DATA_DIR + '/autopkgtest/' + pkg_dir + '/' + run_id;
 
         var $row = $('<tr>');
         $row.append($('<td>').html(entry.version));
         $row.append($('<td>').html(entry.date));
         $row.append($('<td>').html(entry.duration_human));
         $row.append($('<td>').html(entry.status).addClass(entry.status));
-        $row.append($('<td>').html($('<a>').attr('href', log).html('view log')));
+        $row.append($('<td>').html($('<a>').attr('href', log).html('log')));
+        $row.append($('<td>').html($('<a>').attr('href', test_out).html('artifacts')));
 
         $table.append($row);
       });
