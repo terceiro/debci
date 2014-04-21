@@ -66,6 +66,7 @@ debci (0.6) UNRELEASED; urgency=medium
     autopkgtest/ data directory.
   * app.js: In the per-package test list, add link to autopkgtest files
     (artifacts).
+  * debci-status --all: Output a list also if there is only one package.
 
   [ Antonio Terceiro ]
   * schroot backend: pass --session-id to adt-virt-schroot. This makes it
