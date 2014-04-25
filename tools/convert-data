@@ -41,6 +41,10 @@ for p in */*; do
     for log in $(ls $p/[0-9]*.log); do
         run_id=$(basename "$log" .log)
         json="${log%.log}.json"
+        if [ ! -e "$json" ]; then
+            echo "missing $json, ignoring $log"
+            continue
+        fi
         # convert time in .json to our new timestamp format
         json_time=$(sed -n '/"date"/ { s/^.*"\(20[^"]*\).*$/\1/; p}' "$json")
         time=$(date -u -d "$json_time" '+%Y%m%d_%H%M%S')
