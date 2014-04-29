@@ -67,6 +67,8 @@ debci (0.6) UNRELEASED; urgency=medium
   * app.js: In the per-package test list, add link to autopkgtest files
     (artifacts).
   * debci-status --all: Output a list also if there is only one package.
+  * debci-status --all: Sort package names so that they appear sorted in the
+    web UI.
 
   [ Antonio Terceiro ]
   * schroot backend: pass --session-id to adt-virt-schroot. This makes it

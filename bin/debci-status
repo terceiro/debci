@@ -109,7 +109,7 @@ done
 
 if [ $all ]; then
   if [ -d "$debci_packages_dir" ]; then
-    pkgs=$(find "$debci_packages_dir" -mindepth 2 -maxdepth 2 | xargs -n 1 basename)
+    pkgs=$(find "$debci_packages_dir" -mindepth 2 -maxdepth 2 | xargs -n 1 basename | sort)
     eval set -- $pkgs
   else
     exit 0
