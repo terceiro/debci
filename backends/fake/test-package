@@ -25,8 +25,8 @@ else
   r = rand(4)
 end
 
+FileUtils.mkdir_p(outdir)
 if ENV["DEBCI_FAKE_DEPS"]
-  FileUtils.mkdir_p(outdir)
   File.open(File.join(outdir, 'foo0t-mytest-packages'), 'w') do |f|
     ENV["DEBCI_FAKE_DEPS"].split('|').each do |line|
       f.puts line.gsub(" ", "\t")
@@ -36,13 +36,21 @@ end
 
 case r
 when 0..1
-  puts "Passed :-)"
-  exit 0
+  log = "Passed :-)"
+  rc = 0
 when 2
-  puts "Failed :-("
-  exit 4
+  log = "Failed :-("
+  rc = 4
 when 3
-  puts "Some error ocurred"
-  exit 16
+  log = "Some error ocurred"
+  rc = 16
 end
 
+File.open(File.join(outdir, 'log'), 'w') do |f|
+  f.puts log
+end
+File.open(File.join(outdir, 'exitcode'), 'w') do |f|
+  f.puts rc
+end
+puts log
+exit rc

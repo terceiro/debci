@@ -33,6 +33,42 @@ debci (0.6) UNRELEASED; urgency=medium
     - Add devscripts dependency for chdist, and demote schroot dependency to
       recommends.
     This allows us to use other backends, like QEMU or remote ones.
+  * Reorganize data directory:
+    - Split out autopkgtest output into ${debci_data_dir}/autopkgtest/:
+      This now contains a full directory for each test run with all of
+      adt-run's --output-dir files. This provides access to individual test
+      stdout/err logs, the package version lists, and additional artifacts
+      that tests produce. With this, autopkgtest/ becomes eligible for being
+      on a remote file system and can be synced/rebuilt independently of the
+      metadata.
+    - Use run IDs with format YYYYMMDD_HHMMSS[machine or tags] instead of the
+      old YYYYMMDD-n as the former works for a distributed file system and
+      remote workers.
+    - base.txt is now replaced with adt-run's testbed-packages output file.
+    - test-packages.txt gets dropped as there is no need to keep it around
+      permanently. Build it from the per-test -packages logs from adt-run.
+    - Move status.json into status/ directory and remove the redundant
+      latest.json.
+    - Move packages.json into status/ directory.
+  * Add tools/convert-data: Convert data/ directory to changed format from
+    above. This can be dropped again after running it on the production debci
+    instance.
+  * app.js: Filter out query strings from URL for constructing the .json URLs.
+    Fixes wrong URLs after using the package search field.
+  * backends/schroot/test-package: Drop unused temporary dir.
+  * backends/*/test-package: Write exit code into "exitcode" file in output
+    dir, so that we retain it even when we switch to asynchronous/remote
+    processing.
+  * backends/fake/test-package: Write log file into output dir, like adt-run.
+  * Move test result evaluation, log and meta data creation from debci-test to
+    debci-generate-indexes. This prepares the way for running adt-run
+    asynchronously or remotely, and picking up the results from the
+    autopkgtest/ data directory.
+  * app.js: In the per-package test list, add link to autopkgtest files
+    (artifacts).
+  * debci-status --all: Output a list also if there is only one package.
+  * debci-status --all: Sort package names so that they appear sorted in the
+    web UI.
 
   [ Antonio Terceiro ]
   * schroot backend: pass --session-id to adt-virt-schroot. This makes it

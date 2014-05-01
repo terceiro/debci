@@ -39,6 +39,13 @@ indent() {
   sed -e 's/^/    /'
 }
 
+autopkgtest_dir_for_package() {
+  local pkg="$1"
+  pkg_dir=$(echo "$pkg" | sed -e 's/\(\(lib\)\?.\).*/\1\/&/')
+  echo "${debci_autopkgtest_dir}/${pkg_dir}"
+}
+
+
 status_dir_for_package() {
   local pkg="$1"
   pkg_dir=$(echo "$pkg" | sed -e 's/\(\(lib\)\?.\).*/\1\/&/')
@@ -67,7 +74,7 @@ report_status() {
       fail)
         color=1
         ;;
-      tmpfail)
+      tmpfail|requested)
         color=3
         ;;
       *)

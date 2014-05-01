@@ -109,7 +109,7 @@ done
 
 if [ $all ]; then
   if [ -d "$debci_packages_dir" ]; then
-    pkgs=$(find "$debci_packages_dir" -mindepth 2 -maxdepth 2 | xargs -n 1 basename)
+    pkgs=$(find "$debci_packages_dir" -mindepth 2 -maxdepth 2 | xargs -n 1 basename | sort)
     eval set -- $pkgs
   else
     exit 0
@@ -124,7 +124,7 @@ fi
 # JSON data
 indent='cat'
 if [ $status_file ]; then
-  if [ $# -gt 1 ]; then
+  if [ $# -gt 1 -o $all ]; then
     echo "["
     indent=indent
   fi
@@ -136,7 +136,7 @@ if [ $status_file ]; then
     get_json "$pkg" | $indent
     prefix=','
   done
-  [ $# -gt 1 ] && echo "]"
+  [ $# -gt 1 -o $all ] && echo "]"
   exit
 fi
 
