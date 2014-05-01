@@ -41,7 +41,7 @@ diff = ARGV.shift
 pkg = ARGV.shift
 blame = Blame.new(pkg, *ARGV)
 
-File.open(diff).lines.each do |line|
+File.open(diff).each_line do |line|
   if line =~ /^\+/ && line !~ /^\+\+\+/
     blame << line.strip.gsub(/\+/, '')
   end

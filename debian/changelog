@@ -93,6 +93,7 @@ debci (0.6) UNRELEASED; urgency=medium
   * add `debci` binary to not clutter the namespace. When you call `debci
     COMMAND` it will set PATH to include the debci bin/ and then call
     `debci-COMMAND` with the supplied arguments.
+  * debci-blame: replace usage of deprecated IO#lines method with IO#each_line
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 05 Apr 2014 12:18:39 +0100
 
