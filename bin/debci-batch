@@ -96,7 +96,7 @@ process_all_packages() {
 
   debci-cleanup
 
-  debci-generate-index $(($finish - $start))
+  debci-generate-index --duration $(($finish - $start))
 }
 
 needs_processing() {

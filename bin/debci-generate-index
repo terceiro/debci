@@ -2,6 +2,21 @@
 
 set -eu
 
+long_options='duration:'
+usage() {
+  echo "usage: $0 [OPTIONS] [PACKAGE ...]"
+  echo
+  echo "When packages are specified, only the named packages are processed"
+  echo
+  echo "Options:"
+  echo
+  echo "  --duration N      Specifies the total duration in seconds of the "
+  echo "                    latest test run batch"
+  echo
+  echo "$usage_shared_options"
+  echo
+}
+
 debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $debci_base_dir/lib/environment.sh
 . $debci_base_dir/lib/functions.sh
@@ -271,7 +286,6 @@ EOF
 }
 
 generate_status_entry() {
-  local duration="$1"
   pass=$(grep -l '"status":\s*"pass",' ${debci_packages_dir}/*/*/latest.json | wc -l)
   fail=$(grep -l '"status":\s*"fail",' ${debci_packages_dir}/*/*/latest.json | wc -l)
   tmpfail=$(grep -l '"status":\s*"tmpfail",' ${debci_packages_dir}/*/*/latest.json | wc -l)
@@ -281,7 +295,7 @@ generate_status_entry() {
   cat > "${debci_status_dir}/${date}.json" <<EOF
 {
   "date": "$date",
-  "duration": ${duration},
+  "duration": ${run_duration},
   "pass": $pass,
   "fail": $fail,
   "tmpfail": $tmpfail,
@@ -304,12 +318,25 @@ generate_history() {
   echo "]"
 }
 
-prepare_args
+run_duration=0
+while true; do
+  case "$1" in
+    --duration)
+      run_duration="$2"
+      shift 2
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      shift
+      ;;
+  esac
+done
 
 generate_packages
 log "Updating global status..."
-generate_status_entry "$@"
+generate_status_entry
 generate_history > "${debci_status_dir}/history.json"
-
 $debci_base_dir/bin/debci-status --all --status-file > "${debci_status_dir}/packages.json"
-
