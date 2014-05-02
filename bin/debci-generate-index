@@ -32,7 +32,9 @@ trap cleanup INT TERM EXIT
 
 # check for new autopkgtest outputs and generate debci metadata for those
 generate_packages() {
-  for adtpkgdir in "$debci_autopkgtest_dir"/*/*; do
+  local which_pkg="${1:-*}"
+  local initial=$(expr substr "$which_pkg" 1 1)
+  for adtpkgdir in "$debci_autopkgtest_dir"/$initial/$which_pkg; do
     status_dir=$(status_dir_for_package $(basename "$adtpkgdir"))
     mkdir -p "$status_dir"
     if [ -e "$status_dir/latest-autopkgtest" ]; then
@@ -61,7 +63,6 @@ generate_package_run() {
   last_status=$($debci_bin_dir/debci-status "$pkg")
   status_file="${status_dir}/${run_id}.json"
   log_file="${status_dir}/${run_id}.log"
-  log "${pkg}: new run $run_id (last status: $last_status)"
 
   # parse duration out of log file
   local timestamps="$(sed -ns '/^adt-run \[/ { s/^adt-run \[\([0-9: -]*\)\].*$/\1/; p}' "$adtresult/log")"
@@ -76,6 +77,7 @@ generate_package_run() {
   duration_human="${hours}h ${minutes}m ${seconds}s"
 
   generate_package_run_log_file > "$log_file"
+  report_status "$pkg" "$status"
 
   generate_package_blame
   generate_package_json "$last_timestamp"
@@ -335,8 +337,14 @@ while true; do
   esac
 done
 
-generate_packages
-log "Updating global status..."
-generate_status_entry
-generate_history > "${debci_status_dir}/history.json"
-$debci_base_dir/bin/debci-status --all --status-file > "${debci_status_dir}/packages.json"
+if [ $# -gt 0 ]; then
+  for p in $@; do
+    generate_packages "$p"
+  done
+else
+  generate_packages
+  log "I: Updating global status..."
+  generate_status_entry
+  generate_history > "${debci_status_dir}/history.json"
+  $debci_base_dir/bin/debci-status --all --status-file > "${debci_status_dir}/packages.json"
+fi

@@ -1,7 +1,7 @@
 #!/bin/sh
 
-short_options='r:'
-long_options='reason:'
+short_options='r:i'
+long_options='reason:,index'
 
 usage() {
   cat <<EOF
@@ -9,6 +9,8 @@ usage: debci-test [OPTIONS] srcpkg
 
 Options:
   -r FILE, --reason FILE    add FILE contents to log as reason to run this test
+
+  -i, --index               force indexing results just after running the tests
 
 $@
 EOF
@@ -43,12 +45,17 @@ process_package() {
 
 # defaults
 cmdline_reason=''
+index=''
 
 while true; do
   case "$1" in
     -r|--reason)
       shift
       cmdline_reason="$1"
+      shift
+      ;;
+    -i|--index)
+      index=true
       shift
       ;;
     --)
@@ -64,6 +71,9 @@ done
 if [ $# -eq 1 ]; then
   pkg="$1"
   process_package
+  if [ $index ]; then
+    debci-generate-index "$pkg"
+  fi
 else
   echo "usage: $0 [OPTIONS] PACKAGE"
   exit 1

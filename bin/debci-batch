@@ -80,16 +80,14 @@ process_all_packages() {
 
   if [ "$maxjobs" -eq 1 ]; then
     for pkg in $packages; do
-      report_status "$pkg" "requested"
-      debci-test -r "$tmp_dir/${pkg}-reason.txt" "$pkg"
+      debci-test --index --reason "$tmp_dir/${pkg}-reason.txt" "$pkg"
     done
   else
     args=''
     for pkg in $packages; do
-      args="$args -r $tmp_dir/${pkg}-reason.txt $pkg"
-      report_status "$pkg" "requested"
+      args="$args --index --reason $tmp_dir/${pkg}-reason.txt $pkg"
     done
-    parallel -n 3 -j "$maxjobs" debci-test -- $args
+    parallel -n 4 -j "$maxjobs" debci-test -- $args
   fi
 
   local finish=$(date +%s)
