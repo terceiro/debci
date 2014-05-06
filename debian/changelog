@@ -64,8 +64,12 @@ debci (0.6) UNRELEASED; urgency=medium
     debci-generate-indexes. This prepares the way for running adt-run
     asynchronously or remotely, and picking up the results from the
     autopkgtest/ data directory.
-  * app.js: In the per-package test list, add link to autopkgtest files
-    (artifacts).
+  * Reduce the per-test run <timestamp>.log files to the debci metadata
+    (triggers, package versions, package diffs, overall result), as the actual
+    autopkgtest log is now kept in data/*/autopkgtest/. This avoids
+    duplicating the log contents.
+  * app.js: In the per-package test list, add link to latest autopkgtest log
+    and artifacts (other output files).
   * debci-status --all: Output a list also if there is only one package.
   * debci-status --all: Sort package names so that they appear sorted in the
     web UI.

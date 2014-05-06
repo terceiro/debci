@@ -215,21 +215,23 @@ jQuery(function($) {
       $header.append($('<th>').html('Date'));
       $header.append($('<th>').html('Duration'));
       $header.append($('<th>').html('Status'));
-      $header.append($('<th colspan="2">').html('Results'));
+      $header.append($('<th colspan="3">').html('Results'));
       $table.append($header);
 
       $.each(history, function(index, entry) {
         var run_id = (entry.run_id || entry.date);
-        var log = DATA_DIR + '/packages/' + pkg_dir + '/' + run_id  + ".log";
-        var test_out = DATA_DIR + '/autopkgtest/' + pkg_dir + '/' + run_id;
+        var debci_log = DATA_DIR + '/packages/' + pkg_dir + '/' + run_id  + ".log";
+        var adt_log = DATA_DIR + '/packages/' + pkg_dir + '/' + run_id  + ".autopkgtest.log";
+        var artifacts = DATA_DIR + '/autopkgtest/' + pkg_dir + '/' + run_id;
 
         var $row = $('<tr>');
         $row.append($('<td>').html(entry.version));
         $row.append($('<td>').html(entry.date));
         $row.append($('<td>').html(entry.duration_human));
         $row.append($('<td>').html(entry.status).addClass(entry.status));
-        $row.append($('<td>').html($('<a>').attr('href', log).html('log')));
-        $row.append($('<td>').html($('<a>').attr('href', test_out).html('artifacts')));
+        $row.append($('<td>').html($('<a>').attr('href', debci_log).html('debci log')));
+        $row.append($('<td>').html($('<a>').attr('href', adt_log).html('test log')));
+        $row.append($('<td>').html($('<a>').attr('href', artifacts).html('artifacts')));
 
         $table.append($row);
       });
@@ -241,6 +243,9 @@ jQuery(function($) {
         "<pre><code>" +
         "# latest status of the package\n" +
         "$ curl " + data_base + "/" + DATA_DIR + "/packages/" + pkg_dir + '/latest.json\n' +
+        "\n" +
+        "# latest autopkgtest log of the package\n" +
+        "$ curl " + data_base + "/" + DATA_DIR + "/packages/" + pkg_dir + '/latest-autopkgtest/log\n' +
         "\n" +
         "# test run history of the package\n" +
         "$ curl " + data_base + "/" + DATA_DIR + "/packages/" + pkg_dir + '/history.json\n' +

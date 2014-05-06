@@ -87,6 +87,7 @@ generate_package_run() {
   ln -sf "${run_id}.json" "${status_dir}/latest.json"
   rm -f "${status_dir}/latest-autopkgtest"
   # generate relative symlink for relocatability
+  ln -s "../../..${adtresult#$debci_data_dir}/log" "${status_dir}/${run_id}.autopkgtest.log"
   ln -s "../../..${adtresult#$debci_data_dir}" "${status_dir}/latest-autopkgtest"
 }
 
@@ -105,10 +106,6 @@ generate_package_run_log_file()
     cat "${status_dir}/reason.txt"
     rm "${status_dir}/reason.txt"
   fi
-
-  # adt log
-  banner "autopkgtest log"
-  cat "$adtresult/log"
 
   # package versions
   generate_package_run_dependencies
