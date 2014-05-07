@@ -7,8 +7,13 @@ generated = \
 
 all: $(generated)
 
-check:
-	@sh test/runall.sh
+.PHONY: spec check test
+
+spec:
+	rspec --color
+
+check: spec
+	sh test/runall.sh
 
 test: check
 

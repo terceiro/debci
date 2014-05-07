@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -ex
+
+tmpdir=${ADTTMP:-${TMPDIR:-/tmp}}
+cp -r spec $tmpdir
+cd $tmpdir
+rspec

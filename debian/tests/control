@@ -1,4 +1,4 @@
-Tests: test-suite
+Tests: ruby-test-suite uest-suite
 Depends: @, shunit2, faketime
 Restrictions: allow-stderr
 
