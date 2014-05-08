@@ -40,6 +40,9 @@ create_chroot() {
   # never ask for input
   echo 'debconf debconf/frontend select noninteractive' | chroot "$debci_chroot_path" debconf-set-selections
 
+  # use unsafe I/O in dpkg to speed up the installation of packages
+  echo 'force-unsafe-io' > "${debci_chroot_path}/etc/dpkg/dpkg.cfg.d/debci"
+
   # create debci user inside the chroot, with the same UID as the debci user on
   # the host system
   chroot "$debci_chroot_path" adduser \
@@ -73,7 +76,6 @@ root-users=$user
 source-root-users=$user
 root-groups=root
 union-type=aufs
-command-prefix=eatmydata
 EOF
 
   if [ ! -e /etc/schroot/debci ]; then
