@@ -54,7 +54,6 @@ create_chroot() {
     debci
 
   chroot "$debci_chroot_path" apt-get update
-  chroot "$debci_chroot_path" apt-get install -qy eatmydata
 }
 
 setup_schroot() {
