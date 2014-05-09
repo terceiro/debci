@@ -49,13 +49,26 @@ for p in */*; do
         json_time=$(sed -n '/"date"/ { s/^.*"\(20[^"]*\).*$/\1/; p}' "$json")
         time=$(date -u -d "$json_time" '+%Y%m%d_%H%M%S')
 
-        # .log goes into autopkgtest/; it's not quite precise as that also
-        # contains the debci header and footer, but it's good enough
+        # Split the log into the autopkgtest and debci portions. We need to
+        # handle several cases: (1) headers separated with ===, (2) headers
+        # separated with ————, (3) broken log files from bug #747041
+        # we get the debci log on stdout, which we rename to the new timestamp
+        # format; we get the adt log on fd 3 which we put into autopkgtest/
+        # adtflag is our mini-state machine: 1 = in autopkgtest log file part;
+        # 0 = otherwise
         mkdir "$dnew/autopkgtest/$p/$time"
-        cp "$log" "$dnew/autopkgtest/$p/$time/log"
-
-        # *.log is also duplicated into debci/, but with the new timestamp format
-        mv "$log" "$p/${time}.log"
+        awk 'BEGIN { RS="(^|\n)(=+|—+)\n[^\n]*\n(=+|—+)"; ORS=""; adtflag = 0; };
+             { if (adtflag) { print > "/dev/fd/3"; adtflag = 0 } else print $0;
+               if (RT ~ /\n(Started)/) adtflag = 1;
+               print RT }' "$log" > "$p/${time}.log" 3>"$dnew/autopkgtest/$p/$time/log"
+        rm "$log"
+        if test -s "$dnew/autopkgtest/$p/$time/log"; then
+            ln -s "../../../autopkgtest/$p/$time/log" "$p/${time}.autopkgtest.log"
+        else
+            # if we haven't been able to find a "Started.." section, delete the
+            # empty log
+            rm "$dnew/autopkgtest/$p/$time/log"
+        fi
 
         # json needs update of the run ID
         sed "s/\"$run_id\"/\"$time\"/g" < "$json" > "$p/${time}.json"
