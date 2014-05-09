@@ -1,73 +1,64 @@
-# Debian continuous integration
+The [Debian continuous integration](.) (debci) is an automated system that
+coordinates the execution of automated tests against packages in the
+[Debian](http://www.debian.org/) system. `debci` will continuously run
+`autopkgtest` test suites from source packages in the Debian archive.
 
-THE [Debian continuous integration](.) is an automated system that coordinates
-the execution of automated tests against packages in the
-[Debian](http://www.debian.org/) system.
+# FAQ for package maintainers
 
-## How it works
+## How do I get my package to have its test suite executed?
 
-TODO. For now look at
-[source](http://anonscm.debian.org/gitweb/?p=users/terceiro/debci.git;a=summary)
+Testuites must be included in source packages as defined in
+the [DEP-8 specification](http://dep.debian.net/deps/dep8/). In short.
 
-## Setting up a development environment
+* The fact that the package has a test suite must be declared by adding a
+  `Testsuite: autopkgtest` entry to the source stanza in `debian/control`.
+* tests are declared in `debian/tests/control`.
 
-Install the dependencies and build dependencies (look at debian/control). You
-probably also want to install a few other packages:
+Please refer to the DEP-8 spec for details on how to declare your tests.
 
-* `apt-cacher-ng` to cache package downloads.
-* `moreutils` if you want to test the supporting for testing packages in parallel.
-* `lighttpd` to run the web interface (see below for more information)
-  * Note: you might want to not have lighttpd running as a daemon on your system.
+## How exactly is the test suite executed?
 
-After having the dependencies installed, the first step is to set up the test
-environment. To do that, you need to run the following command (which needs
-root permissions):
+Test suites are executed by
+[autopkgtest](http://packages.debian.org/autopkgtest). The version of
+autopkgtest used to execute the tests is shown in the log file for each test
+run.
 
-    $ sudo ./bin/debci-setup
+## How often are test suites executed?
 
-If you run debci right now, it would run the tests for **every package** in
-Debian, and you don't want that for a development environment. To restrict
-debci to a list of packages, create a file named `whitelist` inside the
-`config` directory, containing one package name per line. Here is an example
-with packages whose tests are pretty fast:
+The test suite for a source package will be executed:
 
-```
-$ cat config/whitelist
-ruby-defaults
-rubygems-integration
-ruby-ffi
-rake
-```
+* when any package in the dependency chain of its binary packages changes;
+* when 1 month is passed since the test suite was run;
 
-You might want to test with other packages, that's fine. Just take into
-consideration that the more packages you have, the longer debci will take to
-finish a run.
+## What exactly is the environment where the tests are run?
 
-Now you are ready to actually run debci:
+`debci` is designed to support several text execution backends. The backend
+used for a test run is show in the corresponfing log file.
 
-    $ ./bin/debci-batch
+For the **schroot** backend:
 
-To visualize the web interface, follow the following steps:
+* The test chroot is a clean chroot, created with debootstrap with no extra arguments.
+* dpkg is configured to use the `--force-unsafe-io` option to speed up the installation of packages.
+* The chroot uses the [`debci` profile](http://anonscm.debian.org/gitweb/?p=collab-maint/debci.git;a=tree;f=etc/schroot/debci), installed by the `debci` package.
 
-    $ make
-    $ ./tools/server.sh
+# Reporting Bugs
 
-Now browse to [http://localhost:8888/](http://localhost:8888/)
+Please report bugs against the [debci package](https://bugs.debian.org/debci)
+in the [Debian BTS](http://bugs.debian.org/).
 
-If you think the web interface looks empty, it is because a single debci run
-does not provide enough data to work with.  You might want to generate some
-fake data so the web interface will look a lot nicer:
+# Developer information
 
-    $ ./tools/gen-fake-data.sh
+Read
+[HACKING.md](http://anonscm.debian.org/gitweb/?p=collab-maint/debci.git;a=blob;f=HACKING.md)
+in the git repository.
 
-
-## Contact
+# Contact
 
 * mailing list: [debian-qa@lists.debian.org](http://lists.debian.org/debian-qa/)
 * IRC: `#debian-qa` in the OFTC network (a.k.a `irc.debian.org`). Feel free to
   highlight `terceiro`.
 
-## Copyright and Licensing information
+# Copyright and Licensing information
 
 Copyright © 2014 Antonio Terceiro.
 

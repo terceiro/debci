@@ -62,3 +62,16 @@
 .request-search, .search-count {
   margin: 1em auto;
 }
+
+
+/* -----------------------------------------------------------------
+ * documentation page
+ * ----------------------------------------------------------------- */
+
+#doc-main {
+  border-left: 2px solid #eeeeec;
+}
+
+#doc-main h2 {
+  color: rgb(153,153,153);
+}

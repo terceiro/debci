@@ -1,6 +1,6 @@
 /data
-/public/doc
-/public/*.js
+/public/doc/
+/public/jquery*.js
 /config/whitelist
 /chroots/*
 /gnupg/*

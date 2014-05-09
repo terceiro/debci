@@ -16,7 +16,9 @@ doc: public/doc/index.html
 
 public/doc/index.html: README.md
 	mkdir -p public/doc
-	pandoc -f markdown -t html5 -s -o $@ $<
+	pandoc --from markdown --to html5 --standalone --template public/doc-template.html --table-of-contents --toc-depth=1 -o $@ $<
+
+public/doc/index.html: public/doc-template.html
 
 public/jquery.js:
 	ln -s /usr/share/javascript/jquery/jquery.min.js $@
