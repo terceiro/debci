@@ -36,15 +36,17 @@ end
 
 case r
 when 0..1
-  log = "Passed :-)"
+  log = "Passed :-)\n"
   rc = 0
 when 2
-  log = "Failed :-("
+  log = "Failed :-(\n"
   rc = 4
 when 3
-  log = "Some error ocurred"
+  log = "Some error ocurred\n"
   rc = 16
 end
+
+log = log + "adt-run [%s]: finished\n" % Time.now.strftime('%Y-%m-%d %H:%M:%S')
 
 File.open(File.join(outdir, 'log'), 'w') do |f|
   f.puts log
