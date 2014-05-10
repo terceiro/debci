@@ -1,0 +1,36 @@
+#!/bin/sh
+
+set -eu
+
+usage() {
+  echo "Usage: debci config [OPTIONS] KEY [KEY ..]"
+  echo
+  echo "Display the values for the passed KEYs"
+  if [ $# -ne 0 ]; then
+    echo
+    echo "$@"
+  fi
+}
+
+debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
+cd $debci_base_dir
+. lib/environment.sh
+prepare_args
+
+if [ $# -eq 0 ]; then
+  usage
+  exit 1
+fi
+
+notfound=0
+for key in "$@"; do
+  eval "value=\"\${debci_${key}:-}\""
+  if [ -n "$value" ]; then\
+    echo "$key=$value"
+  else
+    echo "E: key $key not found!" >&2
+    notfound=$(expr $notfound + 1)
+  fi
+done
+
+exit $notfound
