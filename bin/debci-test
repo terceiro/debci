@@ -35,6 +35,16 @@ process_package() {
   # output directory for test-package/adt-run
   run_id=$(date +%Y%m%d_%H%M%S)
   adt_out_dir="$(autopkgtest_dir_for_package "$pkg")/$run_id"
+
+  inc=0
+  orig_run_id="$run_id"
+  while [ -d "$adt_out_dir" ]; do
+    # this in *very* unlikely to happen in production, but we need this for the
+    # test suite
+    run_id="${orig_run_id}.${inc}"
+    adt_out_dir="$(autopkgtest_dir_for_package "$pkg")/$run_id"
+  done
+
   mkdir -p "$adt_out_dir"
 
   # ignore output; we'll get the log from the adt-run output-dir
