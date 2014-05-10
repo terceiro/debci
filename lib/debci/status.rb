@@ -1,6 +1,24 @@
+require 'json'
+require 'time'
+
 module Debci
 
   class Status < Struct.new(:suite, :architecture, :run_id, :package, :version, :date, :status, :blame, :previous_status, :duration_seconds, :duration_human, :message)
+
+    def newsworthy?
+      [
+        [:fail, :pass],
+        [:pass, :fail],
+      ].include?([status, previous_status])
+    end
+
+    def headline
+      "#{package} tests #{status.upcase}ED on #{suite}/#{architecture}"
+    end
+
+    def description
+      "The tests for #{package} #{status.upcase}ED on #{suite}/#{architecture} but have previosly #{previous_status.upcase}ED."
+    end
 
     class << self
 
@@ -20,6 +38,7 @@ module Debci
             end
           status.status = data.fetch('status', :unknown).to_sym
           status.previous_status = data.fetch('previous_status', :unknown).to_sym
+          status.blame = data['blame']
           status.duration_seconds =
             begin
               Integer(data.fetch('duration_seconds', 0))

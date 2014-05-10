@@ -31,6 +31,7 @@ describe Debci::Status do
     it('gets duration in seconds') { expect(@status.duration_seconds).to eq(45)}
     it('gets duration human') { expect(@status.duration_human).to eq('0h 0m 45s') }
     it('gets message') { expect(@status.message).to eq("All tests passed") }
+    it('gets blame') { expect(@status.blame).to eq(['foo 1.1', 'bar 2.0']) }
   end
 
   it('ignores invalid date') do
@@ -47,6 +48,49 @@ describe Debci::Status do
 
     it('ignores invalid date') { expect(@status.date).to be_nil }
     it('ignores invalid duration') { expect(@status.duration_seconds).to be_nil }
+  end
+
+  context 'news' do
+    it 'is newsworthy when going from pass to fail' do
+      status = status_with(status: :fail, previous_status: :pass)
+      expect(status).to be_newsworthy
+    end
+
+    it 'is newsworthy when going from fail to pass' do
+      status = status_with(status: :pass, previous_status: :fail)
+      expect(status).to be_newsworthy
+    end
+
+    it 'is not newsworthy when keeps passing' do
+      status = status_with(status: :pass, previous_status: :pass)
+      expect(status).to_not be_newsworthy
+    end
+
+    it 'is not newsworthiness when keeps failing' do
+      status = status_with(status: :fail, previous_status: :fail)
+      expect(status).to_not be_newsworthy
+    end
+  end
+
+  context 'headline' do
+    let(:status) do
+      status_with(status: :pass, suite: 'unstable', architecture: 'amd64')
+    end
+
+    it 'includes suite in the headline' do
+      expect(status.headline).to match('unstable')
+    end
+    it 'includes architecture in the headline' do
+      expect(status.headline).to match('amd64')
+    end
+  end
+
+  def status_with(data)
+    s = Debci::Status.new
+    data.each do |k,v|
+      s.send("#{k}=", v)
+    end
+    s
   end
 
   def status_file(filename, data)

@@ -15,9 +15,11 @@ describe Debci::Repository do
     mkdir_p 'testing-amd64/packages/r/rake'
     mkdir_p 'testing-i386/packages/r/rake'
 
-    past_status 'unstable-amd64/packages/r/rake', {}, '20140412_212642'
-    latest_status 'unstable-amd64/packages/r/rake', {}
-    latest_status 'testing-amd64/packages/r/rake', {}
+    mkdir_p 'unstable-amd64.old'
+
+    past_status 'unstable-amd64/packages/r/rake', { 'status' => 'pass', 'previous_status' => 'fail' }, '20140412_212642'
+    latest_status 'unstable-amd64/packages/r/rake', { 'status' => 'fail', 'previous_status' => 'pass' }
+    latest_status 'testing-amd64/packages/r/rake', { 'status' => 'fail', 'previous_status' => 'pass'}
 
     mkdir_p 'unstable-amd64/packages/r/rake-compiler'
     mkdir_p 'unstable-i386/packages/r/rake-compiler'
@@ -97,15 +99,24 @@ describe Debci::Repository do
     expect(statuses.first.length).to eq(2) # 2 architectures
     statuses.flatten.each do |s|
       expect(s).to be_a(Debci::Status)
+      expect(['unstable', 'testing']).to include(s.suite)
+      expect(['amd64', 'i386']).to include(s.architecture)
     end
   end
 
-  it 'fetches history for packages' do
-    statuses = repository.history_for('rake')
+  it 'fetches news for packages' do
+    statuses = repository.news_for('rake')
     expect(statuses.length).to eq(3)
     statuses.each do |s|
       expect(s).to be_a(Debci::Status)
+      expect(['unstable', 'testing']).to include(s.suite)
+      expect(['amd64', 'i386']).to include(s.architecture)
     end
+  end
+
+  it 'limits number of news' do
+    statuses = repository.news_for('rake', 2)
+    expect(statuses.length).to eq(2)
   end
 
 end

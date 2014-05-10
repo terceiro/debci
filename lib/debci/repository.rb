@@ -1,13 +1,14 @@
-require 'debci/package'
 require 'debci/status'
+require 'debci/package'
 
 module Debci
 
   class Repository
 
-    def initialize(path)
+    def initialize(path=nil)
+      path ||= Debci.config.data_basedir
       @path = path
-      @data_dirs = Dir.glob(File.join(path, '*-*'))
+      @data_dirs = Dir.glob(File.join(path, '*-*')).reject { |d| d =~ /\.old$/ }
     end
 
     def architectures
@@ -49,20 +50,32 @@ module Debci
       architectures.map do |arch|
         suites.map do |suite|
           status_file = File.join(data_dir(suite, arch, package), 'latest.json')
-          status = Debci::Status.from_file(status_file)
-          status.suite = suite
-          status.architecture = arch
-          status
+          load_status(status_file, suite, arch)
         end
       end
     end
 
-    def history_for(package)
-      Dir.glob(File.join(data_dir('*', '*', package), '[0-9]*.json')).sort_by do |f|
-        File.basename(f)
-      end.map do |f|
-        Debci::Status.from_file(f)
+    def news_for(package, n=10)
+      suites = '{' + self.suites.join(',') + '}'
+      architectures = '{' + self.architectures.join(',') + '}'
+      history = Dir.glob(File.join(data_dir(suites, architectures, package), '[0-9]*.json'))
+
+      news = []
+
+      while !history.empty?
+        file = history.pop
+        suite_arch = File.basename(File.expand_path(File.dirname(file) + '/../../..'))
+        suite, architecture = suite_arch.split('-')
+        status = load_status(file, suite, architecture)
+        if status.newsworthy?
+          news << status
+        end
+        if news.size >= n
+          break
+        end
       end
+
+      news
     end
 
     private
@@ -70,6 +83,13 @@ module Debci
     def data_dir(suite, arch, package)
       package_dir = package.sub(/^((lib)?.).*/, '\1/\&')
       File.join(@path, "#{suite}-#{arch}", 'packages', package_dir)
+    end
+
+    def load_status(status_file, suite, architecture)
+      status = Debci::Status.from_file(status_file)
+      status.suite = suite
+      status.architecture = architecture
+      status
     end
 
   end
