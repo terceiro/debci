@@ -1,0 +1,51 @@
+#!/usr/bin/ruby
+
+require 'fileutils'
+require 'rss'
+
+require 'debci'
+
+repository = Debci::Repository.new
+
+feeds_dir = File.join(Debci.config.data_basedir, 'feeds')
+site_base = 'http://ci.debian.net' # FIXME
+
+FileUtils.mkdir_p(feeds_dir)
+
+past_timestamp = Time.parse('2014-05-10T21:17:00 UTC')
+
+repository.packages.each do |pkg|
+  news = repository.news_for(pkg)
+  prefix = pkg.sub(/^((lib)?.).*/, '\1')
+  feedfile = File.join(feeds_dir, prefix, pkg + '.xml')
+  FileUtils.mkdir_p(File.dirname(feedfile))
+
+  feed = RSS::Maker.make('atom') do |feed|
+    feed.channel.author = 'Debian Continuous Integration'
+    feed.channel.updated = news.first && news.first.date || past_timestamp
+    feed.channel.about = site_base + '/#packages/' + pkg
+    feed.channel.title = pkg + ' CI news feed'
+
+    news.each do |status|
+      feed.items.new_item do |item|
+        item.link = site_base + '/#packages/' + pkg
+        item.title = status.headline
+        item.date = status.date
+        item.description = [
+          "<p>#{status.description}</p>",
+          '<ul>',
+          "<li>Version: #{status.version}</li>",
+          "<li>Date: #{status.date}</li>",
+          "<li><a href=\"#{site_base}/data/#{status.suite}-#{status.architecture}/packages/#{prefix}/#{pkg}/#{status.run_id}.log\">debci log</a></li>",
+          "<li><a href=\"#{site_base}/data/#{status.suite}-#{status.architecture}/autopkgtest/#{prefix}/#{pkg}/#{status.run_id}/\">autopkgtest artifacts</a></li>",
+          status.status == :fail && "<li>Packages blamed: #{status.blame.join(', ')}</a></li>" || nil,
+          '</ul>',
+        ].compact.join("\n")
+      end
+    end
+  end
+
+  File.open(feedfile, 'w') do |f|
+    f.write(feed.to_s.gsub('<summary>', '<summary type="html">'))
+  end
+end

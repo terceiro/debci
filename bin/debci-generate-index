@@ -340,6 +340,7 @@ if [ $# -gt 0 ]; then
   done
 else
   generate_packages
+  debci-generate-feeds
   log "I: Updating global status..."
   generate_status_entry
   generate_history > "${debci_status_dir}/history.json"

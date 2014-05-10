@@ -11,4 +11,10 @@ if [ -z "$program" ]; then
 fi
 shift
 
+# support running Ruby programs against local library directory (for
+# development)
+if [ -f "$bindir/../lib/debci.rb" ]; then
+  export RUBYLIB="$bindir/../lib"
+fi
+
 PATH=$bindir:$PATH debci-$program "$@"
