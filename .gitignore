@@ -5,3 +5,5 @@
 /chroots/*
 /gnupg/*
 /tags
+/.yardoc/
+/doc/

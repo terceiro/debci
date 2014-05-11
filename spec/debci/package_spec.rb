@@ -18,4 +18,20 @@ describe Debci::Package do
     expect(package.suites).to eq(['unstable', 'experimental'])
   end
 
+  it 'queries repository for status' do
+    status = double
+    repository.stub(:status_for).with(package).and_return(status)
+    expect(package.status).to be(status)
+  end
+
+  it 'queries repository for news' do
+    news = double
+    repository.stub(:news_for).with(package).and_return(news)
+    expect(package.news).to be(news)
+  end
+
+  it 'converts to string' do
+    expect(String(package)).to eq(package.name)
+  end
+
 end

@@ -5,7 +5,7 @@ generated = \
 	public/jquery.flot.stack.js \
 	public/jquery.flot.time.js
 
-all: $(generated)
+all: $(generated) doc
 
 .PHONY: spec check test
 
@@ -17,7 +17,8 @@ check: spec
 
 test: check
 
-doc: public/doc/index.html
+doc: $(shell find lib -name '*.rb') RUBYAPI.md HACKING.md
+	yardoc --markup markdown --output-dir $@ --main RUBYAPI.md lib - HACKING.md
 
 public/doc/index.html: README.md
 	mkdir -p public/doc
@@ -44,3 +45,4 @@ tags:
 
 clean:
 	$(RM) $(generated) tags
+	$(RM) -rf doc

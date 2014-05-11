@@ -77,6 +77,14 @@ describe Debci::Repository do
     expect(repository.packages.sort).to include('debci', 'rake')
   end
 
+  it 'knows about suites for a given package' do
+    expect(repository.suites_for('rake')).to include('unstable', 'testing')
+  end
+
+  it 'knows about architectures for a given package' do
+    expect(repository.architectures_for('rake')).to include('amd64', 'i386')
+  end
+
   it 'fetches packages' do
     expect(repository.find_package('rake').name).to eq('rake')
   end
@@ -117,6 +125,14 @@ describe Debci::Repository do
   it 'limits number of news' do
     statuses = repository.news_for('rake', 2)
     expect(statuses.length).to eq(2)
+  end
+
+  it 'supports the Package class' do
+    package = repository.find_package('rake')
+    package.suites
+    package.architectures
+    package.status
+    package.news
   end
 
 end
