@@ -104,7 +104,7 @@ debci (0.6) UNRELEASED; urgency=medium
     performance loss when installing packages, set dpkg `--force-unsafe-io`
     option in a configuration file (Closes: #747308).
   * Added Ruby bindings and the corresponding documentation
-  * Dropped usage of faketime in the test suite
+  * Dropped usage of faketime in the test suite (Closes: #747715)
   * backends/fake: output a timestamp like the ones adt-run outputs
   * Added new debci-config, a helper to output value of debci configuration
     values
