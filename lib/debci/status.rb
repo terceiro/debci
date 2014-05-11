@@ -33,29 +33,38 @@ module Debci
     def self.from_file(file)
       status = new
       return status unless File.exists?(file)
-      File.open(file, 'r') do |f|
-        data = JSON.load(f)
-        status.run_id = data['run_id']
-        status.package = data['package']
-        status.version = data['version']
-        status.date =
-          begin
-            Time.parse(data.fetch('date', 'unknown') + ' UTC')
-          rescue ArgumentError
-            nil
-          end
-        status.status = data.fetch('status', :unknown).to_sym
-        status.previous_status = data.fetch('previous_status', :unknown).to_sym
-        status.blame = data['blame']
-        status.duration_seconds =
-          begin
-            Integer(data.fetch('duration_seconds', 0))
-          rescue ArgumentError
-            nil
-          end
-        status.duration_human = data['duration_human']
-        status.message = data['message']
+      data = nil
+      begin
+        File.open(file, 'r') do |f|
+          data = JSON.load(f)
+        end
+      rescue JSON::ParserError
+        true # nothing really
       end
+
+      return status unless data
+
+      status.run_id = data['run_id']
+      status.package = data['package']
+      status.version = data['version']
+      status.date =
+        begin
+          Time.parse(data.fetch('date', 'unknown') + ' UTC')
+        rescue ArgumentError
+          nil
+        end
+      status.status = data.fetch('status', :unknown).to_sym
+      status.previous_status = data.fetch('previous_status', :unknown).to_sym
+      status.blame = data['blame']
+      status.duration_seconds =
+        begin
+          Integer(data.fetch('duration_seconds', 0))
+        rescue ArgumentError
+          nil
+        end
+      status.duration_human = data['duration_human']
+      status.message = data['message']
+
       status
     end
 

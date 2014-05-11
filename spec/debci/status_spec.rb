@@ -34,6 +34,13 @@ describe Debci::Status do
     it('gets blame') { expect(@status.blame).to eq(['foo 1.1', 'bar 2.0']) }
   end
 
+  context 'with invalid JSON' do
+    it 'does not crash' do
+      broken_status_file("invalid.json")
+      expect(Debci::Status.from_file('invalid.json')).to be_a(Debci::Status)
+    end
+  end
+
   it('ignores invalid date') do
     status_file('invalid.json', { "date" => "foobar" })
     status = Debci::Status.from_file('invalid.json')
@@ -94,7 +101,15 @@ describe Debci::Status do
   end
 
   def status_file(filename, data)
-    io = StringIO.new(JSON.dump(data))
+    save_status_file(filename, JSON.dump(data))
+  end
+
+  def broken_status_file(filename)
+    save_status_file(filename, "invalid JSON")
+  end
+
+  def save_status_file(filename, json)
+    io = StringIO.new(json)
     File.stub(:exists?).with(filename).and_return(true)
     File.stub(:open).with(filename, 'r').and_yield(io)
   end
