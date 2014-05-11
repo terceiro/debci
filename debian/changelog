@@ -1,4 +1,4 @@
-debci (0.6) UNRELEASED; urgency=medium
+debci (0.6) unstable; urgency=medium
 
   [ Martin Pitt ]
   * Move schroot creation from bin/debci-setup to
@@ -115,7 +115,7 @@ debci (0.6) UNRELEASED; urgency=medium
   * public/app.js: add a link to the per-package Atom feed
   * public/style.css: make the status indicators use FontAwesome icons
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 05 Apr 2014 12:18:39 +0100
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 11 May 2014 18:35:05 -0300
 
 debci (0.5.2) unstable; urgency=medium
 
