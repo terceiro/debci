@@ -201,7 +201,9 @@ jQuery(function($) {
     var $target = $('#package-details')
     $target.html('');
     $.get(url, function(history) {
-      $target.append("<h1>" + pkg + "</h1>");
+      var feed_url = 'data/feeds/' + pkg_dir + '.xml';
+      var feed = "&nbsp;<a class=\"btn btn-warning btn-xs\" href=\"" + feed_url + "\" title=\"Atom feed for " + pkg + "\"><span class='fa fa-rss'></span></a>";
+      $target.append("<h1>" + pkg + feed + "</h1>");
 
       if (history[0]) {
         $('#package-details h1').addClass(history[0].status);
