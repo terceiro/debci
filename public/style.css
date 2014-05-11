@@ -7,18 +7,22 @@
  * status marks
  * ----------------------------------------------------------------- */
 
+.pass, .fail, .tmpfail {
+  font-family: 'FontAwesome';
+}
+
 .pass:before {
-  content: "▲ ";
+  content: "\f164 ";
   color: #8ae234;
 }
 
 .fail:before {
-  content: "▼ ";
+  content: "\f165 ";
   color: #ef2929;
 }
 
 .tmpfail:before {
-  content: "◆ ";
+  content: "\f059 ";
   color: #babdb6;
 }
 
