@@ -19,4 +19,18 @@ test_notify_on_fail() {
   assertEquals 1 "$news_count"
 }
 
+test_system_wide_feed() {
+  result_pass debci-test --quiet foobar
+  result_fail debci-test --quiet foobar
+  result_fail debci-test --quiet bazqux
+  result_pass debci-test --quiet bazqux
+  debci-generate-index --quiet --duration 0
+
+  foobar_news=$(grep -c 'foobar tests' "$debci_data_basedir/feeds/all-packages.xml")
+  assertEquals 1 "$foobar_news"
+
+  bazqux_news=$(grep -c 'foobar tests' "$debci_data_basedir/feeds/all-packages.xml")
+  assertEquals 1 "$bazqux_news"
+}
+
 . shunit2

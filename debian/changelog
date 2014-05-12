@@ -108,12 +108,13 @@ debci (0.6) unstable; urgency=medium
   * backends/fake: output a timestamp like the ones adt-run outputs
   * Added new debci-config, a helper to output value of debci configuration
     values
-  * debci-generate-feeds: added generation of per-package Atom feeds. Called
-    from debci-batch
+  * debci-generate-feeds: added generation of per-package and global Atom
+    feeds. Called from debci-batch
   * public/font-awesome, debian/copyright: embedding a copy of FontAwesome,
     which is, erm, awesome.
   * public/app.js: add a link to the per-package Atom feed
   * public/style.css: make the status indicators use FontAwesome icons
+  * 
 
  -- Antonio Terceiro <terceiro@debian.org>  Sun, 11 May 2014 18:35:05 -0300
 
