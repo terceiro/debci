@@ -1,9 +1,11 @@
 /data
 /public/doc/
 /public/jquery*.js
+/public/font-awesome/
 /config/whitelist
 /chroots/*
 /gnupg/*
 /tags
 /.yardoc/
 /doc/
+/links.mk

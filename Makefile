@@ -1,11 +1,11 @@
-generated = \
-	public/doc/index.html \
-	public/jquery.js \
-	public/jquery.flot.js \
-	public/jquery.flot.stack.js \
-	public/jquery.flot.time.js
+all: public/doc
 
-all: $(generated) doc
+include links.mk
+
+links.mk: links
+	awk '{ print("LINKS +=", $$1); print($$1, ":", $$2); print("\tmkdir -p $$(shell dirname ", $$1, ")"); print("\tln -s", $$2, $$1)}' $^ > $@
+
+all: $(LINKS)
 
 .PHONY: spec check test
 
@@ -17,26 +17,10 @@ check: spec
 
 test: check
 
-doc: $(shell find lib -name '*.rb') RUBYAPI.md HACKING.md
-	yardoc --markup markdown --output-dir $@ --main RUBYAPI.md lib - HACKING.md
+public/doc: README.md RUBYAPI.md HACKING.md
+	yardoc --markup markdown --output-dir $@ --main README.md lib - $^
 
-public/doc/index.html: README.md
-	mkdir -p public/doc
-	pandoc --from markdown --to html5 --standalone --template public/doc-template.html --table-of-contents --toc-depth=1 -o $@ $<
-
-public/doc/index.html: public/doc-template.html
-
-public/jquery.js:
-	ln -s /usr/share/javascript/jquery/jquery.min.js $@
-
-public/jquery.flot.js:
-	ln -s /usr/share/javascript/jquery-flot/jquery.flot.min.js $@
-
-public/jquery.flot.stack.js:
-	ln -s /usr/share/javascript/jquery-flot/jquery.flot.stack.min.js $@
-
-public/jquery.flot.time.js:
-	ln -s /usr/share/javascript/jquery-flot/jquery.flot.time.min.js $@
+public/doc: $(shell find lib -name '*.rb')
 
 .PHONY: tags
 
@@ -44,5 +28,4 @@ tags:
 	ctags -R --exclude=chroots --exclude='public/jquery*' --exclude=public/bootstrap .
 
 clean:
-	$(RM) $(generated) tags
-	$(RM) -rf doc
+	$(RM) -rf $(generated) tags public/doc links.mk $(LINKS)

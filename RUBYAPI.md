@@ -38,7 +38,3 @@ end
 ```
 
 See the documentation for the {Debci::Package} class for more information.
-
-## See also
-
-* {file:HACKING.md Setting up a development environment}

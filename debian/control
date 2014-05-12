@@ -6,7 +6,6 @@ Build-Depends:
  debhelper (>= 9.0.0),
  devscripts,
  faketime,
- pandoc,
  patchutils,
  ruby,
  ruby-rspec,
