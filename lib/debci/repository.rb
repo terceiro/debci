@@ -94,7 +94,7 @@ module Debci
     def news_for(package, n=10)
       suites = '{' + self.suites.join(',') + '}'
       architectures = '{' + self.architectures.join(',') + '}'
-      history = Dir.glob(File.join(data_dir(suites, architectures, package), '[0-9]*.json'))
+      history = Dir.glob(File.join(data_dir(suites, architectures, package), '[0-9]*.json')).sort_by { |f| File.basename(f) }
 
       news = []
 

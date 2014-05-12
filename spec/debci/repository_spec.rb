@@ -51,7 +51,7 @@ describe Debci::Repository do
 
   def past_status(path, data, run_id)
     File.open(File.join(@datadir, path, run_id + '.json'), 'w') do |f|
-      f.write(JSON.dump(data))
+      f.write(JSON.dump({ 'run_id' => run_id }.merge(data)))
     end
   end
 
@@ -125,6 +125,19 @@ describe Debci::Repository do
   it 'limits number of news' do
     statuses = repository.news_for('rake', 2)
     expect(statuses.length).to eq(2)
+  end
+
+  it 'sorts news with most recent first' do
+    glob = File.join(@datadir, '{unstable}-{amd64}/packages/r/rake/[0-9]*.json')
+    statuses_reversed = Dir.glob(glob).sort_by { |f| File.basename(f) }.reverse
+
+    repository.stub(:architectures).and_return(['amd64'])
+    repository.stub(:suites).and_return(['unstable'])
+    Dir.stub(:glob).with(glob).and_return(statuses_reversed)
+
+    news = repository.news_for('rake')
+
+    expect(news.first.run_id).to eq(now)
   end
 
   it 'supports the Package class' do
