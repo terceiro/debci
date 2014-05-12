@@ -1,5 +1,5 @@
 Tests: ruby-test-suite uest-suite
-Depends: @, shunit2
+Depends: @, shunit2, ruby-rspec
 Restrictions: allow-stderr
 
 # vim: ft=debcontrol
