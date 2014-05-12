@@ -22,12 +22,12 @@ module Debci
 
     # Returns an Array of suites known to this debci instance
     def suites
-      @suites ||= @data_dirs.map { |d| File.basename(d).split('-').first }.uniq
+      @suites ||= @data_dirs.map { |d| File.basename(d).split('-').first }.uniq.sort
     end
 
     # Returns an Array of suites known to this debci instance
     def architectures
-      @architectures ||= @data_dirs.map { |d| File.basename(d).split('-').last }.uniq
+      @architectures ||= @data_dirs.map { |d| File.basename(d).split('-').last }.uniq.sort
     end
 
     # Returns a Set of packages known to this debci instance

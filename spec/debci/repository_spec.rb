@@ -70,7 +70,7 @@ describe Debci::Repository do
   end
 
   it 'knows about suites' do
-    expect(repository.suites).to eq(['unstable', 'testing'])
+    expect(repository.suites).to eq(['testing', 'unstable'])
   end
 
   it 'knows about packages' do
