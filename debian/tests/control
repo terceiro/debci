@@ -1,4 +1,4 @@
-Tests: ruby-test-suite uest-suite
+Tests: ruby-test-suite test-suite
 Depends: @, shunit2, ruby-rspec
 Restrictions: allow-stderr
 
