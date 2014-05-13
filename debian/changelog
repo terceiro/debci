@@ -1,4 +1,4 @@
-debci (0.6) unstable; urgency=medium
+debci (0.6) UNRELEASED; urgency=medium
 
   [ Martin Pitt ]
   * Move schroot creation from bin/debci-setup to
