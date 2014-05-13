@@ -10,6 +10,7 @@ Build-Depends:
  ruby,
  ruby-rspec,
  shunit2,
+ fonts-font-awesome (>= 4.0.3~),
  yard,
 Standards-Version: 3.9.5
 Homepage: http://ci.debian.net/
@@ -23,6 +24,7 @@ Depends:
  adduser,
  autopkgtest (>= 2.12),
  debootstrap,
+ fonts-font-awesome (>= 4.0.3~),
  libjs-jquery,
  libjs-jquery-flot,
  patchutils,
