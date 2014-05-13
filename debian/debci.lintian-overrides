@@ -1,0 +1,2 @@
+script-not-executable usr/share/debci/lib/environment.sh
+script-not-executable usr/share/debci/lib/functions.sh
