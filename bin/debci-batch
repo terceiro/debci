@@ -80,14 +80,14 @@ process_all_packages() {
 
   if [ "$maxjobs" -eq 1 ]; then
     for pkg in $packages; do
-      debci-test --index --reason "$tmp_dir/${pkg}-reason.txt" "$pkg"
+      debci-test --index "$pkg"
     done
   else
     args=''
     for pkg in $packages; do
-      args="$args --index --reason $tmp_dir/${pkg}-reason.txt $pkg"
+      args="$args --index $pkg"
     done
-    parallel -n 4 -j "$maxjobs" debci-test -- $args
+    parallel -n 2 -j "$maxjobs" debci-test -- $args
   fi
 
   local finish=$(date +%s)
@@ -100,9 +100,10 @@ process_all_packages() {
 needs_processing() {
   status_dir=$(status_dir_for_package "$pkg")
   last_status=$(debci-status "$pkg")
+  mkdir -p "${status_dir}"
 
   debci-list-dependencies "$pkg" > "$tmp_dir/${pkg}-deps.txt"
-  reason="$tmp_dir/${pkg}-reason.txt"
+  reason="$status_dir/reason.txt"
 
   run=1
 
@@ -135,7 +136,6 @@ needs_processing() {
   fi
 
   if [ "$run" -eq 0 ]; then
-    mkdir -p "${status_dir}"
     cp "$tmp_dir/${pkg}-deps.txt" "${status_dir}/dependencies.txt"
   fi
 

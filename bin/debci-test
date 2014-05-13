@@ -1,15 +1,13 @@
 #!/bin/sh
 
-short_options='r:i'
-long_options='reason:,index'
+short_options='i'
+long_options='index'
 
 usage() {
   cat <<EOF
 usage: debci-test [OPTIONS] srcpkg
 
 Options:
-  -r FILE, --reason FILE    add FILE contents to log as reason to run this test
-
   -i, --index               force indexing results just after running the tests
 
 $@
@@ -26,11 +24,6 @@ process_package() {
   # setup status dir
   status_dir=$(status_dir_for_package "$pkg")
   mkdir -p "$status_dir"
-
-  # remember reason (picked up by generate-indexes)
-  if [ -s "$cmdline_reason" ]; then
-    cp "$cmdline_reason" "$status_dir/reason.txt"
-  fi
 
   # output directory for test-package/adt-run
   run_id=$(date +%Y%m%d_%H%M%S)
@@ -54,16 +47,10 @@ process_package() {
 }
 
 # defaults
-cmdline_reason=''
 index=''
 
 while true; do
   case "$1" in
-    -r|--reason)
-      shift
-      cmdline_reason="$1"
-      shift
-      ;;
     -i|--index)
       index=true
       shift
