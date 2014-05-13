@@ -92,8 +92,6 @@ process_all_packages() {
 
   local finish=$(date +%s)
 
-  debci-cleanup
-
   debci-generate-index --duration $(($finish - $start))
 }
 

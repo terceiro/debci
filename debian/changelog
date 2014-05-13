@@ -78,6 +78,7 @@ debci (0.6) UNRELEASED; urgency=medium
     existing test data.
   * Drop debci-test --reason option and make debci-batch put the reason into
     the status directory directly.
+  * Fold debci-cleanup into debci-generate-index.
 
   [ Antonio Terceiro ]
   * schroot backend: pass --session-id to adt-virt-schroot. This makes it

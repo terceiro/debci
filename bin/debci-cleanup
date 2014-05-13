@@ -1,8 +1,0 @@
-#!/bin/sh
-
-set -eu
-
-base=$(readlink -f $(dirname $(readlink -f $0))/..)
-. $base/lib/environment.sh
-
-find "$debci_packages_dir" -empty -delete

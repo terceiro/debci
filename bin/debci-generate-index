@@ -340,6 +340,8 @@ if [ $# -gt 0 ]; then
   done
 else
   if [ -d "$debci_autopkgtest_dir" ]; then
+    # clean up packages/
+    find "$debci_packages_dir" -empty -delete
     generate_packages
     debci-generate-feeds
     log "I: Updating global status..."
