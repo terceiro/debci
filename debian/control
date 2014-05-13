@@ -8,7 +8,7 @@ Build-Depends:
  faketime,
  patchutils,
  ruby,
- ruby-rspec,
+ ruby-rspec (>= 2.14),
  shunit2,
  fonts-font-awesome (>= 4.0.3~),
  yard,
