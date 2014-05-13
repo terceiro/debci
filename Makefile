@@ -19,6 +19,7 @@ test: check
 
 public/doc: README.md RUBYAPI.md HACKING.md
 	yardoc --markup markdown --output-dir $@ --main README.md lib - $^
+	cd public/doc/js && ln -sf ../../jquery.js
 
 public/doc: $(shell find lib -name '*.rb')
 
