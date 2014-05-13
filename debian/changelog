@@ -74,6 +74,8 @@ debci (0.6) UNRELEASED; urgency=medium
   * debci-status --all: Output a list also if there is only one package.
   * debci-status --all: Sort package names so that they appear sorted in the
     web UI.
+  * Avoid some error messages noise when calling generate-index without any
+    existing test data.
 
   [ Antonio Terceiro ]
   * schroot backend: pass --session-id to adt-virt-schroot. This makes it
