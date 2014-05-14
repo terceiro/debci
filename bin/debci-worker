@@ -1,0 +1,72 @@
+#!/bin/sh
+# Consume test requests from AMQP queue and feed them to debci-test
+set -eu
+
+short_options='t:'
+long_options='tag:,do-request'
+
+usage() {
+  cat <<EOF
+usage: debci-worker [OPTIONS]
+
+Options:
+  -t TAG, --tag TAG         listen to queues which require this platform tag
+                            (can be specified multiple times)
+
+$@
+EOF
+}
+
+debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
+. $debci_base_dir/lib/environment.sh
+. $debci_base_dir/lib/functions.sh
+
+tags=''
+
+# Process one request. Read the AMQP message from stdin.
+do_request() {
+  read pkg specs || true  # we expect EOF and thus read to fail
+  log "I: Running test for package $pkg"
+  local result_dir="$(debci-test --print-output $pkg)"
+  if [ ! -s "$result_dir/exitcode" ]; then
+    log "E: Test for package $pkg produced no exit code, aborting"
+    exit 2
+  fi
+  case $(cat "$result_dir/exitcode") in
+      0|2)
+          report_status $pkg pass
+          ;;
+      4|6|8|12)
+          report_status $pkg fail
+          ;;
+      *)
+          report_status $pkg tmpfail
+          ;;
+  esac
+
+  # TODO: trigger network FS sync
+}
+
+# parse CLI arguments
+while true; do
+  case "$1" in
+    -t|--tag)
+      tags="${tags}_$2"
+      shift 2
+      ;;
+    --do-request)
+      do_request
+      exit 0
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+# if the user calls this, we run forever with consuming messages;
+# amqp-consume calls ourselves with the (hidden) --do-request option
+amqp_queue="${debci_suite}-${debci_arch}-${debci_backend}${tags}"
+log "I: Connecting to AMQP queue $amqp_queue on ${debci_amqp_server}"
+amqp-declare-queue --url ${debci_amqp_server} --durable -q $amqp_queue >/dev/null
+exec amqp-consume --url ${debci_amqp_server} -q $amqp_queue -- $0 --do-request

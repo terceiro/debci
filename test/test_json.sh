@@ -3,7 +3,8 @@
 . $(dirname $0)/test_helper.sh
 
 test_valid_json() {
-  debci batch
+  start_worker
+  debci batch --wait
 
   ruby <<EOF || fail 'found invalid JSON files'
     require 'json'
