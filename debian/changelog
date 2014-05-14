@@ -10,6 +10,8 @@ debci (0.7) UNRELEASED; urgency=medium
 
   [ Martin Pitt ]
   * Fix report_status() to work for bash scripts.
+  * debci-test: Add --print-output option to write output directory to stdout.
+    With that the caller can easily check the result.
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 16 May 2014 12:55:41 -0300
 
