@@ -33,4 +33,4 @@ EOF
 echo "I: Go to: http://localhost:$port/"
 echo "I: Hit Control+C to stop"
 echo ""
-/usr/sbin/lighttpd -f "$conffile" -D
+exec /usr/sbin/lighttpd -f "$conffile" -D

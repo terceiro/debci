@@ -17,4 +17,5 @@ if [ -f "$bindir/../lib/debci.rb" ]; then
   export RUBYLIB="$bindir/../lib"
 fi
 
-PATH=$bindir:$PATH debci-$program "$@"
+export PATH=$bindir:$PATH
+exec debci-$program "$@"
