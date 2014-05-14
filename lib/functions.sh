@@ -61,6 +61,9 @@ log() {
 
 
 report_status() {
+  if [ "$debci_quiet" = 'true' ]; then
+    return
+  fi
   local pkg="$1"
   local status="$2"
   if [ -t 1 ]; then
@@ -81,7 +84,7 @@ report_status() {
         color=5 # should never get here though
         ;;
     esac
-    log "${pkg} \033[38;5;${color}m${status}\033[m"
+    /bin/echo -e "${pkg} \033[38;5;${color}m${status}\033[m"
   else
     log "$pkg" "$status"
   fi
