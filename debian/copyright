@@ -3,7 +3,7 @@ Upstream-Name: dep8
 Source: http://git.debian.org/?p=users/terceiro/dep8.git;a=summary
 
 Files: *
-Copyright: 2013-2014 Antonio Terceiro <terceiro@debian.org>
+Copyright: 2013-2014 the debci development team
 License: GPL-3.0+
 
 Files: public/bootstrap/*

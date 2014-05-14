@@ -55,13 +55,19 @@ in the [Debian BTS](http://bugs.debian.org/).
 
 ## Contact
 
+For maintainer queries and general discussion:
+
 * mailing list: [debian-qa@lists.debian.org](http://lists.debian.org/debian-qa/)
-* IRC: `#debian-qa` in the OFTC network (a.k.a `irc.debian.org`). Feel free to
-  highlight `terceiro`.
+* IRC: `#debian-qa` on OFTC. Feel free to highlight `terceiro`
+
+For the development of debci itself
+
+* mailing list: [autopkgtest-devel](http://lists.alioth.debian.org/cgi-bin/mailman/listinfo/autopkgtest-devel)
+* IRC: `#debci` on OFTC
 
 ## Copyright and Licensing information
 
-Copyright © 2014 Antonio Terceiro.
+Copyright © 2014 the debci development team.
 
 debci is free software licensed under the GNU General Public License version 3
 or later.
