@@ -14,6 +14,9 @@ debci (0.7) UNRELEASED; urgency=medium
     With that the caller can easily check the result.
   * debci, tools/server.sh: Exec the target program instead of running in a
     subprocess, for efficiency and proper SIGTERM handling.
+  * Drop tools/convert-data. We only needed it for version 0.6, and we're
+    going to need a different conversion script after the next data/ dir
+    reorganization.
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 16 May 2014 12:55:41 -0300
 
