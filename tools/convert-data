@@ -57,7 +57,7 @@ for p in */*; do
         # adtflag is our mini-state machine: 1 = in autopkgtest log file part;
         # 0 = otherwise
         mkdir "$dnew/autopkgtest/$p/$time"
-        awk 'BEGIN { RS="(^|\n)(=+|—+)\n[^\n]*\n(=+|—+)"; ORS=""; adtflag = 0; };
+        gawk 'BEGIN { RS="(^|\n)(=+|—+)\n[^\n]*\n(=+|—+)"; ORS=""; adtflag = 0; };
              { if (adtflag) { print > "/dev/fd/3"; adtflag = 0 } else print $0;
                if (RT ~ /\n(Started)/) adtflag = 1;
                print RT }' "$log" > "$p/${time}.log" 3>"$dnew/autopkgtest/$p/$time/log"
