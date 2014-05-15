@@ -17,34 +17,34 @@ module Debci
     def initialize(path=nil) # :nodoc:
       path ||= Debci.config.data_basedir
       @path = path
-      @data_dirs = Dir.glob(File.join(path, '*-*')).reject { |d| d =~ /\.old$/ }
+      @data_dirs = Dir.glob(File.join(path, 'packages', '*', '*')).reject { |d| d =~ /\.old$/ }
     end
 
     # Returns an Array of suites known to this debci instance
     def suites
-      @suites ||= @data_dirs.map { |d| File.basename(d).split('-').first }.uniq.sort
+      @suites ||= Dir.glob(File.join(@path, 'packages', '*')).reject { |d| d =~ /\.old$/ }.map { |d| File.basename(d) }.sort
     end
 
-    # Returns an Array of suites known to this debci instance
+    # Returns an Array of architectures known to this debci instance
     def architectures
-      @architectures ||= @data_dirs.map { |d| File.basename(d).split('-').last }.uniq.sort
+      @architectures ||= @data_dirs.map { |d| File.basename(d) }.uniq.sort
     end
 
     # Returns a Set of packages known to this debci instance
     def packages
-      @packages ||= @data_dirs.map { |d| Dir.glob(File.join(d, 'packages/*/*')) }.flatten.map { |d| File.basename(d) }.to_set
+      @packages ||= @data_dirs.map { |d| Dir.glob(File.join(d, '*/*')) }.flatten.map { |d| File.basename(d) }.to_set
     end
 
     # Returns an Array of suites for which there is data for +package+.
     def suites_for(package)
       package = String(package)
-      data_dirs_for(package).map { |d| File.basename(d).split('-').first }.uniq
+      data_dirs_for(package).map { |d| File.basename(File.dirname(d)) }.uniq
     end
 
     # Returns an Array of architectures for which there is data for +package+.
     def architectures_for(package)
       package = String(package)
-      data_dirs_for(package).map { |d| File.basename(d).split('-').last }.uniq
+      data_dirs_for(package).map { |d| File.basename(d) }.uniq
     end
 
     class PackageNotFound < Exception
@@ -100,8 +100,9 @@ module Debci
 
       while !history.empty?
         file = history.pop
-        suite_arch = File.basename(File.expand_path(File.dirname(file) + '/../../..'))
-        suite, architecture = suite_arch.split('-')
+        dir = File.expand_path(File.dirname(file) + '/../..')
+        suite = File.basename(File.dirname(dir))
+        architecture = File.basename(dir)
         status = load_status(file, suite, architecture)
         if status.newsworthy?
           news << status
@@ -117,7 +118,7 @@ module Debci
     private
 
     def data_dir(suite, arch, package)
-      File.join(@path, "#{suite}-#{arch}", 'packages', prefix(package), package)
+      File.join(@path, 'packages', "#{suite}", "#{arch}", prefix(package), package)
     end
 
     def prefix(package)
@@ -132,7 +133,7 @@ module Debci
     end
 
     def data_dirs_for(package)
-      @data_dirs.select { |d| File.exist?(File.join(d, 'packages', prefix(package), package)) }
+      @data_dirs.select { |d| File.exist?(File.join(d, prefix(package), package)) }
     end
 
   end

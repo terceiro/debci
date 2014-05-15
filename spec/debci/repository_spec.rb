@@ -10,33 +10,33 @@ describe Debci::Repository do
     @now = Time.now.strftime('%Y%m%d_%H%M%S')
 
     @datadir = '/tmp/foobar' # Dir.mktmpdir
-    mkdir_p 'unstable-amd64/packages/r/rake'
-    mkdir_p 'unstable-i386/packages/r/rake'
-    mkdir_p 'testing-amd64/packages/r/rake'
-    mkdir_p 'testing-i386/packages/r/rake'
+    mkdir_p 'packages/unstable/amd64/r/rake'
+    mkdir_p 'packages/unstable/i386/r/rake'
+    mkdir_p 'packages/testing/amd64/r/rake'
+    mkdir_p 'packages/testing/i386/r/rake'
 
-    mkdir_p 'unstable-amd64.old'
+    mkdir_p 'packages/unstable/amd64.old'
 
-    past_status 'unstable-amd64/packages/r/rake', { 'status' => 'pass', 'previous_status' => 'fail' }, '20140412_212642'
-    latest_status 'unstable-amd64/packages/r/rake', { 'status' => 'fail', 'previous_status' => 'pass' }
-    latest_status 'testing-amd64/packages/r/rake', { 'status' => 'fail', 'previous_status' => 'pass'}
+    past_status 'packages/unstable/amd64/r/rake', { 'status' => 'pass', 'previous_status' => 'fail' }, '20140412_212642'
+    latest_status 'packages/unstable/amd64/r/rake', { 'status' => 'fail', 'previous_status' => 'pass' }
+    latest_status 'packages/testing/amd64/r/rake', { 'status' => 'fail', 'previous_status' => 'pass'}
 
-    mkdir_p 'unstable-amd64/packages/r/rake-compiler'
-    mkdir_p 'unstable-i386/packages/r/rake-compiler'
-    mkdir_p 'testing-amd64/packages/r/rake-compiler'
-    mkdir_p 'testing-i386/packages/r/rake-compiler'
+    mkdir_p 'packages/unstable/amd64/r/rake-compiler'
+    mkdir_p 'packages/unstable/i386/r/rake-compiler'
+    mkdir_p 'packages/testing/amd64/r/rake-compiler'
+    mkdir_p 'packages/testing/i386/r/rake-compiler'
 
-    mkdir_p 'testing-i386/packages/d/debci'
+    mkdir_p 'packages/testing/i386/d/debci'
 
-    mkdir_p 'unstable-amd64/packages/r/ruby-ffi'
-    mkdir_p 'unstable-i386/packages/r/ruby-ffi'
-    mkdir_p 'testing-amd64/packages/r/ruby-ffi'
-    mkdir_p 'testing-i386/packages/r/ruby-ffi'
+    mkdir_p 'packages/unstable/amd64/r/ruby-ffi'
+    mkdir_p 'packages/unstable/i386/r/ruby-ffi'
+    mkdir_p 'packages/testing/amd64/r/ruby-ffi'
+    mkdir_p 'packages/testing/i386/r/ruby-ffi'
 
-    mkdir_p 'unstable-amd64/packages/r/rubygems-integration'
-    mkdir_p 'unstable-i386/packages/r/rubygems-integration'
-    mkdir_p 'testing-amd64/packages/r/rubygems-integration'
-    mkdir_p 'testing-i386/packages/r/rubygems-integration'
+    mkdir_p 'packages/unstable/amd64/r/rubygems-integration'
+    mkdir_p 'packages/unstable/i386/r/rubygems-integration'
+    mkdir_p 'packages/testing/amd64/r/rubygems-integration'
+    mkdir_p 'packages/testing/i386/r/rubygems-integration'
   end
 
   attr_reader :now
@@ -128,7 +128,7 @@ describe Debci::Repository do
   end
 
   it 'sorts news with most recent first' do
-    glob = File.join(@datadir, '{unstable}-{amd64}/packages/r/rake/[0-9]*.json')
+    glob = File.join(@datadir, 'packages/{unstable}/{amd64}/r/rake/[0-9]*.json')
     statuses_reversed = Dir.glob(glob).sort_by { |f| File.basename(f) }.reverse
 
     repository.stub(:architectures).and_return(['amd64'])

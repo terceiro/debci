@@ -33,7 +33,7 @@ pkgdir = pkg.gsub(/((lib)?.).*/, '\1/\&')
 
 suite = ENV['debci_suite'] || 'unstable'
 arch = ENV['debci_arch'] || 'amd64';
-dependencies_file = "#{bin}/../../data/#{suite}-#{arch}/packages/#{pkgdir}/dependencies.txt";
+dependencies_file = "#{bin}/../../data/packages/#{suite}/#{arch}/#{pkgdir}/dependencies.txt";
 
 if (File.exists? dependencies_file)
   File.readlines(dependencies_file).each do |line|

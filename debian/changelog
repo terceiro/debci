@@ -17,6 +17,12 @@ debci (0.7) UNRELEASED; urgency=medium
   * Drop tools/convert-data. We only needed it for version 0.6, and we're
     going to need a different conversion script after the next data/ dir
     reorganization.
+  * Reorganize data directory to move the "categories" packages/,
+    autopkgtest/, status/, and feeds/ to the top level; they contain
+    subdirs for all releases and architectures. This makes autopkgtest/ fully
+    rsyncable and also makes it easier to the web UI to browse/present data
+    for multiple releases and architectures. Also split release-arch/ into
+    release/arch/.
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 16 May 2014 12:55:41 -0300
 

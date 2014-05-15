@@ -26,9 +26,9 @@ def insert_items(news, feed)
         '<ul>',
         "<li>Version: #{status.version}</li>",
         "<li>Date: #{status.date}</li>",
-        "<li><a href=\"#{$site_base}/data/#{status.suite}-#{status.architecture}/packages/#{prefix}/#{status.package}/#{status.run_id}.log\">debci log</a></li>",
-        "<li><a href=\"#{$site_base}/data/#{status.suite}-#{status.architecture}/packages/#{prefix}/#{status.package}/#{status.run_id}.autopkgtest.log\">autopkgtest log</a></li>",
-        "<li><a href=\"#{$site_base}/data/#{status.suite}-#{status.architecture}/autopkgtest/#{prefix}/#{status.package}/#{status.run_id}/\">autopkgtest artifacts</a></li>",
+        "<li><a href=\"#{$site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.log\">debci log</a></li>",
+        "<li><a href=\"#{$site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.autopkgtest.log\">autopkgtest log</a></li>",
+        "<li><a href=\"#{$site_base}/data/autopkgtest/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}/\">autopkgtest artifacts</a></li>",
         status.status == :fail && "<li>Packages blamed: #{status.blame.join(', ')}</a></li>" || nil,
         '</ul>',
       ].compact.join("\n")

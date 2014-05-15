@@ -1,6 +1,9 @@
 jQuery(function($) {
 
-  var DATA_DIR = 'data/unstable-amd64'; // FIXME generalize this later
+  // FIXME generalize this later
+  var PACKAGES_DIR = 'data/packages/unstable/amd64';
+  var AUTOPKGTEST_DIR = 'data/autopkgtest/unstable/amd64';
+  var STATUS_DIR = 'data/status/unstable/amd64';
 
   var handlers = {};
   function on(hash, f) {
@@ -36,7 +39,7 @@ jQuery(function($) {
   on('', function() {
     switch_to('#status');
 
-    $.get(DATA_DIR + '/status/history.json', function(data) {
+    $.get(STATUS_DIR + '/history.json', function(data) {
 
       if (data.length < 2) {
         $('.chart').html("Not enough data for plot. Wait until the next run");
@@ -155,7 +158,7 @@ jQuery(function($) {
   });
 
 
-  $.get(DATA_DIR + '/status/packages.json', function(data) {
+  $.get(STATUS_DIR + '/packages.json', function(data) {
     $.each(data, function(index, item) {
       var $link = $('<a></a>');
       $link.addClass(item.status)
@@ -196,7 +199,7 @@ jQuery(function($) {
 
   function display_details(pkg) {
     var pkg_dir = pkg.replace(/^((lib)?.)/, "$1/$&");
-    var url = DATA_DIR + '/packages/' + pkg_dir + '/history.json';
+    var url = PACKAGES_DIR + '/' + pkg_dir + '/history.json';
 
     var $target = $('#package-details')
     $target.html('');
@@ -222,9 +225,9 @@ jQuery(function($) {
 
       $.each(history, function(index, entry) {
         var run_id = (entry.run_id || entry.date);
-        var debci_log = DATA_DIR + '/packages/' + pkg_dir + '/' + run_id  + ".log";
-        var adt_log = DATA_DIR + '/packages/' + pkg_dir + '/' + run_id  + ".autopkgtest.log";
-        var artifacts = DATA_DIR + '/autopkgtest/' + pkg_dir + '/' + run_id;
+        var debci_log = PACKAGES_DIR + '/' + pkg_dir + '/' + run_id  + ".log";
+        var adt_log = PACKAGES_DIR + '/' + pkg_dir + '/' + run_id  + ".autopkgtest.log";
+        var artifacts = AUTOPKGTEST_DIR + '/' + pkg_dir + '/' + run_id;
 
         var $row = $('<tr>');
         $row.append($('<td>').html(entry.version));
@@ -244,13 +247,13 @@ jQuery(function($) {
         "<p>Automate:</p>" +
         "<pre><code>" +
         "# latest status of the package\n" +
-        "$ curl " + data_base + "/" + DATA_DIR + "/packages/" + pkg_dir + '/latest.json\n' +
+        "$ curl " + data_base + "/" + PACKAGES_DIR + "/" + pkg_dir + '/latest.json\n' +
         "\n" +
         "# latest autopkgtest log of the package\n" +
-        "$ curl " + data_base + "/" + DATA_DIR + "/packages/" + pkg_dir + '/latest-autopkgtest/log\n' +
+        "$ curl " + data_base + "/" + PACKAGES_DIR + "/" + pkg_dir + '/latest-autopkgtest/log\n' +
         "\n" +
         "# test run history of the package\n" +
-        "$ curl " + data_base + "/" + DATA_DIR + "/packages/" + pkg_dir + '/history.json\n' +
+        "$ curl " + data_base + "/" + PACKAGES_DIR + "/" + pkg_dir + '/history.json\n' +
         "</code></pre>";
       $target.append(automation_info);
 
