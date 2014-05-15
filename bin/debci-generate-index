@@ -87,8 +87,8 @@ generate_package_run() {
   ln -sf "${run_id}.json" "${status_dir}/latest.json"
   rm -f "${status_dir}/latest-autopkgtest"
   # generate relative symlink for relocatability
-  ln -s "../../..${adtresult#$debci_data_dir}/log" "${status_dir}/${run_id}.autopkgtest.log"
-  ln -s "../../..${adtresult#$debci_data_dir}" "${status_dir}/latest-autopkgtest"
+  ln -s "../../../../..${adtresult#$debci_data_basedir}/log" "${status_dir}/${run_id}.autopkgtest.log"
+  ln -s "../../../../..${adtresult#$debci_data_basedir}" "${status_dir}/latest-autopkgtest"
 }
 
 # write package test log to stdout (gets redirected to $log_file)
