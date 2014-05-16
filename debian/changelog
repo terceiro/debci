@@ -23,6 +23,8 @@ debci (0.7) UNRELEASED; urgency=medium
     rsyncable and also makes it easier to the web UI to browse/present data
     for multiple releases and architectures. Also split release-arch/ into
     release/arch/.
+  * Add tools/convert-data-0.7: Convert data directory to changed format from
+    above.
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 16 May 2014 12:55:41 -0300
 

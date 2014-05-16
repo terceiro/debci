@@ -1,0 +1,72 @@
+#!/bin/sh
+# Convert data/ directory after "Reorganize data directory" from May 15
+set -eu
+
+base=$(readlink -f $(dirname $(readlink -f $0))/..)
+. $base/lib/environment.sh
+
+dnew="${debci_data_basedir}.new"
+
+if [ -e "${debci_data_basedir}.old" ]; then
+  echo "${debci_data_basedir}.old already exists, aborting" >&1
+  exit 1
+fi
+
+if [ -e "$dnew" ]; then
+  echo "$dnew already exists, aborting" >&1
+  exit 1
+fi
+
+echo "Coyping original data dir to $dnew..."
+cp -a "$debci_data_basedir" "$dnew"
+
+cd "$dnew"
+
+# feeds/ and chdists/ are unchanged
+
+# status/: no file conversion necessary, just shuffle directories
+echo "Converting status/..."
+mkdir -p status/unstable/
+mv unstable-amd64/status status/unstable/amd64
+
+# autopkgtest/: dito
+echo "Converting autopkgtest/..."
+mkdir -p autopkgtest/unstable/
+mv unstable-amd64/autopkgtest autopkgtest/unstable/amd64
+
+# packages/: Same move, but we need to adjust the symlinks into autopkgtest/
+echo "Converting packages/..."
+mkdir -p packages/unstable/
+mv unstable-amd64/packages packages/unstable/amd64
+
+for pkg in packages/unstable/amd64/*/*; do
+  for link in $pkg/*.autopkgtest.log $pkg/latest-autopkgtest; do
+    if [ ! -L $link ]; then
+      echo "ERROR: Ignoring non-symlink $link" >2
+      continue
+    fi
+    target=$(readlink $link)
+    # the original links start with ../../../autopkgtest/
+    target_tail="${target#../../../autopkgtest/}"
+    if [ "$target" = "$target_tail" ]; then
+      echo "ERROR: $link target $target does not start with expected ../../../autopkgtest/, you will get broken symlinks!" >&2
+      continue
+    fi
+    ln -sf "../../../../../autopkgtest/unstable/amd64/$target_tail" $link
+    if [ ! -e $link ]; then
+      echo "ERROR: $link was converted but target does not exist" >&2
+    fi
+  done
+done
+
+# we should have gotten everything now; if not, fail here
+rmdir unstable-amd64
+
+# do the final renaming as atomically as possible
+echo "Renaming original data dir to ${debci_data_basedir}.old ..."
+mv "${debci_data_basedir}" "${debci_data_basedir}.old"
+echo "Renaming converted dir $dnew to $debci_data_basedir ..."
+mv "$dnew" "$debci_data_basedir"
+
+echo "All done"
+
