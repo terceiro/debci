@@ -9,11 +9,11 @@ case $- in
 esac
 
 grep_packages() {
-  chdist -d "${debci_data_basedir}/chdist" grep-dctrl-packages ${debci_suite}-${debci_arch} "$@"
+  chdist --data-dir "${debci_data_basedir}/chdist" grep-dctrl-packages ${debci_suite}-${debci_arch} "$@"
 }
 
 grep_sources() {
-  chdist -d "${debci_data_basedir}/chdist" grep-dctrl-sources ${debci_suite}-${debci_arch} "$@"
+  chdist --data-dir "${debci_data_basedir}/chdist" grep-dctrl-sources ${debci_suite}-${debci_arch} "$@"
 }
 
 

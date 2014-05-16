@@ -18,7 +18,7 @@ name="${debci_suite}-${debci_arch}"
 # create new chdist if it doesn't exist already
 if [ ! -e "$root/$name" ]; then
   echo "Creating new chdist $root/$name"
-  chdist -d "$root" create "$name" >/dev/null
+  chdist --data-dir "$root" create "$name" >/dev/null
 
   # figure out default mirror from debootstrap scripts
   DEF_MIRROR="http://ftp.debian.org/debian"
@@ -70,4 +70,4 @@ deb-src ${DEF_MIRROR} $SUITE $COMPONENTS" > "$TARGET/etc/apt/sources.list"
 fi
 
 # update apt indexes
-chdist -d "$root" apt-get "$name" update
+chdist --data-dir "$root" apt-get "$name" update
