@@ -1,3 +1,10 @@
+debci (0.6.3) unstable; urgency=medium
+
+  * debian-status: avoid generating invalid JSON in the presence of packages
+    without status files
+
+ -- Antonio Terceiro <terceiro@debian.org>  Thu, 29 May 2014 12:48:48 -0300
+
 debci (0.6.2) unstable; urgency=medium
 
   * debci-generate-index: don't try merging dependencies diff when no package

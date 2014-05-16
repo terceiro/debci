@@ -36,7 +36,9 @@ get_status_file() {
 
 get_json() {
   local status_file=$(get_status_file "$1")
+  local prefix="$2"
   if [ -f "$status_file" ]; then
+    echo "$prefix"
     cat "$status_file"
   fi
 }
@@ -130,10 +132,7 @@ if [ $status_file ]; then
   fi
   prefix=''
   for pkg in $@; do
-    if [ $prefix ]; then
-      echo "$prefix" | $indent
-    fi
-    get_json "$pkg" | $indent
+    get_json "$pkg" "$prefix" | $indent
     prefix=','
   done
   [ $# -gt 1 -o $all ] && echo "]"
