@@ -337,6 +337,7 @@ done
 if [ $# -gt 0 ]; then
   for p in $@; do
     generate_packages "$p"
+    debci-generate-feeds "$p"
   done
 else
   if [ -d "$debci_autopkgtest_dir" ]; then
