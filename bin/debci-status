@@ -108,12 +108,8 @@ while true; do
 done
 
 if [ $all ]; then
-  if [ -d "$debci_packages_dir" ]; then
-    pkgs=$(find "$debci_packages_dir" -mindepth 2 -maxdepth 2 | xargs -n 1 basename | sort)
-    eval set -- $pkgs
-  else
-    exit 0
-  fi
+  pkgs=$(debci-list-packages)
+  eval set -- $pkgs
 fi
 
 if [ $# -lt 1 ]; then

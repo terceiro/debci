@@ -65,12 +65,22 @@ run() {
   log "I: finished processing of all packages"
 }
 
+all_packages_with_fastest_first() {
+  # list of all packages, sorted by duration of their last test suite run
+  #
+  # new package have "unknown" as duration, and will sort first due to how
+  # sort(1) works. We acknowledge that behavior and give new packages a chance
+  # to be efficient. If they are not, they will be placed at the end of the
+  # queue for the next run.
+  debci-status --field duration_seconds --all | sort -k 2,2 -n | cut -d ' ' -f 1
+}
+
 process_all_packages() {
   local start=$(date +%s)
 
   # determine packages which need to be tested
   packages=''
-  for pkg in $(debci-list-packages); do
+  for pkg in $(all_packages_with_fastest_first); do
     if needs_processing $pkg; then
       packages="$packages $pkg"
     else
