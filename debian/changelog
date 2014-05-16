@@ -1,3 +1,9 @@
+debci (0.7) UNRELEASED; urgency=medium
+
+  * 
+
+ -- Antonio Terceiro <terceiro@debian.org>  Fri, 16 May 2014 12:55:41 -0300
+
 debci (0.6.1) unstable; urgency=medium
 
   * Fix chdist calls on stable (See #736504)
