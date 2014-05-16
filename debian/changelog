@@ -1,6 +1,7 @@
 debci (0.7) UNRELEASED; urgency=medium
 
   * debci-batch: put packages with fastest testsuites first in the queue
+  * debci-generate-feeds: allow generating feeds for specific packages
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 16 May 2014 12:55:41 -0300
 
