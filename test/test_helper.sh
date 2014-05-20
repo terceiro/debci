@@ -19,6 +19,12 @@ EOF
   export debci_config_dir="$__tmpdir/config"
 }
 
+status_dir_for_package() {
+  local pkg="$1"
+  pkg_dir=$(echo "$pkg" | sed -e 's/\(\(lib\)\?.\).*/\1\/&/')
+  echo "${debci_data_basedir}/packages/unstable/amd64/${pkg_dir}"
+}
+
 tearDown() {
   if [ -z "${DEBUG:-}" ]; then
     rm -rf $__tmpdir

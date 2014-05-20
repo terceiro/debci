@@ -26,6 +26,8 @@ debci (0.7) UNRELEASED; urgency=medium
   * Add tools/convert-data-0.7: Convert data directory to changed format from
     above.
   * Fix debci-status -l if there is just one package.
+  * Add tests for debci-batch, covering skipping/re-running of tests under
+    appropriate conditions and showing the cause for re-run in the log.
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 16 May 2014 12:55:41 -0300
 
