@@ -25,6 +25,7 @@ debci (0.7) UNRELEASED; urgency=medium
     release/arch/.
   * Add tools/convert-data-0.7: Convert data directory to changed format from
     above.
+  * Fix debci-status -l if there is just one package.
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 16 May 2014 12:55:41 -0300
 

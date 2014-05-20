@@ -136,7 +136,7 @@ if [ $status_file ]; then
 fi
 
 # single package
-if [ $# -eq 1 ]; then
+if [ $# -eq 1 -a ! $all ]; then
   get_status "$1"
   exit
 fi
