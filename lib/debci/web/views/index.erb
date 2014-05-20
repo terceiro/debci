@@ -1,1 +1,62 @@
-<h1>Test</h1>
+<div id='main' class='container'>
+
+        <div id='status'>
+
+          <h1>Status</h1>
+
+          <div class='row'>
+            <div class='col-sm-6'>
+              <h2>Pass/fail</h2>
+              <div class='chart' id='chart-pass-fail'>
+                <noscript>Can't plot chart without Javascript.</noscript>
+              </div>
+            </div>
+
+            <div class='col-sm-6'>
+              <h2>Pass percentage</h2>
+              <div class='chart' id='chart-pass-percentage'>
+                <noscript>Can't plot chart without Javascript.</noscript>
+              </div>
+            </div>
+          </div>
+
+          <div class='row'>
+            <h2>Run duration</h2>
+            <div class='col-sm-6'>
+              <div class='chart' id='chart-run-duration'>
+                <noscript>Can't plot chart without Javascript.</noscript>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div id='packages'>
+          <div class='row'>
+            <div id='package-list' class='col-sm-3'>
+              <h1>Package:</h1>
+              <form id='package-filter' class='form-inline'>
+                <input type='text' id='package-search' name='q' autocomplete="off"
+                        placeholder='Search packages (regex welcome)' class='form-control'/>
+              </form>
+              <div class='request-search'>
+                <p class='text-muted'>
+                <em>Type at least 2 characters.</em>
+                </p>
+              </div>
+              <div class='search-count' style='display: none'>
+                <p class='text-muted'>
+                <em><span class='count'>X</span> packages found.</em>
+                </p>
+              </div>
+              <ul id='package-select' class='nav nav-list'>
+              </ul>
+            </div>
+            <div id='package-details' class='col-sm-9'>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- id='main' -->
+
+    </div> <!-- id='wrap' -->   
