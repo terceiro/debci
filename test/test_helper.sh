@@ -28,6 +28,12 @@ status_dir_for_package() {
   echo "${debci_data_basedir}/packages/unstable/amd64/${pkg_dir}"
 }
 
+autopkgtest_dir_for_package() {
+  local pkg="$1"
+  pkg_dir=$(echo "$pkg" | sed -e 's/\(\(lib\)\?.\).*/\1\/&/')
+  echo "${debci_data_basedir}/autopkgtest/unstable/amd64/${pkg_dir}"
+}
+
 tearDown() {
   stop_worker
   if [ -z "${DEBUG:-}" ]; then
