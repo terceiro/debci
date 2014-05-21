@@ -24,7 +24,9 @@ create_chroot() {
     done
   fi
 
-  debootstrap "$debci_suite" "$debci_chroot_path"
+  # FIXME automate chroot creation for foreign architectures where a
+  # qemu-user-static binary is needed
+  debootstrap --arch="$debci_arch" "$debci_suite" "$debci_chroot_path"
 
   # use proxy
   if [ -n "$http_proxy" ]; then
