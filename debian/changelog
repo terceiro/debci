@@ -41,6 +41,7 @@ debci (0.7) UNRELEASED; urgency=medium
   * Add debci_mirror config variable to configure an archive mirror. Use it
     for chdist and schroot setup.
   * Drop unnecessary faketime build dependency.
+  * Add LXC backend.
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 16 May 2014 12:55:41 -0300
 
