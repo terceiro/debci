@@ -32,6 +32,8 @@ debci (0.7) UNRELEASED; urgency=medium
     just calling ruby for the actual JSON validation). With that we can re-use
     test_helper's test bed setup instead of having to replicate it all in
     ruby.
+  * Make test/runall.sh executable for convenience, and make it only run
+    test_* scripts.
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 16 May 2014 12:55:41 -0300
 
