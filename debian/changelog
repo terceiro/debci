@@ -34,6 +34,8 @@ debci (0.7) UNRELEASED; urgency=medium
     ruby.
   * Make test/runall.sh executable for convenience, and make it only run
     test_* scripts.
+  * Move reading of /etc/default/debci from debci-batch to lib/environment.sh,
+    so that it applies to all tools.
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 16 May 2014 12:55:41 -0300
 

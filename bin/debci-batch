@@ -2,10 +2,6 @@
 
 set -eu
 
-if [ -r /etc/default/debci ]; then
-  . /etc/default/debci
-fi
-
 usage() {
   cat <<EOF
 usage: debci-batch [OPTIONS]

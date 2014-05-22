@@ -11,6 +11,10 @@ esac
 export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 
+if [ -r /etc/default/debci ]; then
+  . /etc/default/debci
+fi
+
 if [ -z "${debci_base_dir:-}" ]; then
   if [ -f lib/environment.sh ]; then
     debci_base_dir="$(pwd)"
