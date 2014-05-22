@@ -1,4 +1,48 @@
-<% package="#{params[:package]}" %>
+<h3 class="container"><%= @package.name %></h3>
 
-<h2><%=package %></h2>
+<div class="container">
+<table>
+<% currentArch = 0 %>
+
+<% @status_table.each do |arch| %>
+    
+    <tr class="suiteandarch">
+        <% data = Array.new %>
+        <td><%= @allArches.fetch(currentArch) %></td>        
+        <% arch.each do |suite| %>
+            <td><b><%= suite.suite %></b></td>          
+            <% data.push(suite.status) %>   
+        <% end %>
+    </tr>      
+
+    <tr>        
+        <td class="statusdata">Status</td>
+        <% data.each do |status|
+
+               case status.to_s
+                   when "fail"
+                       state = "fail"
+                       test = "fail"
+                   when "pass"
+                       state = "pass"
+                       test = "pass"
+                   when "tmpfail"
+                       state = "tmpfail"
+                       test = "tmpfail"
+                   when ""
+                       state = "No test data"
+                       test = "nodata"
+               end                            
+        %>
+        
+        <td class="<%= test %> statusdata"><%= state %></td>
+        <% end %>
+        
+    </tr>    
+    <% currentArch += 1 %>
+    
+<% end %>
+    
+</table>
+</div>
 
