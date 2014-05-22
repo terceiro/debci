@@ -2,3 +2,5 @@ Files you may want to put in this directory:
 
 - whitelist
 - blacklist
+- debci: can change the defaults in lib/environment.sh, overrides
+  /etc/default/debci
