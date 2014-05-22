@@ -5,7 +5,6 @@ Maintainer: Antonio Terceiro <terceiro@debian.org>
 Build-Depends:
  debhelper (>= 9.0.0),
  devscripts,
- faketime,
  patchutils,
  ruby,
  ruby-rspec (>= 2.14),
