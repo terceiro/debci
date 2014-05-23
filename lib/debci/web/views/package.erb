@@ -1,7 +1,8 @@
-<h3 class="container"><%= @package.name %></h3>
-
 <div class="container">
-<table>
+<div class="panel panel-default">
+    <div class="panel-heading"><%= @package.name %></div>
+<table class="table">
+
 <% currentArch = 0 %>
 
 <% @status_table.each do |arch| %>
@@ -45,4 +46,4 @@
     
 </table>
 </div>
-
+</div>
