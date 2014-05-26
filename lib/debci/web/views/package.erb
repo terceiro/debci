@@ -33,7 +33,8 @@
     <tr>                  
         <td><b><%= @allArches.fetch(currentArch) %></b></td>
 
-        <% data.each do |status|
+        <%  currentSuite = 0
+            data.each do |status|
 
                case status.to_s
                    when "fail"
@@ -48,14 +49,19 @@
                    when ""
                        state = "No test data"
                        test = "nodata"
-               end               
+               end                         
 
-          currentSuite += 1
+          link = "/history/" + suites.fetch(currentSuite) + "/" + 
+                 @allArches.fetch(currentArch) + "/" + @package.name[0] + 
+                 "/" + @package.name
+        %>                
+
+        <td class="<%= test %> statusdata"><a href=<%= link %>><%= state %></a></td>
+
+        <% 
+           currentSuite += 1
+           end 
         %>
-        
-        <td class="<%= test %> statusdata"><%= state %></td>
-
-        <% end %>
         
     </tr>    
     
