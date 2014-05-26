@@ -47,6 +47,11 @@ module Debci
 
             erb :package
 
-        end        
+        end
+
+        # Redirect to the main page if a route was not found
+        not_found do
+            redirect '/'
+        end         
     end
 end
