@@ -3,21 +3,36 @@
     <div class="panel-heading"><%= @package.name %></div>
 <table class="table">
 
-<% currentArch = 0 %>
+<% currentArch = 0 
+   header = true
+   suites = Array.new
+   currentSuite = 0
+%>
 
 <% @status_table.each do |arch| %>
     
-    <tr class="suiteandarch">
-        <% data = Array.new %>
-        <td><%= @allArches.fetch(currentArch) %></td>        
-        <% arch.each do |suite| %>
-            <td><b><%= suite.suite %></b></td>          
-            <% data.push(suite.status) %>   
-        <% end %>
+    <tr>
+        <% data = Array.new
+           
+           if header %>
+               <td></td>       
+               <% arch.each do |suite| %>
+                   <td><b><%= suite.suite %></b></td>                              
+               <% end %>
+           <% end %>
     </tr>      
 
-    <tr>        
-        <td class="statusdata">Status</td>
+    <% arch.each do |suite|
+           data.push(suite.status)
+           suites.push(suite.suite)
+       end
+
+       header = false 
+    %>   
+    
+    <tr>                  
+        <td><b><%= @allArches.fetch(currentArch) %></b></td>
+
         <% data.each do |status|
 
                case status.to_s
@@ -33,13 +48,17 @@
                    when ""
                        state = "No test data"
                        test = "nodata"
-               end                            
+               end               
+
+          currentSuite += 1
         %>
         
         <td class="<%= test %> statusdata"><%= state %></td>
+
         <% end %>
         
     </tr>    
+    
     <% currentArch += 1 %>
     
 <% end %>
