@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'debci'
 
 module Debci
 
@@ -18,19 +19,10 @@ module Debci
         end
 
         get '/packages/:package' do 
-            require 'debci'            
- 
-            begin
+                      
+            validatePackage()
 
-                @repository = Debci::Repository.new
-                @package = @repository.find_package("#{params[:package]}")
-              
-            rescue Debci::Repository::PackageNotFound
-                redirect '/'
-            end
-
-            @status_table = @package.status
-            
+            @status_table = @package.status            
             @allArches = Array.new                
   
             @status_table.each do |arch|
@@ -48,10 +40,32 @@ module Debci
             erb :package
 
         end
+        
+        get '/history/:suite/:arch/:firstLetter/:package' do
+            
+            validatePackage()
+
+            @package = "#{params[:package]}" 
+            @suite = "#{params[:suite]}"
+            @arch = "#{params[:arch]}"
+           
+            erb :history
+        end
 
         # Redirect to the main page if a route was not found
         not_found do
             redirect '/'
-        end         
+        end
+
+        def validatePackage()
+            begin                   
+
+                @repository = Debci::Repository.new
+                @package = @repository.find_package("#{params[:package]}")
+              
+            rescue Debci::Repository::PackageNotFound
+                redirect '/'
+            end  
+        end   
     end
 end
