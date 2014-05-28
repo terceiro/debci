@@ -1,62 +1,57 @@
-<div id='main' class='container'>
+<div class="container-float">
+<div class="panel panel-default newspanel">
+    <div class="panel-heading">News</div>
+    <div class="list-group">
+        <%
+           repository = Debci::Repository.new
+           package = repository.packages
 
-        <div id='status'>
+           # List the latest changes in package status
+           package.each do |thisPackage|
 
-          <h1>Status</h1>
+               news = repository.find_package(thisPackage).news
 
-          <div class='row'>
-            <div class='col-sm-6'>
-              <h2>Pass/fail</h2>
-              <div class='chart' id='chart-pass-fail'>
-                <noscript>Can't plot chart without Javascript.</noscript>
-              </div>
+               news.each do |item|
+
+                   if item.headline.include?("PASSED")
+                       state = "pass"
+                   else
+                       state = "fail"
+                   end
+         %>
+                   <a href="/history/<%= item.suite %>/<%= item.architecture %>/<%= thisPackage[0] %>/<%= thisPackage %>"
+                      class="list-group-item <%= state %>"><%= item.headline %></a>
+
+                   <% break %>
+               <% end %>
+           <% end %>
+
+    </div> <!-- class='list-group' -->
+</div> <!-- class='panel panel-default' -->
+</div> <!-- class='container-float' -->
+
+<div id='main' class="container graphcontainer">
+<div id='status' class="graphs">
+    <div class="panel panel-default">
+        <div class="panel-heading">Package Testing Data</div>
+
+            <div class='row'>
+                <div class='col-sm-6'>
+                    <h3>Pass/fail</h3>
+                        <div class='chart' id='chart-pass-fail'>
+                            <noscript>Can't plot chart without Javascript.</noscript>
+                        </div>
+                </div>
+
+                <div class='col-sm-6'>
+                    <h3>Pass percentage</h3>
+                        <div class='chart' id='chart-pass-percentage'>
+                            <noscript>Can't plot chart without Javascript.</noscript>
+                        </div>
+                </div>
             </div>
-
-            <div class='col-sm-6'>
-              <h2>Pass percentage</h2>
-              <div class='chart' id='chart-pass-percentage'>
-                <noscript>Can't plot chart without Javascript.</noscript>
-              </div>
-            </div>
-          </div>
-
-          <div class='row'>
-            <h2>Run duration</h2>
-            <div class='col-sm-6'>
-              <div class='chart' id='chart-run-duration'>
-                <noscript>Can't plot chart without Javascript.</noscript>
-              </div>
-            </div>
-          </div>
-
         </div>
+     </div>
 
-        <div id='packages'>
-          <div class='row'>
-            <div id='package-list' class='col-sm-3'>
-              <h1>Package:</h1>
-              <form id='package-filter' class='form-inline'>
-                <input type='text' id='package-search' name='q' autocomplete="off"
-                        placeholder='Search packages (regex welcome)' class='form-control'/>
-              </form>
-              <div class='request-search'>
-                <p class='text-muted'>
-                <em>Type at least 2 characters.</em>
-                </p>
-              </div>
-              <div class='search-count' style='display: none'>
-                <p class='text-muted'>
-                <em><span class='count'>X</span> packages found.</em>
-                </p>
-              </div>
-              <ul id='package-select' class='nav nav-list'>
-              </ul>
-            </div>
-            <div id='package-details' class='col-sm-9'>
-            </div>
-          </div>
-        </div>
-
-      </div> <!-- id='main' -->
-
-    </div> <!-- id='wrap' -->   
+</div> <!-- id='status' -->
+</div> <!-- id='main' -->
