@@ -18,6 +18,7 @@ check: spec
 test: check
 
 public/doc: README.md RUBYAPI.md HACKING.md
+	$(RM) public/doc/js/jquery.js
 	yardoc --markup markdown --output-dir $@ --main README.md lib - $^
 	cd public/doc/js && ln -sf ../../jquery.js
 
