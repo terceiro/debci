@@ -43,6 +43,57 @@ For the **schroot** backend:
 * dpkg is configured to use the `--force-unsafe-io` option to speed up the installation of packages.
 * The chroot uses the [`debci` profile](http://anonscm.debian.org/gitweb/?p=collab-maint/debci.git;a=tree;f=etc/schroot/debci), installed by the `debci` package.
 
+### How can I reproduce the test run locally?
+
+**NOTE:** if you intend to run tests frequently, you should consider installing
+`apt-cacher-ng` before anything else. `debci` will notice the running proxy and
+will setup the testbed to use it, so you won't have to wait for the download of
+each package more than once.
+
+Install a configure `debci`
+
+```
+$ sudo apt install debci
+$ sudo debci setup
+```
+
+Now edit  `/etc/schroot/chroot.d/debci-SUITE-ARCH` (by default `SUITE` is
+`unstable` and `ARCH` is your native architecture), and add your username to
+the `users`, `root-users` and `source-root-users` configuration keys:
+
+```
+[...]
+users=debci,$YOUR_USERNAME
+[...]
+root=users=debci,$YOUR_USERNAME
+source-root=users=debci,$YOUR_USERNAME
+[...]
+```
+
+The following examples assume:
+
+* the `schroot` debci backend
+* suite = `unstable` (the default)
+* architecture = `amd64`
+
+To run the test suite with of the package **from the archive**, you pass the
+_source package name_ to adt-run:
+
+```
+$ adt-run --user debci --output-dir /tmp/output-dir SOURCEPACKAGE --- schroot debci-unstable-amd64
+```
+
+To run the test suite against **locally-built packages**, you have to reference
+the binary packages and their corresponding `.dsc` in the local filesystem.
+
+```
+$ adt-run --user debci --output-dir /tmp/output-dir \
+  /path/to/PACKAGE_x.y-z_amd64.deb [OTHER DEBS ...] \
+  /path/to/PACKAGE_x.y-z.dsc --- \
+  schroot debci-unstable-amd64
+```
+
+
 ## Reporting Bugs
 
 Please report bugs against the [debci package](https://bugs.debian.org/debci)
