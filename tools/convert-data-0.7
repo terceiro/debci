@@ -42,7 +42,7 @@ mv unstable-amd64/packages packages/unstable/amd64
 for pkg in packages/unstable/amd64/*/*; do
   for link in $pkg/*.autopkgtest.log $pkg/latest-autopkgtest; do
     if [ ! -L $link ]; then
-      echo "ERROR: Ignoring non-symlink $link" >2
+      echo "ERROR: Ignoring non-symlink $link" >&2
       continue
     fi
     target=$(readlink $link)
