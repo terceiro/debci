@@ -41,6 +41,14 @@ module Debci
 
         end
         
+        get '/packagelist' do
+            erb :packagelist
+        end
+
+        get '/packagelist/:prefix' do
+            erb :packagelist
+        end
+
         get '/history/:suite/:arch/:firstLetter/:package' do
             
             validatePackage()
