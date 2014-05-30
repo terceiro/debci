@@ -5,6 +5,8 @@
         <%
            repository = Debci::Repository.new
            package = repository.packages
+           newsItems = 0
+           TOTAL_ITEMS = 10
 
            # List the latest changes in package status
            package.each do |thisPackage|
@@ -18,13 +20,20 @@
                    else
                        state = "fail"
                    end
+
+                   newsItems += 1
          %>
                    <a href="/history/<%= item.suite %>/<%= item.architecture %>/<%= thisPackage[0] %>/<%= thisPackage %>"
                       class="list-group-item <%= state %>"><%= item.headline %></a>
 
-                   <% break %>
-               <% end %>
-           <% end %>
+         <%        break
+               end
+
+               if newsItems.eql?(TOTAL_ITEMS)
+                   break
+               end
+           end
+         %>
 
     </div> <!-- class='list-group' -->
 </div> <!-- class='panel panel-default' -->
