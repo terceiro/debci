@@ -101,6 +101,8 @@ in the [Debian BTS](http://bugs.debian.org/).
 
 ## Developer information
 
+* Get source: `git clone https://alioth.debian.org/anonscm/git/collab-maint/debci.git`
+* [Browse source](http://anonscm.debian.org/gitweb/?p=collab-maint/debci.git)
 * {file:HACKING.md How to setup a development environment}
 * {file:RUBYAPI.md The Ruby API to the debci data store}
 
