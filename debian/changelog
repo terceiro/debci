@@ -32,10 +32,8 @@ debci (0.7) UNRELEASED; urgency=medium
     ruby.
   * Make test/runall.sh executable for convenience, and make it only run
     test_* scripts.
-  * Move reading of /etc/default/debci from debci-batch to lib/environment.sh,
-    so that it applies to all tools.
-  * Support overriding builtin and global (from /etc/default/debci) defaults
-    in config/debci.
+  * debci-batch: remove reading configuration from /etc/default/debci
+  * lib/environment.sh: read configuration from $debci_basedir/config/debci.conf
   * Add debci_mirror config variable to configure an archive mirror. Use it
     for chdist and schroot setup.
   * Drop unnecessary faketime build dependency.
