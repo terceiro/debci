@@ -57,6 +57,13 @@ describe Debci::Status do
     it('ignores invalid duration') { expect(@status.duration_seconds).to be_nil }
   end
 
+  context 'no status file' do
+    before(:each) do
+      @status = Debci::Status.from_file('does-not-exist.json')
+    end
+    it('Sets a status') { expect(@status.status).to eq(:no_test_data) }
+  end
+
   context 'news' do
     it 'is newsworthy when going from pass to fail' do
       status = status_with(status: :fail, previous_status: :pass)

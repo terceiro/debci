@@ -32,7 +32,10 @@ module Debci
     # Constructs a new object by reading the JSON status `file`.
     def self.from_file(file)
       status = new
-      return status unless File.exists?(file)
+      unless File.exists?(file)
+        status.status = :no_test_data
+        return status
+      end
       data = nil
       begin
         File.open(file, 'r') do |f|
