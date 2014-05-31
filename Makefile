@@ -13,7 +13,7 @@ spec:
 	rspec --color
 
 check: spec
-	sh test/runall.sh
+	test/runall.sh
 
 test: check
 

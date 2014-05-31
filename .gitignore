@@ -3,6 +3,7 @@
 /public/jquery*.js
 /public/font-awesome/
 /config/whitelist
+/config/debci
 /chroots/*
 /gnupg/*
 /tags

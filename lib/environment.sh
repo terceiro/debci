@@ -11,6 +11,10 @@ esac
 export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 
+if [ -r /etc/default/debci ]; then
+  . /etc/default/debci
+fi
+
 if [ -z "${debci_base_dir:-}" ]; then
   if [ -f lib/environment.sh ]; then
     debci_base_dir="$(pwd)"
@@ -20,13 +24,19 @@ if [ -z "${debci_base_dir:-}" ]; then
   fi
 fi
 
+# local config file in tree can override global defaults
+debci_default_config_dir=$(readlink -f "${debci_base_dir}/config")
+debci_config_dir="${debci_config_dir:-${debci_default_config_dir}}"
+if [ -r "$debci_config_dir/debci" ]; then
+  . "$debci_config_dir/debci"
+fi
+
 # default values
 debci_suite=${debci_suite:-unstable}
 debci_arch=${debci_arch:-$(dpkg --print-architecture)}
+debci_mirror=${debci_mirror:-}
 debci_backend=${debci_backend:-schroot}
 debci_data_basedir=${debci_data_basedir:-$(readlink -f "${debci_base_dir}/data")}
-debci_default_config_dir=$(readlink -f "${debci_base_dir}/config")
-debci_config_dir="${debci_config_dir:-${debci_default_config_dir}}"
 debci_quiet="${debci_quiet:-false}"
 
 shared_short_options='c:s:a:b:d:hq'

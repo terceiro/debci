@@ -39,10 +39,12 @@ if [ ! -e "$root/$name" ]; then
     COMPONENTS="main restricted universe multiverse"  # Ubuntu
   fi
 
+  mirror=${debci_mirror:-$DEF_MIRROR}
+
   # write apt sources.list
   mkdir -p $TARGET/etc/apt/
-  echo "deb ${DEF_MIRROR} $SUITE $COMPONENTS
-deb-src ${DEF_MIRROR} $SUITE $COMPONENTS" > "$TARGET/etc/apt/sources.list"
+  echo "deb $mirror $SUITE $COMPONENTS
+deb-src $mirror $SUITE $COMPONENTS" > "$TARGET/etc/apt/sources.list"
 
   # use a local proxy if available
   http_proxy="${http_proxy:-}"

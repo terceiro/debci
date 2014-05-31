@@ -1,0 +1,47 @@
+#!/bin/sh
+
+set -eu
+
+base=$(readlink -f $(dirname $(readlink -f $0))/../..)
+. $base/lib/environment.sh
+
+if [ $(whoami) != root ]; then
+  echo "E: This script must be run as root"
+  exit 1
+fi
+
+# debootstrap doesn't like "unstable"
+[ $debci_suite = unstable ] && debci_suite=sid
+
+# determine whether it's Debian or Ubuntu
+script=/usr/share/debootstrap/scripts/$debci_suite
+if [ -r $script ]; then
+  if grep -q ubuntu.com $script; then
+    distro=ubuntu
+  else
+    distro=debian
+  fi
+else
+  echo "ERROR: $script does not exist; debootstrap is not installed, or $debci_suite is an unknown suite" >&2
+  exit 1
+fi
+
+# detect a local apt-cacher-ng and use it in the container
+http_proxy="${http_proxy:-}"
+if [ -z "$http_proxy" ]; then
+  if nc -z -w 1 127.0.0.1 3142; then
+    # for debootstrap:
+    export http_proxy=http://127.0.0.1:3142
+    # for the guest:
+    bridge_ip=$(ip -4 a show dev lxcbr0 | awk '/ inet / {sub(/\/.*$/, "", $2); print $2}')
+    export GUEST_PROXY=http://$bridge_ip:3142
+  fi
+fi
+
+adt-build-lxc $distro $debci_suite $debci_arch
+
+# configure guest proxy
+if [ -n "$GUEST_PROXY" ]; then
+  LXC_PATH=$(lxc-config lxc.lxcpath) || LXC_PATH=/var/lib/lxc
+  echo "Acquire::http::Proxy \"$GUEST_PROXY\" ;" > "$LXC_PATH/adt-${debci_suite}-${debci_arch}/rootfs/etc/apt/apt.conf.d/70proxy"
+fi
