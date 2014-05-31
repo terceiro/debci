@@ -99,6 +99,14 @@ describe Debci::Status do
     end
   end
 
+  context 'title' do
+    [:pass, :fail, :tmpfail, :no_test_data, :INVALID].each do |s|
+      it "should have a title for #{s}" do
+        expect(status_with(status: s).title).to be_a(String)
+      end
+    end
+  end
+
   def status_with(data)
     s = Debci::Status.new
     data.each do |k,v|

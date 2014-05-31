@@ -18,6 +18,15 @@ module Debci
       ].include?([status, previous_status])
     end
 
+    def title
+      {
+        :pass => "Pass",
+        :fail => "Fail",
+        :tmpfail => "Temporary failure",
+        :no_test_data => "No test data",
+      }.fetch(status, "Unknown")
+    end
+
     # Returns a headline for this status object, to be used as a short
     # description of the event it represents
     def headline
