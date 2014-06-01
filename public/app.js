@@ -125,9 +125,7 @@ jQuery(function($) {
       var duration_ticks = [];
       for (var i = 0; i <= max_hours; i = i + step) {
         duration_ticks.push([i * 3600, i + 'h']);
-        console.log(i);
       }
-      console.log(duration_ticks);
       $.plot('#chart-run-duration', [duration], {
         series: {
           bars: {
@@ -177,7 +175,6 @@ jQuery(function($) {
 
   $('#package-search').keyup(function() {
       var query = $(this).val();
-      console.log("query = '" + query + "'");
       if (query.length > 0) {
         $('.request-search').hide();
         var found = 0;
