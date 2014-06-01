@@ -5,6 +5,8 @@ debci (0.7) UNRELEASED; urgency=medium
   * debci-generate-feeds: allow generating feeds for specific packages
   * debci-generate-index: update package feed right away when indexing
     individual packages
+  * public/app.js: Adjust the "Pass percentage" Y axis labels so that chart is
+    actually a percentage chart.
 
   [ Martin Pitt ]
   * Fix report_status() to work for bash scripts.
