@@ -7,6 +7,7 @@ debci (0.7) UNRELEASED; urgency=medium
     individual packages
   * public/app.js: Adjust the "Pass percentage" Y axis labels so that chart is
     actually a percentage chart.
+  * public/index.html: add link to global Atom feed in the home page.
 
   [ Martin Pitt ]
   * Fix report_status() to work for bash scripts.
