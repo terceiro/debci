@@ -1,7 +1,5 @@
-<% packagePrefix = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e',
-                    'f','g','h','i','j','k','l','m','n','o','p','q','r','s',
-                    't','u','v','w','x','y','z']
-%>
+<% package_prefix = (('0'..'9').to_a + ('a'..'z').to_a + ('liba'..'libz').to_a).sort %>
+
 <div class="container">
 <div class="row">
 <div class="col-sm-3">
@@ -9,24 +7,11 @@
     <div class="panel-heading">Browse</div>
 <ul class="list-inline">
 <%
-    packagePrefix.each do |prefix|
-        if prefix.eql?('l') %>
-            <li><a href="/packagelist/<%= prefix %>"><%= prefix %></a></li>
-<%
-            alphabet =['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
-                      'o','p','q','r','s','t','u','v','w','x','y','z']
+    package_prefix.each do |prefix|
+%>
+        <a href="/browse/<%= prefix %>"><%= prefix %></a>
+<%  end %>
 
-            # liba, libb, libc, ...
-            alphabet.each do |letter| %>
-                <li><a href="/packagelist/lib<%= letter %>">lib<%= letter %></a></li>
-<%
-            end
-        else 
-%>
-            <li><a href="/packagelist/<%= prefix %>"><%= prefix %></a></li>
-<%      end           
-    end
-%>
 </ul>
 </div>
 </div>
@@ -34,69 +19,37 @@
 <div class="col-sm-8">
 <div class="panel panel-default">
     <div class="panel-heading">Packages</div>
-<% 
-    # Insert the suites for which the current package has testing data
-    def insertSuites()
-        suites = ""
-           
-        @package.suites.each do |aSuite| 
-           suites += aSuite + " "
-        end
-       
-        return suites
-    end
-
-    # Insert the architectures for which the current package has testing data
-    def insertArchitectures()
-        arches = ""
-       
-        @package.architectures.each do |architecture| 
-            arches += architecture + " "
-        end
-           
-        return arches
-    end
-%>
 
 <table class="table" style="text-align: left">
 <tr><td><b>Package</b></td><td><b>Suites</b></td><td><b>Architectures</b></td></tr>
 <%
     repository = Debci::Repository.new
     packages = repository.packages
-    
-    packages.each do |item|
-        
-       @package = repository.find_package(item) 
-        
-       prefix = "#{params[:prefix]}"
-               
-       if item[0..3].eql?(prefix) %>    
-       <tr>
-          <td><a href="/packages/<%= @package.name %>"><%= item %></a></td>
-        <td><%= insertSuites() %></td>
-        <td><%= insertArchitectures() %></td>
-</tr>
-<%     else if item[0].eql?(prefix) 
-               
-           if item[0].eql?("l")
-               if item[0..2].eql?("lib")
-                   next
-               end
-           end
-%>                              
-    <tr>
-    <td><a href="/packages/<%= @package.name %>"><%= item %></a></td>
-    <td><%= insertSuites() %></td>
-    <td><%= insertArchitectures() %></td>
-</tr>
 
-<% 
-       end 
+    packages.each do |item|
+
+        @package = repository.find_package(item)
+        prefix = params[:prefix]
+
+        if item[0..3].eql?(prefix) %>
+            <tr>
+                <td><a href="/packages/<%= @package.name %>"><%= item %></a></td>
+                <td><%= @package.suites.join(', ') %></td>
+                <td><%= @package.architectures.join(', ') %></td>
+            </tr>
+
+<%      else if item[0].eql?(prefix) %>
+            <tr>
+                <td><a href="/packages/<%= @package.name %>"><%= item %></a></td>
+                <td><%= @package.suites.join(', ') %></td>
+                <td><%= @package.architectures.join(', ') %></td>
+            </tr>
+<%
+        end
     end
-   end
+end
 %>
 </table>
-</div>
 </div>
 </div>
 </div>
