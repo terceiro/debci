@@ -3,72 +3,46 @@
     <div class="panel-heading"><%= @package.name %></div>
 <table class="table">
 
-<% currentArch = 0 
-   header = true
-   suites = Array.new
-   currentSuite = 0
-%>
+    <% status = @package.status
+       suites = status.first.map { |col| col.suite }
+    %>
 
-<% @status_table.each do |arch| %>
-    
     <tr>
-        <% data = Array.new
-           
-           if header %>
-               <td></td>       
-               <% arch.each do |suite| %>
-                   <td><b><%= suite.suite %></b></td>                              
-               <% end %>
-           <% end %>
-    </tr>      
+        <td></td>
+        <% suites.each do |suite| %>
+               <td><b><%= suite %></b></td>
+        <% end %>
+    </tr>
 
-    <% arch.each do |suite|
-           data.push(suite.status)
-           suites.push(suite.suite)
-       end
+    <% status.each do |row|
+           current_suite = 0
+    %>
 
-       header = false 
-    %>   
-    
-    <tr>                  
-        <td><b><%= @allArches.fetch(currentArch) %></b></td>
+           <tr><% arch = row.first.architecture %>
+               <td><b><%= arch %></b></td>
 
-        <%  currentSuite = 0
-            data.each do |status|
+        <% data = row.map { |item| item.title }
+
+           data.each do |status|
 
                case status.to_s
-                   when "fail"
-                       state = "fail"
-                       test = "fail"
-                   when "pass"
+                   when "Pass"
                        state = "pass"
-                       test = "pass"
-                   when "tmpfail"
+                   when "Fail"
+                       state = "fail"
+                   when "Temporary failure"
                        state = "tmpfail"
-                       test = "tmpfail"
-                   when ""
-                       state = "No test data"
-                       test = "nodata"
-               end                         
+                   when "No test data"
+                       state = "nodata"
+               end
+           %>
+               <td class="<%= state %>"><a href="/packages/<%= @package.name %>/<%= suites[current_suite] %>/<%= arch %>"><%= status %></a></td>
 
-          link = "/history/" + suites.fetch(currentSuite) + "/" + 
-                 @allArches.fetch(currentArch) + "/" + @package.name[0] + 
-                 "/" + @package.name
-        %>                
-
-        <td class="<%= test %> statusdata"><a href=<%= link %>><%= state %></a></td>
-
-        <% 
-           currentSuite += 1
-           end 
-        %>
-        
-    </tr>    
-    
-    <% currentArch += 1 %>
-    
-<% end %>
-    
+    <%         current_suite += 1
+           end
+    %>
+           </tr>
+    <% end %>
 </table>
 </div>
 </div>
