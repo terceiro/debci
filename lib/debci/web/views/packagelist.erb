@@ -2,8 +2,10 @@
                     'f','g','h','i','j','k','l','m','n','o','p','q','r','s',
                     't','u','v','w','x','y','z']
 %>
-<div class="container-float">
-<div class="panel panel-default newspanel">
+<div class="container">
+<div class="row">
+<div class="col-sm-3">
+<div class="panel panel-default">
     <div class="panel-heading">Browse</div>
 <ul class="list-inline">
 <%
@@ -29,8 +31,7 @@
 </div>
 </div>
 
-<div class="container graphcontainer">
-<div class="graphs">
+<div class="col-sm-8">
 <div class="panel panel-default">
     <div class="panel-heading">Packages</div>
 <% 
@@ -95,6 +96,8 @@
    end
 %>
 </table>
+</div>
+</div>
 </div>
 </div>
 </div>
