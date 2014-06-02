@@ -6,41 +6,20 @@
     <div class="list-group">
         <%
            repository = Debci::Repository.new
-           package = repository.packages
-           newsItems = 0
            TOTAL_ITEMS = 10
 
+           news = repository.news_for('*', TOTAL_ITEMS)
+
            # List the latest changes in package status
-           package.each do |thisPackage|
-
-               news = repository.find_package(thisPackage).news
-
-               news.each do |item|
-
-                   if item.headline.include?("PASSED")
-                       state = "pass"
-                   else
-                       state = "fail"
-                   end
-
-                   newsItems += 1
+           news.each do |item|
          %>
-                   <a href="/history/<%= item.suite %>/<%= item.architecture %>/<%= thisPackage[0] %>/<%= thisPackage %>"
-                      class="list-group-item <%= state %>"><%= item.headline %></a>
-
-         <%        break
-               end
-
-               if newsItems.eql?(TOTAL_ITEMS)
-                   break
-               end
-           end
-         %>
+               <a href="/packages/<%= item.package %>/<%= item.suite %>/<%= item.architecture %>"
+                  class="list-group-item <%= item.status.to_s %>"><%= item.headline %></a>
+         <% end %>
 
     </div> <!-- class='list-group' -->
 </div> <!-- class='panel panel-default' -->
 </div> <!-- class='col-md-3' -->
-
 
 <div class="col-md-9">
 <div id='main'>
