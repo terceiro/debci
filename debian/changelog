@@ -1,4 +1,4 @@
-debci (0.7) UNRELEASED; urgency=medium
+debci (0.7) unstable; urgency=medium
 
   [ Antonio Terceiro ]
   * debci-batch: put packages with fastest testsuites first in the queue
@@ -42,7 +42,7 @@ debci (0.7) UNRELEASED; urgency=medium
   * Drop unnecessary faketime build dependency.
   * Add LXC backend.
 
- -- Antonio Terceiro <terceiro@debian.org>  Fri, 16 May 2014 12:55:41 -0300
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 03 Jun 2014 22:36:44 -0300
 
 debci (0.6.3) unstable; urgency=medium
 
