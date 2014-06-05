@@ -47,9 +47,9 @@ module Debci
             erb :history
         end
 
-        # Redirect to the main page if a route was not found
+        # Show a 404 message if a route was not found
         not_found do
-            redirect '/'
+            status 404
         end
 
         def validatePackage()
