@@ -8,6 +8,8 @@ debci (0.7) unstable; urgency=medium
   * public/app.js: Adjust the "Pass percentage" Y axis labels so that chart is
     actually a percentage chart.
   * public/index.html: add link to global Atom feed in the home page.
+  * debci-test, debci-generate-index: more robust way of calculating test run
+    duration. Parsing the autopkgtest log is just not good enough.
 
   [ Martin Pitt ]
   * Fix report_status() to work for bash scripts.

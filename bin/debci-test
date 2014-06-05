@@ -41,8 +41,13 @@ process_package() {
 
   mkdir -p "$adt_out_dir"
 
+  date +%s >> "$adt_out_dir/timestamps" # start timestamp
+
   # ignore output; we'll get the log from the adt-run output-dir
   test-package "$pkg" "$adt_out_dir" >/dev/null 2>&1 || true
+
+  date +%s >> "$adt_out_dir/timestamps" # finish timestamp
+
   if [ -n "$print_output" ]; then
       echo "$adt_out_dir"
   fi

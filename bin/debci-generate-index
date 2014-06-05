@@ -64,11 +64,10 @@ generate_package_run() {
   status_file="${status_dir}/${run_id}.json"
   log_file="${status_dir}/${run_id}.log"
 
-  # parse duration out of log file
-  local timestamps="$(sed -ns '/^adt-run \[/ { s/^adt-run \[\([0-9: -]*\)\].*$/\1/; p}' "$adtresult/log")"
-  local last_timestamp="$(echo "$timestamps" | tail -n 1)"
-  local start_time=$(date -d "$(echo "$timestamps" | head -n 1)" +%s)
-  local finish_time=$(date -d "$last_timestamp" +%s)
+  # get run duration
+  local start_time=$(head -n 1 "$adtresult/timestamps")
+  local finish_time=$(tail -n 1 "$adtresult/timestamps")
+  local last_timestamp="$(date --date="@${finish_time}" +%Y-%m-%dT%H:%M:%S)"
   duration=$(($finish_time - $start_time))
 
   hours=$(( $duration / 3600 ))
