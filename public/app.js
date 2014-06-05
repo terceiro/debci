@@ -88,7 +88,7 @@ jQuery(function($) {
             steps: false,
           }
         },
-        colors: [ '#8ae234', '#ef2929', '#babdb6' ],
+        colors: [ '#8ae234', '#ef2929', '#ffd862' ],
         legend: {
           show: true,
           backgroundOpacity: 0.2,

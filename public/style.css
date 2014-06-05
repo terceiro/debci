@@ -64,12 +64,12 @@
 
 .tmpfail:before {
   content: "\f059 ";
-  color: #babdb6;
+  color: #ffd862;
 }
 
 .nodata:before {
   content: "\f06a ";
-  color: red;
+  color: #babdb6;
 }
 
 /* -----------------------------------------------------------------
