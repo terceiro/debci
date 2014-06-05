@@ -18,6 +18,10 @@ module Debci
             end
         end
 
+        get '/status' do
+            erb :status
+        end
+
         get '/packages/:package' do
 
             validatePackage()
