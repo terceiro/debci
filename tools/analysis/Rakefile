@@ -8,7 +8,7 @@ desc 'prints failing packages (default)'
 task :failing => 'failing.json' do
   failing = JSON.load(File.read('failing.json'))
   failing.sort_by { |entry| -Integer(entry['duration_seconds']) }.each do |entry|
-    puts "%-50s %10d" % [entry['package'], entry['duration_seconds']]
+    puts "%-50s %10ds" % [entry['package'], entry['duration_seconds']]
   end
 end
 
