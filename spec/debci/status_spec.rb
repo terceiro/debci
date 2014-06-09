@@ -107,6 +107,12 @@ describe Debci::Status do
     end
   end
 
+  context 'unknown blame' do
+    it 'is always an Array' do
+      expect(status_with(blame: 'unknown').blame).to be_a(Array)
+    end
+  end
+
   def status_with(data)
     s = Debci::Status.new
     data.each do |k,v|

@@ -7,7 +7,8 @@ module Debci
 
   class Status
 
-    attr_accessor :suite, :architecture, :run_id, :package, :version, :date, :status, :blame, :previous_status, :duration_seconds, :duration_human, :message
+    attr_reader :blame
+    attr_accessor :suite, :architecture, :run_id, :package, :version, :date, :status, :previous_status, :duration_seconds, :duration_human, :message
 
     # Returns `true` if this status object represents an important event, such
     # as a package that used to pass started failing, of vice versa.
@@ -36,6 +37,14 @@ module Debci
     # A longer version of the headline
     def description
       "The tests for #{package} #{status.upcase}ED on #{suite}/#{architecture} but have previosly #{previous_status.upcase}ED."
+    end
+
+    def blame=(value)
+      if value.is_a?(Array)
+        @blame = value
+      else
+        @blame = []
+      end
     end
 
     # Constructs a new object by reading the JSON status `file`.
