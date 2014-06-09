@@ -81,24 +81,6 @@
   padding-left: 50px !important;
 }
 
-.navbar {
-  background: white;
-  border-radius: 0px;
-}
-
-.navbar a {
-    color: rgba(0,120,220, 0.8);
-}
-
-.navbar a:hover {
-    color: black;
-}
-
-.panel .panel-heading {
-  background: white;
-  font-size: 20px;
-}
-
 /* -----------------------------------------------------------------
  * footer
  * ----------------------------------------------------------------- */

@@ -1,0 +1,32 @@
+#!/usr/bin/ruby
+
+require 'debci'
+require 'debci/html'
+
+writer = Debci::HTML.new(File.join(Debci.config.data_basedir, '.html'))
+
+writer.index('index.html')
+writer.status('status/index.html')
+
+repository = Debci::Repository.new
+packages = ARGV
+if packages.empty?
+  packages = repository.packages
+end
+
+prefixes = Set.new
+
+packages.each do |pkg|
+  package = repository.find_package(pkg)
+  writer.package(package, "packages/#{package.prefix}/#{package.name}/index.html")
+  package.suites.each do |suite|
+    package.architectures.each do |arch|
+      writer.history(package, suite, arch, "packages/#{package.prefix}/#{package.name}/#{suite}/#{arch}/index.html")
+    end
+  end
+  prefixes << package.prefix
+end
+
+prefixes.each do |p|
+  writer.prefix(p, "packages/#{p}/index.html")
+end
