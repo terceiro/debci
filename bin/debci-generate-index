@@ -356,6 +356,7 @@ if [ $# -gt 0 ]; then
   for p in $@; do
     generate_packages "$p"
     debci-generate-feeds "$p"
+    debci-generate-html "$@"
   done
 else
   if [ -d "$debci_autopkgtest_dir" ]; then

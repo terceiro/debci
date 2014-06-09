@@ -9,7 +9,7 @@
 <%
     package_prefix.each do |prefix|
 %>
-        <li><h5><a href="/browse/<%= prefix %>"><%= prefix %></a></h5></li>
+        <li><h5><a href="/packages/<%= prefix %>/"><%= prefix %></a></h5></li>
 <%  end %>
 
 </ul>
@@ -17,8 +17,6 @@
 </div>
 
 <div class="col-sm-8">
-<div class="panel panel-default">
-    <div class="panel-heading">Packages</div>
 
 <table class="table" style="text-align: left">
 <tr><td><b>Package</b></td><td><b>Suites</b></td><td><b>Architectures</b></td></tr>
@@ -29,18 +27,17 @@
     packages.each do |item|
 
         @package = repository.find_package(item)
-        prefix = params[:prefix]
 
-        if item[0..3].eql?(prefix) %>
+        if item[0..3].eql?(@prefix) %>
             <tr>
-                <td><a href="/packages/<%= @package.name %>"><%= item %></a></td>
+                <td><a href="/packages/<%= @package.prefix %>/<%= @package.name %>"><%= item %></a></td>
                 <td><%= @package.suites.join(', ') %></td>
                 <td><%= @package.architectures.join(', ') %></td>
             </tr>
 
-<%      else if item[0].eql?(prefix) %>
+<%      else if item[0].eql?(@prefix) %>
             <tr>
-                <td><a href="/packages/<%= @package.name %>"><%= item %></a></td>
+                <td><a href="/packages/<%= @package.prefix %>/<%= @package.name %>"><%= item %></a></td>
                 <td><%= @package.suites.join(', ') %></td>
                 <td><%= @package.architectures.join(', ') %></td>
             </tr>
@@ -50,7 +47,6 @@
 end
 %>
 </table>
-</div>
 </div>
 </div>
 </div>

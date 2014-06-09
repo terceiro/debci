@@ -1,9 +1,9 @@
 jQuery(function($) {
 
   // FIXME generalize this later
-  var PACKAGES_DIR = 'data/packages/unstable/amd64';
-  var AUTOPKGTEST_DIR = 'data/autopkgtest/unstable/amd64';
-  var STATUS_DIR = 'data/status/unstable/amd64';
+  var PACKAGES_DIR = '/data/packages/unstable/amd64';
+  var AUTOPKGTEST_DIR = '/data/autopkgtest/unstable/amd64';
+  var STATUS_DIR = '/data/status/unstable/amd64';
 
   var handlers = {};
   function on(hash, f) {

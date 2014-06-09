@@ -36,7 +36,7 @@
                        state = "nodata"
                end
            %>
-               <td class="<%= state %>"><a href="/packages/<%= @package.name %>/<%= suites[current_suite] %>/<%= arch %>"><%= status %></a></td>
+               <td class="<%= state %>"><a href="/packages/<%= @package.prefix %>/<%= @package.name %>/<%= suites[current_suite] %>/<%= arch %>"><%= status %></a></td>
 
     <%         current_suite += 1
            end

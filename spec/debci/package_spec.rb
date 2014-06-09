@@ -34,4 +34,12 @@ describe Debci::Package do
     expect(String(package)).to eq(package.name)
   end
 
+  it 'has a prefix' do
+    expect(Debci::Package.new('rake').prefix).to eq('r')
+  end
+
+  it 'has a prefix (lib*)' do
+    expect(Debci::Package.new('libreoffice').prefix).to eq('libr')
+  end
+
 end

@@ -45,6 +45,11 @@ module Debci
       name
     end
 
+    def prefix
+      name =~ /^((lib)?.)/
+      $1
+    end
+
   end
 
 end
