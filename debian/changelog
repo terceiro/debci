@@ -1,10 +1,12 @@
-debci (0.7.2) UNRELEASED; urgency=medium
+debci (0.7.2) unstable; urgency=medium
 
   * Fix calculation of test elapsed time. We can't store the beginning
     timestamp at the adt-run output directory because that will be wiped out
     by adt-run before running the test.
+  * public/index.html: fix source code URL to point to the collab-main
+    repository which is the canonical one.
 
- -- Antonio Terceiro <terceiro@debian.org>  Tue, 10 Jun 2014 13:36:37 -0300
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 10 Jun 2014 17:30:41 -0300
 
 debci (0.7.1) unstable; urgency=medium
 
