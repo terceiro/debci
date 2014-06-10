@@ -1,3 +1,11 @@
+debci (0.7.2) UNRELEASED; urgency=medium
+
+  * Fix calculation of test elapsed time. We can't store the beginning
+    timestamp at the adt-run output directory because that will be wiped out
+    by adt-run before running the test.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 10 Jun 2014 13:36:37 -0300
+
 debci (0.7.1) unstable; urgency=medium
 
   * Fix handling of blame with "unknown" as value. Will avoid crashing when

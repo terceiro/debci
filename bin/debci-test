@@ -39,14 +39,13 @@ process_package() {
     adt_out_dir="$(autopkgtest_dir_for_package "$pkg")/$run_id"
   done
 
-  mkdir -p "$adt_out_dir"
-
-  date +%s >> "$adt_out_dir/timestamps" # start timestamp
+  start_timestamp=$(date +%s)
 
   # ignore output; we'll get the log from the adt-run output-dir
   test-package "$pkg" "$adt_out_dir" >/dev/null 2>&1 || true
 
-  date +%s >> "$adt_out_dir/timestamps" # finish timestamp
+  finish_timestamp=$(date +%s)
+  echo $(($finish_timestamp - $start_timestamp)) >> "$adt_out_dir/duration"
 
   if [ -n "$print_output" ]; then
       echo "$adt_out_dir"

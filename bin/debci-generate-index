@@ -65,10 +65,14 @@ generate_package_run() {
   log_file="${status_dir}/${run_id}.log"
 
   # get run duration
-  local start_time=$(head -n 1 "$adtresult/timestamps")
-  local finish_time=$(tail -n 1 "$adtresult/timestamps")
-  local last_timestamp="$(date --date="@${finish_time}" +%Y-%m-%dT%H:%M:%S)"
-  duration=$(($finish_time - $start_time))
+  if [ -f "$adtresult/duration" ]; then
+    local duration="$(cat "$adtresult/duration")"
+    local last_timestamp="$(sed -ns '/^adt-run \[/ { s/^adt-run \[\([0-9: -]*\)\].*$/\1/; p}' "$adtresult/log" | tail -n 1)"
+  else
+    # this should never happen
+    local duration=0
+    local last_timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
+  fi
 
   hours=$(( $duration / 3600 ))
   minutes=$(( ($duration % 3600) / 60 ))
