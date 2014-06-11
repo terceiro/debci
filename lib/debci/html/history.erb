@@ -4,7 +4,7 @@
 <% history = Debci::History.get_history("data/packages/" + @suite + "/" + @architecture + "/" + @package.prefix + "/" + @package.to_str + "/history.json") %>
 
   <table class="table">
-    <tr><td><b>Version</b></td><td><b>Date</b></td><td><b>Status</b></td><td><b>Results</b></td><td></td><td></td><td></td></tr>
+    <tr><td><b>Version</b></td><td><b>Date</b></td><td><b>Duration</b><td><b>Status</b></td><td><b>Results</b></td><td></td><td></td><td></td></tr>
   <%
      if history.eql?("no_test_data")
        return
@@ -14,6 +14,7 @@
   %>
       <tr><td><%= test.version %></td>
         <td><%= test.date %></td>
+        <td><%= test.duration_human %></td>
         <td class="<%= test.status %>"><%= test.status %></td>
         <td><a href="/data/packages/<%= @suite %>/<%= @architecture %>/<%=@package.prefix %>/<%= @package.to_str %>/<%= test.run_id %>.log">debci log</a></td>
         <td><a href="/data/packages/<%= @suite %>/<%= @architecture %>/<%= @package.prefix %>/<%= @package.to_str %>/<%= test.run_id %>.autopkgtest.log">test log</a></td>
