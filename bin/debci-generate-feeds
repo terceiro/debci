@@ -18,7 +18,7 @@ def insert_items(news, feed)
   news.each do |status|
     feed.items.new_item do |item|
       prefix = status.package.sub(/^((lib)?.).*/, '\1')
-      item.link = $site_base + '/#package/' + status.package
+      item.link = "#{$site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.log"
       item.title = status.headline
       item.date = status.date
       item.description = [
@@ -26,6 +26,7 @@ def insert_items(news, feed)
         '<ul>',
         "<li>Version: #{status.version}</li>",
         "<li>Date: #{status.date}</li>",
+        "<li><a href=\"#{$site_base}/#package/#{status.package}\">Package status page</a></li>",
         "<li><a href=\"#{$site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.log\">debci log</a></li>",
         "<li><a href=\"#{$site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.autopkgtest.log\">autopkgtest log</a></li>",
         "<li><a href=\"#{$site_base}/data/autopkgtest/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}/\">autopkgtest artifacts</a></li>",
