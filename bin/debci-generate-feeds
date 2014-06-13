@@ -37,10 +37,8 @@ def insert_items(news, feed)
 end
 
 packages = ARGV
-global_feed = false
 if packages.empty?
   packages = repository.packages
-  global_feed = true
 end
 
 packages.each do |pkg|
@@ -63,16 +61,14 @@ packages.each do |pkg|
   end
 end
 
-if global_feed
-  global_news = repository.news_for('*', 50)
-  global_feed = RSS::Maker.make('atom') do |feed|
-    feed.channel.author = 'Debian Continuous Integration'
-    feed.channel.updated = global_news.first && global_news.first.date || past_timestamp
-    feed.channel.about = $site_base
-    feed.channel.title = 'Debian Continuous Integration news'
-    insert_items(global_news, feed)
-  end
-  File.open(File.join(feeds_dir, 'all-packages.xml'), 'w') do |f|
-    f.write(global_feed.to_s.gsub('<summary>', '<summary type="html">'))
-  end
+global_news = repository.news_for('*', 50)
+global_feed = RSS::Maker.make('atom') do |feed|
+  feed.channel.author = 'Debian Continuous Integration'
+  feed.channel.updated = global_news.first && global_news.first.date || past_timestamp
+  feed.channel.about = $site_base
+  feed.channel.title = 'Debian Continuous Integration news'
+  insert_items(global_news, feed)
+end
+File.open(File.join(feeds_dir, 'all-packages.xml'), 'w') do |f|
+  f.write(global_feed.to_s.gsub('<summary>', '<summary type="html">'))
 end

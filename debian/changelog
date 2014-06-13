@@ -1,3 +1,9 @@
+debci (0.7.3) UNRELEASED; urgency=medium
+
+  * debci-generate-feeds: always update the global feed.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Fri, 13 Jun 2014 11:34:50 -0300
+
 debci (0.7.2) unstable; urgency=medium
 
   * Fix calculation of test elapsed time. We can't store the beginning
