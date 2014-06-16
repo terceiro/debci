@@ -2,9 +2,6 @@
 [_] first adt-run execution will sometimes hang
   : waiting for gpg key generation due to low entropy
 [_] add timeout to guard against unbehaving test suites
-[_] support for blacklisting packages
-  [X] write the code
-  [_] blacklist pyzmq: for some reason it is crashing the entire run
 [_] add a postrm to remove all traces on package purge
   [_] remove data directory
   [_] remove schroot setup
@@ -17,12 +14,6 @@
   :
   : maybe the cleanest solution is going full virtualization with kvm or at
   : least a lxc container instead of chroots despite how good schroot is.
-[_] publish atom feeds
-  [_] global status changes: daily, weekly, monthly
-    : which packages started to tail their tests, which packages started
-    : passing their tests.
-  [_] package status changes: daily, weekly, monthly
-    : status changes
 [_] notity test suite status changes to fedmsg
 [_] investigate random download failures
   : e.g. http://ci.debian.net/data/packages/a/adequate/2014-01-18.log
@@ -33,7 +24,6 @@
   : <doko>  and could you run procenv after setting up the chroot?
   : <doko>  my experience is that a lot of time goes into setting up the
   :         environement and understanding the env
-[_] setup a BTS !!
 [_] ci.debian.net: also test packages from experimenal
 [_] list largest log files
 [_] list longest duration between test jobs
