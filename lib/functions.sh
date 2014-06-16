@@ -66,6 +66,7 @@ report_status() {
   fi
   local pkg="$1"
   local status="$2"
+  local duration="${3:-}"
   if [ -t 1 ]; then
     case "$status" in
       skip)
@@ -84,9 +85,9 @@ report_status() {
         color=5 # should never get here though
         ;;
     esac
-    /bin/echo -e "${pkg} \033[38;5;${color}m${status}\033[m"
+    /bin/echo -e "${pkg} \033[38;5;${color}m${status}\033[m" "$duration"
   else
-    log "$pkg" "$status"
+    log "$pkg" "$status" "$duration"
   fi
 }
 

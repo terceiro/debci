@@ -80,7 +80,7 @@ generate_package_run() {
   duration_human="${hours}h ${minutes}m ${seconds}s"
 
   generate_package_run_log_file > "$log_file"
-  report_status "$pkg" "$status"
+  report_status "$pkg" "$status" "($duration_human)"
 
   generate_package_blame
   generate_package_json "$last_timestamp"

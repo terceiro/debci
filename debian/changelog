@@ -4,6 +4,8 @@ debci (0.7.3) UNRELEASED; urgency=medium
     - always update the global feed.
     - Point main link of feed entries to the debci log instead of the package
       page.
+  * debci-generate-index:
+    - report duration of each test run together with the status
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 13 Jun 2014 11:34:50 -0300
 
