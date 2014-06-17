@@ -13,7 +13,7 @@
            # List the latest changes in package status
            news.each do |item|
          %>
-               <a href="/packages/<%= item.package %>/<%= item.suite %>/<%= item.architecture %>"
+               <a href="/packages/<%= repository.find_package(item.package).prefix %>/<%= item.package %>/<%= item.suite %>/<%= item.architecture %>"
                   class="list-group-item <%= item.status.to_s %>"><%= item.headline %></a>
          <% end %>
 
