@@ -39,6 +39,7 @@ process_package() {
     adt_out_dir="$(autopkgtest_dir_for_package "$pkg")/$run_id"
   done
 
+  mkdir -p "$(dirname $adt_out_dir)"
   start_timestamp=$(date +%s)
 
   # ignore output; we'll get the log from the adt-run output-dir

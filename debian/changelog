@@ -1,4 +1,4 @@
-debci (0.7.3) UNRELEASED; urgency=medium
+debci (0.7.3) unstable; urgency=medium
 
   * debci-generate-feeds:
     - always update the global feed.
@@ -6,8 +6,12 @@ debci (0.7.3) UNRELEASED; urgency=medium
       page.
   * debci-generate-index:
     - report duration of each test run together with the status
+  * debci-test:
+    - fix regression with new packages caused by not mkdir'ing the full path
+      to the adt-run output directory. `fake` backend adapted to emulate the
+      behaviour of adt-run so that the tests would now fail without the fix.
 
- -- Antonio Terceiro <terceiro@debian.org>  Fri, 13 Jun 2014 11:34:50 -0300
+ -- Antonio Terceiro <terceiro@debian.org>  Wed, 18 Jun 2014 14:29:46 +0200
 
 debci (0.7.2) unstable; urgency=medium
 

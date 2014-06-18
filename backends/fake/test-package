@@ -25,7 +25,7 @@ else
   r = rand(4)
 end
 
-FileUtils.mkdir_p(outdir)
+FileUtils.mkdir(outdir)
 if ENV["DEBCI_FAKE_DEPS"]
   File.open(File.join(outdir, 'foo0t-mytest-packages'), 'w') do |f|
     ENV["DEBCI_FAKE_DEPS"].split('|').each do |line|
