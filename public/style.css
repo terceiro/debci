@@ -67,7 +67,7 @@
   color: #ffd862;
 }
 
-.nodata:before {
+.no_test_data:before {
   content: "\f06a ";
   color: #babdb6;
 }

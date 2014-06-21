@@ -3,45 +3,21 @@
     <div class="panel-heading"><%= @package.name %></div>
 <table class="table">
 
-    <% status = @package.status
-       suites = status.first.map { |col| col.suite }
-    %>
-
     <tr>
-        <td></td>
-        <% suites.each do |suite| %>
-               <td><b><%= suite %></b></td>
-        <% end %>
+      <td></td>
+      <% @package.status.first.each do |status| %>
+           <td><b><%= status.suite %></b></td>
+      <% end %>
     </tr>
 
-    <% status.each do |row|
-           current_suite = 0
-    %>
+    <% @package.status.each do |row| %>
+         <tr>
+           <td><b><%= row.first.architecture %></b></td>
 
-           <tr><% arch = row.first.architecture %>
-               <td><b><%= arch %></b></td>
-
-        <% data = row.map { |item| item.title }
-
-           data.each do |status|
-
-               case status.to_s
-                   when "Pass"
-                       state = "pass"
-                   when "Fail"
-                       state = "fail"
-                   when "Temporary failure"
-                       state = "tmpfail"
-                   when "No test data"
-                       state = "nodata"
-               end
-           %>
-               <td class="<%= state %>"><a href="/packages/<%= @package.prefix %>/<%= @package.name %>/<%= suites[current_suite] %>/<%= arch %>"><%= status %></a></td>
-
-    <%         current_suite += 1
-           end
-    %>
-           </tr>
+         <% row.each do |status| %>
+              <td class="<%= status.status %>"><a href="/packages/<%= @package.prefix %>/<%= @package.name %>/<%= status.suite %>/<%= row.first.architecture %>"><%= status.title %></a></td>
+         <% end %>
+         </tr>
     <% end %>
 </table>
 </div>
