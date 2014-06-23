@@ -28,6 +28,12 @@ module Debci
       repository.status_for(self)
     end
 
+    # Returns an array of Debci::Status objects that represent the test
+    # history for this package
+    def history(suite, architecture)
+      repository.history_for(self, suite, architecture)
+    end
+
     # Returns a list of Debci::Status objects that are newsworthy for this
     # package. The list is sorted with the most recent entries first and the
     # older entries last.

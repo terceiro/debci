@@ -1,25 +1,23 @@
 <div class="container">
-  <h2><%= @package.to_str %> <small>[ <%= @suite %>/<%= @architecture %> ]</small></h2>
-
-<% history = Debci::History.get_history("data/packages/" + @suite + "/" + @architecture + "/" + @package.prefix + "/" + @package.to_str + "/history.json") %>
+  <h2><%= @package.name %> <small>[ <%= @suite %>/<%= @architecture %> ]</small></h2>
 
   <table class="table">
     <tr><td><b>Version</b></td><td><b>Date</b></td><td><b>Duration</b><td><b>Status</b></td><td><b>Results</b></td><td></td><td></td><td></td></tr>
   <%
-     if history.eql?("no_test_data")
-       return
-     end
+     begin
 
-     history.each do |test|
-  %>
-      <tr><td><%= test.version %></td>
-        <td><%= test.date %></td>
-        <td><%= test.duration_human %></td>
-        <td class="<%= test.status %>"><%= test.status %></td>
-        <td><a href="/data/packages/<%= @suite %>/<%= @architecture %>/<%=@package.prefix %>/<%= @package.to_str %>/<%= test.run_id %>.log">debci log</a></td>
-        <td><a href="/data/packages/<%= @suite %>/<%= @architecture %>/<%= @package.prefix %>/<%= @package.to_str %>/<%= test.run_id %>.autopkgtest.log">test log</a></td>
-        <td><a href="/data/autopkgtest/<%= @suite %>/<%= @architecture %>/<%= @package.prefix %>/<%= @package.to_str %>/<%= test.run_id %>">artifacts</a></td>
-      </tr>
-  <% end %>
+       @package.history(@suite, @architecture).each do |test| %>
+         <tr><td><%= test.version %></td>
+           <td><%= test.date %></td>
+           <td><%= test.duration_human %></td>
+           <td class="<%= test.status %>"><%= test.status %></td>
+           <td><a href="/data/packages/<%= @suite %>/<%= @architecture %>/<%=@package.prefix %>/<%= @package.name %>/<%= test.run_id %>.log">debci log</a></td>
+           <td><a href="/data/packages/<%= @suite %>/<%= @architecture %>/<%= @package.prefix %>/<%= @package.name %>/<%= test.run_id %>.autopkgtest.log">test log</a></td>
+           <td><a href="/data/autopkgtest/<%= @suite %>/<%= @architecture %>/<%= @package.prefix %>/<%= @package.name %>/<%= test.run_id %>">artifacts</a></td>
+         </tr>
+    <% end
+     rescue NoMethodError => error
+       return if error.to_s.include?("no_test_data")
+     end %>
   </table>
 </div>
