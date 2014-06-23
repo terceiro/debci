@@ -2,7 +2,6 @@ require 'set'
 
 require 'debci/status'
 require 'debci/package'
-require 'debci/history'
 
 module Debci
 
