@@ -54,7 +54,9 @@ module Debci
         status.status = :no_test_data
         return status
       end
+
       data = nil
+
       begin
         File.open(file, 'r') do |f|
           data = JSON.load(f)
@@ -64,6 +66,13 @@ module Debci
       end
 
       return status unless data
+
+      from_data(data)
+    end
+
+    # Populates an object by reading from a data hash
+    def self.from_data(data)
+      status = Debci::Status.new
 
       status.run_id = data['run_id']
       status.package = data['package']

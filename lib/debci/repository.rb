@@ -109,6 +109,23 @@ module Debci
       end
     end
 
+    # Backend implementation for Debci::Package#history
+    def history_for(package, suite, architecture)
+      return unless File.exists?(file = File.join(data_dir(suite, architecture, package), 'history.json'))
+
+      entries = nil
+
+      begin
+        File.open(file) do |f|
+          entries = JSON.load(f)
+        end
+      rescue JSON::ParserError
+        true
+      end
+
+      entries.map { |test| Debci::Status.from_data(test) }
+    end
+
     # Backend implementation for Debci::Package#news
     def news_for(package, n=10)
       suites = '{' + self.suites.join(',') + '}'
@@ -133,7 +150,6 @@ module Debci
 
       news
     end
-
     private
 
     def data_dir(suite, arch, package)
