@@ -3,9 +3,11 @@ Section: devel
 Priority: optional
 Maintainer: Antonio Terceiro <terceiro@debian.org>
 Build-Depends:
+ amqp-tools,
  debhelper (>= 9.0.0),
  devscripts,
  patchutils,
+ rabbitmq-server,
  ruby,
  ruby-rspec (>= 2.14),
  shunit2,
@@ -30,14 +32,21 @@ Depends:
  ruby,
  devscripts,
  dctrl-tools,
+ amqp-tools,
  ${misc:Depends},
  ${shlibs:Depends}
 Recommends:
  apt-cacher-ng,
  moreutils,
+ rabbitmq-server,
  schroot
 Description: continuous integration system for Debian
  debci will scan the Debian archive for packages that contain DEP-8 compliant
  test suites, and run those test suites whenever a new version of the package,
  or of any package in its dependency chain (modulo the base system), is
  available.
+ .
+ The requests are distributed to worker machines through AMQP queues. You need
+ rabbitmq-server for this; but it is also possible to run RabbitMQ on a
+ different server than debci, in which case you do not need to install that
+ recommendation.

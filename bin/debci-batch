@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -eu
 
@@ -11,8 +11,7 @@ Options:
   -f, --force               Force test run on packages, even if no package in
                             its dependency chain changed. A package will still
                             not be tested if it was already tested today.
-  -j N                      Test at most N packages in parallel
-                            (default: 1)
+  -w, --wait                Wait until results from requested tests arrived.
   --offline                 Puts debci-batch offline. New test runs will not be
                             started.
   --online                  Puts debci-batch online. New test runs will be
@@ -22,8 +21,11 @@ $@
 EOF
 }
 
-short_options='j:f'
-long_options='force,offline,online'
+short_options='wf'
+long_options='wait,force,offline,online'
+wait_results=''
+
+requested_packages=' '
 
 debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 cd $debci_base_dir
@@ -74,31 +76,29 @@ all_packages_with_fastest_first() {
 process_all_packages() {
   local start=$(date +%s)
 
-  # determine packages which need to be tested
-  packages=''
+  # TODO: we need something more flexible than $debci_backend here -- look at
+  # tests' isolation restrictions
+  amqp_queue="${debci_suite}-${debci_arch}-${debci_backend}"
+  amqp-declare-queue --url ${debci_amqp_server} --durable -q $amqp_queue >/dev/null
+
+  # determine packages which need to be tested and request tests
   for pkg in $(all_packages_with_fastest_first); do
     if needs_processing $pkg; then
-      packages="$packages $pkg"
+      requested_packages="${requested_packages}${pkg} "
+      amqp-publish --url ${debci_amqp_server} --persistent -r $amqp_queue --body $pkg
+      report_status "$pkg" "requested"
     else
       report_status "$pkg" "skip"
     fi
   done
 
-  if [ "$maxjobs" -eq 1 ]; then
-    for pkg in $packages; do
-      debci-test --index "$pkg"
-    done
-  else
-    args=''
-    for pkg in $packages; do
-      args="$args --index $pkg"
-    done
-    parallel -n 2 -j "$maxjobs" debci-test -- $args
+  if [ -n "$wait_results" ]; then
+    wait_for_results
+    local finish=$(date +%s)
+
+    log "I: generating indexes"
+    debci-generate-index --duration $(($finish - $start))
   fi
-
-  local finish=$(date +%s)
-
-  debci-generate-index --duration $(($finish - $start))
 }
 
 needs_processing() {
@@ -146,17 +146,61 @@ needs_processing() {
   return $run
 }
 
+wait_for_results() {
+  while true; do
+    numpkgs=$(echo "$requested_packages" | wc -w)
+    if [ $numpkgs -eq 0 ]; then
+        break
+    fi
+
+    if [ $numpkgs -lt 10 ]; then
+      log "I: waiting for test results for$requested_packages"
+    else
+      log "I: waiting for test results for $numpkgs packages"
+    fi
+
+    # wait a bit for more results to come in
+    sleep ${debci_batch_poll_interval:-10}
+
+    shopt -s nullglob
+    for pkg in $requested_packages; do
+      latest=$(status_dir_for_package $pkg)/latest-autopkgtest
+      # we only consider complete result dirs, and "exitcode" is the last file
+      # written there
+      results=$(echo $(autopkgtest_dir_for_package $pkg)/[0-9]*/exitcode)
+      if [ ! -e "$latest" ]; then
+        # for the first run, just wait until we get one result
+        if [ -n "$results" ]; then
+          requested_packages=${requested_packages/ $pkg / }
+          report_status "$pkg" "received"
+        fi
+      else
+        # wait until we get a result later than latest-autopkgtest
+        latest_stamp=$(basename $(readlink "$latest"))
+        for res in $results; do
+          # cut out stamp from complete path
+          stamp=${res%/exitcode}
+          stamp=${stamp##*/}
+          if [ $stamp '>' $latest_stamp ]; then
+            requested_packages=${requested_packages/ $pkg / }
+            report_status "$pkg" "received"
+            break
+          fi
+        done
+      fi
+    done
+  done
+}
+
 # default configuration
-maxjobs=1
 force=''
 
 while true; do
   arg="$1"
   shift
   case "$arg" in
-    -j)
-      maxjobs="$1"
-      shift
+    -w|--wait)
+      wait_results=1
       ;;
     -f|--force)
       force="$arg"

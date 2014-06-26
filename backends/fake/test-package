@@ -46,6 +46,23 @@ when 3
   rc = 16
 end
 
+if ENV["DEBCI_FAKE_KILLPARENT"]
+  # find our parent which is the t
+  p = Process.pid
+  while p > 1
+    File.open("/proc/#{p}/stat") do |f|
+      stat = f.gets.split()
+      if stat[1].include? ENV["DEBCI_FAKE_KILLPARENT"]
+        # got it, kill that
+        Process.kill('FPE', p)
+        p = -1
+      else
+        p = Integer(stat[3])
+      end
+    end
+  end
+end
+
 log = log + "adt-run [%s]: finished\n" % Time.now.strftime('%Y-%m-%d %H:%M:%S')
 
 File.open(File.join(outdir, 'log'), 'w') do |f|

@@ -3,7 +3,8 @@
 . $(dirname $0)/test_helper.sh
 
 test_everything_passes() {
-  result_pass debci batch
+  result_pass start_worker
+  debci batch --wait
   status=$(debci status -l)
   assertEquals "pass" "$(echo "$status" | awk '{print($2)}' | uniq)"
 
@@ -13,7 +14,8 @@ test_everything_passes() {
 }
 
 test_everything_fails() {
-  result_fail debci batch
+  result_fail start_worker
+  debci batch --wait
   status=$(debci status -l)
   assertEquals "fail" "$(echo "$status" | awk '{print($2)}' | uniq)"
 
@@ -23,7 +25,8 @@ test_everything_fails() {
 }
 
 test_packages_without_runs_yet() {
-  result_pass debci batch
+  result_pass start_worker
+  debci batch --wait
   find $debci_data_basedir -type d -name rake | xargs rm -rf
   debci generate-index
   find $debci_data_basedir -name packages.json | xargs cat | json_pp -f json -t json > /dev/null
@@ -32,7 +35,8 @@ test_packages_without_runs_yet() {
 
 test_single_package() {
   echo "mypkg" > $debci_config_dir/whitelist
-  result_pass debci batch
+  result_pass start_worker
+  debci batch --wait
   assertEquals "mypkg pass" "$(debci status -l)"
 }
 
@@ -41,11 +45,13 @@ test_single_package() {
 test_batch_skip_after_result() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
   echo "mypkg" > $debci_config_dir/whitelist
-  result_pass debci batch
+  result_pass start_worker
+  debci batch --wait
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
   assertEquals 1 $num_logs
 
-  result_pass debci batch
+  result_pass start_worker
+  debci batch --wait
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
   assertEquals 1 $num_logs
 }
@@ -54,11 +60,13 @@ test_batch_skip_after_result() {
 test_batch_rerun_after_tmpfail() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
   echo "mypkg" > $debci_config_dir/whitelist
-  result_tmpfail debci batch
+  result_tmpfail start_worker
+  debci batch --wait
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
   assertEquals 1 $num_logs
 
-  result_pass debci batch
+  result_pass start_worker
+  debci batch --wait
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
   assertEquals 2 $num_logs
 
@@ -71,12 +79,14 @@ test_batch_rerun_after_tmpfail() {
 test_batch_rerun_dep_change() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
   echo "mypkg" > $debci_config_dir/whitelist
-  result_pass debci batch
+  result_pass start_worker
+  debci batch --wait
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
   assertEquals 1 $num_logs
 
   export DEBCI_FAKE_DEPS="foo 1.2.4"
-  result_pass debci batch
+  result_pass start_worker
+  debci batch --wait
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
   assertEquals 2 $num_logs
 
@@ -90,11 +100,13 @@ test_batch_rerun_dep_change() {
 test_batch_force() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
   echo "mypkg" > $debci_config_dir/whitelist
-  result_pass debci batch
+  result_pass start_worker
+  debci batch --wait
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
   assertEquals 1 $num_logs
 
-  result_pass debci batch --force
+  result_pass start_worker
+  debci batch --wait --force
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
   assertEquals 2 $num_logs
 

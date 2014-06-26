@@ -34,9 +34,10 @@ debci_mirror=${debci_mirror:-}
 debci_backend=${debci_backend:-schroot}
 debci_data_basedir=${debci_data_basedir:-$(readlink -f "${debci_base_dir}/data")}
 debci_quiet="${debci_quiet:-false}"
+debci_amqp_server=${debci_amqp_server:-"amqp://localhost"}
 
 shared_short_options='c:s:a:b:d:hq'
-shared_long_options='config:,suite:,arch:,backend:,data-dir:,help,quiet'
+shared_long_options='config:,suite:,arch:,backend:,data-dir:,amqp:,help,quiet'
 
 usage_shared_options="Common options:
 
@@ -50,6 +51,8 @@ usage_shared_options="Common options:
                             (default: unstable)
   -d DIR, --data-dir DIR    the directory in which debci will store its data,
                             and where it will read from
+  --amqp amqp://[user:password@]hostname[:port]
+                            AMQP server to connect to (default: ${debci_amqp_server})
   -q, --quiet               prevents debci from producing any output on stdout
   --help                    show this usage message
 "
@@ -83,6 +86,9 @@ for arg in "$@"; do
         ;;
       -d|--data-dir)
         var=debci_data_basedir
+        ;;
+      --amqp)
+        var=debci_amqp_server
         ;;
       -q|--quiet)
         export debci_quiet=true
