@@ -30,25 +30,19 @@
 }
 
 /* -----------------------------------------------------------------
- * package status table
+ * panel heading
  * ----------------------------------------------------------------- */
 
-.statusdata {
-  padding-right: 90px; 
-  padding-bottom: 20px;
-}
-
-.suiteandarch { 
-  border-bottom: 1px solid;
-  background-color: #2b7bff;
-  color: white
+.panel .panel-heading {
+  background: white;
+  font-size: 18px;
 }
 
 /* -----------------------------------------------------------------
  * status marks
  * ----------------------------------------------------------------- */
 
-.pass, .fail, .tmpfail {
+.pass, .fail, .tmpfail, .no_test_data {
   font-family: 'FontAwesome';
 }
 
