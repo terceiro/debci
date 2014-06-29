@@ -24,7 +24,7 @@
     repository = Debci::Repository.new
     packages = repository.packages
 
-    packages.each do |item|
+    packages.sort.each do |item|
 
       @package = repository.find_package(item)
 
