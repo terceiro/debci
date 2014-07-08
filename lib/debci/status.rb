@@ -36,7 +36,7 @@ module Debci
 
     # A longer version of the headline
     def description
-      "The tests for #{package} #{status.upcase}ED on #{suite}/#{architecture} but have previosly #{previous_status.upcase}ED."
+      "The tests for #{package} #{status.upcase}ED on #{suite}/#{architecture} but have previously #{previous_status.upcase}ED."
     end
 
     def blame=(value)
