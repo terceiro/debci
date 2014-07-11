@@ -1,16 +1,13 @@
-<% package_prefix = (('0'..'9').to_a + ('a'..'z').to_a + ('liba'..'libz').to_a).sort %>
-
 <div class="container">
 <div class="row">
 <div class="col-sm-3">
 <div class="panel panel-default">
     <div class="panel-heading">Browse</div>
 <ul class="list-inline">
-<%
-    package_prefix.each do |prefix|
-%>
-        <li><h5><a href="/packages/<%= prefix %>/"><%= prefix %></a></h5></li>
-<%  end %>
+
+<% @package_prefixes.each do |prefix| %>
+     <li><h5><a href="/packages/<%= prefix %>/"><%= prefix %></a></h5></li>
+<% end %>
 
 </ul>
 </div>

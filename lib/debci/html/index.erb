@@ -22,7 +22,6 @@
 </div> <!-- class='col-md-3' -->
 
 <div class="col-md-7">
-  <% package_prefix = (('0'..'9').to_a + ('a'..'z').to_a + ('liba'..'libz').to_a).sort %>
 
     <div class="row">
       <div class="col-md-1"></div>
@@ -37,7 +36,7 @@
         <h4 class="page-header">Browse by prefix</h4>
         <ul class="list-inline">
 
-          <% package_prefix.each do |prefix| %>
+          <% @package_prefixes.each do |prefix| %>
                <li><h5><a href="/packages/<%= prefix %>"><%= prefix %></a></h5></li>
           <% end %>
 
