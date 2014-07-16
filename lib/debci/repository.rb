@@ -1,5 +1,6 @@
 require 'set'
 
+require 'debci/graph'
 require 'debci/status'
 require 'debci/package'
 
@@ -149,10 +150,32 @@ module Debci
 
       news
     end
+
+    # Returns the status history for this debci instance
+    def status_history(suite, architecture)
+      return unless File.exists?(file = File.join(status_dir(suite, architecture), 'history.json'))
+
+      data = nil
+
+      begin
+        File.open(file, 'r') do |f|
+          data = JSON.load(f)
+        end
+      rescue JSON::ParserError
+        true
+      end
+
+      data.map { |entry| Debci::Graph.get_data(entry) }
+    end
+
     private
 
     def data_dir(suite, arch, package)
       File.join(@path, 'packages', "#{suite}", "#{arch}", prefix(package), package)
+    end
+
+    def status_dir(suite, arch)
+      File.join(@path, 'status', "#{suite}", "#{arch}")
     end
 
     def prefix(package)

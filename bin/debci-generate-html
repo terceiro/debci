@@ -2,6 +2,8 @@
 
 require 'debci'
 require 'debci/html'
+require 'debci/graph_pass'
+require 'debci/graph_percent'
 
 writer = Debci::HTML.new(File.join(Debci.config.data_basedir, '.html'))
 
@@ -9,6 +11,18 @@ writer.index('index.html')
 writer.status('status/index.html')
 
 repository = Debci::Repository.new
+status_dir = File.join(Debci.config.data_basedir, '.html/status')
+
+repository.suites.each do |suite|
+  repository.architectures.each do |arch|
+    graph = Debci::GraphPass.new
+    graph.graph(suite, arch, status_dir)
+
+    graph = Debci::GraphPercent.new
+    graph.graph(suite, arch, status_dir)
+  end
+end
+
 packages = ARGV
 if packages.empty?
   packages = repository.packages
