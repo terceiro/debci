@@ -113,6 +113,20 @@ describe Debci::Status do
     end
   end
 
+  context 'time' do
+    time = Debci::Status.new
+
+    it 'should return a time in days since an item\'s date' do
+      time.date = Time.parse('2014-06-07 03:02:15')
+      expect(time.time).to include('day(s)')
+    end
+
+    it 'should return a time in hours since an item\'s date' do
+      time.date = Time.now - Random.rand(80000)
+      expect(time.time).to include('hour(s)')
+    end
+  end
+
   def status_with(data)
     s = Debci::Status.new
     data.each do |k,v|
