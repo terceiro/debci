@@ -1,4 +1,4 @@
-# Debian Contious Integration
+# Debian Continuous Integration
 
 The [Debian continuous integration](..) (debci) is an automated system that
 coordinates the execution of automated tests against packages in the
@@ -9,7 +9,7 @@ coordinates the execution of automated tests against packages in the
 
 ### How do I get my package to have its test suite executed?
 
-Testuites must be included in source packages as defined in
+Test suites must be included in source packages as defined in
 the [DEP-8 specification](http://dep.debian.net/deps/dep8/). In short.
 
 * The fact that the package has a test suite must be declared by adding a
