@@ -1,30 +1,61 @@
 <div class="container">
 <div class="row">
-<div class="col-md-9">
-    <div id='main'>
-    <div id='status'>
-        <div class="panel panel-default">
-            <div class="panel-heading">Package Testing Data</div>
+<div class="col-md-12">
+  <div class="panel panel-default">
+    <div class="panel-heading">Package Testing Data</div>
 
-                <div class='row'>
-                    <div class='col-md-6'>
-                        <h3>Pass/fail</h3>
-                            <div class='chart' id='chart-pass-fail'>
-                                <noscript>Can't plot chart without Javascript.</noscript>
-                            </div>
-                    </div>
+      <ul class='nav nav-tabs'>
+        <li><a href='#graph_pass' class='active'>Pass/fail</a></li>
+        <li><a href='#graph_percent'>Pass Percentage</a></li>
+      </ul>
 
-                    <div class='col-md-6'>
-                        <h3>Pass percentage</h3>
-                            <div class='chart' id='chart-pass-percentage'>
-                                <noscript>Can't plot chart without Javascript.</noscript>
-                            </div>
-                    </div>
+      <% repository = Debci::Repository.new %>
+
+      <div id='graph_pass'>
+
+        <div class='row'>
+          <% repository.architectures.each do |arch| %>
+            <% repository.suites.each do |suite| %>
+
+              <div class='col-md-4'>
+                <% pass_graph = "pass_#{suite}_#{arch}.png" %>
+
+                <% if File.exists?("public/status/#{pass_graph}") %>
+                     <img src='<%= pass_graph %>'/>
+                <% else %>
+                     <br><br>
+                     <h3 class='text-center'>No test data for <%= suite %>/<%= arch %></h3>
+                <% end %>
+              </div>
+
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+
+      <div id='graph_percent'>
+
+        <div class='row'>
+          <% repository.architectures.each do |arch| %>
+            <% repository.suites.each do |suite| %>
+
+                <div class='col-md-4'>
+                  <% percent_graph = "percent_#{suite}_#{arch}.png" %>
+
+                  <% if File.exists?("public/status/#{percent_graph}") %>
+                       <img src='<%= percent_graph %>'/>
+                  <% else %>
+                       <br><br>
+                       <h3 class='text-center'>No test data for <%= suite %>/<%= arch %></h3>
+                  <% end %>
                 </div>
-        </div> <!-- class='panel panel-default' -->
-    </div> <!-- id='status'-->
-</div> <!-- id='main' -->
-</div> <!-- class='col-md-9' -->
+
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+
+  </div> <!-- class='panel panel-default' -->
+</div> <!-- class='col-md-12' -->
 </div> <!-- class='row -->
 </div> <!-- class='container' -->
-
