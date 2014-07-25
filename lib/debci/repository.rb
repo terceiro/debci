@@ -62,6 +62,24 @@ module Debci
       Debci::Package.new(name, self)
     end
 
+    # Iterates over all packages
+    #
+    # For each package in the repostory, a Debci::Package object will be passed
+    # in to the block passed.
+    #
+    # Example:
+    #
+    # repository.each_package do |pkg|
+    #   puts pkg
+    # end
+    #
+    def each_package
+      packages.each do |pkgname|
+        pkg = Debci::Package.new(pkgname, self)
+        yield pkg
+      end
+    end
+
     # Searches packages by name.
     #
     # Returns an Array of Debci::Package objects. On an exact match, will

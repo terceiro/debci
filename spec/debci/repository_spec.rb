@@ -148,4 +148,13 @@ describe Debci::Repository do
     package.news
   end
 
+  it 'iterates over all packages' do
+    packages = []
+    repository.each_package do |pkg|
+      packages << pkg
+    end
+
+    expect(packages.map(&:class).uniq).to eq([Debci::Package])
+  end
+
 end
