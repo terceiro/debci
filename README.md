@@ -35,7 +35,7 @@ The test suite for a source package will be executed:
 ### What exactly is the environment where the tests are run?
 
 `debci` is designed to support several text execution backends. The backend
-used for a test run is show in the corresponfing log file.
+used for a test run is displayed in the corresponding log file.
 
 For the **schroot** backend:
 
