@@ -2,6 +2,7 @@ jQuery(function($) {
 
   // FIXME generalize this later
   var PACKAGES_DIR = '/data/packages/unstable/amd64';
+  var PACKAGES_HTML_DIR = '/data/.html/packages';
   var AUTOPKGTEST_DIR = '/data/autopkgtest/unstable/amd64';
   var STATUS_DIR = '/data/status/unstable/amd64';
 
@@ -157,19 +158,34 @@ jQuery(function($) {
   });
 
 
-  $.get(STATUS_DIR + '/packages.json', function(data) {
+  $.get(PACKAGES_HTML_DIR + '/packages.json', function(data) {
     $.each(data, function(index, item) {
+      var package_dir = item.package.replace(/^((lib)?.)/, "$1/$&");
+
       var $link = $('<a></a>');
-      $link.addClass(item.status)
-      $link.attr('href', '#package/' + item.package);
-      $link.attr('title', item.message);
-      $link.html(item.package + ' (' + item.version + ')')
+      $link.attr('href', 'packages/' + package_dir);
+      $link.html(item.package + ' ' + '<b>Package page</b>');
 
       var $list_item = $('<li></li>');
-      $list_item.attr('data-package', item.package);
+      $list_item.attr('data-package', item.package + ' ' + 'Package page');
       $list_item.append($link);
 
       $('#package-select').append($list_item);
+
+      var available_platforms = item.platforms;
+
+      for (var platform in available_platforms) {
+        $link = $('<a></a>');
+        $link.attr('href', 'packages/' + package_dir + '/' + available_platforms[platform]);
+        $link.html(item.package + ' <b>' + available_platforms[platform] + '</b>');
+
+        $list_item = $('<li></li>');
+        $list_item.attr('data-package', item.package + ' ' + available_platforms[platform]);
+        $list_item.append($link);
+
+        $('#package-select').append($list_item);
+      }
+
     });
   });
 
