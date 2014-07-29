@@ -23,6 +23,30 @@ repository.suites.each do |suite|
   end
 end
 
+package_writer = File.open(File.join(Debci.config.data_basedir, '.html/packages', 'packages.json'), 'w')
+data = []
+
+repository.each_package do |package|
+  platforms = []
+
+  package.suites.each do |suite|
+    package.architectures.each do |arch|
+      begin
+        if package.history(suite, arch) != nil
+          platforms.push("#{suite}/#{arch}")
+        end
+      rescue NoMethodError
+        true
+      end
+    end
+  end
+
+  data.push("package" => package.name, "platforms" => platforms)
+end
+
+package_writer.write(JSON.pretty_generate(data))
+package_writer.close
+
 packages = ARGV
 if packages.empty?
   packages = repository.packages
