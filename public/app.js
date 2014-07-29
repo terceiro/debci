@@ -187,12 +187,15 @@ jQuery(function($) {
       }
 
     });
+
+    $('#package-select').hide();
   });
 
   $('#package-search').keyup(function() {
       var query = $(this).val();
       if (query.length > 0) {
         $('.request-search').hide();
+        $('#package-select').show();
         var found = 0;
         $('#package-select li').each(function() {
           if ($(this).attr('data-package').match(query)) {
@@ -207,7 +210,7 @@ jQuery(function($) {
       } else {
         $('.request-search').show();
         $('.search-count').hide();
-        $('#package-select li').show();
+        $('#package-select li').hide();
       }
   });
 
