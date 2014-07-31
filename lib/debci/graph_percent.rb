@@ -26,6 +26,8 @@ module Debci
 
       return unless data
 
+      graph.labels = month_labels(data.date)
+
       graph.data('Pass', data.pass_percentage)
       graph.maximum_value = @max_value
 
