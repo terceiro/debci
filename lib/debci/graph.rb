@@ -22,6 +22,18 @@ module Debci
       "[#{suite}/#{architecture}]"
     end
 
+    # Returns a set of months for the labels of the x-axis
+    def month_labels(dates)
+      months = dates.map { |date| Time.parse(date).strftime('%B') }
+      labels = {}
+
+      months.uniq.each do |month|
+        labels.merge!(months.find_index(month) => month[0..2])
+      end
+
+      labels
+    end
+
     # Read the status data
     def get_data(suite, architecture)
       data = Debci::Repository.new.status_history(suite, architecture)

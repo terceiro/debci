@@ -22,6 +22,8 @@ module Debci
 
       return unless data
 
+      graph.labels = month_labels(data.date)
+
       graph.data('Pass', data.pass)
       graph.data('Fail', data.fail)
       graph.data('Tmpfail', data.tmpfail)
