@@ -33,7 +33,7 @@ module Debci
       entries.date = data.map { |entry| entry['date'] }
       entries.pass = data.map { |entry| entry['pass'] }
       entries.fail = data.map { |entry| entry['fail'] }
-      entries.tmpfail = data.map { |entry| entry['tmpfail'] }
+      entries.tmpfail = data.map { |entry| entry['tmpfail'] ? entry['tmpfail'] : 0 }
       entries.total = data.map { |entry| entry['total'] }
       entries.pass_percentage = data.map { |entry| entry['pass'].to_f / entry['total'].to_f }
 
