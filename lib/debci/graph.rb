@@ -23,17 +23,21 @@ module Debci
     end
 
     # Read the status data
-    def self.get_data(data)
-      entry = Debci::Graph.new
+    def get_data(suite, architecture)
+      data = Debci::Repository.new.status_history(suite, architecture)
 
-      entry.date = data['date']
-      entry.pass = data['pass']
-      entry.fail = data['fail']
-      entry.tmpfail = data['tmpfail']
-      entry.total = data['total']
-      entry.pass_percentage = data['pass'].to_f / data['total'].to_f
+      return unless data
 
-      entry
+      entries = Debci::Graph.new
+
+      entries.date = data.map { |entry| entry['date'] }
+      entries.pass = data.map { |entry| entry['pass'] }
+      entries.fail = data.map { |entry| entry['fail'] }
+      entries.tmpfail = data.map { |entry| entry['tmpfail'] }
+      entries.total = data.map { |entry| entry['total'] }
+      entries.pass_percentage = data.map { |entry| entry['pass'].to_f / entry['total'].to_f }
+
+      entries
     end
 
     private

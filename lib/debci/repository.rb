@@ -1,6 +1,5 @@
 require 'set'
 
-require 'debci/graph'
 require 'debci/status'
 require 'debci/package'
 
@@ -165,7 +164,7 @@ module Debci
         true
       end
 
-      data.map { |entry| Debci::Graph.get_data(entry) }
+      data
     end
 
     private
