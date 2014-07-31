@@ -13,8 +13,8 @@
 
       <div id='graph_pass'>
 
-        <div class='row'>
           <% repository.architectures.each do |arch| %>
+            <div class='row'>
             <% repository.suites.each do |suite| %>
 
               <div class='col-md-4'>
@@ -29,14 +29,14 @@
               </div>
 
             <% end %>
+            </div>
           <% end %>
-        </div>
       </div>
 
       <div id='graph_percent'>
 
-        <div class='row'>
           <% repository.architectures.each do |arch| %>
+            <div class='row'>
             <% repository.suites.each do |suite| %>
 
                 <div class='col-md-4'>
@@ -51,8 +51,8 @@
                 </div>
 
             <% end %>
+            </div>
           <% end %>
-        </div>
       </div>
 
   </div> <!-- class='panel panel-default' -->
