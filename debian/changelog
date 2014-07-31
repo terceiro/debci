@@ -1,3 +1,12 @@
+debci (0.8) unstable; urgency=medium
+
+  * debci-test: update global data files, not only package-specific data file,
+    after each successfull test run.
+  * debci-generate-index: ensure that no two instances can run at the same
+    time.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Thu, 31 Jul 2014 11:55:27 -0300
+
 debci (0.7.3) unstable; urgency=medium
 
   * debci-generate-feeds:
