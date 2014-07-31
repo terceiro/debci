@@ -95,3 +95,12 @@ report_status() {
 command_available() {
   which "$1" >/dev/null 2>/dev/null
 }
+
+run_with_lock_or_exit() {
+  lockfile="$1"
+  shift
+  (
+    flock -n 9 || exit 0
+    "$@"
+  ) 9> "$lockfile"
+}

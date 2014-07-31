@@ -359,7 +359,9 @@ if [ $# -gt 0 ]; then
   done
 else
   if [ -d "$debci_autopkgtest_dir" ]; then
-    generate_all_packages
+    run_with_lock_or_exit \
+      /var/lock/debci-generate-index-${debci_suite}-${debci_arch}.lock \
+      generate_all_packages
   else
     log "I: No test results, nothing to generate"
   fi
