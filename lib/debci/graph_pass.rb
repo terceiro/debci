@@ -1,3 +1,5 @@
+require 'debci/graph'
+
 module Debci
 
   # This class represents a pass/fail graph for a specific suite and
@@ -16,13 +18,13 @@ module Debci
       graph.y_axis_increment = @y_axis_increment
       graph.theme = @theme
 
-      data = Debci::Repository.new.status_history(suite, architecture)
+      data = get_data(suite, architecture)
 
       return unless data
 
-      graph.data('Pass', data.map { |entry| entry.pass })
-      graph.data('Fail', data.map { |entry| entry.fail })
-      graph.data('Tmpfail', data.map { |entry| entry.tmpfail})
+      graph.data('Pass', data.pass)
+      graph.data('Fail', data.fail)
+      graph.data('Tmpfail', data.tmpfail)
 
       graph.write(File.join(directory, "pass_#{suite}_#{architecture}.png"))
 

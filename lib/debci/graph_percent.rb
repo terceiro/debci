@@ -1,3 +1,5 @@
+require 'debci/graph'
+
 module Debci
 
   # This class represents a pass percentage graph for a specific suite and
@@ -20,11 +22,11 @@ module Debci
       graph.hide_dots = @hide_dots
       graph.theme = @theme
 
-      data = Debci::Repository.new.status_history(suite, architecture)
+      data = get_data(suite, architecture)
 
       return unless data
 
-      graph.data('Pass', data.map { |entry| entry.pass_percentage })
+      graph.data('Pass', data.pass_percentage)
       graph.maximum_value = @max_value
 
       graph.write(File.join(directory, "percent_#{suite}_#{architecture}.png"))
