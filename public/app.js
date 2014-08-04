@@ -176,6 +176,7 @@ jQuery(function($) {
 
       for (var platform in available_platforms) {
         $link = $('<a></a>');
+        $link.addClass(item.status[platform]);
         $link.attr('href', 'packages/' + package_dir + '/' + available_platforms[platform]);
         $link.html(item.package + ' <b>' + available_platforms[platform] + '</b>');
 
