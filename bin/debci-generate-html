@@ -41,7 +41,15 @@ repository.each_package do |package|
     end
   end
 
-  data.push("package" => package.name, "platforms" => platforms)
+  all_statuses = []
+
+  package.status.each do |row|
+    row.each do |status|
+      all_statuses.push(status.status) if status.status != :no_test_data
+    end
+  end
+
+  data.push("package" => package.name, "platforms" => platforms, "status" => all_statuses)
 end
 
 package_writer.write(JSON.pretty_generate(data))
