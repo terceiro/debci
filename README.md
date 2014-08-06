@@ -65,7 +65,7 @@ the `users`, `root-users` and `source-root-users` configuration keys:
 [...]
 users=debci,$YOUR_USERNAME
 [...]
-root=users=debci,$YOUR_USERNAME
+root-users=debci,$YOUR_USERNAME
 source-root=users=debci,$YOUR_USERNAME
 [...]
 ```
