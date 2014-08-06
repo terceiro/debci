@@ -70,6 +70,19 @@ source-root=users=debci,$YOUR_USERNAME
 [...]
 ```
 
+To speed up test suite execution, you can also add the following line at the
+end:
+
+```
+union-overlay-directory=/dev/shm
+```
+
+This will mount the chroot overlay on `tmpfs` which will make installing test
+dependencies a lot faster. If your hard disk is already a SSD, you probably
+don't need that. If you don't have a good amount of RAM, you may have problems
+using this.
+
+
 The following examples assume:
 
 * the `schroot` debci backend
