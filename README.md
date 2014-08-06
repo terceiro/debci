@@ -76,22 +76,24 @@ The following examples assume:
 * suite = `unstable` (the default)
 * architecture = `amd64`
 
-To run the test suite with of the package **from the archive**, you pass the
-_source package name_ to adt-run:
+To run the test suite **from a source package in the archive**, you pass the
+_package name_ to adt-run:
 
 ```
 $ adt-run --user debci --output-dir /tmp/output-dir SOURCEPACKAGE --- schroot debci-unstable-amd64
 ```
 
-To run the test suite against **locally-built packages**, you have to reference
-the binary packages and their corresponding `.dsc` in the local filesystem.
+To run the test suite against **a locally-built source package**, using the
+test suite from that source package and the binary packages you just built, you
+can pass the `.changes` file to adt-run:
 
 ```
 $ adt-run --user debci --output-dir /tmp/output-dir \
-  /path/to/PACKAGE_x.y-z_amd64.deb [OTHER DEBS ...] \
-  /path/to/PACKAGE_x.y-z.dsc --- \
+  /path/to/PACKAGE_x.y-z_amd64.changes \
   schroot debci-unstable-amd64
 ```
+
+For more details, see the documentation for the `autopkgtest` package.
 
 
 ## Reporting Bugs
