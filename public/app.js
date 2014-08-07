@@ -4,7 +4,8 @@ jQuery(function($) {
   var PACKAGES_DIR = '/data/packages/unstable/amd64';
   var PACKAGES_HTML_DIR = '/data/.html/packages';
   var AUTOPKGTEST_DIR = '/data/autopkgtest/unstable/amd64';
-  var STATUS_DIR = '/data/status/unstable/amd64';
+  var STATUS_DIR = '/data/status/';
+  var STATUS_HTML_DIR = '/data/.html/status';
 
   var handlers = {};
   function on(hash, f) {
@@ -40,108 +41,114 @@ jQuery(function($) {
   on('', function() {
     switch_to('#status');
 
-    $.get(STATUS_DIR + '/history.json', function(data) {
+    $.get(STATUS_HTML_DIR + '/platforms.json', function(data) {
+      $.each(data, function(index, item) {
 
-      if (data.length < 2) {
-        $('.chart').html("Not enough data for plot. Wait until the next run");
-        return;
-      }
+        var platform = item.platform.replace('/', '-')
 
-      var pass = [];
-      var fail = [];
-      var tmpfail = [];
-      var pass_percentage = [];
-      var duration = [];
-      var max_duration = 0;
-      $.each(data, function(index, entry) {
-        var date = Date.parse(entry.date);
-        pass.push([date, entry.pass]);
-        fail.push([date, entry.fail]);
-        tmpfail.push([date, entry.tmpfail || 0]);
-        pass_percentage.push([date, entry.pass / entry.total]);
-        duration.push([date, entry.duration]);
-        if (entry.duration && entry.duration > max_duration) {
-          max_duration = entry.duration;
-        }
-      });
-
-      var status_data = [
-        {
-          label: "Pass",
-          data: pass
-        },
-        {
-          label: "Fail",
-          data: fail
-        },
-        {
-          label: "Temporary failure",
-          data: tmpfail
-        }
-      ];
-
-      $.plot("#chart-pass-fail", status_data, {
-        series: {
-          stack: true,
-          lines: {
-            show: true,
-            fill: true,
-            steps: false,
+        $.get(STATUS_DIR + item.platform + '/history.json', function(data) {
+          if (data.length < 2) {
+            $('.chart').html("Not enough data for plot. Wait until the next run");
+            return;
           }
-        },
-        colors: [ '#8ae234', '#ef2929', '#ffd862' ],
-        legend: {
-          show: true,
-          backgroundOpacity: 0.2,
-          position: 'sw'
-        },
-        xaxis: {
-          mode: "time"
-        },
-        yaxis: {
-          min: 0
-        }
-      });
 
-      $.plot('#chart-pass-percentage', [pass_percentage], {
-        series: {
-          lines: {
-            show: true
+          var pass = [];
+          var fail = [];
+          var tmpfail = [];
+          var pass_percentage = [];
+          var duration = [];
+          var max_duration = 0;
+          $.each(data, function(index, entry) {
+            var date = Date.parse(entry.date);
+            pass.push([date, entry.pass]);
+            fail.push([date, entry.fail]);
+            tmpfail.push([date, entry.tmpfail || 0]);
+            pass_percentage.push([date, entry.pass / entry.total]);
+            duration.push([date, entry.duration]);
+            if (entry.duration && entry.duration > max_duration) {
+              max_duration = entry.duration;
+            }
+          });
+
+          var status_data = [
+            {
+              label: "Pass",
+              data: pass
+            },
+            {
+              label: "Fail",
+              data: fail
+            },
+            {
+              label: "Temporary failure",
+              data: tmpfail
+            }
+          ];
+
+          $.plot("#chart-pass-fail" + platform, status_data, {
+            series: {
+              stack: true,
+              lines: {
+                show: true,
+                fill: true,
+                steps: false,
+              }
+            },
+            colors: [ '#8ae234', '#ef2929', '#ffd862' ],
+            legend: {
+              show: true,
+              backgroundOpacity: 0.2,
+              position: 'sw'
+            },
+            xaxis: {
+              mode: "time"
+            },
+            yaxis: {
+              min: 0
+            }
+          });
+
+          $.plot('#chart-pass-percentage' + platform, [pass_percentage], {
+            series: {
+              lines: {
+                show: true
+              }
+            },
+            colors: [ '#8ae234' ],
+            xaxis: {
+              mode: 'time',
+            },
+            yaxis: {
+              min: 0,
+              max: 1,
+              ticks: [[0.25, '25%'], [0.5, '50%'], [0.75, '75%'], [1.0, '100%']]
+            }
+          });
+
+          var max_hours = Math.round(max_duration / 3600) + 1;
+          var step = Math.ceil(max_hours / 10);
+          max_hours = step * 10;
+          var duration_ticks = [];
+          for (var i = 0; i <= max_hours; i = i + step) {
+            duration_ticks.push([i * 3600, i + 'h']);
           }
-        },
-        colors: [ '#8ae234' ],
-        xaxis: {
-          mode: 'time',
-        },
-        yaxis: {
-          min: 0,
-          max: 1,
-          ticks: [[0.25, '25%'], [0.5, '50%'], [0.75, '75%'], [1.0, '100%']]
-        }
-      });
+          $.plot('#chart-run-duration', [duration], {
+            series: {
+              bars: {
+                show: true
+             }
+            },
+            xaxis: {
+              mode: 'time',
+            },
+            yaxis: {
+              min: 0,
+              ticks: duration_ticks
+            }
 
-      var max_hours = Math.round(max_duration / 3600) + 1;
-      var step = Math.ceil(max_hours / 10);
-      max_hours = step * 10;
-      var duration_ticks = [];
-      for (var i = 0; i <= max_hours; i = i + step) {
-        duration_ticks.push([i * 3600, i + 'h']);
-      }
-      $.plot('#chart-run-duration', [duration], {
-        series: {
-          bars: {
-            show: true
-          }
-        },
-        xaxis: {
-          mode: 'time',
-        },
-        yaxis: {
-          min: 0,
-          ticks: duration_ticks
-        }
-      });
-
+          });
+        })
+      })
     })
   });
 
