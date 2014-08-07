@@ -18,12 +18,6 @@ platforms = []
 
 repository.suites.each do |suite|
   repository.architectures.each do |arch|
-    graph = Debci::GraphPass.new
-    graph.graph(suite, arch, status_dir)
-
-    graph = Debci::GraphPercent.new
-    graph.graph(suite, arch, status_dir)
-
     platforms.push("platform" => suite + '/' + arch) if repository.status_history(suite, arch)
   end
 end
