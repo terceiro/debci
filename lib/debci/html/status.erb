@@ -4,57 +4,50 @@
   <div class="panel panel-default">
     <div class="panel-heading">Package Testing Data</div>
 
-      <ul class='nav nav-tabs'>
-        <li><a href='#graph_pass' class='active'>Pass/fail</a></li>
-        <li><a href='#graph_percent'>Pass Percentage</a></li>
-      </ul>
+    <% repository = Debci::Repository.new %>
 
-      <% repository = Debci::Repository.new %>
+    <div id='status'>
+      <h2>Pass/Fail</h2><hr/>
 
-      <div id='graph_pass'>
+      <% repository.architectures.each do |arch| %>
+         <div class='row'>
+        <% repository.suites.each do |suite| %>
 
-          <% repository.architectures.each do |arch| %>
-            <div class='row'>
-            <% repository.suites.each do |suite| %>
+           <div class='col-md-4'>
+             <div class='text-center'><h2><%= "#{suite}/#{arch}" %></h2></div>
+               <% if repository.status_history(suite, arch) %>
+                    <noscript><p class='text-center'>Cannot plot without JavaScript</p></noscript>
+                    <div class='chart' id='chart-pass-fail<%= suite %>-<%= arch %>'></div>
+               <% else %>
+                    <h4 class='text-center'>No data available</h4>
+               <% end %>
+             </div>
 
-              <div class='col-md-4'>
-                <% pass_graph = "pass_#{suite}_#{arch}.png" %>
+        <% end %>
+         </div>
+      <% end %>
 
-                <% if File.exists?("public/status/#{pass_graph}") %>
-                     <img src='<%= pass_graph %>'/>
-                <% else %>
-                     <br><br>
-                     <h3 class='text-center'>No test data for <%= suite %>/<%= arch %></h3>
-                <% end %>
-              </div>
+      <hr/><h2>Pass Percentage</h2><hr/>
 
-            <% end %>
-            </div>
-          <% end %>
-      </div>
+      <% repository.architectures.each do |arch| %>
+         <div class='row'>
+        <% repository.suites.each do |suite| %>
 
-      <div id='graph_percent'>
+           <div class='col-md-4'>
+             <div class='text-center'><h2><%= "#{suite}/#{arch}" %></h2></div>
+               <% if repository.status_history(suite, arch) %>
+                    <noscript><p class='text-center'>Cannot plot without JavaScript</p></noscript>
+                    <div class='chart' id='chart-pass-percentage<%= suite %>-<%= arch %>'></div>
+               <% else %>
+                    <h4 class='text-center'>No data available</h4>
+               <% end %>
+             </div>
 
-          <% repository.architectures.each do |arch| %>
-            <div class='row'>
-            <% repository.suites.each do |suite| %>
+        <% end %>
+         </div>
+      <% end %>
 
-                <div class='col-md-4'>
-                  <% percent_graph = "percent_#{suite}_#{arch}.png" %>
-
-                  <% if File.exists?("public/status/#{percent_graph}") %>
-                       <img src='<%= percent_graph %>'/>
-                  <% else %>
-                       <br><br>
-                       <h3 class='text-center'>No test data for <%= suite %>/<%= arch %></h3>
-                  <% end %>
-                </div>
-
-            <% end %>
-            </div>
-          <% end %>
-      </div>
-
+    </div>
   </div> <!-- class='panel panel-default' -->
 </div> <!-- class='col-md-12' -->
 </div> <!-- class='row -->
