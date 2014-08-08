@@ -16,7 +16,7 @@
 <div class="col-sm-8">
 
 <table class="table" style="text-align: left">
-<tr><td><b>Package</b></td><td><b>Suites</b></td><td><b>Architectures</b></td></tr>
+<tr><td><b>Package</b></td><td><b>Status</b></td></tr>
 <%
     repository = Debci::Repository.new
     packages = repository.packages
@@ -28,8 +28,12 @@
         if @package.prefix.eql?(@prefix) %>
           <tr>
             <td><a href="/packages/<%= @prefix %>/<%= @package.name %>"><%= @package.name %></a></td>
-              <td><%= @package.suites.join(', ') %></td>
-              <td><%= @package.architectures.join(', ') %></td>
+
+            <% if @package.failures %>
+                 <td><div class='fail'>Failing on <%= @package.failures.join(', ') %></div></td>
+            <% else %>
+                 <td><div class='pass'>Passing everywhere</div></td>
+            <% end %>
           </tr>
 <%
         end
