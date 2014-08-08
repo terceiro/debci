@@ -74,7 +74,7 @@ module Debci
     # end
     #
     def each_package
-      packages.each do |pkgname|
+      packages.sort.each do |pkgname|
         pkg = Debci::Package.new(pkgname, self)
         yield pkg
       end
