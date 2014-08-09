@@ -18,19 +18,14 @@
 <table class="table" style="text-align: left">
 <tr><td><b>Package</b></td><td><b>Status</b></td></tr>
 <%
-    repository = Debci::Repository.new
-    packages = repository.packages
+    @repository.each_package do |package|
 
-    packages.sort.each do |item|
-
-      @package = repository.find_package(item)
-
-        if @package.prefix.eql?(@prefix) %>
+        if package.prefix.eql?(@prefix) %>
           <tr>
-            <td><a href="/packages/<%= @prefix %>/<%= @package.name %>"><%= @package.name %></a></td>
+            <td><a href="/packages/<%= @prefix %>/<%= package.name %>"><%= package.name %></a></td>
 
-            <% if @package.failures %>
-                 <td><div class='fail'>Failing on <%= @package.failures.join(', ') %></div></td>
+            <% if package.failures %>
+                 <td><div class='fail'>Failing on <%= package.failures.join(', ') %></div></td>
             <% else %>
                  <td><div class='pass'>Passing everywhere</div></td>
             <% end %>

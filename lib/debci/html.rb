@@ -11,6 +11,7 @@ module Debci
 
     def initialize(root_directory)
       @root_directory = root_directory
+      @repository = Debci::Repository.new
       @package_prefixes = (('0'..'9').to_a + ('a'..'z').to_a + ('liba'..'libz').to_a).sort
     end
 
