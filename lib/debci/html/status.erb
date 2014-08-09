@@ -4,18 +4,16 @@
   <div class="panel panel-default">
     <div class="panel-heading">Package Testing Data</div>
 
-    <% repository = Debci::Repository.new %>
-
     <div id='status'>
       <h2>Pass/Fail</h2><hr/>
 
-      <% repository.architectures.each do |arch| %>
+      <% @repository.architectures.each do |arch| %>
          <div class='row'>
-        <% repository.suites.each do |suite| %>
+        <% @repository.suites.each do |suite| %>
 
            <div class='col-md-4'>
              <div class='text-center'><h2><%= "#{suite}/#{arch}" %></h2></div>
-               <% if repository.status_history(suite, arch) %>
+               <% if @repository.status_history(suite, arch) %>
                     <noscript><p class='text-center'>Cannot plot without JavaScript</p></noscript>
                     <div class='chart' id='chart-pass-fail<%= suite %>-<%= arch %>'></div>
                <% else %>
@@ -29,13 +27,13 @@
 
       <hr/><h2>Pass Percentage</h2><hr/>
 
-      <% repository.architectures.each do |arch| %>
+      <% @repository.architectures.each do |arch| %>
          <div class='row'>
-        <% repository.suites.each do |suite| %>
+        <% @repository.suites.each do |suite| %>
 
            <div class='col-md-4'>
              <div class='text-center'><h2><%= "#{suite}/#{arch}" %></h2></div>
-               <% if repository.status_history(suite, arch) %>
+               <% if @repository.status_history(suite, arch) %>
                     <noscript><p class='text-center'>Cannot plot without JavaScript</p></noscript>
                     <div class='chart' id='chart-pass-percentage<%= suite %>-<%= arch %>'></div>
                <% else %>
