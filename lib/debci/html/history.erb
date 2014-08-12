@@ -19,5 +19,18 @@
      rescue NoMethodError => error
        return if error.to_s.include?("no_test_data")
      end %>
+
   </table>
+
+  <p>Automate:</p>
+
+  <% automation_info = "<code># latest status of the package\n" +
+                       "$ curl http://ci.debian.net/data/packages/#{@suite}/#{@architecture}/#{@package.prefix}/#{@package.name}/latest.json\n\n" +
+                       "# latest autopkgtest log of the package\n" +
+                       "$ curl http://ci.debian.net/data/packages/#{@suite}/#{@architecture}/#{@package.prefix}/#{@package.name}/latest-autopkgtest/log\n\n" +
+                       "# test run history of the package\n" +
+                       "$ curl http://ci.debian.net/data/packages/#{@suite}/#{@architecture}/#{@package.prefix}/#{@package.name}/history.json</code>"
+  %>
+
+  <pre><%= automation_info %></pre>
 </div>
