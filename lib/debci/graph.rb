@@ -22,6 +22,13 @@ module Debci
       data.last unless data.length == 0
     end
 
+    # Returns the value of the second to last data entry for the
+    # specified field
+    def previous_value(field)
+      data = @data.send(field)
+      data[-2] unless data.length < 2
+    end
+
     # Read the status data
     def get_data
       data = Debci::Repository.new.status_history(@suite, @architecture)
