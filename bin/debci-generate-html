@@ -2,8 +2,7 @@
 
 require 'debci'
 require 'debci/html'
-require 'debci/graph_pass'
-require 'debci/graph_percent'
+require 'debci/graph'
 
 writer = Debci::HTML.new(File.join(Debci.config.data_basedir, '.html'))
 
