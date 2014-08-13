@@ -16,6 +16,12 @@ module Debci
       @data = get_data
     end
 
+    # Returns the value of the last data entry for the specified field
+    def current_value(field)
+      data = @data.send(field)
+      data.last unless data.length == 0
+    end
+
     # Read the status data
     def get_data
       data = Debci::Repository.new.status_history(@suite, @architecture)
