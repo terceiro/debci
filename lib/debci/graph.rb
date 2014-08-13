@@ -42,7 +42,7 @@ module Debci
 
       entries = Debci::Graph.new
 
-      entries.date = data.map { |entry| entry['date'] }
+      entries.date = data.map { |entry| Time.parse(entry['date'] + ' UTC') }
       entries.pass = data.map { |entry| entry['pass'] }
       entries.fail = data.map { |entry| entry['fail'] }
       entries.tmpfail = data.map { |entry| entry['tmpfail'] ? entry['tmpfail'] : 0 }
