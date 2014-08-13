@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'gruff'
 
 require 'debci/repository'
 
@@ -11,27 +10,7 @@ module Debci
 
     attr_accessor :date, :pass, :fail, :tmpfail, :total, :pass_percentage
 
-    def initialize(graph_size='360x205', y_axis_increment=100)
-      @graph_size = graph_size
-      @y_axis_increment = y_axis_increment
-      @theme = graph_theme(['green', 'red', 'yellow'], 'black')
-    end
-
-    # Returns a title for a graph
-    def title(suite, architecture)
-      "[#{suite}/#{architecture}]"
-    end
-
-    # Returns a set of months for the labels of the x-axis
-    def month_labels(dates)
-      months = dates.map { |date| Time.parse(date).strftime('%B') }
-      labels = {}
-
-      months.uniq.each do |month|
-        labels.merge!(months.find_index(month) => month[0..2])
-      end
-
-      labels
+    def initialize
     end
 
     # Read the status data
@@ -50,12 +29,6 @@ module Debci
       entries.pass_percentage = data.map { |entry| entry['pass'].to_f / entry['total'].to_f }
 
       entries
-    end
-
-    private
-
-    def graph_theme(colors, marker_color)
-      { :colors => colors, :marker_color => marker_color, :background_colors => 'white' }
     end
 
   end
