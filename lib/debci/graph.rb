@@ -10,16 +10,19 @@ module Debci
 
     attr_accessor :date, :pass, :fail, :tmpfail, :total, :pass_percentage
 
-    def initialize
+    def initialize(suite, architecture)
+      @suite = suite
+      @architecture = architecture
+      @data = get_data
     end
 
     # Read the status data
-    def get_data(suite, architecture)
-      data = Debci::Repository.new.status_history(suite, architecture)
+    def get_data
+      data = Debci::Repository.new.status_history(@suite, @architecture)
 
       return unless data
 
-      entries = Debci::Graph.new
+      entries = self
 
       entries.date = data.map { |entry| Time.parse(entry['date'] + ' UTC') }
       entries.pass = data.map { |entry| entry['pass'] }
