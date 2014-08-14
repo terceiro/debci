@@ -1,6 +1,6 @@
 require 'rubygems'
 
-require 'debci/repository'
+require 'debci'
 
 module Debci
 
