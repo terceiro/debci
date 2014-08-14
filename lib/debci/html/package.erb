@@ -21,7 +21,11 @@
            <td><b><%= row.first.architecture %></b></td>
 
          <% row.each do |status| %>
-              <td class="<%= status.status %>"><a href="/packages/<%= @package.prefix %>/<%= @package.name %>/<%= status.suite %>/<%= row.first.architecture %>"><%= status.title %></a></td>
+           <% if status.status.eql?(:no_test_data) %>
+                <td class="<%= status.status %>"><%= status.title %></td>
+           <% else %>
+                <td class="<%= status.status %>"><a href="/packages/<%= @package.prefix %>/<%= @package.name %>/<%= status.suite %>/<%= row.first.architecture %>"><%= status.title %></a></td>
+           <% end %>
          <% end %>
          </tr>
     <% end %>
