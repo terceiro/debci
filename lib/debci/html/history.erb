@@ -11,9 +11,9 @@
            <td><%= test.date %></td>
            <td><%= test.duration_human %></td>
            <td class="<%= test.status %>"><%= test.status %></td>
-           <td><a href="/data/packages/<%= @suite %>/<%= @architecture %>/<%=@package.prefix %>/<%= @package.name %>/<%= test.run_id %>.log">debci log</a></td>
-           <td><a href="/data/packages/<%= @suite %>/<%= @architecture %>/<%= @package.prefix %>/<%= @package.name %>/<%= test.run_id %>.autopkgtest.log">test log</a></td>
-           <td><a href="/data/autopkgtest/<%= @suite %>/<%= @architecture %>/<%= @package.prefix %>/<%= @package.name %>/<%= test.run_id %>">artifacts</a></td>
+           <td><a href="/<%= @packages_dir %>/<%= @package_dir %>/<%= test.run_id %>.log">debci log</a></td>
+           <td><a href="/<%= @packages_dir %>/<%= @package_dir %>/<%= test.run_id %>.autopkgtest.log">test log</a></td>
+           <td><a href="/<%= @autopkgtest_dir %>/<%= @package_dir %>/<%= test.run_id %>">artifacts</a></td>
          </tr>
     <% end
      rescue NoMethodError => error
@@ -25,11 +25,11 @@
   <p>Automate:</p>
 
   <% automation_info = "<code># latest status of the package\n" +
-                       "$ curl http://ci.debian.net/data/packages/#{@suite}/#{@architecture}/#{@package.prefix}/#{@package.name}/latest.json\n\n" +
+                       "$ curl #{@site_url}/#{@packages_dir}/#{@package_dir}/latest.json\n\n" +
                        "# latest autopkgtest log of the package\n" +
-                       "$ curl http://ci.debian.net/data/packages/#{@suite}/#{@architecture}/#{@package.prefix}/#{@package.name}/latest-autopkgtest/log\n\n" +
+                       "$ curl #{@site_url}/#{@packages_dir}/#{@package_dir}/latest-autopkgtest/log\n\n" +
                        "# test run history of the package\n" +
-                       "$ curl http://ci.debian.net/data/packages/#{@suite}/#{@architecture}/#{@package.prefix}/#{@package.name}/history.json</code>"
+                       "$ curl #{@site_url}/#{@packages_dir}/#{@package_dir}/history.json</code>"
   %>
 
   <pre><%= automation_info %></pre>

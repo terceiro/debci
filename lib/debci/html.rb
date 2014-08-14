@@ -37,6 +37,10 @@ module Debci
       @package = package
       @suite = suite
       @architecture = architecture
+      @packages_dir = 'data/packages'
+      @package_dir = File.join(suite, architecture, package.prefix, package.name)
+      @autopkgtest_dir = 'data/autopkgtest'
+      @site_url = 'http://ci.debian.net'
       expand_template(:history, filename)
     end
 
