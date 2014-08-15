@@ -15,7 +15,7 @@
              <div class='text-center'><h2><%= "#{suite}/#{arch}" %></h2></div>
                <% if @repository.status_history(suite, arch) %>
                     <noscript>
-                      <% chart = Debci::Graph.new(suite, arch) %>
+                      <% chart = Debci::Graph.new(@repository, suite, arch) %>
 
                       <table class='table text-center'>
                         <tr>
@@ -58,7 +58,7 @@
              <div class='text-center'><h2><%= "#{suite}/#{arch}" %></h2></div>
                <% if @repository.status_history(suite, arch) %>
                     <noscript>
-                      <% chart = Debci::Graph.new(suite, arch) %>
+                      <% chart = Debci::Graph.new(@repository, suite, arch) %>
 
                       <table class='table text-center'>
                         <tr>
