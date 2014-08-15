@@ -45,24 +45,18 @@ module Debci
     # failing. If this package is passing on all suite/architectures, nothing
     # is returned.
     def failures
-      passing = nil
       failing_status = []
 
       status.each do |architecture|
         architecture.each do |suite|
           case suite.status
-            when :pass
-              passing = true
             when :fail
-              passing = nil
               failing_status.push(suite.suite + '/' + suite.architecture)
-            when :tmpfail
-              passing = true
           end
         end
       end
 
-      return failing_status unless passing
+      return failing_status unless failing_status.empty?
     end
 
     def to_s
