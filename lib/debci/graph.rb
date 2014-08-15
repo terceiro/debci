@@ -10,7 +10,8 @@ module Debci
 
     attr_accessor :date, :pass, :fail, :tmpfail, :total, :pass_percentage
 
-    def initialize(suite, architecture)
+    def initialize(repository, suite, architecture)
+      @repository = repository
       @suite = suite
       @architecture = architecture
       @data = get_data
@@ -31,7 +32,7 @@ module Debci
 
     # Read the status data
     def get_data
-      data = Debci::Repository.new.status_history(@suite, @architecture)
+      data = @repository.status_history(@suite, @architecture)
 
       return unless data
 
