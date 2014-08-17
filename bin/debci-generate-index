@@ -326,7 +326,9 @@ generate_history() {
 
 generate_all_packages() {
   # clean up packages/
-  find "$debci_packages_dir" -empty -delete
+  if [ -d "$debci_packages_dir" ]; then
+    find "$debci_packages_dir" -empty -delete
+  fi
   generate_packages
   debci-generate-feeds
   log "I: Updating global status..."
