@@ -149,6 +149,7 @@ needs_processing() {
 # default configuration
 maxjobs=1
 force=''
+offline_marker="$debci_data_basedir/offline"
 
 while true; do
   arg="$1"
@@ -162,11 +163,11 @@ while true; do
       force="$arg"
       ;;
     --offline)
-      touch /var/lock/debci-batch.offline
+      touch "${offline_marker}"
       exit 0
       ;;
     --online)
-      rm -f /var/lock/debci-batch.offline
+      rm -f "${offline_marker}"
       exit 0
       ;;
     --)
@@ -175,7 +176,7 @@ while true; do
   esac
 done
 
-if [ -e /var/lock/debci-batch.offline ]; then
+if [ -e "${offline_marker}" ]; then
   exit 0
 fi
 
