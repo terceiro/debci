@@ -67,7 +67,7 @@ generate_package_run() {
   # get run duration
   if [ -f "$adtresult/duration" ]; then
     local duration="$(cat "$adtresult/duration")"
-    local last_timestamp="$(sed -ns '/^adt-run \[/ { s/^adt-run \[\([0-9: -]*\)\].*$/\1/; p}' "$adtresult/log" | tail -n 1)"
+    local last_timestamp="$(date '+%Y-%m-%d %H:%M:%S' -d@$(stat --format=%Y "$adtresult/duration"))"
   else
     # this should never happen
     local duration=0
