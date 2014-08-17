@@ -87,6 +87,17 @@ process_all_packages() {
   if [ "$maxjobs" -eq 1 ]; then
     for pkg in $packages; do
       debci-test --index "$pkg"
+
+      if [ -f "${debci_status_dir}/packages.json" ]; then
+        local last_update=$(stat --format=%Y "${debci_status_dir}/packages.json")
+        local now=$(date +%s)
+        local update_interval=3600  # 1 hour
+        if [ $(($now - $last_update)) -gt $update_interval ]; then
+          debci-generate-index
+        fi
+      else
+        debci-generate-index
+      fi
     done
   else
     args=''
