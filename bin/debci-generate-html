@@ -51,7 +51,7 @@ repository.each_package do |package|
   package.suites.each do |suite|
     package.architectures.each do |arch|
       begin
-        if package.history(suite, arch) != nil
+        if package.history(suite, arch)
           platforms.push("#{suite}/#{arch}")
         end
       rescue NoMethodError
