@@ -1,41 +1,45 @@
 <div class="container">
-<div class="row">
-<div class="col-md-3">
-<div class="panel panel-default">
-    <div class="panel-heading">Browse</div>
-<ul class="list-inline">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">Browse</div>
+          <ul class="list-inline">
 
-<% @package_prefixes.each do |prefix| %>
-     <li><h5><a href="/packages/<%= prefix %>/"><%= prefix %></a></h5></li>
-<% end %>
+          <% @package_prefixes.each do |prefix| %>
+               <li><h5><a href="/packages/<%= prefix %>/"><%= prefix %></a></h5></li>
+          <% end %>
 
-</ul>
-</div>
-</div>
+          </ul>
+      </div>
+    </div>
 
-<div class="col-md-9">
+    <div class="col-md-9">
 
-<table class="table" style="text-align: left">
-<tr><td><b>Package</b></td><td><b>Status</b></td></tr>
-<%
-    @repository.each_package do |package|
+      <table class="table" style="text-align: left">
+        <tr>
+          <td><b>Package</b></td>
+          <td><b>Status</b></td>
+        </tr>
 
-        if package.prefix.eql?(@prefix) %>
-          <tr>
-            <td><a href="/packages/<%= @prefix %>/<%= package.name %>"><%= package.name %></a></td>
+        <%
+          @repository.each_package do |package|
 
-            <% if package.failures %>
-                 <td><div class='fail'>Failing on <%= package.failures.join(', ') %></div></td>
-            <% else %>
-                 <td><div class='pass'>Passing everywhere</div></td>
-            <% end %>
-          </tr>
-<%
-        end
-    end
-%>
-</table>
-</div>
-</div>
-</div>
+            if package.prefix.eql?(@prefix) %>
+              <tr>
+                <td><a href="/packages/<%= @prefix %>/<%= package.name %>"><%= package.name %></a></td>
+
+                <% if package.failures %>
+                     <td><div class='fail'>Failing on <%= package.failures.join(', ') %></div></td>
+                <% else %>
+                     <td><div class='pass'>Passing everywhere</div></td>
+                <% end %>
+              </tr>
+        <%
+            end
+          end
+        %>
+
+      </table>
+    </div>
+  </div>
 </div>

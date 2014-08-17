@@ -1,38 +1,46 @@
 <div class="container">
-<div class='row'>
-<div class='col-lg-12'>
-<div class="panel panel-default">
-    <div class="panel-heading">
-      <%= @package.name %>
-      <a href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'>
-        <span class='fa fa-rss'></span>
-      </a>
+  <div class='row'>
+    <div class='col-lg-12'>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <%= @package.name %>
+          <a href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'>
+            <span class='fa fa-rss'></span>
+          </a>
+        </div>
+
+        <table class="table">
+
+          <tr>
+            <td></td>
+              <% @package.status.first.each do |status| %>
+                <td><b><%= status.suite %></b></td>
+              <% end %>
+          </tr>
+
+          <% @package.status.each do |row| %>
+            <tr>
+              <td><b><%= row.first.architecture %></b></td>
+
+              <% row.each do |status| %>
+                <% if status.status.eql?(:no_test_data) %>
+                    <td class="<%= status.status %>"><%= status.title %></td>
+                <% else %>
+                    <% package_dir = "/packages/#{@package.prefix}" +
+                                     "/#{@package.name}/#{status.suite}" +
+                                     "/#{row.first.architecture}"
+                    %>
+                    <td class="<%= status.status %>">
+                      <a href=<%= package_dir %>><%= status.title %></a>
+                    </td>
+                <% end %>
+              <% end %>
+            </tr>
+          <% end %>
+
+        </table>
+
+      </div>
     </div>
-
-<table class="table">
-
-    <tr>
-      <td></td>
-      <% @package.status.first.each do |status| %>
-           <td><b><%= status.suite %></b></td>
-      <% end %>
-    </tr>
-
-    <% @package.status.each do |row| %>
-         <tr>
-           <td><b><%= row.first.architecture %></b></td>
-
-         <% row.each do |status| %>
-           <% if status.status.eql?(:no_test_data) %>
-                <td class="<%= status.status %>"><%= status.title %></td>
-           <% else %>
-                <td class="<%= status.status %>"><a href="/packages/<%= @package.prefix %>/<%= @package.name %>/<%= status.suite %>/<%= row.first.architecture %>"><%= status.title %></a></td>
-           <% end %>
-         <% end %>
-         </tr>
-    <% end %>
-</table>
-</div>
-</div>
-</div>
+  </div>
 </div>

@@ -1,55 +1,55 @@
 <div class="container">
-<div class="row">
-<div class="col-md-4">
-<div class="panel panel-default">
-    <div class="panel-heading">News<a class="pull-right" href="data/feeds/all-packages.xml" title='Atom feed for events in all packages'><span class='fa fa-rss'></span></a></div>
-    <div class="list-group">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">News<a class="pull-right" href="data/feeds/all-packages.xml" title='Atom feed for events in all packages'><span class='fa fa-rss'></span></a></div>
+        <div class="list-group">
         <%
            # List the latest changes in package status
-           @repository.news_for('*').each do |item|
-         %>
-               <a href="/packages/<%= @repository.find_package(item.package).prefix %>/<%= item.package %>/<%= item.suite %>/<%= item.architecture %>"
-                  class="list-group-item <%= item.status %>"><%= item.headline %><div><small class="text-muted"><%= item.date %> | <strong><%= item.time %></strong></small></div></a>
-         <% end %>
+           @repository.news_for('*').each do |item| %>
+             <a href="/packages/<%= @repository.find_package(item.package).prefix %>/<%= item.package %>/<%= item.suite %>/<%= item.architecture %>"
+                class="list-group-item <%= item.status %>"><%= item.headline %><div><small class="text-muted"><%= item.date %> | <strong><%= item.time %></strong></small></div></a>
+        <% end %>
 
-    </div> <!-- class='list-group' -->
-</div> <!-- class='panel panel-default' -->
-</div> <!-- class='col-md-3' -->
+        </div> <!-- class='list-group' -->
+      </div> <!-- class='panel panel-default' -->
+    </div> <!-- class='col-md-4' -->
 
-<div class="col-md-8">
+    <div class="col-md-8">
 
-    <div class="row">
-      <div class="col-md-1"></div>
-      <div class="col-md-6"><h3>Packages</h3></div>
-      <div class="col-md-5"></div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-1"></div>
-
-      <div class="col-md-5">
-        <h4 class="page-header">Browse by prefix</h4>
-        <ul class="list-inline">
-
-          <% @package_prefixes.each do |prefix| %>
-               <li><h5><a href="/packages/<%= prefix %>"><%= prefix %></a></h5></li>
-          <% end %>
-
-        </ul>
+      <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-6"><h3>Packages</h3></div>
+        <div class="col-md-5"></div>
       </div>
 
-      <div class="col-md-6">
-        <h4 class="page-header">Search</h4>
-          <div id='package-filter' class='form-inline'>
-            <div class="input-group">
-              <input type='text' id='package-search' class='form-control' size='200' placeholder="Search packages (regex welcome)"/>
-              <noscript><p class='text-center'>Cannot search without JavaScript</p></noscript>
-              <ul id='package-select' class='nav nav-list'></ul>
-            </div>
-          </div>
-      </div> <!-- class='col-md-6' -->
-    </div> <!-- class='row' -->
-</div> <!-- class='col-md-8' -->
+      <div class="row">
+        <div class="col-md-1"></div>
 
-</div> <!-- class='row' -->
+        <div class="col-md-5">
+          <h4 class="page-header">Browse by prefix</h4>
+          <ul class="list-inline">
+
+            <% @package_prefixes.each do |prefix| %>
+                 <li><h5><a href="/packages/<%= prefix %>"><%= prefix %></a></h5></li>
+            <% end %>
+
+          </ul>
+        </div>
+
+        <div class="col-md-6">
+          <h4 class="page-header">Search</h4>
+            <div id='package-filter' class='form-inline'>
+              <div class="input-group">
+                <input type='text' id='package-search' class='form-control' size='200' placeholder="Search packages (regex welcome)"/>
+                <noscript><p class='text-center'>Cannot search without JavaScript</p></noscript>
+                <ul id='package-select' class='nav nav-list'></ul>
+              </div>
+            </div>
+        </div> <!-- class='col-md-6' -->
+      </div> <!-- class='row' -->
+
+    </div> <!-- class='col-md-8' -->
+
+  </div> <!-- class='row' -->
 </div> <!-- class='container' -->
