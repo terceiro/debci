@@ -8,8 +8,14 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <%= @package.name %>
+
           <a href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'>
             <span class='fa fa-rss'></span>
+          </a>
+
+          <a href='https://tracker.debian.org/pkg/<%= @package.name %>'
+             title='On the Package Tracking System'>
+            <span class='fa fa-info-circle'></span>
           </a>
         </div>
 
