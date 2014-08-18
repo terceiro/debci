@@ -12,6 +12,8 @@ writer.status('status/index.html')
 repository = Debci::Repository.new
 status_dir = File.join(Debci.config.data_basedir, '.html/status')
 
+# Generate a JSON file for storing the current suite/architectures that are
+# available. The file is used for the JavaScript data charts.
 platform_writer = File.open(File.join(Debci.config.data_basedir, '.html/status', 'platforms.json'), 'w')
 platforms = []
 
@@ -42,6 +44,9 @@ packages.each do |pkg|
   prefixes << package.prefix
 end
 
+
+# Generate a JSON file for storing a package's suite/architectures and
+# status. The file is used for the JavaScript package search.
 package_writer = File.open(File.join(Debci.config.data_basedir, '.html/packages', 'packages.json'), 'w')
 data = []
 
