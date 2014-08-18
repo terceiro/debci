@@ -4,48 +4,6 @@
 }
 
 /* -----------------------------------------------------------------
- * status page
- * ----------------------------------------------------------------- */
-.newspanel {
-  float: left;
-  margin-top: 20px;
-  margin-left: 20px;
-  width: 25%;
-}
-
-.graphcontainer {
-  width: 90%;
-  margin-left: 15%;
-  padding-left: none;
-  padding-right: none;
-  text-align: center;
-}
-
-.graphs {
-  padding-left: 60px;
-  margin-left: 10%;
-  margin-right: 10%;
-  margin-top: 20px;
-  width: 80%;
-}
-
-#graph_pass {
-  display: none;
-}
-
-#graph_pass:target {
-  display: block;
-}
-
-#graph_percent {
-  display: none;
-}
-
-#graph_percent:target {
-  display: block;
-}
-
-/* -----------------------------------------------------------------
  * panel heading
  * ----------------------------------------------------------------- */
 
