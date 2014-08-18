@@ -26,7 +26,7 @@ def insert_items(news, feed)
         '<ul>',
         "<li>Version: #{status.version}</li>",
         "<li>Date: #{status.date}</li>",
-        "<li><a href=\"#{$site_base}/#package/#{status.package}\">Package status page</a></li>",
+        "<li><a href=\"#{$site_base}/packages/#{prefix}/#{status.package}/#{status.suite}/#{status.architecture}\">Package history page</a></li>",
         "<li><a href=\"#{$site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.log\">debci log</a></li>",
         "<li><a href=\"#{$site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.autopkgtest.log\">autopkgtest log</a></li>",
         "<li><a href=\"#{$site_base}/data/autopkgtest/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}/\">autopkgtest artifacts</a></li>",
