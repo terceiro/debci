@@ -1,3 +1,21 @@
+debci (0.8.1) unstable; urgency=medium
+
+  * Documentation updates
+  * Fix obtaining the finish date of tests. Parsing the adt-run log started
+    producing bad dates when adt-run changed to displaying only the time
+    without the date. debci now uses the timestamp of when adt-run finished
+    instead.
+  * debci-batch: store offline mark in persistent storage to avoid going back
+    online after a reboot.
+  * debci-test: revert to updating only package-specific data; it turns out
+    that updating global data after every package is too expensive.
+  * debci-batch: update global data every 1 hour or so
+  * debci-generate-index: avoid crash when regenerating data for extenal
+    consumption from scratch. This process is not completely idempotent yet,
+    so it needs more work.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Mon, 18 Aug 2014 08:25:23 -0300
+
 debci (0.8) unstable; urgency=medium
 
   * debci-test: update global data files, not only package-specific data file,
