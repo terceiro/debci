@@ -66,8 +66,8 @@
                              <td><%= chart.current_value('date') %></td>
                            </tr>
                            <tr>
-                             <td class='pass'><%= chart.previous_value('pass_percentage').round(3) %></td>
-                             <td class='pass'><%= chart.current_value('pass_percentage').round(3) %></td>
+                             <td class='pass'><%= (chart.previous_value('pass_percentage') * 100).round(2) %>%</td>
+                             <td class='pass'><%= (chart.current_value('pass_percentage') * 100).round(2) %>%</td>
                            </tr>
                          </table>
 
