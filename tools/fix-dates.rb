@@ -10,7 +10,12 @@ to_fix = IO.popen(['grep', '-rl', '"date": "[0-9][0-9]:[0-9][0-9]:[0-9][0-9]"', 
 to_fix.each_line do |line|
   file = line.strip
 
-  data = JSON.load(File.read(file))
+  begin
+    data = JSON.load(File.read(file))
+  rescue JSON::ParserError
+    puts "Could't parse JSON in #{file}, please fix manually"
+    next
+  end
 
   if File.basename(file) == 'history.json'
     data.each do |entry|

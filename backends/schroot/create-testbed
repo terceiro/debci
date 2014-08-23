@@ -99,7 +99,8 @@ setup_suite() {
   local actual_chroot_path=$(schroot --config --chroot "$debci_chroot_name" | grep '^directory=' | cut -d = -f 2)
 
   if [ -d "${actual_chroot_path}" ]; then
-    echo "I: chroot $debci_chroot_name already created, skipping"
+    echo "I: chroot $debci_chroot_name already created, updating"
+    update-testbed
   else
     if [ "$actual_chroot_path" = "${debci_chroot_path}" ]; then
       create_chroot
