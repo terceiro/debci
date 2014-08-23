@@ -1,3 +1,10 @@
+debci (0.9) UNRELEASED; urgency=medium
+
+  * schroot/create-testbed: update existing chroots
+  * debci-generate-feeds: add description to feeds
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 23 Aug 2014 18:01:37 -0300
+
 debci (0.8.1) unstable; urgency=medium
 
   * Documentation updates
