@@ -335,6 +335,7 @@ generate_all_packages() {
   generate_status_entry
   generate_history > "${debci_status_dir}/history.json"
   $debci_base_dir/bin/debci-status --all --status-file > "${debci_status_dir}/packages.json"
+  debci-generate-html
 }
 
 run_duration=0
