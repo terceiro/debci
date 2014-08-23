@@ -4,6 +4,10 @@ jQuery(function($) {
   var STATUS_DIR = '/data/status/';
   var STATUS_HTML_DIR = '/data/.html/status';
 
+  function pkg_dir(pkg) {
+    return pkg.replace(/^((lib)?.)/, "$1/$&");
+  }
+
   function on(selector, handler) {
     if ($.find(selector).length > 0) {
       handler();
@@ -103,7 +107,7 @@ jQuery(function($) {
   on('#package-select', function() {
     $.get(PACKAGES_HTML_DIR + '/packages.json', function(data) {
       $.each(data, function(index, item) {
-        var package_dir = item.package.replace(/^((lib)?.)/, "$1/$&");
+        var package_dir = pkg_dir(item.package);
 
         var $link = $('<a></a>');
         $link.attr('href', 'packages/' + package_dir);
@@ -160,5 +164,13 @@ jQuery(function($) {
         $('#package-select li').hide();
       }
   });
+
+  if (window.location.pathname == '/') {
+    var match = window.location.hash.match(/^#package\/(\S+)$/);
+    if (match) {
+      var pkg = match[1];
+      window.location.href = '/packages/' + pkg_dir(pkg);
+    }
+  }
 
 });
