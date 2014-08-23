@@ -43,7 +43,13 @@
               <div class="input-group">
                 <input type='text' id='package-search' class='form-control' size='200' placeholder="Search packages (regex welcome)"/>
                 <noscript><p class='text-center'>Cannot search without JavaScript</p></noscript>
-                <ul id='package-select' class='nav nav-list'></ul>
+                <div class='search-count' style='display: none'>
+                  <span class='count'>N</span> result(s) found.
+                </div>
+                <div class='search-no-results' style='display: none'>
+                  No results found for your query.
+                </div>
+                <ul id='package-select'></ul>
               </div>
             </div>
         </div> <!-- class='col-md-6' -->

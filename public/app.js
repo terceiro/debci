@@ -109,30 +109,27 @@ jQuery(function($) {
       $.each(data, function(index, item) {
         var package_dir = pkg_dir(item.package);
 
+        var $item = $('<li></li>');
+        $item.attr('data-package', item.package);
+
         var $link = $('<a></a>');
         $link.attr('href', 'packages/' + package_dir);
-        $link.html(item.package + ' ' + '<b>Package page</b>');
+        $link.html('<b>' + item.package + '</b> (package page)');
+        $item.append($link);
 
-        var $list_item = $('<li></li>');
-        $list_item.attr('data-package', item.package + ' ' + 'Package page');
-        $list_item.append($link);
+        var $sublinks = $('<div></div>');
+        $sublinks.addClass('search-sub-links');
 
-        $('#package-select').append($list_item);
-
-        var available_platforms = item.platforms;
-
-        for (var platform in available_platforms) {
-          $link = $('<a></a>');
+        for (var platform in item.platforms) {
+          var $link = $('<a></a>');
           $link.addClass(item.status[platform]);
-          $link.attr('href', 'packages/' + package_dir + '/' + available_platforms[platform]);
-          $link.html(item.package + ' <b>' + available_platforms[platform] + '</b>');
-
-          $list_item = $('<li></li>');
-          $list_item.attr('data-package', item.package + ' ' + available_platforms[platform]);
-          $list_item.append($link);
-
-          $('#package-select').append($list_item);
+          $link.attr('href', 'packages/' + package_dir + '/' + item.platforms[platform]);
+          $link.html(item.platforms[platform]);
+          $sublinks.append($link)
         }
+        $item.append($sublinks);
+
+        $('#package-select').append($item);
 
       });
 
@@ -156,9 +153,16 @@ jQuery(function($) {
             $(this).hide();
           }
         });
-        $('.search-count .count').html(found);
-        $('.search-count').show();
+        if (found > 0) {
+          $('.search-no-results').hide();
+          $('.search-count .count').html(found);
+          $('.search-count').show();
+        } else {
+          $('.search-no-results').show();
+          $('.search-count').hide();
+        }
       } else {
+        $('.search-no-results').hide();
         $('.request-search').show();
         $('.search-count').hide();
         $('#package-select li').hide();
