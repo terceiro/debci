@@ -1,9 +1,20 @@
-debci (0.9) UNRELEASED; urgency=medium
+debci (0.9) unstable; urgency=medium
 
+  [ Antonio Terceiro ]
   * schroot/create-testbed: update existing chroots
   * debci-generate-feeds: add description to feeds
+  * Incorporate results of the Google Summer of Code 2014 project by Brandon
+    Fairchild, providing uncountable improvements to the web interface.
+    http://lists.alioth.debian.org/pipermail/soc-coordination/2014-August/002295.html
 
- -- Antonio Terceiro <terceiro@debian.org>  Sat, 23 Aug 2014 18:01:37 -0300
+  [ Brandon Fairchild ]
+  * web UI was improved to support multiple suites and architectures, reduce
+    the dependency the UI had on Javascript, and provide more information to
+    package maintainers. The documentation was also worked on to provide
+    information to people interested in working on debci (specifically the web
+    UI)
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 23 Aug 2014 18:10:04 -0300
 
 debci (0.8.1) unstable; urgency=medium
 
