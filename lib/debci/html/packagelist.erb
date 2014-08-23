@@ -1,8 +1,11 @@
 <div class="container">
+  <h1 class='page-header'>Packages</h1>
   <div class="row">
     <div class="col-md-3">
       <div class="panel panel-default">
-        <div class="panel-heading">Browse</div>
+        <div class="panel-heading panel-heading-browse">
+          <h2>Browse</h2>
+        </div>
           <ul class="list-inline">
 
           <% @package_prefixes.each do |prefix| %>
@@ -14,32 +17,51 @@
     </div>
 
     <div class="col-md-9">
-
-      <table class="table" style="text-align: left">
-        <tr>
-          <td><b>Package</b></td>
-          <td><b>Status</b></td>
-        </tr>
-
         <%
-          @repository.each_package do |package|
+          @repository.search('^' + (@prefix || '-')).tap do |packages|
+            if packages.empty?
+              %>
+                <h2>Search</h2>
+                <div id='package-filter' class='form-inline'>
+                  <div class="input-group">
+                    <input type='text' id='package-search' class='form-control' size='200' placeholder="Search packages (regex welcome)"/>
+                    <noscript><p class='text-center'>Cannot search without JavaScript</p></noscript>
+                    <div class='search-count' style='display: none'>
+                      <span class='count'>N</span> result(s) found.
+                    </div>
+                    <div class='search-no-results' style='display: none'>
+                      No results found for your query.
+                    </div>
+                    <ul id='package-select'></ul>
+                  </div>
+                </div>
+              <%
+            else
+              %>
+              <table class="table" style="text-align: left">
+                <tr>
+                  <td><b>Package</b></td>
+                  <td><b>Status</b></td>
+                </tr>
+              <%
+              packages.each do |package|
+              %>
+                <tr>
+                  <td><a href="/packages/<%= @prefix %>/<%= package.name %>"><%= package.name %></a></td>
 
-            if package.prefix.eql?(@prefix) %>
-              <tr>
-                <td><a href="/packages/<%= @prefix %>/<%= package.name %>"><%= package.name %></a></td>
-
-                <% if package.failures %>
-                     <td><div class='fail'>Failing on <%= package.failures.join(', ') %></div></td>
-                <% else %>
-                     <td><div class='pass'>Passing everywhere</div></td>
-                <% end %>
-              </tr>
-        <%
+                  <% if package.failures %>
+                       <td><div class='fail'>Failing on <%= package.failures.join(', ') %></div></td>
+                  <% else %>
+                       <td><div class='pass'>Passing everywhere</div></td>
+                  <% end %>
+                </tr>
+              <% end
+              %>
+              </table>
+              <%
             end
           end
         %>
-
-      </table>
     </div>
   </div>
 </div>
