@@ -4,10 +4,27 @@
 }
 
 /* -----------------------------------------------------------------
+ * headings
+ * ----------------------------------------------------------------- */
+
+.page-header {
+  margin-top: 0px;
+}
+
+.panel .panel-heading {
+  background: white;
+  font-size: 18px;
+}
+.panel .panel-heading-browse {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+/* -----------------------------------------------------------------
  * status marks
  * ----------------------------------------------------------------- */
 
-.pass, .fail, .tmpfail {
+.pass, .fail, .tmpfail, .no_test_data {
   font-family: 'FontAwesome';
 }
 
@@ -23,6 +40,11 @@
 
 .tmpfail:before {
   content: "\f059 ";
+  color: #ffd862;
+}
+
+.no_test_data:before {
+  content: "\f06a ";
   color: #babdb6;
 }
 
@@ -50,27 +72,53 @@
   padding: 1em;
   min-height: 60px;
   background-color: #f5f5f5;
+
+ }
+/* -----------------------------------------------------------------
+ * package browsing by prefix
+ * ----------------------------------------------------------------- */
+
+.list-inline h5 a {
+  color: #E90051;
+  background-color: #eeeeec;
+  padding: 1px 10px;
+  border-radius: 5px;
+}
+
+.list-inline h5 a:hover {
+  text-decoration: none;
+  background-color: #E90051;
+  color: white;
 }
 
 /* -----------------------------------------------------------------
- * package listing
+ * package search
  * ----------------------------------------------------------------- */
 
-.request-search, .search-count {
-  margin: 1em auto;
+#package-select {
+  font-size: 14px;
+  margin: 0px;
+  padding: 0px;
 }
 
-
-/* -----------------------------------------------------------------
- * documentation page
- * ----------------------------------------------------------------- */
-
-#doc-main {
-  border-left: 2px solid #eeeeec;
+#package-select li {
+  margin-top: 1em;
+  list-style: none;
+  border-bottom: 1px solid #eeeeee;
 }
 
-#doc-main h2 {
-  color: rgb(153,153,153);
+#package-select li .search-sub-links {
+  margin-top: 0.25em;
+  margin-left: 2em;
+}
+
+#package-select a.package-page:hover {
+  background-color: #eeeeec;
+}
+
+.search-count, .search-no-results {
+  padding: 0.25em;
+  color: #d5d7df;
 }
 
 /* -----------------------------------------------------------------

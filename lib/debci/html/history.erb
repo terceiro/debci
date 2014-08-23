@@ -1,0 +1,71 @@
+<div class="container">
+  <div class='row'>
+    <div class='col-lg-12'>
+      <ol class='breadcrumb'>
+        <li><a href='/packages/<%= @package.prefix %>'><%= @package.prefix %></a></li>
+        <li><a href='/packages/<%= @package.prefix %>/<%= @package.name %>'><%= @package.name %></a></li>
+        <li class='active'><%= @suite %>/<%= @architecture %></li>
+      </ol>
+
+      <h2>
+        <%= @package.name %>
+        <small>
+          [ <%= @suite %>/<%= @architecture %> ]
+
+          <a href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'>
+            <span class='fa fa-rss'></span>
+          </a>
+
+          <a href='https://tracker.debian.org/pkg/<%= @package.name %>'
+             title='On the Package Tracking System'>
+            <span class='fa fa-info-circle'></span>
+          </a>
+        </small>
+      </h2>
+
+      <table class="table">
+        <tr>
+          <td><b>Version</b></td>
+          <td><b>Date</b></td>
+          <td><b>Duration</b></td>
+          <td><b>Status</b></td>
+          <td><b>Results</b></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+
+      <% begin
+           @package.history(@suite, @architecture).each do |test| %>
+             <tr>
+               <td><%= test.version %></td>
+               <td><%= test.date %></td>
+               <td><%= test.duration_human %></td>
+               <td class="<%= test.status %>"><%= test.status %></td>
+               <td><a href="/<%= @packages_dir %>/<%= @package_dir %>/<%= test.run_id %>.log">debci log</a></td>
+               <td><a href="/<%= @packages_dir %>/<%= @package_dir %>/<%= test.run_id %>.autopkgtest.log">test log</a></td>
+               <td><a href="/<%= @autopkgtest_dir %>/<%= @package_dir %>/<%= test.run_id %>">artifacts</a></td>
+             </tr>
+      <%   end
+         rescue NoMethodError => error
+           return if error.to_s.include?("no_test_data")
+         end
+      %>
+
+      </table>
+
+      <p>Automate:</p>
+
+      <% automation_info = "<code># latest status of the package\n" +
+                           "$ curl #{@site_url}/#{@packages_dir}/#{@package_dir}/latest.json\n\n" +
+                           "# latest autopkgtest log of the package\n" +
+                           "$ curl #{@site_url}/#{@packages_dir}/#{@package_dir}/latest-autopkgtest/log\n\n" +
+                           "# test run history of the package\n" +
+                           "$ curl #{@site_url}/#{@packages_dir}/#{@package_dir}/history.json</code>"
+      %>
+
+      <pre><%= automation_info %></pre>
+
+    </div>
+  </div>
+</div>

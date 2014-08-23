@@ -47,6 +47,17 @@ module Debci
       end
     end
 
+    # Returns the amount of time since the date for this status object
+    def time
+      days = (Time.now - date)/86400
+
+      if days >= 1 || days <= -1
+        "#{days.floor} day(s) ago"
+      else
+        "#{Time.at(Time.now - date).gmtime.strftime('%H')} hour(s) ago"
+      end
+    end
+
     # Constructs a new object by reading the JSON status `file`.
     def self.from_file(file)
       status = new
@@ -54,7 +65,9 @@ module Debci
         status.status = :no_test_data
         return status
       end
+
       data = nil
+
       begin
         File.open(file, 'r') do |f|
           data = JSON.load(f)
@@ -64,6 +77,13 @@ module Debci
       end
 
       return status unless data
+
+      from_data(data)
+    end
+
+    # Populates an object by reading from a data hash
+    def self.from_data(data)
+      status = Debci::Status.new
 
       status.run_id = data['run_id']
       status.package = data['package']

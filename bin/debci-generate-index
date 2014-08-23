@@ -335,6 +335,7 @@ generate_all_packages() {
   generate_status_entry
   generate_history > "${debci_status_dir}/history.json"
   $debci_base_dir/bin/debci-status --all --status-file > "${debci_status_dir}/packages.json"
+  debci-generate-html
 }
 
 run_duration=0
@@ -358,6 +359,7 @@ if [ $# -gt 0 ]; then
   for p in $@; do
     generate_packages "$p"
     debci-generate-feeds "$p"
+    debci-generate-html "$@"
   done
 else
   if [ -d "$debci_autopkgtest_dir" ]; then
