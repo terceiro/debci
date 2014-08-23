@@ -113,7 +113,7 @@ jQuery(function($) {
         $item.attr('data-package', item.package);
 
         var $link = $('<a></a>');
-        $link.attr('href', 'packages/' + package_dir);
+        $link.attr('href', '/packages/' + package_dir);
         $link.html('<b>' + item.package + '</b> (package page)');
         $item.append($link);
 
@@ -123,7 +123,7 @@ jQuery(function($) {
         for (var platform in item.platforms) {
           var $link = $('<a></a>');
           $link.addClass(item.status[platform]);
-          $link.attr('href', 'packages/' + package_dir + '/' + item.platforms[platform]);
+          $link.attr('href', '/packages/' + package_dir + '/' + item.platforms[platform]);
           $link.html(item.platforms[platform]);
           $sublinks.append($link)
         }
