@@ -7,7 +7,21 @@
         <li class='active'><%= @suite %>/<%= @architecture %></li>
       </ol>
 
-      <h2><%= @package.name %> <small>[ <%= @suite %>/<%= @architecture %> ]</small></h2>
+      <h2>
+        <%= @package.name %>
+        <small>
+          [ <%= @suite %>/<%= @architecture %> ]
+
+          <a href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'>
+            <span class='fa fa-rss'></span>
+          </a>
+
+          <a href='https://tracker.debian.org/pkg/<%= @package.name %>'
+             title='On the Package Tracking System'>
+            <span class='fa fa-info-circle'></span>
+          </a>
+        </small>
+      </h2>
 
       <table class="table">
         <tr>

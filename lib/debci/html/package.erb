@@ -5,52 +5,53 @@
         <li><a href='/packages/<%= @package.prefix %>'><%= @package.prefix %></a></li>
         <li class='active'><%= @package.name %></li>
       </ol>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <%= @package.name %>
 
-          <a href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'>
-            <span class='fa fa-rss'></span>
-          </a>
+      <h2>
+        <%= @package.name %>
 
-          <a href='https://tracker.debian.org/pkg/<%= @package.name %>'
-             title='On the Package Tracking System'>
-            <span class='fa fa-info-circle'></span>
-          </a>
-        </div>
+        <small>
+        <a href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'>
+          <span class='fa fa-rss'></span>
+        </a>
 
-        <table class="table">
+        <a href='https://tracker.debian.org/pkg/<%= @package.name %>'
+           title='On the Package Tracking System'>
+          <span class='fa fa-info-circle'></span>
+        </a>
+      </small>
+    </h2>
 
+      <table class="table">
+
+        <tr>
+          <td></td>
+            <% @package.status.first.each do |status| %>
+              <td><b><%= status.suite %></b></td>
+            <% end %>
+        </tr>
+
+        <% @package.status.each do |row| %>
           <tr>
-            <td></td>
-              <% @package.status.first.each do |status| %>
-                <td><b><%= status.suite %></b></td>
+            <td><b><%= row.first.architecture %></b></td>
+
+            <% row.each do |status| %>
+              <% if status.status.eql?(:no_test_data) %>
+                  <td class="<%= status.status %>"><%= status.title %></td>
+              <% else %>
+                  <% package_dir = "/packages/#{@package.prefix}" +
+                                   "/#{@package.name}/#{status.suite}" +
+                                   "/#{row.first.architecture}"
+                  %>
+                  <td class="<%= status.status %>">
+                    <a href=<%= package_dir %>><%= status.title %></a>
+                  </td>
               <% end %>
+            <% end %>
           </tr>
+        <% end %>
 
-          <% @package.status.each do |row| %>
-            <tr>
-              <td><b><%= row.first.architecture %></b></td>
+      </table>
 
-              <% row.each do |status| %>
-                <% if status.status.eql?(:no_test_data) %>
-                    <td class="<%= status.status %>"><%= status.title %></td>
-                <% else %>
-                    <% package_dir = "/packages/#{@package.prefix}" +
-                                     "/#{@package.name}/#{status.suite}" +
-                                     "/#{row.first.architecture}"
-                    %>
-                    <td class="<%= status.status %>">
-                      <a href=<%= package_dir %>><%= status.title %></a>
-                    </td>
-                <% end %>
-              <% end %>
-            </tr>
-          <% end %>
-
-        </table>
-
-      </div>
     </div>
   </div>
 </div>
