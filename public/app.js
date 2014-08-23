@@ -4,40 +4,13 @@ jQuery(function($) {
   var STATUS_DIR = '/data/status/';
   var STATUS_HTML_DIR = '/data/.html/status';
 
-  var handlers = {};
-  function on(hash, f) {
-    handlers[hash] = f;
-  }
-  var patterns = [];
-  function match(pattern, f) {
-    patterns.push([pattern, f]);
-  }
-
-  $(window).on('hashchange', function() {
-    var hash = window.location.hash;
-    if (handlers[hash]) {
-      handlers[hash]();
-    } else {
-      for (i in patterns) {
-        var p = patterns[i][0];
-        var h = patterns[i][1];
-        var match = hash.match(p);
-        if (match) {
-          h(match);
-          return;
-        }
-      }
+  function on(selector, handler) {
+    if ($.find(selector).length > 0) {
+      handler();
     }
-  });
-
-  function switch_to(id) {
-    $('#main > div').hide();
-    $(id).show()
   }
 
-  on('', function() {
-    switch_to('#status');
-
+  on('#status', function() {
     $.get(STATUS_HTML_DIR + '/platforms.json', function(data) {
       $.each(data, function(index, item) {
 
@@ -127,51 +100,40 @@ jQuery(function($) {
     })
   });
 
-  on('#packages', function() {
-    switch_to('#packages');
-    $('#package-search').focus();
-  });
+  on('#package-select', function() {
+    $.get(PACKAGES_HTML_DIR + '/packages.json', function(data) {
+      $.each(data, function(index, item) {
+        var package_dir = item.package.replace(/^((lib)?.)/, "$1/$&");
 
-  match(/^#package\/(\S+)$/, function(params) {
-    switch_to('#packages');
+        var $link = $('<a></a>');
+        $link.attr('href', 'packages/' + package_dir);
+        $link.html(item.package + ' ' + '<b>Package page</b>');
 
-    var pkg = params[1];
-    display_details(pkg);
-  });
-
-
-  $.get(PACKAGES_HTML_DIR + '/packages.json', function(data) {
-    $.each(data, function(index, item) {
-      var package_dir = item.package.replace(/^((lib)?.)/, "$1/$&");
-
-      var $link = $('<a></a>');
-      $link.attr('href', 'packages/' + package_dir);
-      $link.html(item.package + ' ' + '<b>Package page</b>');
-
-      var $list_item = $('<li></li>');
-      $list_item.attr('data-package', item.package + ' ' + 'Package page');
-      $list_item.append($link);
-
-      $('#package-select').append($list_item);
-
-      var available_platforms = item.platforms;
-
-      for (var platform in available_platforms) {
-        $link = $('<a></a>');
-        $link.addClass(item.status[platform]);
-        $link.attr('href', 'packages/' + package_dir + '/' + available_platforms[platform]);
-        $link.html(item.package + ' <b>' + available_platforms[platform] + '</b>');
-
-        $list_item = $('<li></li>');
-        $list_item.attr('data-package', item.package + ' ' + available_platforms[platform]);
+        var $list_item = $('<li></li>');
+        $list_item.attr('data-package', item.package + ' ' + 'Package page');
         $list_item.append($link);
 
         $('#package-select').append($list_item);
-      }
 
+        var available_platforms = item.platforms;
+
+        for (var platform in available_platforms) {
+          $link = $('<a></a>');
+          $link.addClass(item.status[platform]);
+          $link.attr('href', 'packages/' + package_dir + '/' + available_platforms[platform]);
+          $link.html(item.package + ' <b>' + available_platforms[platform] + '</b>');
+
+          $list_item = $('<li></li>');
+          $list_item.attr('data-package', item.package + ' ' + available_platforms[platform]);
+          $list_item.append($link);
+
+          $('#package-select').append($list_item);
+        }
+
+      });
+
+      $('#package-select').hide();
     });
-
-    $('#package-select').hide();
   });
 
   $('#package-search').keyup(function() {
@@ -198,7 +160,5 @@ jQuery(function($) {
         $('#package-select li').hide();
       }
   });
-
-  $(window).trigger('hashchange');
 
 });
