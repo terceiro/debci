@@ -20,14 +20,14 @@ module Debci
     # Returns the value of the last data entry for the specified field
     def current_value(field)
       data = @data.send(field)
-      data.last unless data.length == 0
+      data[-1] || 0
     end
 
     # Returns the value of the second to last data entry for the
     # specified field
     def previous_value(field)
       data = @data.send(field)
-      data[-2] unless data.length < 2
+      data[-2] || 0
     end
 
     # Read the status data
