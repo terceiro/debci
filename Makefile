@@ -15,10 +15,10 @@ checkdeps:
 spec:
 	rspec --color
 
-functional:
+functional-tests:
 	test/runall.sh
 
-check: checkdeps all spec functionals
+check: checkdeps all spec functional-tests
 
 test: check
 
