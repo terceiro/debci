@@ -1,4 +1,4 @@
-all: public/doc
+all: public/doc/index.html public/doc/js/jquery.js
 
 include links.mk
 
@@ -9,20 +9,26 @@ all: $(LINKS)
 
 .PHONY: spec check test
 
+checkdeps:
+	@if which dpkg-checkbuilddeps >/dev/null; then dpkg-checkbuilddeps -d "$$(grep-dctrl -n -s Depends . debian/control | grep -v '\$$')"; fi
+
 spec:
 	rspec --color
 
-check: spec
+functional:
 	test/runall.sh
+
+check: checkdeps all spec functionals
 
 test: check
 
-public/doc: README.md RUBYAPI.md HACKING.md
+public/doc/index.html: README.md RUBYAPI.md HACKING.md $(shell find lib -name '*.rb')
 	$(RM) public/doc/js/jquery.js
 	yardoc --markup markdown --output-dir $@ --main README.md lib - $^
-	cd public/doc/js && ln -sf ../../jquery.js
 
-public/doc: $(shell find lib -name '*.rb')
+public/doc/js/jquery.js:
+	mkdir -p $$(dirname $@)
+	ln -sf ../../jquery.js public/doc/js/jquery.js
 
 .PHONY: tags
 
