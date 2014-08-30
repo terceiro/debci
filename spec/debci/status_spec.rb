@@ -5,6 +5,10 @@ require 'stringio'
 
 describe Debci::Status do
 
+  def from_file(file)
+    status = Debci::Status.from_file(file, 'unstable', 'amd64')
+  end
+
   context 'with good input' do
     before(:each) do
       status_file('/path/to/status.json', {
@@ -19,7 +23,7 @@ describe Debci::Status do
         "duration_human" => "0h 0m 45s",
         "message" => "All tests passed"
       })
-      @status = Debci::Status.from_file('/path/to/status.json')
+      @status = from_file('/path/to/status.json')
     end
 
     it('gets run_id') { expect(@status.run_id).to eq('20140501_192327') }
@@ -37,20 +41,20 @@ describe Debci::Status do
   context 'with invalid JSON' do
     it 'does not crash' do
       broken_status_file("invalid.json")
-      expect(Debci::Status.from_file('invalid.json')).to be_a(Debci::Status)
+      expect(from_file('invalid.json')).to be_a(Debci::Status)
     end
   end
 
   it('ignores invalid date') do
     status_file('invalid.json', { "date" => "foobar" })
-    status = Debci::Status.from_file('invalid.json')
+    status = from_file('invalid.json')
     expect(status.date).to be_nil
   end
 
   context 'invalid input' do
     before(:each) do
       status_file('invalid.json', { "date" => "INVALID", "duration_seconds" => "INVALID" })
-      @status = Debci::Status.from_file('invalid.json')
+      @status = from_file('invalid.json')
     end
 
     it('ignores invalid date') { expect(@status.date).to be_nil }
@@ -59,7 +63,7 @@ describe Debci::Status do
 
   context 'no status file' do
     before(:each) do
-      @status = Debci::Status.from_file('does-not-exist.json')
+      @status = from_file('does-not-exist.json')
     end
     it('Sets a status') { expect(@status.status).to eq(:no_test_data) }
   end
