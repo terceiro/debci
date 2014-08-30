@@ -62,6 +62,24 @@ module Debci
       Debci::Package.new(name, self)
     end
 
+    # Iterates over all packages
+    #
+    # For each package in the repostory, a Debci::Package object will be passed
+    # in to the block passed.
+    #
+    # Example:
+    #
+    # repository.each_package do |pkg|
+    #   puts pkg
+    # end
+    #
+    def each_package
+      packages.sort.each do |pkgname|
+        pkg = Debci::Package.new(pkgname, self)
+        yield pkg
+      end
+    end
+
     # Searches packages by name.
     #
     # Returns an Array of Debci::Package objects. On an exact match, will
@@ -90,6 +108,23 @@ module Debci
       end
     end
 
+    # Backend implementation for Debci::Package#history
+    def history_for(package, suite, architecture)
+      return unless File.exists?(file = File.join(data_dir(suite, architecture, package), 'history.json'))
+
+      entries = nil
+
+      begin
+        File.open(file) do |f|
+          entries = JSON.load(f)
+        end
+      rescue JSON::ParserError
+        true
+      end
+
+      entries.map { |test| Debci::Status.from_data(test) }
+    end
+
     # Backend implementation for Debci::Package#news
     def news_for(package, n=10)
       suites = '{' + self.suites.join(',') + '}'
@@ -115,10 +150,31 @@ module Debci
       news
     end
 
+    # Returns the status history for this debci instance
+    def status_history(suite, architecture)
+      return unless File.exists?(file = File.join(status_dir(suite, architecture), 'history.json'))
+
+      data = nil
+
+      begin
+        File.open(file, 'r') do |f|
+          data = JSON.load(f)
+        end
+      rescue JSON::ParserError
+        true
+      end
+
+      data
+    end
+
     private
 
     def data_dir(suite, arch, package)
       File.join(@path, 'packages', "#{suite}", "#{arch}", prefix(package), package)
+    end
+
+    def status_dir(suite, arch)
+      File.join(@path, 'status', "#{suite}", "#{arch}")
     end
 
     def prefix(package)

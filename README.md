@@ -1,4 +1,4 @@
-# Debian Contious Integration
+# Debian Continuous Integration
 
 The [Debian continuous integration](..) (debci) is an automated system that
 coordinates the execution of automated tests against packages in the
@@ -9,7 +9,7 @@ coordinates the execution of automated tests against packages in the
 
 ### How do I get my package to have its test suite executed?
 
-Testuites must be included in source packages as defined in
+Test suites must be included in source packages as defined in
 the [DEP-8 specification](http://dep.debian.net/deps/dep8/). In short.
 
 * The fact that the package has a test suite must be declared by adding a
@@ -35,7 +35,7 @@ The test suite for a source package will be executed:
 ### What exactly is the environment where the tests are run?
 
 `debci` is designed to support several text execution backends. The backend
-used for a test run is show in the corresponfing log file.
+used for a test run is displayed in the corresponding log file.
 
 For the **schroot** backend:
 
@@ -65,10 +65,23 @@ the `users`, `root-users` and `source-root-users` configuration keys:
 [...]
 users=debci,$YOUR_USERNAME
 [...]
-root=users=debci,$YOUR_USERNAME
+root-users=debci,$YOUR_USERNAME
 source-root=users=debci,$YOUR_USERNAME
 [...]
 ```
+
+To speed up test suite execution, you can also add the following line at the
+end:
+
+```
+union-overlay-directory=/dev/shm
+```
+
+This will mount the chroot overlay on `tmpfs` which will make installing test
+dependencies a lot faster. If your hard disk is already a SSD, you probably
+don't need that. If you don't have a good amount of RAM, you may have problems
+using this.
+
 
 The following examples assume:
 
@@ -76,22 +89,24 @@ The following examples assume:
 * suite = `unstable` (the default)
 * architecture = `amd64`
 
-To run the test suite with of the package **from the archive**, you pass the
-_source package name_ to adt-run:
+To run the test suite **from a source package in the archive**, you pass the
+_package name_ to adt-run:
 
 ```
 $ adt-run --user debci --output-dir /tmp/output-dir SOURCEPACKAGE --- schroot debci-unstable-amd64
 ```
 
-To run the test suite against **locally-built packages**, you have to reference
-the binary packages and their corresponding `.dsc` in the local filesystem.
+To run the test suite against **a locally-built source package**, using the
+test suite from that source package and the binary packages you just built, you
+can pass the `.changes` file to adt-run:
 
 ```
 $ adt-run --user debci --output-dir /tmp/output-dir \
-  /path/to/PACKAGE_x.y-z_amd64.deb [OTHER DEBS ...] \
-  /path/to/PACKAGE_x.y-z.dsc --- \
+  /path/to/PACKAGE_x.y-z_amd64.changes \
   schroot debci-unstable-amd64
 ```
+
+For more details, see the documentation for the `autopkgtest` package.
 
 
 ## Reporting Bugs

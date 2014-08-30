@@ -21,6 +21,10 @@ describe Debci::Repository do
     latest_status 'packages/unstable/amd64/r/rake', { 'status' => 'fail', 'previous_status' => 'pass' }
     latest_status 'packages/testing/amd64/r/rake', { 'status' => 'fail', 'previous_status' => 'pass'}
 
+    history 'packages/unstable/amd64/r/rake', [{'status' => 'fail', 'date' => '2014-08-01 11:11:12'},
+                                               {'status' => 'pass', 'date' => '2014-07-07 12:12:15'},
+                                               {'status' => 'tmpfail', 'date' => '2014-03-01 14:15:30'}]
+
     mkdir_p 'packages/unstable/amd64/r/rake-compiler'
     mkdir_p 'packages/unstable/i386/r/rake-compiler'
     mkdir_p 'packages/testing/amd64/r/rake-compiler'
@@ -52,6 +56,12 @@ describe Debci::Repository do
   def past_status(path, data, run_id)
     File.open(File.join(@datadir, path, run_id + '.json'), 'w') do |f|
       f.write(JSON.dump({ 'run_id' => run_id }.merge(data)))
+    end
+  end
+
+  def history(path, data)
+    File.open(File.join(@datadir, path, 'history.json'), 'w') do |f|
+      f.write(JSON.pretty_generate(data))
     end
   end
 
@@ -148,4 +158,24 @@ describe Debci::Repository do
     package.news
   end
 
+  it 'iterates over all packages' do
+    packages = []
+    repository.each_package do |pkg|
+      packages << pkg
+    end
+
+    expect(packages.map(&:class).uniq).to eq([Debci::Package])
+  end
+
+  it 'fetches status history for a package' do
+    history = repository.history_for('rake', 'unstable', 'amd64')
+
+    history.each do |item|
+      expect(item).to be_a(Debci::Status)
+      expect(item.status).to be_a(Object)
+      expect(item.date).to be_a(Time)
+
+      expect([:pass, :fail, :tmpfail]).to include(item.status)
+    end
+  end
 end

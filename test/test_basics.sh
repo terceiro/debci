@@ -29,7 +29,7 @@ test_packages_without_runs_yet() {
   debci batch --wait
   find $debci_data_basedir -type d -name rake | xargs rm -rf
   debci generate-index
-  find $debci_data_basedir -name packages.json | xargs cat | json_pp -f json -t json > /dev/null
+  find $debci_data_basedir -path '*data/status*' -name packages.json | xargs cat | json_pp -f json -t json > /dev/null
   assertEquals 0 $?
 }
 

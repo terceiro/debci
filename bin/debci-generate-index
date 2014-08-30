@@ -67,7 +67,7 @@ generate_package_run() {
   # get run duration
   if [ -f "$adtresult/duration" ]; then
     local duration="$(cat "$adtresult/duration")"
-    local last_timestamp="$(sed -ns '/^adt-run \[/ { s/^adt-run \[\([0-9: -]*\)\].*$/\1/; p}' "$adtresult/log" | tail -n 1)"
+    local last_timestamp="$(date '+%Y-%m-%d %H:%M:%S' -d@$(stat --format=%Y "$adtresult/duration"))"
   else
     # this should never happen
     local duration=0
@@ -324,6 +324,20 @@ generate_history() {
   echo "]"
 }
 
+generate_all_packages() {
+  # clean up packages/
+  if [ -d "$debci_packages_dir" ]; then
+    find "$debci_packages_dir" -empty -delete
+  fi
+  generate_packages
+  debci-generate-feeds
+  log "I: Updating global status..."
+  generate_status_entry
+  generate_history > "${debci_status_dir}/history.json"
+  $debci_base_dir/bin/debci-status --all --status-file > "${debci_status_dir}/packages.json"
+  debci-generate-html
+}
+
 run_duration=0
 while true; do
   case "$1" in
@@ -345,17 +359,13 @@ if [ $# -gt 0 ]; then
   for p in $@; do
     generate_packages "$p"
     debci-generate-feeds "$p"
+    debci-generate-html "$@"
   done
 else
   if [ -d "$debci_autopkgtest_dir" ]; then
-    # clean up packages/
-    find "$debci_packages_dir" -empty -delete
-    generate_packages
-    debci-generate-feeds
-    log "I: Updating global status..."
-    generate_status_entry
-    generate_history > "${debci_status_dir}/history.json"
-    $debci_base_dir/bin/debci-status --all --status-file > "${debci_status_dir}/packages.json"
+    run_with_lock_or_exit \
+      /var/lock/debci-generate-index-${debci_suite}-${debci_arch}.lock \
+      generate_all_packages
   else
     log "I: No test results, nothing to generate"
   fi

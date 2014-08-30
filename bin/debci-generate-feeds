@@ -26,7 +26,7 @@ def insert_items(news, feed)
         '<ul>',
         "<li>Version: #{status.version}</li>",
         "<li>Date: #{status.date}</li>",
-        "<li><a href=\"#{$site_base}/#package/#{status.package}\">Package status page</a></li>",
+        "<li><a href=\"#{$site_base}/packages/#{prefix}/#{status.package}/#{status.suite}/#{status.architecture}\">Package history page</a></li>",
         "<li><a href=\"#{$site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.log\">debci log</a></li>",
         "<li><a href=\"#{$site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.autopkgtest.log\">autopkgtest log</a></li>",
         "<li><a href=\"#{$site_base}/data/autopkgtest/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}/\">autopkgtest artifacts</a></li>",
@@ -53,6 +53,7 @@ packages.each do |pkg|
     feed.channel.updated = news.first && news.first.date || past_timestamp
     feed.channel.about = $site_base + '/#package/' + pkg
     feed.channel.title = pkg + ' CI news feed'
+    feed.channel.description = "News for #{pkg}. Includes only state transitions (pass-fail, and fail-pass). Full history is available in the package page and in the published data files."
 
     insert_items(news, feed)
   end
@@ -68,6 +69,7 @@ global_feed = RSS::Maker.make('atom') do |feed|
   feed.channel.updated = global_news.first && global_news.first.date || past_timestamp
   feed.channel.about = $site_base
   feed.channel.title = 'Debian Continuous Integration news'
+  feed.channel.description = "News about all packages. Includes only state transitions (pass-fail, fail-pass). Full history is available in each individual package page and in their published data files."
   insert_items(global_news, feed)
 end
 File.open(File.join(feeds_dir, 'all-packages.xml'), 'w') do |f|

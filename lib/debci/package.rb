@@ -28,11 +28,35 @@ module Debci
       repository.status_for(self)
     end
 
+    # Returns an array of Debci::Status objects that represent the test
+    # history for this package
+    def history(suite, architecture)
+      repository.history_for(self, suite, architecture)
+    end
+
     # Returns a list of Debci::Status objects that are newsworthy for this
     # package. The list is sorted with the most recent entries first and the
     # older entries last.
     def news
       repository.news_for(self)
+    end
+
+    # Returns an array containing the suite/architectures this package is
+    # failing. If this package is passing on all suite/architectures, nothing
+    # is returned.
+    def failures
+      failing_status = []
+
+      status.each do |architecture|
+        architecture.each do |suite|
+          case suite.status
+            when :fail
+              failing_status.push(suite.suite + '/' + suite.architecture)
+          end
+        end
+      end
+
+      return failing_status unless failing_status.empty?
     end
 
     def to_s
@@ -43,6 +67,11 @@ module Debci
     def to_str
       # :nodoc:
       name
+    end
+
+    def prefix
+      name =~ /^((lib)?.)/
+      $1
     end
 
   end

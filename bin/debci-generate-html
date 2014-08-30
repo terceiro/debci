@@ -1,0 +1,86 @@
+#!/usr/bin/ruby
+
+require 'debci'
+require 'debci/html'
+require 'debci/graph'
+
+writer = Debci::HTML.new(File.join(Debci.config.data_basedir, '.html'))
+
+writer.index('index.html')
+writer.status('status/index.html')
+
+repository = Debci::Repository.new
+status_dir = File.join(Debci.config.data_basedir, '.html/status')
+
+# Generate a JSON file for storing the current suite/architectures that are
+# available. The file is used for the JavaScript data charts.
+platform_writer = File.open(File.join(Debci.config.data_basedir, '.html/status', 'platforms.json'), 'w')
+platforms = []
+
+repository.suites.each do |suite|
+  repository.architectures.each do |arch|
+    platforms.push("platform" => suite + '/' + arch) if repository.status_history(suite, arch)
+  end
+end
+
+platform_writer.write(JSON.pretty_generate(platforms))
+platform_writer.close
+
+packages = ARGV
+if packages.empty?
+  packages = repository.packages
+end
+
+prefixes = Set.new
+
+packages.each do |pkg|
+  package = repository.find_package(pkg)
+  writer.package(package, "packages/#{package.prefix}/#{package.name}/index.html")
+  package.suites.each do |suite|
+    package.architectures.each do |arch|
+      writer.history(package, suite, arch, "packages/#{package.prefix}/#{package.name}/#{suite}/#{arch}/index.html")
+    end
+  end
+  prefixes << package.prefix
+end
+
+
+# Generate a JSON file for storing a package's suite/architectures and
+# status. The file is used for the JavaScript package search.
+package_writer = File.open(File.join(Debci.config.data_basedir, '.html/packages', 'packages.json'), 'w')
+data = []
+
+repository.each_package do |package|
+  platforms = []
+
+  package.suites.each do |suite|
+    package.architectures.each do |arch|
+      begin
+        if package.history(suite, arch)
+          platforms.push("#{suite}/#{arch}")
+        end
+      rescue NoMethodError
+        true
+      end
+    end
+  end
+
+  all_statuses = []
+
+  package.status.each do |row|
+    row.each do |status|
+      all_statuses.push(status.status) if status.status != :no_test_data
+    end
+  end
+
+  data.push("package" => package.name, "platforms" => platforms, "status" => all_statuses)
+end
+
+package_writer.write(JSON.pretty_generate(data))
+package_writer.close
+
+writer.prefix(nil, "packages/index.html")
+
+prefixes.each do |p|
+  writer.prefix(p, "packages/#{p}/index.html")
+end

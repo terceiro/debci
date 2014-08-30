@@ -194,6 +194,7 @@ wait_for_results() {
 
 # default configuration
 force=''
+offline_marker="$debci_data_basedir/offline"
 
 while true; do
   arg="$1"
@@ -206,11 +207,11 @@ while true; do
       force="$arg"
       ;;
     --offline)
-      touch /var/lock/debci-batch.offline
+      touch "${offline_marker}"
       exit 0
       ;;
     --online)
-      rm -f /var/lock/debci-batch.offline
+      rm -f "${offline_marker}"
       exit 0
       ;;
     --)
@@ -219,11 +220,10 @@ while true; do
   esac
 done
 
-(
-  flock -n 9 || exit 0
-  if [ -e /var/lock/debci-batch.offline ]; then
-    exit 0
-  fi
-  run "$@"
-) 9> /var/lock/debci-batch-${debci_suite}-${debci_arch}.lock
+if [ -e "${offline_marker}" ]; then
+  exit 0
+fi
 
+run_with_lock_or_exit \
+  /var/lock/debci-batch-${debci_suite}-${debci_arch}.lock \
+  run "$@"
