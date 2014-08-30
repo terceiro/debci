@@ -27,7 +27,7 @@ public/doc: $(shell find lib -name '*.rb')
 .PHONY: tags
 
 tags:
-	ctags -R --exclude=chroots --exclude='public/jquery*' --exclude=public/bootstrap .
+	ctags -R --exclude=data --exclude=chroots --exclude='public/jquery*' --exclude=public/bootstrap .
 
 clean:
 	$(RM) -rf $(generated) tags public/doc links.mk $(LINKS)
