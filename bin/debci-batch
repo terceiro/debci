@@ -78,14 +78,13 @@ process_all_packages() {
 
   # TODO: we need something more flexible than $debci_backend here -- look at
   # tests' isolation restrictions
-  amqp_queue="${debci_suite}-${debci_arch}-${debci_backend}"
-  amqp-declare-queue --url ${debci_amqp_server} --durable -q $amqp_queue >/dev/null
+  amqp-declare-queue --url ${debci_amqp_server} --durable -q $debci_amqp_queue >/dev/null
 
   # determine packages which need to be tested and request tests
   for pkg in $(all_packages_with_fastest_first); do
     if needs_processing $pkg; then
       requested_packages="${requested_packages}${pkg} "
-      amqp-publish --url ${debci_amqp_server} --persistent -r $amqp_queue --body $pkg
+      amqp-publish --url ${debci_amqp_server} --persistent -r $debci_amqp_queue --body $pkg
       report_status "$pkg" "requested"
     else
       report_status "$pkg" "skip"

@@ -35,6 +35,7 @@ debci_backend=${debci_backend:-schroot}
 debci_data_basedir=${debci_data_basedir:-$(readlink -f "${debci_base_dir}/data")}
 debci_quiet="${debci_quiet:-false}"
 debci_amqp_server=${debci_amqp_server:-"amqp://localhost"}
+debci_amqp_queue=${debci_amqp_queue:-"debci-${debci_suite}-${debci_arch}-${debci_backend}"}
 
 shared_short_options='c:s:a:b:d:hq'
 shared_long_options='config:,suite:,arch:,backend:,data-dir:,amqp:,help,quiet'

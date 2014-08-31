@@ -66,7 +66,7 @@ done
 
 # if the user calls this, we run forever with consuming messages;
 # amqp-consume calls ourselves with the (hidden) --do-request option
-amqp_queue="${debci_suite}-${debci_arch}-${debci_backend}${tags}"
+amqp_queue="${debci_amqp_queue}${tags}"
 log "I: Connecting to AMQP queue $amqp_queue on ${debci_amqp_server}"
 amqp-declare-queue --url ${debci_amqp_server} --durable -q $amqp_queue >/dev/null
 exec amqp-consume --url ${debci_amqp_server} -q $amqp_queue --messages 1 -- $0 --do-request
