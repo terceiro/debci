@@ -3,7 +3,7 @@ set -u
 
 . $(dirname $0)/test_helper.sh
 
-QUEUE=unstable-amd64-fake
+QUEUE=debci-unstable-amd64-fake
 
 request() {
   amqp-publish --url $debci_amqp_server -r $QUEUE -p -b $1
