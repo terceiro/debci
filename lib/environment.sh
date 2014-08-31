@@ -36,6 +36,9 @@ debci_data_basedir=${debci_data_basedir:-$(readlink -f "${debci_base_dir}/data")
 debci_quiet="${debci_quiet:-false}"
 debci_amqp_server=${debci_amqp_server:-"amqp://localhost"}
 debci_amqp_queue=${debci_amqp_queue:-"debci-${debci_suite}-${debci_arch}-${debci_backend}"}
+debci_sendmail_from="${debci_sendmail_from:-Debian Continuous Integration <owner@localhost>}"
+debci_sendmail_to="${debci_sendmail_to:-%s@localhost}"
+debci_url_base="${debci_url_base:-http://localhost:8888}"
 
 shared_short_options='c:s:a:b:d:hq'
 shared_long_options='config:,suite:,arch:,backend:,data-dir:,amqp:,help,quiet'

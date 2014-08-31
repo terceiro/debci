@@ -5,7 +5,7 @@ long_options='index,print-output'
 
 usage() {
   cat <<EOF
-usage: debci-test [OPTIONS] srcpkg
+usage: debci test [OPTIONS] srcpkg
 
 Options:
   -i, --index               force indexing results just after running the tests
@@ -86,6 +86,6 @@ if [ $# -eq 1 ]; then
     debci-generate-index "$pkg"
   fi
 else
-  echo "usage: $0 [OPTIONS] PACKAGE"
+  usage
   exit 1
 fi
