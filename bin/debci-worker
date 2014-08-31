@@ -69,4 +69,4 @@ done
 amqp_queue="${debci_suite}-${debci_arch}-${debci_backend}${tags}"
 log "I: Connecting to AMQP queue $amqp_queue on ${debci_amqp_server}"
 amqp-declare-queue --url ${debci_amqp_server} --durable -q $amqp_queue >/dev/null
-exec amqp-consume --url ${debci_amqp_server} -q $amqp_queue -- $0 --do-request
+exec amqp-consume --url ${debci_amqp_server} -q $amqp_queue --messages 1 -- $0 --do-request
