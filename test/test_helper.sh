@@ -46,7 +46,7 @@ tearDown() {
 }
 
 oneTimeTearDown() {
-  stop_rabbit_server
+  stop_rabbitmq_server
 }
 
 result_pass() {
@@ -67,7 +67,7 @@ result_tmpfail() {
 TEST_RABBIT_SERVER_DIR=''
 TEST_RABBIT_SERVER_PID=''
 
-start_rabbit_server() {
+start_rabbitmq_server() {
   if [ -n "$TEST_RABBIT_SERVER_DIR" ]; then
     return
   fi
@@ -90,7 +90,7 @@ start_rabbit_server() {
   fi
 }
 
-stop_rabbit_server() {
+stop_rabbitmq_server() {
   if [ -z "$TEST_RABBIT_SERVER_DIR" ]; then
     return
   fi
@@ -111,7 +111,7 @@ stop_rabbit_server() {
 TEST_WORKER_PID=''
 
 start_worker() {
-  start_rabbit_server
+  start_rabbitmq_server
   stop_worker  # in case a test does multiple runs under different modes
   export debci_batch_poll_interval="0.1"
   debci worker &

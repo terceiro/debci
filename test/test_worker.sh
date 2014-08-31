@@ -97,7 +97,7 @@ NUM_WORKERS=30
 test_smoke() {
   unset DEBCI_FAKE_KILLPARENT
 
-  start_rabbit_server
+  start_rabbitmq_server
 
   local WORKERS=''
   for i in `seq $NUM_WORKERS`; do
