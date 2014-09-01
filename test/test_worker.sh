@@ -98,6 +98,7 @@ test_smoke() {
   unset DEBCI_FAKE_KILLPARENT
 
   start_rabbitmq_server
+  amqp-declare-queue --url $debci_amqp_server -q $QUEUE -d > /dev/null
 
   local WORKERS=''
   for i in `seq $NUM_WORKERS`; do
@@ -120,13 +121,19 @@ test_smoke() {
 
   # wait until all requests have been consumed; unfortunately we have no shell
   # tool (except rabbitmqctl list_queues, which needs root) to show the queue
-  # status, so we poll on the last package result coming in
+  # status, so we poll for all packages being handled
   local timeout=100
-  local last_result=$(autopkgtest_dir_for_package pkg$NUM_REQUESTS)
-  while [ ! -d "$last_result" ] && [ $timeout -gt 0 ]; do
+  local completed=0
+  while [ $completed -lt $NUM_REQUESTS ] && [ $timeout -gt 0 ]; do
     sleep 0.1
     timeout=$((timeout - 1))
+    while [ $(find $debci_data_basedir/autopkgtest/unstable/amd64/p/pkg$(($completed + 1)) -name duration 2>/dev/null | wc -l) -gt 0 ]; do
+      completed=$(($completed + 1))
+    done
   done
+  if [ $timeout -eq 0 ]; then
+    echo "TIMED OUT"
+  fi
   assertEquals "has leftover requests" "0" "$(clean_queue)"
 
   # clean up the remaining ones
