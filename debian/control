@@ -35,6 +35,7 @@ Depends:
 Recommends:
  apt-cacher-ng,
  moreutils,
+ ntp,
  schroot
 Description: continuous integration system for Debian
  debci will scan the Debian archive for packages that contain DEP-8 compliant
