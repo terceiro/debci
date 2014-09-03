@@ -111,4 +111,9 @@ setup_suite() {
   fi
 }
 
+if ! which schroot >/dev/null; then
+  echo "E: schroot not installed"
+  exit 1
+fi
+
 setup_suite
