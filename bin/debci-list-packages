@@ -18,7 +18,7 @@ _process_whitelist() {
   whitelist="${debci_config_dir}/whitelist"
   if [ -f "${whitelist}" ]; then
     if [ -x "${whitelist}" ]; then
-      "${whitelist}"
+      PATH="$debci_base_dir/lib:$PATH" "${whitelist}"
     else
       sed -e '/^#/d' "${whitelist}"
     fi
