@@ -29,4 +29,10 @@ test_executable_whitelist() {
   assertEquals "pkg1 pkg2" "$(debci list-packages | xargs echo)"
 }
 
+test_remove_duplicates() {
+  echo pkg1 > $debci_config_dir/whitelist
+  echo pkg1 >> $debci_config_dir/whitelist
+  assertEquals "pkg1" "$(debci list-packages)"
+}
+
 . shunit2

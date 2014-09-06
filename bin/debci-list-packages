@@ -21,7 +21,7 @@ _process_whitelist() {
       PATH="$debci_base_dir/lib:$PATH" "${whitelist}"
     else
       sed -e '/^#/d' "${whitelist}"
-    fi
+    fi | sort -u
   else
     list_packages_from_archive
   fi
