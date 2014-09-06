@@ -17,7 +17,11 @@ export debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 _process_whitelist() {
   whitelist="${debci_config_dir}/whitelist"
   if [ -f "${whitelist}" ]; then
-    sed -e '/^#/d' "${whitelist}"
+    if [ -x "${whitelist}" ]; then
+      "${whitelist}"
+    else
+      sed -e '/^#/d' "${whitelist}"
+    fi
   else
     list_packages_from_archive
   fi
