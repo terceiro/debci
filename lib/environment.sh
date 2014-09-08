@@ -61,7 +61,8 @@ usage_shared_options="Common options:
   --help                    show this usage message
 "
 
-TEMP=`getopt -o ${shared_short_options}${short_options:-} --long ${shared_long_options},${long_options:-} -- "$@"`
+program_name=${0##*/}
+TEMP=`getopt --name $program_name -o ${shared_short_options}${short_options:-} --long ${shared_long_options},${long_options:-} -- "$@"`
 
 if [ $? != 0 ]; then
   exit 1

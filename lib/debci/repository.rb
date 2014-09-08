@@ -122,7 +122,7 @@ module Debci
         true
       end
 
-      entries.map { |test| Debci::Status.from_data(test) }
+      entries.map { |test| Debci::Status.from_data(test, suite, architecture) }
     end
 
     # Backend implementation for Debci::Package#news
@@ -182,10 +182,7 @@ module Debci
     end
 
     def load_status(status_file, suite, architecture)
-      status = Debci::Status.from_file(status_file)
-      status.suite = suite
-      status.architecture = architecture
-      status
+      Debci::Status.from_file(status_file, suite, architecture)
     end
 
     def data_dirs_for(package)

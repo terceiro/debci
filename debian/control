@@ -39,6 +39,7 @@ Recommends:
  apt-cacher-ng,
  moreutils,
  rabbitmq-server,
+ ntp,
  schroot
 Description: continuous integration system for Debian
  debci will scan the Debian archive for packages that contain DEP-8 compliant

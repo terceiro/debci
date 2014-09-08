@@ -59,8 +59,11 @@ module Debci
     end
 
     # Constructs a new object by reading the JSON status `file`.
-    def self.from_file(file)
+    def self.from_file(file, suite, architecture)
       status = new
+      status.suite = suite
+      status.architecture = architecture
+
       unless File.exists?(file)
         status.status = :no_test_data
         return status
@@ -78,13 +81,15 @@ module Debci
 
       return status unless data
 
-      from_data(data)
+      from_data(data, suite, architecture)
     end
 
     # Populates an object by reading from a data hash
-    def self.from_data(data)
+    def self.from_data(data, suite, architecture)
       status = Debci::Status.new
 
+      status.suite = suite
+      status.architecture = architecture
       status.run_id = data['run_id']
       status.package = data['package']
       status.version = data['version']

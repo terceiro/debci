@@ -23,6 +23,11 @@ list_binaries() {
 }
 
 
+list_packages_from_archive() {
+  grep_sources -n -s Package -F Testsuite -X autopkgtest | sort | uniq
+}
+
+
 first_banner=
 banner() {
   if [ "$first_banner" = "$pkg" ]; then
