@@ -1,3 +1,10 @@
+debci (0.10) UNRELEASED; urgency=medium
+
+  * Fix Makefile to be idempotent, previously it failed on already existing
+    symlinks.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 24 Sep 2014 10:00:22 +0200
+
 debci (0.9) unstable; urgency=medium
 
   [ Antonio Terceiro ]

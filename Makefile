@@ -3,7 +3,7 @@ all: public/doc/index.html public/doc/js/jquery.js
 include links.mk
 
 links.mk: links
-	awk '{ print("LINKS +=", $$1); print($$1, ":"); print("\tmkdir -p $$(shell dirname ", $$1, ")"); print("\tln -s", $$2, $$1)}' $^ > $@
+	awk '{ print("LINKS +=", $$1); print($$1, ":"); print("\tmkdir -p $$(shell dirname ", $$1, ")"); print("\tln -sf", $$2, $$1)}' $^ > $@
 
 all: $(LINKS)
 
