@@ -18,7 +18,7 @@ spec:
 functional-tests:
 	test/runall.sh
 
-check: checkdeps all spec functional-tests
+check: all spec functional-tests
 
 test: check
 

@@ -3,6 +3,9 @@ debci (0.10) UNRELEASED; urgency=medium
   * Fix Makefile to be idempotent, previously it failed on already existing
     symlinks.
   * Add missing dctrl-tools build dependency, Makefile is calling grep-dctrl.
+  * Makefile: Don't call "checkdeps" on "make check", the test suite doesn't
+    actually need autopkgtest or the libjs packages (which are for the UI
+    only).
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 24 Sep 2014 10:00:22 +0200
 
