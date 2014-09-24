@@ -6,6 +6,8 @@ debci (0.10) UNRELEASED; urgency=medium
   * Makefile: Don't call "checkdeps" on "make check", the test suite doesn't
     actually need autopkgtest or the libjs packages (which are for the UI
     only).
+  * test/test_helper.sh: Don't hardcode "amd64", to fix test failure when
+    building on other architectures.
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 24 Sep 2014 10:00:22 +0200
 
