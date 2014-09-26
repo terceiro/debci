@@ -1,5 +1,6 @@
 debci (0.10) UNRELEASED; urgency=medium
 
+  [ Martin Pitt ]
   * Fix Makefile to be idempotent, previously it failed on already existing
     symlinks.
   * Add missing dctrl-tools build dependency, Makefile is calling grep-dctrl.
@@ -8,6 +9,9 @@ debci (0.10) UNRELEASED; urgency=medium
     only).
   * test/test_helper.sh: Don't hardcode "amd64", to fix test failure when
     building on other architectures.
+
+  [ Antonio Terceiro ]
+  * debci-generate-index: update packages.json atomically
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 24 Sep 2014 10:00:22 +0200
 
