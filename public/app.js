@@ -141,6 +141,18 @@ jQuery(function($) {
         $('#package-search').keyup();
       }
     });
+
+    if (window.location.search.match(/\?q=/)) {
+      var query_string = window.location.search.replace(/^\?/, '').split('&');
+      for (var i = 0; i < query_string.length; i++) {
+        var parts = query_string[i].split('=');
+        var key = parts[0];
+        if (key == 'q') {
+          var value = decodeURIComponent(parts[1]);
+          $('#package-search').val(value);
+        }
+      }
+    }
   });
 
   $('#package-search').keyup(function() {
@@ -172,6 +184,8 @@ jQuery(function($) {
         $('.search-count').hide();
         $('#package-select li').hide();
       }
+
+      window.history.replaceState({}, '', '?q=' + encodeURIComponent(query));
   });
 
   if (window.location.pathname == '/') {

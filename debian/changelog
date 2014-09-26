@@ -17,6 +17,8 @@ debci (0.10) UNRELEASED; urgency=medium
       (Closes: #762213)
     - trigger search immediately when there is text in the search box
       (this will happen if you reload the page)
+    - store search query in the URL, and honor that when opening any page that
+      contains a search box
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 24 Sep 2014 10:00:22 +0200
 
