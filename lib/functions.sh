@@ -28,6 +28,18 @@ list_packages_from_archive() {
 }
 
 
+get_maintainers() {
+  local pkg="$1"
+  grep_sources -n -s Maintainer,Uploaders -F Package -X "$pkg"  | sed -e 's/,\s*/\n/g' | sed -e 's/.*<\(.*\)>.*/\1/'
+}
+
+
+get_packages_by_maintainer() {
+  local maintainer_email="$1"
+  grep_sources -n -s Package -F Maintainer,Uploaders "<$maintainer_email>" | sort -u
+}
+
+
 first_banner=
 banner() {
   if [ "$first_banner" = "$pkg" ]; then
