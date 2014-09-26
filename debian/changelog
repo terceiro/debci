@@ -14,6 +14,8 @@ debci (0.10) UNRELEASED; urgency=medium
   * debci-generate-index: update packages.json atomically
   * web UI: remove limit of number of items to display in the search (Closes:
     #762213)
+  * web UI: trigger search immediately when there is text in the search box
+    (this will happen if you reload the page)
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 24 Sep 2014 10:00:22 +0200
 

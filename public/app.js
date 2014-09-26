@@ -134,6 +134,12 @@ jQuery(function($) {
       });
 
       $('#package-select').hide();
+
+      if ($('#package-search').val() != '') {
+        // trigger search immediately if there is something in the search box
+        // already
+        $('#package-search').keyup();
+      }
     });
   });
 
