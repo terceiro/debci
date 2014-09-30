@@ -1,3 +1,9 @@
+debci (0.10.1) unstable; urgency=medium
+
+  * Fix documentation build
+
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 30 Sep 2014 17:29:48 -0300
+
 debci (0.10) unstable; urgency=medium
 
   [ Martin Pitt ]
