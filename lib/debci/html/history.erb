@@ -35,22 +35,26 @@
           <td></td>
         </tr>
 
-      <% begin
-           @package.history(@suite, @architecture).each do |test| %>
-             <tr>
-               <td><%= test.version %></td>
-               <td><%= test.date %></td>
-               <td><%= test.duration_human %></td>
-               <td class="<%= test.status %>"><%= test.status %></td>
-               <td><a href="/<%= @packages_dir %>/<%= @package_dir %>/<%= test.run_id %>.log">debci log</a></td>
-               <td><a href="/<%= @packages_dir %>/<%= @package_dir %>/<%= test.run_id %>.autopkgtest.log">test log</a></td>
-               <td><a href="/<%= @autopkgtest_dir %>/<%= @package_dir %>/<%= test.run_id %>">artifacts</a></td>
-             </tr>
-      <%   end
-         rescue NoMethodError => error
-           return if error.to_s.include?("no_test_data")
-         end
-      %>
+        <% begin %>
+          <% Array(@package.history(@suite, @architecture)).each do |test| %>
+            <tr>
+              <td><%= test.version %></td>
+              <td><%= test.date %></td>
+              <td><%= test.duration_human %></td>
+              <td class="<%= test.status %>"><%= test.status %></td>
+              <td><a href="/<%= @packages_dir %>/<%= @package_dir %>/<%= test.run_id %>.log">debci log</a></td>
+              <td><a href="/<%= @packages_dir %>/<%= @package_dir %>/<%= test.run_id %>.autopkgtest.log">test log</a></td>
+              <td><a href="/<%= @autopkgtest_dir %>/<%= @package_dir %>/<%= test.run_id %>">artifacts</a></td>
+            </tr>
+          <% end %>
+        <% rescue JSON::ParserError %>
+          </table>
+          <div class='alert alert-warning' role='alert'>
+            <span class='fa fa-warning'></span>
+            Cannot display test history. There was an error when parsing the history data.
+            <a href='/<%= @packages_dir %>/<%= @package_dir %>/history.json'>[ See raw JSON file ]</a>
+          </div>
+      <% end %>
 
       </table>
 

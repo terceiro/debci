@@ -59,8 +59,8 @@ repository.each_package do |package|
         if package.history(suite, arch)
           platforms.push("#{suite}/#{arch}")
         end
-      rescue NoMethodError
-        true
+      rescue JSON::ParserError
+        puts "[ERROR] #{package.name} <#{suite}/#{arch}> history: Could not parse JSON"
       end
     end
   end

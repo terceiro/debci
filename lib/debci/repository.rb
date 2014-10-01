@@ -114,12 +114,8 @@ module Debci
 
       entries = nil
 
-      begin
-        File.open(file) do |f|
-          entries = JSON.load(f)
-        end
-      rescue JSON::ParserError
-        true
+      File.open(file) do |f|
+        entries = JSON.load(f)
       end
 
       entries.map { |test| Debci::Status.from_data(test, suite, architecture) }
