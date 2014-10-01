@@ -9,7 +9,7 @@ describe Debci::Repository do
   before(:all) do
     @now = Time.now.strftime('%Y%m%d_%H%M%S')
 
-    @datadir = '/tmp/foobar' # Dir.mktmpdir
+    @datadir = Dir.mktmpdir
     mkdir_p 'packages/unstable/amd64/r/rake'
     mkdir_p 'packages/unstable/i386/r/rake'
     mkdir_p 'packages/testing/amd64/r/rake'
