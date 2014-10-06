@@ -24,7 +24,7 @@ list_binaries() {
 
 
 list_packages_from_archive() {
-  grep_sources -n -s Package -F Testsuite -X autopkgtest | sort | uniq
+  grep_sources -n -s Package -F Testsuite autopkgtest | sort | uniq
 }
 
 

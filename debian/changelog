@@ -1,3 +1,12 @@
+debci (0.10.2) UNRELEASED; urgency=medium
+
+  * lib/functions.sh: accept any value of Testsuite matching `autopkgtest`
+    insted of only exact matches when looking for source packages with test
+    suites. This will allow detecting packages with specialized values such as
+    autopkgtest-pkg-ruby and autopkgtest-pkg-perl.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Mon, 06 Oct 2014 08:03:32 -0300
+
 debci (0.10.1) unstable; urgency=medium
 
   * Fix documentation build
