@@ -103,7 +103,7 @@ can pass the `.changes` file to adt-run:
 ```
 $ adt-run --user debci --output-dir /tmp/output-dir \
   /path/to/PACKAGE_x.y-z_amd64.changes \
-  schroot debci-unstable-amd64
+  --- schroot debci-unstable-amd64
 ```
 
 For more details, see the documentation for the `autopkgtest` package.
