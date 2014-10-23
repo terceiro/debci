@@ -52,7 +52,15 @@
                      <td><a href="/packages/<%= @prefix %>/<%= package.name %>"><%= package.name %></a></td>
 
                   <% if package.failures %>
-                       <td><div class='fail'>Failing on <%= package.failures.join(', ') %></div></td>
+                    <% failures = [] %>
+
+                    <% package.failures.each do |arch| %>
+                      <% failures.push("<a href='/packages/#{@prefix}/#{package.name}/#{arch}'>#{arch}</a>") %>
+                    <% end %>
+
+                       <td>
+                         <div class='fail'>Failing on <%= failures.join(', ') %></div>
+                       </td>
                   <% else %>
                        <td><div class='pass'>Passing everywhere</div></td>
                   <% end %>
