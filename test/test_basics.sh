@@ -103,4 +103,11 @@ test_batch_force() {
   echo "$log" | grep -q 'changes.*dependenc' && fail "log claims dep change:\n$log"
 }
 
+test_status_for_all_packages() {
+  result_pass debci batch
+  local status_file="$debci_data_basedir/status/unstable/$debci_arch/packages.json"
+  assertTrue 'ruby-ffi present in status file' "grep ruby-ffi $status_file"
+  assertTrue 'rubygems-integration present in status file' "grep rubygems-integration $status_file"
+}
+
 . shunit2

@@ -119,7 +119,7 @@ if [ $status_file ]; then
   fi
   prefix=''
   for pkg in $@; do
-    status_file=$(get_status_file "$1")
+    status_file=$(get_status_file "$pkg")
     if [ -f "$status_file" ]; then
       (
         echo "$prefix"
