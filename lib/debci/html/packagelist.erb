@@ -52,15 +52,11 @@
                      <td><a href="/packages/<%= @prefix %>/<%= package.name %>"><%= package.name %></a></td>
 
                   <% if package.failures %>
-                    <% failures = [] %>
 
-                    <% package.failures.each do |arch| %>
-                      <% failures.push("<a href='/packages/#{@prefix}/#{package.name}/#{arch}'>#{arch}</a>") %>
-                    <% end %>
-
-                       <td>
-                         <div class='fail'>Failing on <%= failures.join(', ') %></div>
+                       <td class='fail'>
+                         Failing on <%= package.failures.map { |arch| "<a href='/packages/#{@prefix}/#{package.name}/#{arch}'>#{arch}</a>" }.join(', ') %>
                        </td>
+
                   <% else %>
                        <td><div class='pass'>Passing everywhere</div></td>
                   <% end %>
