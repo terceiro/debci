@@ -15,7 +15,6 @@ writer.index('index.html')
 writer.status('status/index.html')
 
 repository = Debci::Repository.new
-status_dir = File.join(Debci.config.data_basedir, '.html/status')
 
 # Generate a JSON file for storing the current suite/architectures that are
 # available. The file is used for the JavaScript data charts.
