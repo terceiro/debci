@@ -33,9 +33,14 @@ setup_system() {
     fi
 }
 
+migrate_data() {
+    su --login --command '/usr/bin/debci migrate' debci
+}
+
 case "$1" in
     configure)
         setup_system
+        migrate_data
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
