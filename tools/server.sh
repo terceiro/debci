@@ -35,6 +35,14 @@ server.modules             += ("mod_setenv")
     "Content-Type" => "text/plain; charset=utf-8"
   )
 }
+server.modules             += ("mod_rewrite")
+url.rewrite-if-not-file = (
+  "^(.*\.log)\$" => "\$1.moved"
+)
+server.modules             += ("mod_redirect")
+url.redirect = (
+  "^(.*\.log)\.moved\$" => "\$1.gz"
+)
 EOF
 
 echo "I: Go to: http://localhost:$port/"
