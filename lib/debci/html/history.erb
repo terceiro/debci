@@ -43,7 +43,7 @@
               <td><%= test.duration_human %></td>
               <td class="<%= test.status %>"><%= test.status %></td>
               <td><a href="/<%= @packages_dir %>/<%= @package_dir %>/<%= test.run_id %>.log">debci log</a></td>
-              <td><a href="/<%= @packages_dir %>/<%= @package_dir %>/<%= test.run_id %>.autopkgtest.log">test log</a></td>
+              <td><a href="/<%= @packages_dir %>/<%= @package_dir %>/<%= test.run_id %>.autopkgtest.log.gz">test log</a></td>
               <td><a href="/<%= @autopkgtest_dir %>/<%= @package_dir %>/<%= test.run_id %>">artifacts</a></td>
             </tr>
           <% end %>
@@ -63,7 +63,7 @@
       <% automation_info = "<code># latest status of the package\n" +
                            "$ curl #{@site_url}/#{@packages_dir}/#{@package_dir}/latest.json\n\n" +
                            "# latest autopkgtest log of the package\n" +
-                           "$ curl #{@site_url}/#{@packages_dir}/#{@package_dir}/latest-autopkgtest/log\n\n" +
+                           "$ curl #{@site_url}/#{@packages_dir}/#{@package_dir}/latest-autopkgtest/log.gz\n\n" +
                            "# test run history of the package\n" +
                            "$ curl #{@site_url}/#{@packages_dir}/#{@package_dir}/history.json</code>"
       %>

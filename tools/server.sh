@@ -28,6 +28,13 @@ mimetype.assign += (".log" => "text/plain; charset=utf-8")
 dir-listing.encoding        = "utf-8"
 server.dir-listing          = "enable"
 index-file.names            = ("index.html", "index.htm")
+server.modules             += ("mod_setenv")
+\$HTTP["url"] =~ "\.log\.gz" {
+  setenv.add-response-header = (
+    "Content-Encoding" => "gzip",
+    "Content-Type" => "text/plain; charset=utf-8"
+  )
+}
 EOF
 
 echo "I: Go to: http://localhost:$port/"

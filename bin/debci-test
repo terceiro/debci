@@ -48,6 +48,11 @@ process_package() {
   finish_timestamp=$(date +%s)
   echo $(($finish_timestamp - $start_timestamp)) >> "$adt_out_dir/duration"
 
+  find "$adt_out_dir" '(' \
+    -name log -or \
+    -name '*-stdout' -or \
+    -name '*-stderr' ')' -exec gzip '{}' ';'
+
   if [ -n "$print_output" ]; then
       echo "$adt_out_dir"
   fi

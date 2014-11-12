@@ -2,6 +2,11 @@ debci (0.11) UNRELEASED; urgency=medium
 
   * debci-migrate: added a data migration mechanism that is also automatically
     executed during postinst.
+  * Switch data storage strategy to compress all autopkgtest logs. This will
+    save huge amounts of storage space.
+    - tools/server.sh adjusted to make lighttpd serve *.log.gz files as
+      regular text/plain files, but with the propers headers to tell browsers
+      that they are compressed so they will do the right tihng.
 
  -- Antonio Terceiro <terceiro@debian.org>  Tue, 11 Nov 2014 21:49:12 -0200
 

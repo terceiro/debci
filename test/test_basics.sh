@@ -42,11 +42,11 @@ test_batch_skip_after_result() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
   echo "mypkg" > $debci_config_dir/whitelist
   result_pass debci batch
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 
   result_pass debci batch
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 }
 
@@ -55,11 +55,11 @@ test_batch_rerun_after_tmpfail() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
   echo "mypkg" > $debci_config_dir/whitelist
   result_tmpfail debci batch
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 
   result_pass debci batch
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 2 $num_logs
 
   log=$(cat $(status_dir_for_package mypkg)/latest.log)
@@ -72,12 +72,12 @@ test_batch_rerun_dep_change() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
   echo "mypkg" > $debci_config_dir/whitelist
   result_pass debci batch
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 
   export DEBCI_FAKE_DEPS="foo 1.2.4"
   result_pass debci batch
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 2 $num_logs
 
   log=$(cat $(status_dir_for_package mypkg)/latest.log)
@@ -91,11 +91,11 @@ test_batch_force() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
   echo "mypkg" > $debci_config_dir/whitelist
   result_pass debci batch
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 
   result_pass debci batch --force
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 2 $num_logs
 
   log=$(cat $(status_dir_for_package mypkg)/latest.log)
