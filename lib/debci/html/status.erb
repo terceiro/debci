@@ -1,17 +1,18 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-        <h1>Package Testing Data</h1>
+
+        <h1 class='page-header'>Package Testing Data</h1>
 
         <div id='status'>
-          <h2 class='page-header'>Pass/Fail</h2>
+          <h3 class='page-header'>Pass/Fail</h3>
 
           <% @repository.architectures.each do |arch| %>
             <div class='row'>
             <% @repository.suites.each do |suite| %>
 
               <div class='col-md-4'>
-                <div class='text-center'><h3><%= "#{suite}/#{arch}" %></h3></div>
+                <div class='text-center'><h4><%= "#{suite}/#{arch}" %></h4></div>
                   <% if @repository.status_history(suite, arch) %>
                        <noscript>
                          <% chart = Debci::Graph.new(@repository, suite, arch) %>
@@ -47,14 +48,15 @@
            </div>
           <% end %>
 
-          <h2 class='page-header'>Pass Percentage</h2>
+          <br><br>
+          <h3 class='page-header'>Pass Percentage</h3>
 
           <% @repository.architectures.each do |arch| %>
             <div class='row'>
             <% @repository.suites.each do |suite| %>
 
               <div class='col-md-4'>
-                <div class='text-center'><h3><%= "#{suite}/#{arch}" %></h3></div>
+                <div class='text-center'><h4><%= "#{suite}/#{arch}" %></h4></div>
                   <% if @repository.status_history(suite, arch) %>
                        <noscript>
                          <% chart = Debci::Graph.new(@repository, suite, arch) %>
