@@ -86,6 +86,10 @@ process_all_packages() {
 
   if [ "$maxjobs" -eq 1 ]; then
     for pkg in $packages; do
+      if [ -e "$offline_marker" ]; then
+        break
+      fi
+
       debci-test --index "$pkg"
 
       if [ -f "${debci_status_dir}/packages.json" ]; then
