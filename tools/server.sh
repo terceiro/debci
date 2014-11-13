@@ -30,6 +30,7 @@ server.dir-listing          = "enable"
 index-file.names            = ("index.html", "index.htm")
 server.modules             += ("mod_setenv")
 \$HTTP["url"] =~ "\.log\.gz" {
+  server.error-handler-404 = "/notfound.log.gz"
   setenv.add-response-header = (
     "Content-Encoding" => "gzip",
     "Content-Type" => "text/plain; charset=utf-8"
