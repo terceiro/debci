@@ -102,12 +102,8 @@ setup_suite() {
     echo "I: chroot $debci_chroot_name already created, updating"
     update-testbed
   else
-    if [ "$actual_chroot_path" = "${debci_chroot_path}" ]; then
-      create_chroot
-    else
-      echo "E: chroot ${debci_chroot_name} does not exit in custom location ${actual_chroot_path}. Please create it first."
-      exit 1
-    fi
+    debci_chroot_path="$actual_chroot_path"
+    create_chroot
   fi
 }
 
