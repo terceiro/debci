@@ -25,6 +25,7 @@ Depends:
  autopkgtest (>= 2.12),
  debootstrap,
  fonts-font-awesome (>= 4.0.3~),
+ libjs-bootstrap,
  libjs-jquery,
  libjs-jquery-flot,
  patchutils,

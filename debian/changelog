@@ -12,6 +12,7 @@ debci (0.11) UNRELEASED; urgency=medium
     go offline.
   * backends/schroot/create-testbed, debci-setup-chdist: add buildd suites to
     sources.list so we detect newly uploaded packages faster
+  * Removed embedded copy of Bootstrap, now depending on libjs-bootstrap
 
   [ Brandon Fairchild ]
   * Several web UI improvements
