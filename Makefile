@@ -25,6 +25,7 @@ check-ui-and-docs: all
 	test -f public/doc/index.html
 	test -L public/doc/js/jquery.js -a -f public/doc/js/jquery.js
 	test -L public/jquery.js -a -f public/jquery.js
+	test -L public/bootstrap
 
 test: check
 
