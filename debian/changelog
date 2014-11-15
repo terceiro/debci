@@ -1,5 +1,6 @@
 debci (0.11) UNRELEASED; urgency=medium
 
+  [ Antonio Terceiro ]
   * debci-migrate: added a data migration mechanism that is also automatically
     executed during postinst.
   * Switch data storage strategy to compress all autopkgtest logs. This will
@@ -11,6 +12,10 @@ debci (0.11) UNRELEASED; urgency=medium
     go offline.
   * backends/schroot/create-testbed, debci-setup-chdist: add buildd suites to
     sources.list so we detect newly uploaded packages faster
+
+  [ Brandon Fairchild ]
+  * Several web UI improvements
+  * Documentation update on hacking the web interface
 
  -- Antonio Terceiro <terceiro@debian.org>  Tue, 11 Nov 2014 21:49:12 -0200
 
