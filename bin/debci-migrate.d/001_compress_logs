@@ -5,11 +5,17 @@ set -eu
 datadir="$1"
 
 if [ -d "$datadir/autopkgtest" ]; then
+  compressed=0
   find "$datadir/autopkgtest" '(' \
     -name log -or \
     -name '*-stdout' -or \
     -name '*-stderr' \
-    ')' -exec gzip --verbose '{}' ';'
+    ')' -exec gzip '{}' ';' -print | while read f; do
+    compressed=$(($compressed + 1))
+    if [ $(($compressed % 100)) -eq 0 ]; then
+      echo "$compressed logs compressed"
+    fi
+  done
 fi
 
 if [ -d "$datadir/packages" ]; then
