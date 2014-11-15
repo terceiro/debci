@@ -19,6 +19,7 @@ if [ -d "$datadir/autopkgtest" ]; then
 fi
 
 if [ -d "$datadir/packages" ]; then
+  echo "Adjusting symlinks, this might take some time ..."
   find "$datadir/packages" -name '*.autopkgtest.log' | while read entry; do
     directory=$(dirname "$entry")
     (
