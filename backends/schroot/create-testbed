@@ -39,6 +39,13 @@ create_chroot() {
   # add APT Source URIs
   sed -e 's/^deb\s/deb-src /' "${debci_chroot_path}/etc/apt/sources.list" > "${debci_chroot_path}/etc/apt/sources.list.d/sources.list"
 
+  if grep -q debian "${debci_chroot_path}/etc/apt/sources.list"; then
+    cat > "${debci_chroot_path}/etc/apt/sources.list.d/buildd.list" <<EOF
+deb http://incoming.debian.org/debian-buildd buildd-$debci_suite main
+deb-src http://incoming.debian.org/debian-buildd buildd-$debci_suite main
+EOF
+  fi
+
   # never ask for input
   echo 'debconf debconf/frontend select noninteractive' | chroot "$debci_chroot_path" debconf-set-selections
 

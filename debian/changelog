@@ -9,6 +9,8 @@ debci (0.11) UNRELEASED; urgency=medium
       that they are compressed so they will do the right tihng.
   * debci-batch: will now stop even in the middle of a iteration when told to
     go offline.
+  * backends/schroot/create-testbed, debci-setup-chdist: add buildd suites to
+    sources.list so we detect newly uploaded packages faster
 
  -- Antonio Terceiro <terceiro@debian.org>  Tue, 11 Nov 2014 21:49:12 -0200
 

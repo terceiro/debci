@@ -46,6 +46,14 @@ if [ ! -e "$root/$name" ]; then
   echo "deb $mirror $SUITE $COMPONENTS
 deb-src $mirror $SUITE $COMPONENTS" > "$TARGET/etc/apt/sources.list"
 
+  # add buildd sources
+  if grep -q debian "$TARGET/etc/apt/sources.list"; then
+    cat >> "$TARGET/etc/apt/sources.list" <<EOF
+deb http://incoming.debian.org/debian-buildd buildd-$SUITE main
+deb-src http://incoming.debian.org/debian-buildd buildd-$SUITE main
+EOF
+  fi
+
   # use a local proxy if available
   http_proxy="${http_proxy:-}"
   if [ -z "$http_proxy" ]; then
