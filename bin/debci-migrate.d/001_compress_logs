@@ -4,18 +4,22 @@ set -eu
 
 datadir="$1"
 
-find "$datadir/autopkgtest" '(' \
-  -name log -or \
-  -name '*-stdout' -or \
-  -name '*-stderr' \
-  ')' -exec gzip --verbose '{}' ';'
+if [ -d "$datadir/autopkgtest" ]; then
+  find "$datadir/autopkgtest" '(' \
+    -name log -or \
+    -name '*-stdout' -or \
+    -name '*-stderr' \
+    ')' -exec gzip --verbose '{}' ';'
+fi
 
-find "$datadir/packages" -name '*.autopkgtest.log' | while read entry; do
-  directory=$(dirname "$entry")
-  (
-    cd $directory
-    target=$(readlink $entry)
-    ln -s "${target}.gz" "${entry}.gz"
-    rm -f "$entry"
-  )
-done
+if [ -d "$datadir/packages" ]; then
+  find "$datadir/packages" -name '*.autopkgtest.log' | while read entry; do
+    directory=$(dirname "$entry")
+    (
+      cd $directory
+      target=$(readlink $entry)
+      ln -s "${target}.gz" "${entry}.gz"
+      rm -f "$entry"
+    )
+  done
+fi
