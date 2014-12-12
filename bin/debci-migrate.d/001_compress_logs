@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -eu
+
+datadir="$1"
+
+if [ -d "$datadir/autopkgtest" ]; then
+  compressed=0
+  find "$datadir/autopkgtest" '(' \
+    -name log -or \
+    -name '*-stdout' -or \
+    -name '*-stderr' \
+    ')' -exec gzip '{}' ';' -print | while read f; do
+    compressed=$(($compressed + 1))
+    if [ $(($compressed % 100)) -eq 0 ]; then
+      echo "$compressed logs compressed"
+    fi
+  done
+fi
+
+if [ -d "$datadir/packages" ]; then
+  echo "Adjusting symlinks, this might take some time ..."
+  find "$datadir/packages" -name '*.autopkgtest.log' | while read entry; do
+    directory=$(dirname "$entry")
+    (
+      cd $directory
+      target=$(readlink $entry)
+      ln -s "${target}.gz" "${entry}.gz"
+      rm -f "$entry"
+    )
+  done
+fi

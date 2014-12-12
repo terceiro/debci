@@ -4,6 +4,14 @@ set -eu
 
 runs=${1:-15}
 
+configdir=$(dirname $0)/../config
+
+if [ ! -f $configdir/whitelist ]; then
+  for pkg in ruby-defaults rake ruby-ffi gem2deb; do
+    echo "$pkg"
+  done > $configdir/whitelist
+fi
+
 debci_status_dir=$(sh -c '. lib/environment.sh ; echo $debci_status_dir')
 
 for n in $(seq $runs -1 1); do

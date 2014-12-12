@@ -53,6 +53,7 @@ fake data so the web interface will look a lot nicer:
 
 # debci web UI development
 
+## Starting out
 If you are interested in working on the web UI, first make sure that you have
 a development environment setup and some test data.
 
@@ -63,6 +64,10 @@ using the templates.
 The templates contain HTML and debci Ruby API calls to display information
 in the interface.
 
+The templates are contained in the `lib/debci/html/` directory while
+the debci Ruby API is contained a directory lower in
+`lib/debci/`.
+
 Once you make changes to the templates or other code for the web UI,
 run the following to regenerate the HTML for the interface:
 
@@ -72,3 +77,35 @@ If you make changes to the documentation (HACKING.md, RUBYAPI.md, etc.),
 run the following to regenerate it:
 
     $ make
+
+With the web interface running, you should see your changes with a refresh of
+the web page.
+
+**NOTE: Try to keep lines under 80 characters in length unless it would cause
+the code to look weird or less readable.**
+
+## Implementing new features for the debci web interface
+
+If you are developing a new feature for the debci web UI, make sure that
+if you develop any new debci Ruby API calls that you add tests for them in the
+appropriate test file. (e.g. If you add a method to {Debci::Repository}, make
+sure that the method has tests in `spec/debci/repository_spec.rb`)
+
+### Running tests on your code
+
+After adding tests for the new method in the appropriate test file, run the
+following:
+
+    $ make spec
+
+This will run all tests using rspec. You should see output similar to the
+following:
+
+    rspec --color
+    ................................................................
+
+    Finished in 0.05459 seconds
+    64 examples, 0 failures
+
+If your code passed the appropriate tests, you will see that there
+are no failures reported by rspec.

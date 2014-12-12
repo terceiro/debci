@@ -90,7 +90,7 @@ module Debci
 
       status.suite = suite
       status.architecture = architecture
-      status.run_id = data['run_id']
+      status.run_id = data['run_id'] || data['date']
       status.package = data['package']
       status.version = data['version']
       status.date =

@@ -30,7 +30,25 @@ run.
 The test suite for a source package will be executed:
 
 * when any package in the dependency chain of its binary packages changes;
-* when 1 month is passed since the test suite was run;
+* when the package itself changes;
+* when 1 month is passed since the test suite was run for the last time.
+
+### I just added a test suite to my package; how long does it take for it to be processed?
+
+Short answer: it depends on many factors and it may take some days, but it
+*will* show up eventually.
+
+Long answer: the current infrastructure runs tests sequentially on a single
+box; think of a loop in which each iteration takes a few days. The delay for
+your package to be processed will depend on:
+
+* the size of the current test queue
+* the time in which your package has hit the mirror network
+
+If the package has hit the mirror network at the beginning of the current
+iteration, it *will take a few days* to be processed. If it arrives at the
+mirror network in the end of the current iteration, then your are lucky: it
+will be processed at the beginning of the next iteration.
 
 ### What exactly is the environment where the tests are run?
 
@@ -103,7 +121,7 @@ can pass the `.changes` file to adt-run:
 ```
 $ adt-run --user debci --output-dir /tmp/output-dir \
   /path/to/PACKAGE_x.y-z_amd64.changes \
-  schroot debci-unstable-amd64
+  --- schroot debci-unstable-amd64
 ```
 
 For more details, see the documentation for the `autopkgtest` package.

@@ -1,3 +1,81 @@
+debci (0.11) unstable; urgency=medium
+
+  [ Antonio Terceiro ]
+  * debci-migrate: added a data migration mechanism that is also automatically
+    executed during postinst.
+  * Switch data storage strategy to compress all autopkgtest logs. This will
+    save huge amounts of storage space.
+    - tools/server.sh adjusted to make lighttpd serve *.log.gz files as
+      regular text/plain files, but with the propers headers to tell browsers
+      that they are compressed so they will do the right tihng.
+  * debci-batch: will now stop even in the middle of a iteration when told to
+    go offline.
+  * backends/schroot/create-testbed, debci-setup-chdist: add buildd suites to
+    sources.list so we detect newly uploaded packages faster
+  * Removed embedded copy of Bootstrap, now depending on libjs-bootstrap
+
+  [ Brandon Fairchild ]
+  * Several web UI improvements
+  * Documentation update on hacking the web interface
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 15 Nov 2014 14:56:14 -0200
+
+debci (0.10.3) unstable; urgency=medium
+
+  [ Brandon Fairchild ]
+  * handle old test run data that didn't have a run_id.
+
+  [ Antonio Terceiro ]
+  * debci-status: fix generation of packages status file which was incorrectly
+    repeating the status for the very first package over and over.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 14 Oct 2014 18:55:27 -0300
+
+debci (0.10.2) unstable; urgency=medium
+
+  [ Antonio Terceiro ]
+  * lib/functions.sh: accept any value of Testsuite matching `autopkgtest`
+    insted of only exact matches when looking for source packages with test
+    suites. This will allow detecting packages with specialized values such as
+    autopkgtest-pkg-ruby and autopkgtest-pkg-perl.
+
+  [ Brandon Fairchild ]
+  * Detect JSON parsing errors on history files instead of silently failing
+    and leaving a blank history (Closes: #759569)
+  * Avoid also listing lib* packages under l/.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Wed, 08 Oct 2014 08:53:37 -0300
+
+debci (0.10.1) unstable; urgency=medium
+
+  * Fix documentation build
+
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 30 Sep 2014 17:29:48 -0300
+
+debci (0.10) unstable; urgency=medium
+
+  [ Martin Pitt ]
+  * Fix Makefile to be idempotent, previously it failed on already existing
+    symlinks.
+  * Add missing dctrl-tools build dependency, Makefile is calling grep-dctrl.
+  * Makefile: Don't call "checkdeps" on "make check", the test suite doesn't
+    actually need autopkgtest or the libjs packages (which are for the UI
+    only).
+  * test/test_helper.sh: Don't hardcode "amd64", to fix test failure when
+    building on other architectures.
+
+  [ Antonio Terceiro ]
+  * debci-generate-index: update packages.json atomically
+  * web UI improvements:
+    - remove limit of number of items to display in the search
+      (Closes: #762213)
+    - trigger search immediately when there is text in the search box
+      (this will happen if you reload the page)
+    - store search query in the URL, and honor that when opening any page that
+      contains a search box
+
+ -- Antonio Terceiro <terceiro@debian.org>  Fri, 26 Sep 2014 18:22:06 -0300
+
 debci (0.9) unstable; urgency=medium
 
   [ Antonio Terceiro ]

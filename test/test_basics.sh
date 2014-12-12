@@ -47,12 +47,12 @@ test_batch_skip_after_result() {
   echo "mypkg" > $debci_config_dir/whitelist
   result_pass start_worker
   debci batch --wait
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 
   result_pass start_worker
   debci batch --wait
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 }
 
@@ -62,12 +62,12 @@ test_batch_rerun_after_tmpfail() {
   echo "mypkg" > $debci_config_dir/whitelist
   result_tmpfail start_worker
   debci batch --wait
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 
   result_pass start_worker
   debci batch --wait
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 2 $num_logs
 
   log=$(cat $(status_dir_for_package mypkg)/latest.log)
@@ -81,13 +81,13 @@ test_batch_rerun_dep_change() {
   echo "mypkg" > $debci_config_dir/whitelist
   result_pass start_worker
   debci batch --wait
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 
   export DEBCI_FAKE_DEPS="foo 1.2.4"
   result_pass start_worker
   debci batch --wait
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 2 $num_logs
 
   log=$(cat $(status_dir_for_package mypkg)/latest.log)
@@ -102,17 +102,25 @@ test_batch_force() {
   echo "mypkg" > $debci_config_dir/whitelist
   result_pass start_worker
   debci batch --wait
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 
   result_pass start_worker
   debci batch --wait --force
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log | wc -l)
+  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 2 $num_logs
 
   log=$(cat $(status_dir_for_package mypkg)/latest.log)
   echo "$log" | grep -iq 'forced.*for mypkg' || fail "log does not show 'forced' reason:\n$log"
   echo "$log" | grep -q 'changes.*dependenc' && fail "log claims dep change:\n$log"
+}
+
+test_status_for_all_packages() {
+  result_pass start_worker
+  debci batch --wait
+  local status_file="$debci_data_basedir/status/unstable/$debci_arch/packages.json"
+  assertTrue 'ruby-ffi present in status file' "grep ruby-ffi $status_file"
+  assertTrue 'rubygems-integration present in status file' "grep rubygems-integration $status_file"
 }
 
 . shunit2

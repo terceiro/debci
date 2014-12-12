@@ -45,7 +45,7 @@ test_no_crash_success() {
   result_pass run_mypkg
   assertEquals "has leftover requests" "0" $(clean_queue)
   # we should have one log
-  assertEquals 1 "$(ls $RESULT_DIR/*/log | wc -l)"
+  assertEquals 1 "$(ls $RESULT_DIR/*/log.gz | wc -l)"
   assertEquals 1 "$(ls $RESULT_DIR/*/exitcode | wc -l)"
 }
 
@@ -54,7 +54,7 @@ test_no_crash_fail() {
   result_fail run_mypkg
   assertEquals "has leftover requests" "0" "$(clean_queue)"
   # we should have one log
-  assertEquals 1 "$(ls $RESULT_DIR/*/log | wc -l)"
+  assertEquals 1 "$(ls $RESULT_DIR/*/log.gz | wc -l)"
   assertEquals 1 "$(ls $RESULT_DIR/*/exitcode | wc -l)"
 }
 
@@ -63,7 +63,7 @@ test_no_crash_tmpfail() {
   result_tmpfail run_mypkg
   assertEquals "has leftover requests" "0" "$(clean_queue)"
   # we should have one log
-  assertEquals 1 "$(ls $RESULT_DIR/*/log | wc -l)"
+  assertEquals 1 "$(ls $RESULT_DIR/*/log.gz | wc -l)"
   assertEquals 1 "$(ls $RESULT_DIR/*/exitcode | wc -l)"
 }
 
@@ -145,7 +145,7 @@ test_smoke() {
   # some tests get restarted, so we expect one or two logs
   for i in `seq $NUM_REQUESTS`; do
     local d=$(autopkgtest_dir_for_package pkg$i)
-    nlogs=$(ls $d/*/log | wc -l)
+    nlogs=$(ls $d/*/log.gz | wc -l)
     nexit=$(ls $d/*/exitcode | wc -l)
     assertTrue "one or two logs for pkg$i" "[ $nlogs -eq 1 -o $nlogs -eq 2 ]"
     assertTrue "one or two complete result dirs for pkg$i" "[ $nexit -eq 1 -o $nexit -eq 2 ]"

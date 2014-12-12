@@ -19,7 +19,7 @@ create_chroot() {
     # assigned to host system as seen from a kvm/virtualbox virtual machine
     for ip in 127.0.0.1 10.0.2.2; do
       if nc -z -w 1 $ip 3142; then
-        export http_proxy=http://$ip:3142/debian
+        export http_proxy=http://$ip:3142
       fi
     done
   fi
@@ -38,6 +38,13 @@ create_chroot() {
 
   # add APT Source URIs
   sed -e 's/^deb\s/deb-src /' "${debci_chroot_path}/etc/apt/sources.list" > "${debci_chroot_path}/etc/apt/sources.list.d/sources.list"
+
+  if grep -q debian "${debci_chroot_path}/etc/apt/sources.list"; then
+    cat > "${debci_chroot_path}/etc/apt/sources.list.d/buildd.list" <<EOF
+deb http://incoming.debian.org/debian-buildd buildd-$debci_suite main
+deb-src http://incoming.debian.org/debian-buildd buildd-$debci_suite main
+EOF
+  fi
 
   # never ask for input
   echo 'debconf debconf/frontend select noninteractive' | chroot "$debci_chroot_path" debconf-set-selections
@@ -102,12 +109,8 @@ setup_suite() {
     echo "I: chroot $debci_chroot_name already created, updating"
     update-testbed
   else
-    if [ "$actual_chroot_path" = "${debci_chroot_path}" ]; then
-      create_chroot
-    else
-      echo "E: chroot ${debci_chroot_name} does not exit in custom location ${actual_chroot_path}. Please create it first."
-      exit 1
-    fi
+    debci_chroot_path="$actual_chroot_path"
+    create_chroot
   fi
 }
 

@@ -50,6 +50,22 @@ module Debci
       status.each do |architecture|
         architecture.each do |suite|
           case suite.status
+            when :tmpfail
+              # Determine if there was a failure before the tmpfail
+              history(suite.suite, suite.architecture).each do |test|
+
+                # If there wasn't a failure before the tmpfail,
+                # stop looking through the test history
+                if test.status == :pass
+                  break
+                end
+
+                if test.status == :fail
+                  failing_status.push(suite.suite + '/' + suite.architecture)
+                  break
+                end
+
+              end
             when :fail
               failing_status.push(suite.suite + '/' + suite.architecture)
           end

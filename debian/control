@@ -13,7 +13,8 @@ Build-Depends:
  shunit2,
  fonts-font-awesome (>= 4.0.3~),
  yard,
-Standards-Version: 3.9.5
+ dctrl-tools,
+Standards-Version: 3.9.6
 Homepage: http://ci.debian.net/
 Vcs-Git: git://anonscm.debian.org/collab-maint/debci.git
 Vcs-Browser: http://anonscm.debian.org/gitweb?p=collab-maint/debci.git;a=summary
@@ -26,6 +27,7 @@ Depends:
  autopkgtest (>= 2.12),
  debootstrap,
  fonts-font-awesome (>= 4.0.3~),
+ libjs-bootstrap,
  libjs-jquery,
  libjs-jquery-flot,
  patchutils,

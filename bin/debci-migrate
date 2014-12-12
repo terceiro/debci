@@ -1,0 +1,35 @@
+#!/bin/sh
+
+set -eu
+
+usage() {
+  cat <<EOF
+usage: debci migrate [OPTIONS]
+
+$@
+EOF
+}
+
+debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
+cd $debci_base_dir
+. lib/environment.sh
+. lib/functions.sh
+
+
+current_version=0
+if [ -f "$debci_data_basedir/schema_version" ]; then
+  current_version=$(cat "$debci_data_basedir/schema_version")
+fi
+
+migrations_dir=$(readlink -f $0).d
+for migration in $(run-parts --list "$migrations_dir"); do
+  version=$(basename "$migration" | sed 's/[^0-9].*//')
+  if [ "$version" -gt "$current_version" ]; then
+    migration_name=$(basename "$migration")
+    echo "» $migration_name ..."
+    "$migration" "$debci_data_basedir"
+    current_version="$version"
+  fi
+done
+
+echo "$current_version" > "$debci_data_basedir/schema_version"

@@ -24,7 +24,19 @@ list_binaries() {
 
 
 list_packages_from_archive() {
-  grep_sources -n -s Package -F Testsuite -X autopkgtest | sort | uniq
+  grep_sources -n -s Package -F Testsuite autopkgtest | sort | uniq
+}
+
+
+get_maintainers() {
+  local pkg="$1"
+  grep_sources -n -s Maintainer,Uploaders -F Package -X "$pkg"  | sed -e 's/,\s*/\n/g' | sed -e 's/.*<\(.*\)>.*/\1/'
+}
+
+
+get_packages_by_maintainer() {
+  local maintainer_email="$1"
+  grep_sources -n -s Package -F Maintainer,Uploaders "<$maintainer_email>" | sort -u
 }
 
 

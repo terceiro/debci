@@ -82,9 +82,10 @@ module Debci
 
     # Searches packages by name.
     #
-    # Returns an Array of Debci::Package objects. On an exact match, will
-    # return an Array with a single element. Otherwise all packages that match
-    # the query (which is converted into a regular expression) are returned.
+    # Returns a sorted Array of Debci::Package objects. On an exact match, it
+    # will return an Array with a single element. Otherwise all packages that
+    # match the query (which is converted into a regular expression) are
+    # returned.
     def search(query)
       # first try exact match
       match = packages.select { |p| p == query }
@@ -95,7 +96,7 @@ module Debci
         match = packages.select { |p| p =~ re }
       end
 
-      match.map { |p| Debci::Package.new(p, self)}
+      match.sort.map { |p| Debci::Package.new(p, self) }
     end
 
     # Backend implementation for Debci::Package#status
@@ -114,12 +115,8 @@ module Debci
 
       entries = nil
 
-      begin
-        File.open(file) do |f|
-          entries = JSON.load(f)
-        end
-      rescue JSON::ParserError
-        true
+      File.open(file) do |f|
+        entries = JSON.load(f)
       end
 
       entries.map { |test| Debci::Status.from_data(test, suite, architecture) }

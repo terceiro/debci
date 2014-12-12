@@ -2,6 +2,7 @@
 /public/doc/
 /public/jquery*.js
 /public/font-awesome/
+/public/bootstrap
 /config/whitelist
 /config/debci
 /chroots/*

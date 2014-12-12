@@ -1,9 +1,9 @@
-all: public/doc/index.html public/doc/js/jquery.js
+all: public/doc/index.html
 
 include links.mk
 
 links.mk: links
-	awk '{ print("LINKS +=", $$1); print($$1, ":"); print("\tmkdir -p $$(shell dirname ", $$1, ")"); print("\tln -s", $$2, $$1)}' $^ > $@
+	awk '{ print("LINKS +=", $$1); print($$1, ":"); print("\tmkdir -p $$(shell dirname ", $$1, ")"); print("\tln -sf", $$2, $$1)}' $^ > $@
 
 all: $(LINKS)
 
@@ -18,16 +18,20 @@ spec:
 functional-tests:
 	test/runall.sh
 
-check: checkdeps all spec functional-tests
+check: all check-ui-and-docs spec functional-tests
+
+check-ui-and-docs: all
+	test -d public/doc
+	test -f public/doc/index.html
+	test -L public/doc/js/jquery.js -a -f public/doc/js/jquery.js
+	test -L public/jquery.js -a -f public/jquery.js
+	test -L public/bootstrap
 
 test: check
 
-public/doc/index.html: README.md RUBYAPI.md HACKING.md $(shell find lib -name '*.rb')
+public/doc/index.html public/doc/jq/jquery.js: README.md RUBYAPI.md HACKING.md $(shell find lib -name '*.rb')
 	$(RM) public/doc/js/jquery.js
-	yardoc --markup markdown --output-dir $@ --main README.md lib - $^
-
-public/doc/js/jquery.js:
-	mkdir -p $$(dirname $@)
+	yardoc --markup markdown --output-dir public/doc --main README.md lib - $^
 	ln -sf ../../jquery.js public/doc/js/jquery.js
 
 .PHONY: tags
