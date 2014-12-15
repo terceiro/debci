@@ -123,6 +123,8 @@ debci_chroot_path="${debci_chroots_dir}/${debci_chroot_name}"
 
 debci_bin_dir="${debci_base_dir}/bin"
 
+debci_log_dir="${debci_base_dir}/log"
+
 debci_user=$(stat -c %U "${debci_data_basedir}")
 debci_uid=$(stat -c %u "${debci_data_basedir}")
 

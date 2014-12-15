@@ -45,14 +45,6 @@ touch -d '1 month ago' "${one_month_ago}"
 
 
 run() {
-  if which update-testbed >/dev/null 2>/dev/null; then
-    log "I: Updating backend testbed"
-    update-testbed
-  else
-    log "W: Backend $debci_backend does not provide a way to update testbed!"
-  fi
-  log "I: Finished update of backend testbed"
-
   log "I: building/updating chdist for $debci_suite"
   debci-setup-chdist
 

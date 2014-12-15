@@ -14,6 +14,18 @@ export debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 
 prepare_args
 
+mkdir -p "$debci_log_dir"
+log="$debci_log_dir/debci-setup.log"
+if [ ! -f "$log" ]; then
+  touch "$log"
+  user_group=$(stat -c %U:%G "${debci_log_dir}")
+  chown $user_group "$log"
+fi
+
 if which create-testbed >/dev/null 2>/dev/null; then
-  create-testbed
+  if [ -t 1 ]; then
+    create-testbed 2>&1 | tee --append "$log"
+  else
+    create-testbed >>$log 2>&1
+  fi
 fi

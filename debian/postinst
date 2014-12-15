@@ -31,6 +31,11 @@ setup_system() {
         mkdir /var/lib/debci/gnupg
         chown debci:debci /var/lib/debci/gnupg
     fi
+
+    if [ ! -d /var/log/debci ]; then
+        mkdir /var/log/debci
+        chown debci:debci /var/log/debci
+    fi
 }
 
 migrate_data() {

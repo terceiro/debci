@@ -3,3 +3,4 @@ var/lib/debci/chroots                        usr/share/debci/chroots
 var/lib/debci/gnupg                          usr/share/debci/gnupg
 etc/debci                                    usr/share/debci/config
 usr/share/debci/bin/debci                    usr/bin/debci
+var/log/debci                                usr/share/debci/log

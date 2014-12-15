@@ -4,6 +4,7 @@ set -eu
 
 base=$(readlink -f $(dirname $(readlink -f $0))/../..)
 . $base/lib/environment.sh
+. $base/lib/functions.sh
 
 if [ $(whoami) != root ]; then
   echo "E: This script must be run as root"
@@ -119,4 +120,7 @@ if ! which schroot >/dev/null; then
   exit 1
 fi
 
+log "Starting testbed setup"
 setup_suite
+log  "Finished testbed setup"
+echo '--------------------------------------------'

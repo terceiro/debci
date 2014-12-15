@@ -72,7 +72,7 @@ status_dir_for_package() {
 
 log() {
   if [ "$debci_quiet" = 'false' ]; then
-    echo "$@"
+    echo "$(date) $@"
   fi
 }
 
