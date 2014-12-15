@@ -35,6 +35,7 @@ Depends:
  devscripts,
  dctrl-tools,
  amqp-tools,
+ sudo,
  ${misc:Depends},
  ${shlibs:Depends}
 Recommends:

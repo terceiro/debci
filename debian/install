@@ -4,3 +4,4 @@ lib/*.sh      usr/share/debci/lib
 lib/debci*    usr/lib/ruby/vendor_ruby
 public        usr/share/debci
 backends      usr/share/debci
+debian/sudoers.d/debci      etc/sudoers.d

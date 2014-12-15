@@ -1,0 +1,3 @@
+Defaults : %debci setenv
+%debci ALL = NOPASSWD: /usr/bin/lxc-*
+%debci ALL = NOPASSWD: /usr/share/debci/bin/debci-setup
