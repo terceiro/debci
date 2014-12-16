@@ -1,0 +1,10 @@
+[Unit]
+Description=debci worker daemon
+
+[Service]
+User=debci
+WorkingDirectory=/usr/share/debci
+ExecStart=/usr/share/debci/bin/debci worker
+
+[Install]
+WantedBy=multi-user.target
