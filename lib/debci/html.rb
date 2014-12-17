@@ -15,6 +15,9 @@ module Debci
       @package_prefixes = (('0'..'9').to_a + ('a'..'z').to_a + ('liba'..'libz').to_a).select do |p|
         @repository.search('^' + p).size > 0
       end.sort
+
+      @head = read_config_file('head.html')
+      @footer = read_config_file('footer.html')
     end
 
     def index(filename)
@@ -71,6 +74,13 @@ module Debci
 
       File.open(abs_filename, 'w') do |f|
         f.write(html)
+      end
+    end
+
+    def read_config_file(filename)
+      file_path = File.join(Debci.config.config_dir, filename)
+      if File.exist?(file_path)
+        File.read(file_path)
       end
     end
 
