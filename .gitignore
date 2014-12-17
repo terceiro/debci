@@ -5,6 +5,7 @@
 /public/bootstrap
 /config/whitelist
 /config/debci
+/config/*.html
 /chroots/*
 /gnupg/*
 /tags
