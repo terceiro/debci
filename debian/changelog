@@ -1,3 +1,14 @@
+debci (0.12) unstable; urgency=medium
+
+  [ Brandon Fairchild ]
+  * Debci::Package#failures: Determine the test status that occurred before a
+    tmpfail
+
+  [ Antonio Terceiro ]
+  * web UI: read head.html and footer.html from config dir
+
+ -- Antonio Terceiro <terceiro@debian.org>  Wed, 17 Dec 2014 08:45:20 -0200
+
 debci (0.11) unstable; urgency=medium
 
   [ Antonio Terceiro ]
