@@ -14,6 +14,11 @@ root permissions):
 
     $ sudo ./bin/debci-setup
 
+Once the setup is complete, run the following (where ${debci-root} is the path
+to the debci root directory):
+
+    $ sudo ln -s ${debci-root}/etc/schroot/debci /etc/schroot/debci
+
 If you run debci right now, it would run the tests for **every package** in
 Debian, and you don't want that for a development environment. To restrict
 debci to a list of packages, create a file named `whitelist` inside the
