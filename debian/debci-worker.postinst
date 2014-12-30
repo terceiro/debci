@@ -1,0 +1,6 @@
+#!/bin/sh
+
+echo "Building testbed in the background"
+debci setup > /dev/null 2>&1 &
+
+#DEBHELPER#
