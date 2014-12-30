@@ -1,2 +1,3 @@
-Defaults : %debci setenv
+Defaults:%debci setenv
+
 %debci ALL = NOPASSWD: /usr/bin/lxc-*
