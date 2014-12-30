@@ -127,6 +127,10 @@ debci_log_dir="${debci_base_dir}/log"
 
 debci_user=$(stat -c %U "${debci_data_basedir}")
 debci_uid=$(stat -c %u "${debci_data_basedir}")
+debci_group=$(stat -c %G "${debci_data_basedir}")
+
+# lock files
+debci_testbed_lock=/var/lock/debci-testbed-${debci_suite}-${debci_arch}.lock
 
 for dir in \
   "${debci_base_dir}/backends/${debci_backend}" \

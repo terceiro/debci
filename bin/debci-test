@@ -43,7 +43,7 @@ process_package() {
   start_timestamp=$(date +%s)
 
   # ignore output; we'll get the log from the adt-run output-dir
-  test-package "$pkg" "$adt_out_dir" >/dev/null 2>&1 || true
+  run_with_shared_lock "$debci_testbed_lock" test-package "$pkg" "$adt_out_dir" >/dev/null 2>&1 || true
 
   finish_timestamp=$(date +%s)
   echo $(($finish_timestamp - $start_timestamp)) >> "$adt_out_dir/duration"

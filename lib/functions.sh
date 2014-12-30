@@ -113,11 +113,35 @@ command_available() {
   which "$1" >/dev/null 2>/dev/null
 }
 
+# Makes sure $lockfile exists, and is owned by the debci user
+ensure_lockfile() {
+  local lockfile="$1"
+  if [ ! -f "$lockfile" ]; then
+    touch "$lockfile"
+    chown $debci_user:$debci_group "$lockfile"
+  fi
+}
+
 run_with_lock_or_exit() {
-  lockfile="$1"
+  local lockfile="$1"
+  ensure_lockfile "$lockfile"
   shift
   (
-    flock -n 9 || exit 0
+    flock --nonblock 9 || exit 0
     "$@"
   ) 9> "$lockfile"
+}
+
+run_with_shared_lock() {
+  local lockfile="$1"
+  shift
+  ensure_lockfile "$lockfile"
+  flock --shared "$lockfile" "$@"
+}
+
+run_with_exclusive_lock() {
+  local lockfile="$1"
+  shift
+  ensure_lockfile "$lockfile"
+  flock --exclusive "$lockfile" "$@"
 }
