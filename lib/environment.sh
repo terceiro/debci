@@ -30,7 +30,7 @@ fi
 # default values
 debci_suite=${debci_suite:-unstable}
 debci_arch=${debci_arch:-$(dpkg --print-architecture)}
-debci_mirror=${debci_mirror:-}
+debci_mirror=${debci_mirror:-http://http.debian.net/debian}
 debci_backend=${debci_backend:-schroot}
 debci_data_basedir=${debci_data_basedir:-$(readlink -f "${debci_base_dir}/data")}
 debci_quiet="${debci_quiet:-false}"
