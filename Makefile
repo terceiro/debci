@@ -17,6 +17,7 @@ spec:
 
 functional-tests:
 	test/runall.sh
+	$(RM) -v test/erl_crash.dump
 
 check: all check-ui-and-docs spec functional-tests
 
