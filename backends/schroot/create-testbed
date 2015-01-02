@@ -25,6 +25,14 @@ create_chroot() {
     done
   fi
 
+  if [ -z "$http_proxy" ]; then
+    # also lookup up proxy in the apt configuration
+    eval $(apt-config shell http_proxy Acquire::http::Proxy)
+    if [ -n "$http_proxy" ]; then
+      export http_proxy
+    fi
+  fi
+
   # FIXME automate chroot creation for foreign architectures where a
   # qemu-user-static binary is needed
   debootstrap --arch="$debci_arch" "$debci_suite" "$debci_chroot_path" $debci_mirror
