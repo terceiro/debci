@@ -6,10 +6,6 @@ apt-get install -qy lighttpd
 
 lighttpd-enable-mod simple-vhost
 mkdir -p /srv/localhost
-ln -sf /usr/share/debci/public /src/localhost/htdocs
+ln -sf /usr/share/debci/public /srv/localhost/htdocs
 
 service lighttpd restart
-
-echo '---------------------------------'
-echo "debci packages are NOT installed!"
-echo '---------------------------------'
