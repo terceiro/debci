@@ -1,8 +1,8 @@
 debci (0.13) UNRELEASED; urgency=medium
 
-  * TODO
+  * debci-generate-feeds: add test run duration to feed items
 
- -- Antonio Terceiro <terceiro@debian.org>  Tue, 30 Dec 2014 16:07:42 -0200
+ -- Antonio Terceiro <terceiro@debian.org>  Thu, 08 Jan 2015 15:39:38 -0200
 
 debci (0.12) unstable; urgency=medium
 

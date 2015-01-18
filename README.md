@@ -153,7 +153,7 @@ For the development of debci itself
 
 ## Copyright and Licensing information
 
-Copyright © 2014 the debci development team.
+Copyright © 2014-2015 the debci development team.
 
 debci is free software licensed under the GNU General Public License version 3
 or later.
