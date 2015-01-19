@@ -27,11 +27,17 @@ tags=''
 do_request() {
   read pkg specs || true  # we expect EOF and thus read to fail
   log "I: Running test for package $pkg"
-  local result_dir="$(debci-test --print-output $pkg)"
+
+  local tmp_dir=$(mktemp -d)
+
+  # run the test
+  local result_dir="$(debci-test --data-dir "$tmp_dir" --print-output $pkg)"
+
   if [ ! -s "$result_dir/exitcode" ]; then
     log "E: Test for package $pkg produced no exit code, aborting"
     exit 2
   fi
+
   case $(cat "$result_dir/exitcode") in
       0|2)
           report_status $pkg pass
@@ -44,7 +50,20 @@ do_request() {
           ;;
   esac
 
-  # TODO: trigger network FS sync
+  # publish results
+  result_dir=${result_dir##$tmp_dir/}
+
+  amqp-declare-queue \
+    --url="$debci_amqp_server" \
+    --durable \
+    --queue="$debci_amqp_results_queue" > /dev/null
+
+  ( cd $tmp_dir && tar czf - "$result_dir" ) | amqp-publish \
+    --url="${debci_amqp_server}" \
+    --persistent \
+    --routing-key="${debci_amqp_results_queue}"
+
+  rm -rf "$tmp_dir"
 }
 
 # parse CLI arguments

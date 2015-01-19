@@ -37,6 +37,7 @@ autopkgtest_dir_for_package() {
 
 tearDown() {
   stop_worker
+  stop_collector
   if [ -z "${DEBUG:-}" ]; then
     rm -rf $__tmpdir
   else
@@ -114,6 +115,7 @@ TEST_WORKER_PID=''
 start_worker() {
   start_rabbitmq_server
   stop_worker  # in case a test does multiple runs under different modes
+  start_collector
   export debci_batch_poll_interval="0.1"
   debci worker &
   TEST_WORKER_PID=$!
@@ -129,5 +131,22 @@ stop_worker() {
     fi
     kill $TEST_WORKER_PID 2>/dev/null && wait $TEST_WORKER_PID || true
     TEST_WORKER_PID=
+  fi
+}
+
+COLLECTOR_PID=''
+
+start_collector() {
+  if [ -z "$COLLECTOR_PID" ]; then # won't start multiple collectors
+    debci collector &
+    COLLECTOR_PID=$!
+  fi
+}
+
+stop_collector() {
+  if [ -n "$COLLECTOR_PID" ]; then
+    kill $COLLECTOR_PID
+    amqp-delete-queue --url $debci_amqp_server -q debci_results > /dev/null
+    COLLECTOR_PID=''
   fi
 }

@@ -27,6 +27,7 @@ settle_processes() {
 run_mypkg() {
   start_worker
   amqp-declare-queue --url $debci_amqp_server -q $QUEUE -d > /dev/null
+  start_collector
   request mypkg
   # give it some time to process requests
   sleep 0.5
@@ -36,6 +37,7 @@ run_mypkg() {
     [ -e /proc/$TEST_WORKER_PID ] || fail "test worker unexpectedly died"
   fi
   stop_worker
+  stop_collector
   settle_processes
   RESULT_DIR=$(autopkgtest_dir_for_package mypkg)
 }
@@ -79,15 +81,15 @@ test_crash_debci_test() {
   export DEBCI_FAKE_KILLPARENT="debci-test"
   result_pass run_mypkg
   assertEquals "aborted request got lost" "1" "$(clean_queue)"
-  [ -e "$RESULT_DIR" ] || fail "has unexpected result dir"
+  [ -e "$RESULT_DIR" ] && fail "has unexpected result dir"
 }
 
 test_crash_worker() {
-  export DEBCI_FAKE_KILLPARENT="amqp-consume"
+  export DEBCI_FAKE_KILLPARENT="debci-worker"
   run_mypkg
   assertEquals "aborted request got lost" "1" "$(clean_queue)"
   # there should be no logs
-  [ -e "$RESULT_DIR" ] || fail "has unexpected result dir"
+  [ -e "$RESULT_DIR" ] && fail "has unexpected result dir"
 }
 
 # generate lots of test requests, start lots of workers, and then go around and
@@ -119,6 +121,8 @@ test_smoke() {
     fi
   done
 
+  start_collector
+
   # wait until all requests have been consumed; unfortunately we have no shell
   # tool (except rabbitmqctl list_queues, which needs root) to show the queue
   # status, so we poll for all packages being handled
@@ -140,6 +144,7 @@ test_smoke() {
   for w in $WORKERS; do
     kill $w 2>/dev/null && wait $w || true
   done
+  stop_collector
   settle_processes
 
   # some tests get restarted, so we expect one or two logs
