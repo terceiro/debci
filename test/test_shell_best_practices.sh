@@ -15,7 +15,7 @@ check_shell_usage() {
     failed_checks=$(($failed_checks + 1))
   fi
 
-  if ! checkbashisms $script; then
+  if ! checkbashisms --force $script; then
     failed_checks=$(($failed_checks + 1))
   fi
 
