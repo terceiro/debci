@@ -59,10 +59,13 @@ Package: debci-worker
 Architecture: all
 Depends: debci, ${misc:Depends}, ${shlibs:Depends}
 Description: continuous integration system for Debian (worker daemon)
- debci will scan the Debian archive for packages that contain DEP-8 compliant
- test suites, and run those test suites whenever a new version of the package,
- or of any package in its dependency chain (modulo the base system), is
- available.
- .
  This package provides cron and init integration for running debci worker
- daemons that listen to AMQP queues and run test jobs.
+ daemons that will listen to AMQP queues and run test jobs.
+
+Package: debci-collector
+Architecture: all
+Depends: debci, ${misc:Depends}, ${shlibs:Depends}
+Description: continuous integration system for Debian (collector daemon)
+ This package provides the collector daemon, which will receive test results
+ published by debci worker hosts, store them centrally, and generate the static
+ HTML files for the debci user interface.
