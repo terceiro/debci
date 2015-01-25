@@ -334,7 +334,6 @@ generate_all_packages() {
   fi
   generate_packages
   debci-generate-feeds
-  log "I: Updating global status..."
   generate_status_entry
   generate_history > "${debci_status_dir}/history.json"
   $debci_base_dir/bin/debci-status --all --status-file > "${debci_status_dir}/packages.json".new
