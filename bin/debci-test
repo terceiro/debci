@@ -1,14 +1,13 @@
 #!/bin/sh
 
-short_options='io'
-long_options='index,print-output'
+short_options='o'
+long_options='print-output'
 
 usage() {
   cat <<EOF
 usage: debci test [OPTIONS] srcpkg
 
 Options:
-  -i, --index               force indexing results just after running the tests
   -o, --print-output        print output directory after test finished
 
 $@
@@ -52,8 +51,6 @@ process_package() {
   if [ -n "$print_output" ]; then
       echo "$adt_out_dir"
   fi
-  # Don't do anything after this, test-package might request an asynchronous
-  # remote test run. Results get picked up by generate-indexes.
 }
 
 # defaults
@@ -62,10 +59,6 @@ print_output=''
 
 while true; do
   case "$1" in
-    -i|--index)
-      index=true
-      shift
-      ;;
     -o|--print-output)
       print_output=true
       shift
@@ -83,9 +76,6 @@ done
 if [ $# -eq 1 ]; then
   pkg="$1"
   process_package
-  if [ $index ]; then
-    debci-generate-index "$pkg"
-  fi
 else
   usage
   exit 1
