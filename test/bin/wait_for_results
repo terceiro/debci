@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -eu
+
+debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/../..)
+cd $debci_base_dir
+. lib/environment.sh
+. lib/functions.sh
+
+while [ "$1" != '--' ]; do
+  shift
+done
+shift
+
+if [ -z "${WORKER_START_TIMESTAMP:-}" ]; then
+  echo "E: WORKER_START_TIMESTAMP not defined"
+  exit 1
+fi
+
+requested_packages="$@"
+if [ -z "$requested_packages" ]; then
+  requested_packages=$(cat $debci_config_dir/whitelist)
+fi
+
+shopt -s nullglob
+for pkg in $requested_packages; do
+  found=no
+  while true; do
+    # wait for a test result that is more recent than the start time of the
+    # current running worker
+    results=$(echo $(autopkgtest_dir_for_package $pkg)/[0-9]*/exitcode)
+    for res in $results; do
+      # cut out stamp from complete path
+      stamp=${res%/exitcode}
+      stamp=${stamp##*/}
+      if [ $stamp '>' ${WORKER_START_TIMESTAMP} -o $stamp '=' ${WORKER_START_TIMESTAMP} ]; then
+        found=yes
+        break
+      fi
+    done
+    if [ $found = yes ]; then
+      break
+    else
+      sleep ${debci_batch_poll_interval:-1}
+    fi
+  done
+done
+
+debci generate-index

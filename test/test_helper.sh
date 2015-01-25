@@ -1,6 +1,7 @@
 set -u
 
 . $(dirname $0)/dep8_helper.sh
+export PATH="$(dirname $0)/bin:$PATH"
 
 TEST_RABBIT_PORT=5677
 
@@ -113,6 +114,7 @@ stop_rabbitmq_server() {
 TEST_WORKER_PID=''
 
 start_worker() {
+  export WORKER_START_TIMESTAMP=$(date +%Y%m%d_%H%M%S)
   start_rabbitmq_server
   stop_worker  # in case a test does multiple runs under different modes
   start_collector
@@ -125,6 +127,7 @@ start_worker() {
 }
 
 stop_worker() {
+  stop_collector
   if [ -n "$TEST_WORKER_PID" ]; then
     if [ -n "${DEBUG:-}" ]; then
       echo "cleaning up worker $TEST_WORKER_PID"

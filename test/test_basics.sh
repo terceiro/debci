@@ -4,7 +4,8 @@
 
 test_everything_passes() {
   result_pass start_worker
-  debci batch --wait
+  debci batch
+  wait_for_results
   status=$(debci status -l)
   assertEquals "pass" "$(echo "$status" | awk '{print($2)}' | uniq)"
 
@@ -15,7 +16,8 @@ test_everything_passes() {
 
 test_everything_fails() {
   result_fail start_worker
-  debci batch --wait
+  debci batch
+  wait_for_results
   status=$(debci status -l)
   assertEquals "fail" "$(echo "$status" | awk '{print($2)}' | uniq)"
 
@@ -26,7 +28,8 @@ test_everything_fails() {
 
 test_packages_without_runs_yet() {
   result_pass start_worker
-  debci batch --wait
+  debci batch
+  wait_for_results
   find $debci_data_basedir -type d -name rake | xargs rm -rf
   debci generate-index
   find $debci_data_basedir -path '*data/status*' -name packages.json | xargs cat | json_pp -f json -t json > /dev/null
@@ -36,7 +39,8 @@ test_packages_without_runs_yet() {
 test_single_package() {
   echo "mypkg" > $debci_config_dir/whitelist
   result_pass start_worker
-  debci batch --wait
+  debci batch
+  wait_for_results
   assertEquals "mypkg pass" "$(debci status -l)"
 }
 
@@ -46,12 +50,16 @@ test_batch_skip_after_result() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
   echo "mypkg" > $debci_config_dir/whitelist
   result_pass start_worker
-  debci batch --wait
+  debci batch
+  wait_for_results
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 
-  result_pass start_worker
-  debci batch --wait
+  debci batch
+  start_worker
+  # XXX it's unfortunate that we need to wait a bit here, but for now there is
+  # no way to tap in the enqueueing process to make sure nothing is scheduled.
+  timeout 3s wait_for_results
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 }
@@ -61,12 +69,14 @@ test_batch_rerun_after_tmpfail() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
   echo "mypkg" > $debci_config_dir/whitelist
   result_tmpfail start_worker
-  debci batch --wait
+  debci batch
+  wait_for_results
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 
   result_pass start_worker
-  debci batch --wait
+  debci batch
+  wait_for_results
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 2 $num_logs
 
@@ -80,13 +90,15 @@ test_batch_rerun_dep_change() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
   echo "mypkg" > $debci_config_dir/whitelist
   result_pass start_worker
-  debci batch --wait
+  debci batch
+  wait_for_results
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 
   export DEBCI_FAKE_DEPS="foo 1.2.4"
   result_pass start_worker
-  debci batch --wait
+  debci batch
+  wait_for_results
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 2 $num_logs
 
@@ -101,12 +113,14 @@ test_batch_force() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
   echo "mypkg" > $debci_config_dir/whitelist
   result_pass start_worker
-  debci batch --wait
+  debci batch
+  wait_for_results
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 
   result_pass start_worker
-  debci batch --wait --force
+  debci batch --force
+  wait_for_results
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 2 $num_logs
 
@@ -117,7 +131,8 @@ test_batch_force() {
 
 test_status_for_all_packages() {
   result_pass start_worker
-  debci batch --wait
+  debci batch
+  wait_for_results
   local status_file="$debci_data_basedir/status/unstable/$debci_arch/packages.json"
   assertTrue 'ruby-ffi present in status file' "grep ruby-ffi $status_file"
   assertTrue 'rubygems-integration present in status file' "grep rubygems-integration $status_file"
