@@ -72,7 +72,7 @@ status_dir_for_package() {
 
 log() {
   if [ "$debci_quiet" = 'false' ]; then
-    echo "$(date +"%b %d %H:%M:%S") $@"
+    /bin/echo -e "$(date +"%b %d %H:%M:%S") $@"
   fi
 }
 
@@ -102,7 +102,7 @@ report_status() {
         color=5 # should never get here though
         ;;
     esac
-    /bin/echo -e "${pkg} \033[38;5;${color}m${status}\033[m" "$duration"
+    log "${pkg} \033[38;5;${color}m${status}\033[m" "$duration"
   else
     log "$pkg" "$status" "$duration"
   fi
