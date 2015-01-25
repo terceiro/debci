@@ -14,6 +14,7 @@ report() {
 
 testdir=$(dirname $0)
 
+start_time=$(date +%s)
 tests=0
 passed=0
 failed=0
@@ -37,5 +38,7 @@ for test_script in $(find . -name 'test_*' -type f -executable); do
   fi
   rm -rf "$tmpdir"
 done
+end_time=$(date +%s)
+echo "Finished in $(($end_time - $start_time)) seconds"
 
 exit $failed
