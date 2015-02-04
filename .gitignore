@@ -7,6 +7,7 @@
 /config/whitelist
 /config/debci
 /config/*.html
+/config/debci.conf
 /chroots/*
 /gnupg/*
 /tags
