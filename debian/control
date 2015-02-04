@@ -57,7 +57,7 @@ Description: continuous integration system for Debian
 
 Package: debci-worker
 Architecture: all
-Depends: debci, ${misc:Depends}, ${shlibs:Depends}
+Depends: debci, schroot | lxc, ${misc:Depends}, ${shlibs:Depends}
 Description: continuous integration system for Debian (worker daemon)
  This package provides cron and init integration for running debci worker
  daemons that will listen to AMQP queues and run test jobs.
