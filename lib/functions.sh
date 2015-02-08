@@ -30,7 +30,7 @@ list_packages_from_archive() {
 
 get_maintainers() {
   local pkg="$1"
-  grep_sources -n -s Maintainer,Uploaders -F Package -X "$pkg"  | sed -e 's/,\s*/\n/g' | sed -e 's/.*<\(.*\)>.*/\1/'
+  grep_sources -n -s Maintainer,Uploaders -F Package -X "$pkg"  | sed -e 's/,\s*/\n/g' | sed -e 's/.*<\(.*\)>.*/\1/; /^$/d'
 }
 
 
