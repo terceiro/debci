@@ -124,6 +124,14 @@ $ adt-run --user debci --output-dir /tmp/output-dir \
   --- schroot debci-unstable-amd64
 ```
 
+Alternatively, to run the test suite from **the root of a source package**
+against the currently installed version without requiring a virtualisation
+environment. Note that your local environment may make the results unreliable.
+
+```
+$ adt-run --output-dir /tmp/output-dir ./ --- null
+```
+
 For more details, see the documentation for the `autopkgtest` package.
 
 
