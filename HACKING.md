@@ -1,12 +1,29 @@
 # debci - setting up a development environment
 
-Install the dependencies and build dependencies (look at debian/control). You
-probably also want to install a few other packages:
+Install the dependencies and build dependencies (look at debian/control).
 
-* `apt-cacher-ng` to cache package downloads.
-* `moreutils` if you want to test the supporting for testing packages in parallel.
-* `lighttpd` to run the web interface (see below for more information)
-  * Note: you might want to not have lighttpd running as a daemon on your system.
+There are a few extra packages that are not strictly dependencies, but you will
+need:
+
+```
+$ sudo apt-get install ruby-foreman apt-cacher-ng \
+  moreutils lighttpd rabbitmq-server
+```
+
+You might not want to have lighttpd and rabbitmq-server running at all times.
+To disable them, you can run:
+
+```
+$ sudo systemctl disable lighttpd
+$ sudo systemctl disable rabbitmq-server
+```
+
+If you disabled rabbitmq-server, you will need to start it before hacking on
+debci:
+
+```
+$ server rabbitmq-server start
+```
 
 After having the dependencies installed, the first step is to set up the test
 environment. To do that, you need to run the following command (which needs
@@ -14,10 +31,9 @@ root permissions):
 
     $ sudo ./bin/debci-setup
 
-Once the setup is complete, run the following (where ${debci-root} is the path
-to the debci root directory):
+Once the setup is complete, run the following:
 
-    $ sudo ln -s ${debci-root}/etc/schroot/debci /etc/schroot/debci
+    $ sudo ln -s $(pwd)/etc/schroot/debci /etc/schroot/debci
 
 If you run debci right now, it would run the tests for **every package** in
 Debian that has tests, and you don't want that for a development environment.
@@ -35,7 +51,7 @@ rake
 
 You might want to test with other packages, that's fine. Just take into
 consideration that the more packages you have, the longer debci will take to
-finish a run.
+run their tests.
 
 If you don't need to test the process of actually running tests (e.g. you are
 only working on the user interface), you can also make debci use the "fake"
@@ -47,11 +63,16 @@ following contents:
 debci_backend=fake
 ```
 
-debci is composed of a few daemons. You can run all of them in one shot by
-installing the `ruby-foreman` package and running:
+Now you need to compile a few files that will be part of the user interface:
 
 ```
 $ make
+```
+
+debci is composed of a few daemons; you can run all of them in one shot by
+running:
+
+```
 $ foreman start
 ```
 
