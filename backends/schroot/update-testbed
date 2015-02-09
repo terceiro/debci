@@ -19,4 +19,10 @@ DEBIAN_FRONTEND=noninteractive schroot \
   --chroot "source:${debci_chroot_name}" \
   --directory / \
   --user root \
+  -- apt-get install dpkg-dev -q -y --no-install-recommends
+
+DEBIAN_FRONTEND=noninteractive schroot \
+  --chroot "source:${debci_chroot_name}" \
+  --directory / \
+  --user root \
   -- apt-get dist-upgrade -q -y

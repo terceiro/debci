@@ -40,8 +40,17 @@ fi
 
 adt-build-lxc $distro $debci_suite $debci_arch
 
+LXC_PATH=$(lxc-config lxc.lxcpath) || LXC_PATH=/var/lib/lxc
+
 # configure guest proxy
 if [ -n "$GUEST_PROXY" ]; then
-  LXC_PATH=$(lxc-config lxc.lxcpath) || LXC_PATH=/var/lib/lxc
   echo "Acquire::http::Proxy \"$GUEST_PROXY\" ;" > "$LXC_PATH/adt-${debci_suite}-${debci_arch}/rootfs/etc/apt/apt.conf.d/70proxy"
 fi
+
+DEBIAN_FRONTEND=noninteractive \
+  chroot "$LXC_PATH/adt-${debci_suite}-${debci_arch}/rootfs"  \
+  apt-get install dpkg-dev -q -y --no-install-recommends
+
+DEBIAN_FRONTEND=noninteractive \
+  chroot "$LXC_PATH/adt-${debci_suite}-${debci_arch}/rootfs"  \
+  apt-get clean
