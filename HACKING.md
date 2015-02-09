@@ -20,10 +20,10 @@ to the debci root directory):
     $ sudo ln -s ${debci-root}/etc/schroot/debci /etc/schroot/debci
 
 If you run debci right now, it would run the tests for **every package** in
-Debian, and you don't want that for a development environment. To restrict
-debci to a list of packages, create a file named `whitelist` inside the
-`config` directory, containing one package name per line. Here is an example
-with packages whose tests are pretty fast:
+Debian that has tests, and you don't want that for a development environment.
+To restrict debci to a list of packages, create a file named `whitelist` inside
+the `config` directory, containing one package name per line. Here is an
+example with packages whose tests are pretty fast:
 
 ```
 $ cat config/whitelist
@@ -37,24 +37,50 @@ You might want to test with other packages, that's fine. Just take into
 consideration that the more packages you have, the longer debci will take to
 finish a run.
 
-Now you are ready to actually run debci:
+If you don't need to test the process of actually running tests (e.g. you are
+only working on the user interface), you can also make debci use the "fake"
+backend. This backend does not actually do anything, and will mark test runs as
+passed or failed randomly. To do that, create `config/debci.conf` with the
+following contents:
 
-    $ ./bin/debci-batch
-    $ ./bin/debci-generate-index
+```
+debci_backend=fake
+```
 
-To visualize the web interface, follow the following steps:
+debci is composed of a few daemons. You can run all of them in one shot by
+installing the `ruby-foreman` package and running:
 
-    $ make
-    $ ./tools/server.sh
+```
+$ make
+$ foreman start
+```
 
-Now browse to [http://localhost:8888/](http://localhost:8888/)
+This will start:
+
+- one debci worker daemon, which runs tests.
+- one debci collector daemon, which receives test results, and generates data files and HTML for the web interface.
+- one web server daemon.
+
+To visualize the web interface, browse to
+[http://localhost:8888/](http://localhost:8888/)
+
+To schedule a batch of test runs, run
+
+```
+$ ./bin/debci batch
+```
+
+To schedule a single test run, run:
+
+```
+$ ./bin/debci enqueue $PACKAGE
+```
 
 If you think the web interface looks empty, it is because a single debci run
 does not provide enough data to work with.  You might want to generate some
 fake data so the web interface will look a lot nicer:
 
     $ ./tools/gen-fake-data.sh
-
 
 # debci web UI development
 
