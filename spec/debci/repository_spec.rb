@@ -141,9 +141,9 @@ describe Debci::Repository do
     glob = File.join(@datadir, 'packages/{unstable}/{amd64}/r/rake/[0-9]*.json')
     statuses_reversed = Dir.glob(glob).sort_by { |f| File.basename(f) }.reverse
 
-    repository.stub(:architectures).and_return(['amd64'])
-    repository.stub(:suites).and_return(['unstable'])
-    Dir.stub(:glob).with(glob).and_return(statuses_reversed)
+    expect(repository).to receive(:architectures).and_return(['amd64'])
+    expect(repository).to receive(:suites).and_return(['unstable'])
+    expect(Dir).to receive(:glob).with(glob).and_return(statuses_reversed)
 
     news = repository.news_for('rake')
 

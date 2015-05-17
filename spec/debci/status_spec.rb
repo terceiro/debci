@@ -149,8 +149,8 @@ describe Debci::Status do
 
   def save_status_file(filename, json)
     io = StringIO.new(json)
-    File.stub(:exists?).with(filename).and_return(true)
-    File.stub(:open).with(filename, 'r').and_yield(io)
+    expect(File).to receive(:exists?).with(filename).and_return(true)
+    expect(File).to receive(:open).with(filename, 'r').and_yield(io)
   end
 
 end

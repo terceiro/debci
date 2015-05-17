@@ -9,32 +9,32 @@ describe Debci::Package do
   end
 
   it 'queries repository for architectures' do
-    repository.stub(:architectures_for).with(package).and_return(['amd64', 'i386'])
+    expect(repository).to receive(:architectures_for).with(package).and_return(['amd64', 'i386'])
     expect(package.architectures).to eq(['amd64', 'i386'])
   end
 
   it 'queries repository for suites' do
-    repository.stub(:suites_for).with(package).and_return(['unstable', 'experimental'])
+    expect(repository).to receive(:suites_for).with(package).and_return(['unstable', 'experimental'])
     expect(package.suites).to eq(['unstable', 'experimental'])
   end
 
   it 'queries repository for status' do
     status = double
-    repository.stub(:status_for).with(package).and_return(status)
+    expect(repository).to receive(:status_for).with(package).and_return(status)
     expect(package.status).to be(status)
   end
 
   it 'queries repository for news' do
     news = double
-    repository.stub(:news_for).with(package).and_return(news)
+    expect(repository).to receive(:news_for).with(package).and_return(news)
     expect(package.news).to be(news)
   end
 
   it 'detects if it has a failure' do
-    package.stub(:failures).and_return(['unstable/amd64'])
+    expect(package).to receive(:failures).and_return(['unstable/amd64'])
     expect(package.failures).to eq(['unstable/amd64'])
 
-    package.stub(:failures).and_return(nil)
+    expect(package).to receive(:failures).and_return(nil)
     expect(package.failures).to eq(nil)
   end
 
