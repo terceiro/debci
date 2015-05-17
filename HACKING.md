@@ -98,8 +98,9 @@ $ ./bin/debci enqueue $PACKAGE
 ```
 
 If you think the web interface looks empty, it is because a single debci run
-does not provide enough data to work with.  You might want to generate some
-fake data so the web interface will look a lot nicer:
+does not provide enough data to work with.  You might want to submit a few test
+jobs to make the web interface will look a lot nicer (it might take a while to
+process):
 
     $ ./tools/gen-fake-data.sh
 
