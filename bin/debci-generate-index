@@ -195,7 +195,7 @@ generate_package_run_dependencies() {
 # compute $blame for current $pkg, from tmp_dir/test-packages.diff
 generate_package_blame() {
   blame="$(debci-status --field blame --json "$pkg")"
-  if [ "$blame" = 'unknown' ]; then
+  if [ "$blame" = 'null' ]; then
     blame='[]'
   fi
 

@@ -1,145 +1,105 @@
-#!/bin/sh
+#!/usr/bin/ruby
 
-set -eu
+require 'json'
+require 'optparse'
 
-short_options='jlf:s'
-long_options='json,all,field:,status-file'
+require 'debci'
 
-usage() {
-  cat <<EOF
-usage: debci-status [OPTIONS] [PACKAGE] [PACKAGE ...]
+$all = false
+$json = false
+$status_file = false
+$field = 'status'
 
-When not using -l/--all, one or more PACKAGEs have to be specified.
+optparse = OptionParser.new do |opts|
 
-Options:
+  opts.banner = 'Usage: debci status [OPTIONS] [PACKAGE]'
+  opts.separator 'Options:'
 
-  -l, -all                  show status for all packages
-  -j, --json                output JSON
-  --status-file         outputs the full status file (implies --json)
-  -f FIELD, --field FIELD   display FIELD from the status file (default: status)
+  opts.on('-l', '--all', 'show status for all packages') do
+    $all = true
+  end
 
-$@
-EOF
-}
+  opts.on('j', '--json', 'outputs JSON') do
+    $json = true
+  end
 
-base=$(readlink -f $(dirname $(readlink -f $0))/..)
-cd $base
-. $base/lib/environment.sh
-. $base/lib/functions.sh
+  opts.on('--status-file', 'outputs the full status file (implies --json)') do
+    $status_file = true
+    $json = true
+  end
 
+  opts.on('-f FIELD', '--field FIELD', 'displays FIELD from the status file (default: status)') do |f|
+    $field = f
+  end
 
-get_status_file() {
-  local pkg="$1"
-  local status_dir=$(status_dir_for_package "$1")
-  echo "${status_dir}/latest.json"
-}
+end
+optparse.parse!
 
-get_status() {
-  local pkg="$1"
-  local length="${2:-0}"
-
-  local status_file=$(get_status_file "$pkg")
-
-  if [ -f "$status_file" ]; then
-    ruby -e "
-      field = \"$field\"
-      length = $length
-      json = $json"'
-      require "json"
-      data = JSON.parse(ARGF.read)
-      value = data[field] || "unknown"
-      if json
-        value = value.to_json
-      end
-      if length > 0
-        printf("%-#{length}s ", data["package"])
-      end
-      puts(value)
-      ' "$status_file"
-  else
-    if [ "$length" -eq 0 ]; then
-      echo "unknown"
-    else
-      printf "%-${length}s unknown\n" "$pkg"
-    fi
-  fi
-}
-
-# defaults
-all=''
-json='false'
-field='status'
-status_file=''
-
-while true; do
-  case "$1" in
-    --json|-j)
-      json='true'
-      shift
-      ;;
-    --all|-l)
-      all=true
-      shift
-      ;;
-    --field|-f)
-      field="$2"
-      shift 2
-      ;;
-    --status-file)
-      status_file='true'
-      json='true'
-      shift
-      ;;
-    --)
-      shift
-      break
-      ;;
-    *)
-      shift
-      ;;
-  esac
-done
-
-if [ $all ]; then
-  pkgs=$(debci-list-packages)
-  eval set -- $pkgs
-fi
-
-if [ $# -lt 1 ]; then
-  usage
+if !$all && ARGV.size == 0
+  puts "debci-status: when not using -l/--all, one or more PACKAGEs have to be specified."
   exit 1
-fi
+end
 
-# JSON data
-indent='cat'
-if [ $status_file ]; then
-  if [ $# -gt 1 -o $all ]; then
-    echo "["
-    indent=indent
-  fi
-  prefix=''
-  for pkg in $@; do
-    status_file=$(get_status_file "$pkg")
-    if [ -f "$status_file" ]; then
-      (
-        echo "$prefix"
-        cat "$status_file"
-      ) | $indent
-      prefix=','
-    fi
-  done
-  [ $# -gt 1 -o $all ] && echo "]"
-  exit
-fi
+def get_status_file(pkg)
+  # FIXME duplicates logic found elsewhere :-/
+  prefix = pkg.sub(/^((lib)?.).*/, '\1')
+  File.join(Debci.config.packages_dir, prefix, pkg, 'latest.json')
+end
 
-# single package
-if [ $# -eq 1 -a ! $all ]; then
-  get_status "$1"
-  exit
-fi
+def read_status_file(pkg)
+  status_file = get_status_file(pkg)
+  if File.exist?(status_file)
+    JSON.load(File.open(status_file))
+  else
+    { 'package' => pkg, $field => nil }
+  end
+end
 
-# multiple packages
-max_length=$(for pkg in $@; do echo "$pkg"; done | wc -L)
-for pkg in $@; do
-  get_status "$pkg" "$max_length"
-done
+if $all
+  packages = `debci-list-packages`.split
+else
+  packages = ARGV
+end
+
+def format_field(v)
+  v || 'unknown'
+end
+
+if $json
+  case packages.size
+  when 1
+    if $status_file
+      puts File.read(get_status_file(packages.first))
+    else
+      data = read_status_file(packages.first)
+      puts data[$field].to_json
+    end
+  else
+    puts "["
+    sep = ''
+    packages.each do |p|
+      status_file = get_status_file(p)
+      puts sep
+      if File.exist?(status_file)
+        File.readlines(status_file).each do |line|
+          puts '  ' + line
+        end
+        sep = '  ,'
+      end
+    end
+    puts "]"
+  end
+else
+  results = packages.map do |p|
+    read_status_file(p)
+  end
+  if !$all && results.size == 1
+    puts format_field(results.first[$field])
+  else
+    max_length = results.map { |pkg| pkg['package'].length }.max
+    fmt = "%-#{max_length}s %s"
+    results.each do |pkg|
+      puts fmt % [pkg['package'], format_field(pkg[$field])]
+    end
+  end
+end

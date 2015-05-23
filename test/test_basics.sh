@@ -36,6 +36,12 @@ test_packages_without_runs_yet() {
   assertEquals 0 $?
 }
 
+test_status_no_runs() {
+  echo 'mypkg' > $debci_config_dir/whitelist
+  status="$(debci status -l)"
+  (echo "$status" | grep -q '^mypkg\s*unknown$') || fail "invalid status: $status"
+}
+
 test_single_package() {
   echo "mypkg" > $debci_config_dir/whitelist
   result_pass start_worker
