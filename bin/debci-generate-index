@@ -355,6 +355,4 @@ if [ -d "$debci_autopkgtest_incoming_dir" ]; then
   run_with_lock_or_exit \
     /var/lock/debci-generate-index-${debci_suite}-${debci_arch}.lock \
     generate_all_packages
-else
-  log "I: No test results, nothing to generate"
 fi
