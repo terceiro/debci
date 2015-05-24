@@ -62,6 +62,11 @@ autopkgtest_dir_for_package() {
   echo "${debci_autopkgtest_dir}/${pkg_dir}"
 }
 
+autopkgtest_incoming_dir_for_package() {
+  local pkg="$1"
+  pkg_dir=$(echo "$pkg" | sed -e 's/\(\(lib\)\?.\).*/\1\/&/')
+  echo "${debci_autopkgtest_incoming_dir}/${pkg_dir}"
+}
 
 status_dir_for_package() {
   local pkg="$1"
@@ -105,7 +110,7 @@ report_status() {
     log "${pkg} \033[38;5;${color}m${status}\033[m" "$duration"
   else
     log "$pkg" "$status" "$duration"
-  fi
+  fi >&2
 }
 
 

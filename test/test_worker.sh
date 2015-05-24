@@ -39,7 +39,7 @@ run_mypkg() {
   stop_worker
   stop_collector
   settle_processes
-  RESULT_DIR=$(autopkgtest_dir_for_package mypkg)
+  RESULT_DIR=$(autopkgtest_incoming_dir_for_package mypkg)
 }
 
 test_no_crash_success() {
@@ -131,7 +131,7 @@ test_smoke() {
   while [ $completed -lt $NUM_REQUESTS ] && [ $timeout -gt 0 ]; do
     sleep 0.1
     timeout=$((timeout - 1))
-    while [ $(find $debci_data_basedir/autopkgtest/unstable/amd64/p/pkg$(($completed + 1)) -name duration 2>/dev/null | wc -l) -gt 0 ]; do
+    while [ $(find $debci_data_basedir/autopkgtest-incoming/unstable/amd64/p/pkg$(($completed + 1)) -name duration 2>/dev/null | wc -l) -gt 0 ]; do
       completed=$(($completed + 1))
     done
   done
@@ -149,7 +149,7 @@ test_smoke() {
 
   # some tests get restarted, so we expect one or two logs
   for i in `seq $NUM_REQUESTS`; do
-    local d=$(autopkgtest_dir_for_package pkg$i)
+    local d=$(autopkgtest_incoming_dir_for_package pkg$i)
     nlogs=$(ls $d/*/log.gz | wc -l)
     nexit=$(ls $d/*/exitcode | wc -l)
     assertTrue "one or two logs for pkg$i" "[ $nlogs -eq 1 -o $nlogs -eq 2 ]"

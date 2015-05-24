@@ -31,27 +31,30 @@ trap cleanup INT TERM EXIT
 
 
 # check for new autopkgtest outputs and generate debci metadata for those
+# outputs a list of packages that got new results
 generate_packages() {
-  local which_pkg="${1:-*}"
-  local initial=$(expr substr "$which_pkg" 1 1)
-  for adtpkgdir in "$debci_autopkgtest_dir"/$initial/$which_pkg; do
-    status_dir=$(status_dir_for_package $(basename "$adtpkgdir"))
-    mkdir -p "$status_dir"
-    if [ -e "$status_dir/latest-autopkgtest" ]; then
-      latest_run=$(basename $(readlink "$status_dir/latest-autopkgtest"))
-    else
-      # first seen, process all runs
-      latest_run=0
-    fi
+  local pkgs=''
+  for test_run_exit_code in $(find "$debci_autopkgtest_incoming_dir" -name exitcode | sort); do
+    incoming_dir=$(dirname $test_run_exit_code)
+    target_dir=$(echo "$incoming_dir" | sed -e 's#/autopkgtest-incoming/#/autopkgtest/#')
 
-    # find all results which are newer than latest_run; ignore ones which are
-    # currently running, i. e. don't have an exitcode yet
-    for run in "$adtpkgdir"/*; do
-      if expr "$(basename "$run")" '>' $latest_run >/dev/null && [ -s "$run/exitcode" ]; then
-        generate_package_run "$run" "$status_dir"
-      fi
-    done
+    local pkg="$(basename $(dirname "$incoming_dir"))"
+    status_dir=$(status_dir_for_package "$pkg")
+    mkdir -p "$status_dir"
+
+    mkdir -p "$(dirname "$target_dir")"
+    mv "$incoming_dir" "$target_dir"
+
+    generate_package_run "$target_dir" "$status_dir"
+    case "$pkgs" in
+      *" $pkg")
+        ;;
+      *)
+        pkgs="$pkgs $pkg"
+        ;;
+    esac
   done
+  echo "$pkgs"
 }
 
 # generate debci metadata for autopkgtest output $1 into status dir $2
@@ -304,7 +307,6 @@ generate_status_entry() {
   cat > "${debci_status_dir}/${date}.json" <<EOF
 {
   "date": "$date",
-  "duration": ${run_duration},
   "pass": $pass,
   "fail": $fail,
   "tmpfail": $tmpfail,
@@ -316,15 +318,22 @@ EOF
 
 generate_history() {
   local prefix=""
-  echo "["
-  for entry in "${debci_status_dir}"/[0-9]*.json; do
-    if [ -n "$prefix" ]; then
-      echo "$prefix"
-    fi
-    cat $entry
-    prefix=","
-  done
-  echo "]"
+  (
+    echo "["
+    for entry in "${debci_status_dir}"/[0-9]*.json; do
+      if [ -n "$prefix" ]; then
+        echo "$prefix"
+      fi
+      cat $entry
+      prefix=","
+    done
+    echo "]"
+  ) > "${debci_status_dir}/history.json"
+}
+
+generate_packages_status() {
+  $debci_base_dir/bin/debci-status --all --status-file > "${debci_status_dir}/packages.json".new
+  mv "${debci_status_dir}/packages.json".new "${debci_status_dir}/packages.json"
 }
 
 generate_all_packages() {
@@ -332,44 +341,20 @@ generate_all_packages() {
   if [ -d "$debci_packages_dir" ]; then
     find "$debci_packages_dir" -empty -delete
   fi
-  generate_packages
-  debci-generate-feeds
-  generate_status_entry
-  generate_history > "${debci_status_dir}/history.json"
-  $debci_base_dir/bin/debci-status --all --status-file > "${debci_status_dir}/packages.json".new
-  mv "${debci_status_dir}/packages.json".new "${debci_status_dir}/packages.json"
-  debci-generate-html
+  local updated_packages="$(generate_packages)"
+  if [ -n "$updated_packages" ]; then
+    debci-generate-feeds $updated_packages
+    generate_status_entry
+    generate_history
+    generate_packages_status
+    debci-generate-html $updated_packages
+  fi
 }
 
-run_duration=0
-while true; do
-  case "$1" in
-    --duration)
-      run_duration="$2"
-      shift 2
-      ;;
-    --)
-      shift
-      break
-      ;;
-    *)
-      shift
-      ;;
-  esac
-done
-
-if [ $# -gt 0 ]; then
-  for p in $@; do
-    generate_packages "$p"
-    debci-generate-feeds "$p"
-    debci-generate-html "$@"
-  done
+if [ -d "$debci_autopkgtest_incoming_dir" ]; then
+  run_with_lock_or_exit \
+    /var/lock/debci-generate-index-${debci_suite}-${debci_arch}.lock \
+    generate_all_packages
 else
-  if [ -d "$debci_autopkgtest_dir" ]; then
-    run_with_lock_or_exit \
-      /var/lock/debci-generate-index-${debci_suite}-${debci_arch}.lock \
-      generate_all_packages
-  else
-    log "I: No test results, nothing to generate"
-  fi
+  log "I: No test results, nothing to generate"
 fi

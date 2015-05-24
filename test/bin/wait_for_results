@@ -28,7 +28,7 @@ for pkg in $requested_packages; do
   while true; do
     # wait for a test result that is more recent than the start time of the
     # current running worker
-    results=$(echo $(autopkgtest_dir_for_package $pkg)/[0-9]*/exitcode)
+    results=$(echo $(autopkgtest_incoming_dir_for_package $pkg)/[0-9]*/exitcode)
     for res in $results; do
       # cut out stamp from complete path
       stamp=${res%/exitcode}
