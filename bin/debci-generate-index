@@ -317,18 +317,7 @@ EOF
 }
 
 generate_history() {
-  local prefix=""
-  (
-    echo "["
-    for entry in "${debci_status_dir}"/[0-9]*.json; do
-      if [ -n "$prefix" ]; then
-        echo "$prefix"
-      fi
-      cat $entry
-      prefix=","
-    done
-    echo "]"
-  ) > "${debci_status_dir}/history.json"
+  debci-generate-history "${debci_status_dir}" "${debci_status_dir}/history.json"
 }
 
 generate_packages_status() {
