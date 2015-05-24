@@ -74,8 +74,7 @@ process_all_packages() {
   for pkg in $(all_packages_with_fastest_first); do
     if needs_processing $pkg; then
       requested_packages="${requested_packages}${pkg} "
-      amqp-publish --url ${debci_amqp_server} --persistent -r $debci_amqp_queue --body $pkg
-      report_status "$pkg" "requested"
+      debci-enqueue "$pkg"
     else
       report_status "$pkg" "skip"
     fi

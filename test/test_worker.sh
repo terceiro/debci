@@ -3,14 +3,15 @@ set -u
 
 . $(dirname $0)/test_helper.sh
 
-QUEUE=debci-unstable-amd64-fake
+# let's mess with a seperate queue just for this test
+export debci_amqp_queue="${debci_amqp_queue:-debci-unstable-amd64}-fake"
 
 request() {
-  amqp-publish --url $debci_amqp_server -r $QUEUE -p -b $1
+  debci-enqueue $1
 }
 
 clean_queue() {
-  amqp-delete-queue --url $debci_amqp_server -q $QUEUE
+  amqp-delete-queue --url $debci_amqp_server -q $debci_amqp_queue
 }
 
 settle_processes() {
@@ -26,7 +27,7 @@ settle_processes() {
 
 run_mypkg() {
   start_worker
-  amqp-declare-queue --url $debci_amqp_server -q $QUEUE -d > /dev/null
+  amqp-declare-queue --url $debci_amqp_server -q $debci_amqp_queue -d > /dev/null
   start_collector
   request mypkg
   # give it some time to process requests
@@ -100,7 +101,7 @@ test_smoke() {
   unset DEBCI_FAKE_KILLPARENT
 
   start_rabbitmq_server
-  amqp-declare-queue --url $debci_amqp_server -q $QUEUE -d > /dev/null
+  amqp-declare-queue --url $debci_amqp_server -q $debci_amqp_queue -d > /dev/null
 
   local WORKERS=''
   for i in `seq $NUM_WORKERS`; do
