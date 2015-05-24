@@ -22,6 +22,23 @@ debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 write_results() {
   results=$(tar xzfv - -C "$debci_data_basedir" | grep exitcode | xargs dirname)
   log "Received $results"
+  maybe_update_indexes
+}
+
+maybe_update_indexes() {
+  if [ -n "$DEBCI_RUNNING_TESTS" ]; then return; fi
+
+  if [ -z "$__last_index_update" ]; then
+    __last_index_update=0
+  fi
+  now=$(date +%s)
+
+  # Publish updates at most every 60 seconds
+  if [ $(($now - $__last_index_update)) -gt 60 ]; then
+    debci-generate-index
+    # get current time again because debci-generate-index might take a while
+    __last_index_update=$(date +%s)
+  fi
 }
 
 while true; do

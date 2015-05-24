@@ -5,6 +5,7 @@ export PATH="$(dirname $0)/bin:$PATH"
 
 TEST_RABBIT_PORT=5677
 
+export DEBCI_RUNNING_TESTS=yes
 export debci_quiet='true'
 export debci_backend='fake'
 export debci_amqp_server="amqp://localhost:$TEST_RABBIT_PORT"
