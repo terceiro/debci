@@ -2,16 +2,10 @@
 
 set -eu
 
-long_options='duration:'
 usage() {
   echo "usage: $0 [OPTIONS] [PACKAGE ...]"
   echo
   echo "When packages are specified, only the named packages are processed"
-  echo
-  echo "Options:"
-  echo
-  echo "  --duration N      Specifies the total duration in seconds of the "
-  echo "                    latest test run batch"
   echo
   echo "$usage_shared_options"
   echo
