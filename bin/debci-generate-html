@@ -49,12 +49,18 @@ packages.each do |pkg|
 end
 
 
-# Generate a JSON file for storing a package's suite/architectures and
+# Maintain a JSON file for storing a package's suite/architectures and
 # status. The file is used for the JavaScript package search.
-package_writer = File.open(File.join(Debci.config.data_basedir, '.html/packages', 'packages.json'), 'w')
-data = []
+json_filename = File.join(Debci.config.data_basedir, '.html/packages', 'packages.json')
+if File.exist?(json_filename)
+  json_package_data = JSON.load(File.read(json_filename))
+else
+  json_package_data = []
+end
 
-repository.each_package do |package|
+packages.each do |pkg|
+  package = repository.find_package(pkg)
+
   platforms = []
 
   package.suites.each do |suite|
@@ -76,12 +82,17 @@ repository.each_package do |package|
       all_statuses.push(status.status) if status.status != :no_test_data
     end
   end
-
-  data.push("package" => package.name, "platforms" => platforms, "status" => all_statuses)
+  entry = json_package_data.find { |entry| entry['package'] == pkg }
+  if !entry
+    entry = { 'package' => pkg }
+    json_package_data.push(entry)
+  end
+  entry['platforms'] = platforms
+  entry['status'] = all_statuses
 end
-
-package_writer.write(JSON.pretty_generate(data))
-package_writer.close
+File.open(json_filename, 'w') do |f|
+  f.write(JSON.pretty_generate(json_package_data))
+end
 
 writer.prefix(nil, "packages/index.html")
 
