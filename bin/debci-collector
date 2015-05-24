@@ -26,9 +26,9 @@ write_results() {
 }
 
 maybe_update_indexes() {
-  if [ -n "$DEBCI_RUNNING_TESTS" ]; then return; fi
+  if [ -n "${DEBCI_RUNNING_TESTS:-}" ]; then return; fi
 
-  if [ -z "$__last_index_update" ]; then
+  if [ -z "${__last_index_update:-}" ]; then
     __last_index_update=0
   fi
   now=$(date +%s)
