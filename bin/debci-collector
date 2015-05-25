@@ -28,16 +28,18 @@ write_results() {
 maybe_update_indexes() {
   if [ -n "${DEBCI_RUNNING_TESTS:-}" ]; then return; fi
 
-  if [ -z "${__last_index_update:-}" ]; then
-    __last_index_update=0
+  local now=$(date +%s)
+  timestamp="${debci_data_basedir}/.collector-generate-index.stamp"
+  if [ -f "${timestamp}" ]; then
+    local __last_index_update=$(stat -c %Y "${timestamp}")
+  else
+    local __last_index_update=0
   fi
-  now=$(date +%s)
 
   # Publish updates at most every 60 seconds
   if [ $(($now - $__last_index_update)) -gt 60 ]; then
     debci-generate-index
-    # get current time again because debci-generate-index might take a while
-    __last_index_update=$(date +%s)
+    touch "${timestamp}"
   fi
 }
 
