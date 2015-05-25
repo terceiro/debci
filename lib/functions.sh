@@ -77,7 +77,7 @@ status_dir_for_package() {
 
 log() {
   if [ "$debci_quiet" = 'false' ]; then
-    /bin/echo -e "$(date +"%b %d %H:%M:%S") $@"
+    echo "$@"
   fi
 }
 
