@@ -12,6 +12,11 @@ test_everything_passes() {
   # check validity of debci-status format
   echo "$status" | grep -q '^ruby *pass$' || fail "invalid format:\n$status"
   echo "$status" | grep -q '^rake *pass$' || fail "invalid format:\n$status"
+
+  history_file="${debci_data_basedir}/status/unstable/${debci_arch}/history.json"
+
+  history_entries=$(ruby -rjson -e "puts JSON.load(File.open('$history_file')).size")
+  assertTrue "History entries in $history_file:  $history_entries!" "[ $history_entries -gt 0 ]"
 }
 
 test_everything_fails() {

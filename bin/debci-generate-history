@@ -6,8 +6,8 @@ require 'debci'
 status_dir = ARGV[0]
 output_file = ARGV[1]
 
-data = Dir.glob(File.join(status_dir, '[0-9]*.json)')).sort.map do |f|
-  YAML.load_file(f)
+data = Dir.glob(File.join(status_dir, '[0-9]*.json')).sort.map do |f|
+  File.open(f) { |s| JSON.load(s) }
 end
 
 File.open(output_file, 'w') do |f|
