@@ -46,6 +46,7 @@ module Debci
       @package_dir = File.join(suite, architecture, package.prefix, package.name)
       @autopkgtest_dir = 'data/autopkgtest'
       @site_url = Debci.config.url_base
+      @artifacts_url_base = Debci.config.artifacts_url_base
       expand_template(:history, filename)
     end
 

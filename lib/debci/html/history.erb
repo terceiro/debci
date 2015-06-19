@@ -43,8 +43,13 @@
               <td><%= test.duration_human %></td>
               <td class="<%= test.status %>"><%= test.status %></td>
               <td><a href="/<%= @packages_dir %>/<%= @package_dir %>/<%= test.run_id %>.log">debci log</a></td>
-              <td><a href="/<%= @packages_dir %>/<%= @package_dir %>/<%= test.run_id %>.autopkgtest.log.gz">test log</a></td>
-              <td><a href="/<%= @autopkgtest_dir %>/<%= @package_dir %>/<%= test.run_id %>">artifacts</a></td>
+              <% if @artifacts_url_base %>
+                <td><a href="<%= @artifacts_url_base %>/<%= @package_dir %>/<%= test.run_id %>/log.gz">test log</a></td>
+                <td><a href="<%= @artifacts_url_base %>/<%= @package_dir %>/<%= test.run_id %>/artifacts.tar.gz">artifacts</a></td>
+              <% else %>
+                <td><a href="/<%= @packages_dir %>/<%= @package_dir %>/<%= test.run_id %>.autopkgtest.log.gz">test log</a></td>
+                <td><a href="/<%= @autopkgtest_dir %>/<%= @package_dir %>/<%= test.run_id %>">artifacts</a></td>
+              <% end %>
             </tr>
           <% end %>
         <% rescue JSON::ParserError %>
