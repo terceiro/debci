@@ -25,7 +25,8 @@ fi
 notfound=0
 for key in "$@"; do
   eval "value=\"\${debci_${key}:-}\""
-  if [ -n "$value" ]; then\
+  eval "set=\"\${debci_${key}+set}\""
+  if [ -n "$set" ]; then\
     echo "$key=$value"
   else
     echo "E: key $key not found!" >&2
