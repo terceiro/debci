@@ -88,8 +88,10 @@ generate_package_run() {
   rm -f "${status_dir}/latest-autopkgtest"
 
   # generate relative symlinks for relocatability
-  ln -s "../../../../..${adtresult#$debci_data_basedir}/log.gz" \
-    "${status_dir}/${run_id}.autopkgtest.log.gz"
+  if [ -e $adtresult/log.gz ]; then
+      ln -s "../../../../..${adtresult#$debci_data_basedir}/log.gz" \
+        "${status_dir}/${run_id}.autopkgtest.log.gz"
+  fi
   ln -s "../../../../..${adtresult#$debci_data_basedir}" \
     "${status_dir}/latest-autopkgtest"
 }
