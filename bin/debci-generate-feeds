@@ -8,7 +8,7 @@ require 'debci'
 repository = Debci::Repository.new
 
 feeds_dir = File.join(Debci.config.data_basedir, 'feeds')
-$site_base = 'http://ci.debian.net' # FIXME read this from configuration
+$site_base = Debci.config.url_base
 
 FileUtils.mkdir_p(feeds_dir)
 
