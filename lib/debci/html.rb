@@ -38,6 +38,11 @@ module Debci
       expand_template(:packagelist, filename)
     end
 
+    # expand {SUITE} macro in URLs
+    def expand_url(url, suite)
+      url && url.gsub('{SUITE}', suite)
+    end
+
     def history(package, suite, architecture, filename)
       @package = package
       @suite = suite
@@ -45,8 +50,8 @@ module Debci
       @packages_dir = 'data/packages'
       @package_dir = File.join(suite, architecture, package.prefix, package.name)
       @autopkgtest_dir = 'data/autopkgtest'
-      @site_url = Debci.config.url_base
-      @artifacts_url_base = Debci.config.artifacts_url_base
+      @site_url = expand_url(Debci.config.url_base, @suite)
+      @artifacts_url_base = expand_url(Debci.config.artifacts_url_base, @suite)
       expand_template(:history, filename)
     end
 
