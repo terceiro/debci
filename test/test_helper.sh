@@ -10,7 +10,7 @@ export debci_quiet='true'
 export debci_backend='fake'
 export debci_amqp_server="amqp://localhost:$TEST_RABBIT_PORT"
 
-if [ -n "TESTCASE" ]; then
+if [ -n "${TESTCASE:-}" ]; then
   suite() {
     suite_addTest "$TESTCASE"
   }
