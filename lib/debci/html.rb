@@ -12,7 +12,10 @@ module Debci
     def initialize(root_directory)
       @root_directory = root_directory
       @repository = Debci::Repository.new
-      @package_prefixes = (('0'..'9').to_a + ('a'..'z').to_a + ('liba'..'libz').to_a).select do |p|
+      @package_prefixes = (('0'..'9').to_a +
+                           ('a'..'z').to_a +
+                           ('lib0'..'lib9').to_a +
+                           ('liba'..'libz').to_a).select do |p|
         @repository.search('^' + p).size > 0
       end.sort
 
