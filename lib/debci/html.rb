@@ -9,7 +9,7 @@ module Debci
 
     attr_reader :root_directory
 
-    def initialize(root_directory)
+    def initialize(root_directory=Debci.config.html_dir)
       @root_directory = root_directory
       @repository = Debci::Repository.new
       @package_prefixes = (('0'..'9').to_a +

@@ -4,7 +4,7 @@ require 'debci'
 require 'debci/html'
 require 'debci/graph'
 
-writer = Debci::HTML.new(File.join(Debci.config.data_basedir, '.html'))
+writer = Debci::HTML.new
 
 if Dir["#{Debci.config.data_basedir}/*"].empty?
   writer.index('index.html')
