@@ -28,6 +28,8 @@ if [ -r "$debci_config_dir/debci.conf" ]; then
 fi
 
 # default values
+# for Debian, NAME is "Debian GNU/Linux", shorten this
+debci_distro_name="${debci_distro_name:-$(. /etc/os-release; echo ${NAME% *})}"
 debci_suite=${debci_suite:-unstable}
 debci_arch=${debci_arch:-$(dpkg --print-architecture)}
 debci_mirror=${debci_mirror:-http://http.debian.net/debian}
@@ -37,7 +39,7 @@ debci_quiet="${debci_quiet:-false}"
 debci_amqp_server=${debci_amqp_server:-"amqp://localhost"}
 debci_amqp_queue=${debci_amqp_queue:-"debci-${debci_suite}-${debci_arch}-${debci_backend}"}
 debci_amqp_results_queue=${debci_amqp_results_queue:-"debci_results"}
-debci_sendmail_from="${debci_sendmail_from:-Debian Continuous Integration <owner@localhost>}"
+debci_sendmail_from="${debci_sendmail_from:-$debci_distro_name Continuous Integration <owner@localhost>}"
 debci_sendmail_to="${debci_sendmail_to:-%s@localhost}"
 debci_url_base="${debci_url_base:-http://localhost:8888}"
 debci_artifacts_url_base="${debci_artifacts_url_base:-}"

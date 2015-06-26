@@ -9,6 +9,7 @@ repository = Debci::Repository.new
 
 feeds_dir = File.join(Debci.config.data_basedir, 'feeds')
 $site_base = Debci.config.url_base
+$distro_name = Debci.config.distro_name
 
 FileUtils.mkdir_p(feeds_dir)
 
@@ -50,7 +51,7 @@ packages.each do |pkg|
   FileUtils.mkdir_p(File.dirname(feedfile))
 
   feed = RSS::Maker.make('atom') do |feed|
-    feed.channel.author = 'Debian Continuous Integration'
+    feed.channel.author = $distro_name + ' Continuous Integration'
     feed.channel.updated = news.first && news.first.date || past_timestamp
     feed.channel.about = $site_base + '/#package/' + pkg
     feed.channel.title = pkg + ' CI news feed'
@@ -66,10 +67,10 @@ end
 
 global_news = repository.news_for('*', 50)
 global_feed = RSS::Maker.make('atom') do |feed|
-  feed.channel.author = 'Debian Continuous Integration'
+  feed.channel.author = $distro_name + ' Continuous Integration'
   feed.channel.updated = global_news.first && global_news.first.date || past_timestamp
   feed.channel.about = $site_base
-  feed.channel.title = 'Debian Continuous Integration news'
+  feed.channel.title = $distro_name + ' Continuous Integration news'
   feed.channel.description = "News about all packages. Includes only state transitions (pass-fail, fail-pass). Full history is available in each individual package page and in their published data files."
   insert_items(global_news, feed)
 end
