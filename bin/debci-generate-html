@@ -18,17 +18,17 @@ repository = Debci::Repository.new
 
 # Generate a JSON file for storing the current suite/architectures that are
 # available. The file is used for the JavaScript data charts.
-platform_writer = File.open(File.join(Debci.config.html_dir, 'status/platforms.json'), 'w')
-platforms = []
+File.open(File.join(Debci.config.html_dir, 'status/platforms.json'), 'w') do |file|
+  platforms = []
 
-repository.suites.each do |suite|
-  repository.architectures.each do |arch|
-    platforms.push("platform" => suite + '/' + arch) if repository.status_history(suite, arch)
+  repository.suites.each do |suite|
+    repository.architectures.each do |arch|
+      platforms.push("platform" => suite + '/' + arch) if repository.status_history(suite, arch)
+    end
   end
-end
 
-platform_writer.write(JSON.pretty_generate(platforms))
-platform_writer.close
+  file.write(JSON.pretty_generate(platforms))
+end
 
 packages = ARGV
 if packages.empty?
