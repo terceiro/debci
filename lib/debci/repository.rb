@@ -35,6 +35,11 @@ module Debci
       @packages ||= @data_dirs.map { |d| Dir.glob(File.join(d, '*/*')) }.flatten.map { |d| File.basename(d) }.to_set
     end
 
+    # Returns an Array of package prefixes known to this debci instance
+    def prefixes
+      @prefixes ||= @data_dirs.map { |d| Dir.glob(File.join(d, '*/')) }.flatten.map { |d| File.basename(d) }.uniq.sort
+    end
+
     # Returns an Array of suites for which there is data for +package+.
     def suites_for(package)
       package = String(package)

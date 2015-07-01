@@ -83,6 +83,10 @@ describe Debci::Repository do
     expect(repository.suites).to eq(['testing', 'unstable'])
   end
 
+  it 'knows about prefixes' do
+    expect(repository.prefixes).to include('d', 'r')
+  end
+
   it 'knows about packages' do
     expect(repository.packages.sort).to include('debci', 'rake')
   end
