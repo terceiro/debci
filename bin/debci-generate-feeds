@@ -9,6 +9,7 @@ repository = Debci::Repository.new
 
 feeds_dir = File.join(Debci.config.data_basedir, 'feeds')
 $site_base = Debci.config.url_base
+$artifacts_url_base = Debci.config.artifacts_url_base
 $distro_name = Debci.config.distro_name
 
 FileUtils.mkdir_p(feeds_dir)
@@ -29,12 +30,24 @@ def insert_items(news, feed)
         "<li>Date: #{status.date}</li>",
         "<li>Test run duration: #{status.duration_human}</li>",
         "<li><a href=\"#{$site_base}/packages/#{prefix}/#{status.package}/#{status.suite}/#{status.architecture}\">Package history page</a></li>",
-        "<li><a href=\"#{$site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.log\">debci log</a></li>",
-        "<li><a href=\"#{$site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.autopkgtest.log.gz\">autopkgtest log</a></li>",
-        "<li><a href=\"#{$site_base}/data/autopkgtest/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}/\">autopkgtest artifacts</a></li>",
+        "<li><a href=\"#{$site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.log\">debci log</a></li>"]
+
+      if $artifacts_url_base
+        item.description += [
+          "<li><a href=\"#{$artifacts_url_base}/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.autopkgtest.log.gz\">autopkgtest log</a></li>",
+          "<li><a href=\"#{$artifacts_url_base}/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}/artifacts.tar.gz\">autopkgtest artifacts</a></li>"]
+      else
+        item.description += [
+          "<li><a href=\"#{$site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.autopkgtest.log.gz\">autopkgtest log</a></li>",
+          "<li><a href=\"#{$site_base}/data/autopkgtest/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}/\">autopkgtest artifacts</a></li>"]
+      end
+
+      item.description += [
         status.status == :fail && "<li>Packages blamed: #{status.blame.join(', ')}</a></li>" || nil,
         '</ul>',
-      ].compact.join("\n")
+      ]
+
+      item.description = item.description.compact.join("\n")
     end
   end
 end
