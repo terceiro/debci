@@ -16,6 +16,11 @@ FileUtils.mkdir_p(feeds_dir)
 
 past_timestamp = Time.parse('2014-05-10T21:17:00 UTC')
 
+# expand {SUITE} macro in URLs
+def expand_url(url, suite)
+  url && url.gsub('{SUITE}', suite)
+end
+
 def insert_items(news, feed)
   news.each do |status|
     feed.items.new_item do |item|
@@ -34,8 +39,8 @@ def insert_items(news, feed)
 
       if $artifacts_url_base
         item.description += [
-          "<li><a href=\"#{$artifacts_url_base}/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.autopkgtest.log.gz\">autopkgtest log</a></li>",
-          "<li><a href=\"#{$artifacts_url_base}/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}/artifacts.tar.gz\">autopkgtest artifacts</a></li>"]
+          "<li><a href=\"#{expand_url($artifacts_url_base, status.suite)}/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}/log.gz\">autopkgtest log</a></li>",
+          "<li><a href=\"#{expand_url($artifacts_url_base, status.suite)}/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}/artifacts.tar.gz\">autopkgtest artifacts</a></li>"]
       else
         item.description += [
           "<li><a href=\"#{$site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.autopkgtest.log.gz\">autopkgtest log</a></li>",
