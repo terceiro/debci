@@ -12,12 +12,7 @@ module Debci
     def initialize(root_directory=Debci.config.html_dir)
       @root_directory = root_directory
       @repository = Debci::Repository.new
-      @package_prefixes = (('0'..'9').to_a +
-                           ('a'..'z').to_a +
-                           ('lib0'..'lib9').to_a +
-                           ('liba'..'libz').to_a).select do |p|
-        @repository.search('^' + p).size > 0
-      end.sort
+      @package_prefixes = @repository.prefixes
 
       @head = read_config_file('head.html')
       @footer = read_config_file('footer.html')
