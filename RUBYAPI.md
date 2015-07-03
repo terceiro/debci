@@ -26,6 +26,15 @@ suites on columns, and a status object in each cell.
 ```
 status_table = package.status
 ```
+### Obtaining package suites and architectures
+
+A Debci::Package object will give the suites and architectures it is currently
+available on through the `suites` and `architectures` methods.
+
+```
+puts package.suites
+puts package.architectures
+```
 
 ### Getting package news
 
