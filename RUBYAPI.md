@@ -19,7 +19,7 @@ package = repository.find_package('rails-3.2')
 
 ## Obtaining data for a given package
 
-With a Debci:Package object, you can obtain the current status with the
+With a Debci::Package object, you can obtain the current status with the
 `status` method. This method will return a table with architectures on rows,
 suites on columns, and a status object in each cell.
 
