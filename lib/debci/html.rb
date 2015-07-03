@@ -36,7 +36,7 @@ module Debci
       expand_template(:packagelist, filename)
     end
 
-    # expand {SUITE} macro in URLs
+    # expand { SUITE } macro in URLs
     def expand_url(url, suite)
       url && url.gsub('{SUITE}', suite)
     end
