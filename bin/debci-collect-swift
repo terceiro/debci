@@ -1,0 +1,83 @@
+#!/bin/sh
+# In some cases one wants to keep all autopkgtest results in public swift
+# containers, to avoid relying on on storing primary data in cloud instances.
+#
+# This script downloads recent autopkgtest results from a public
+# autopkgtest-<suite> container and puts them into debci's incoming queue. The
+# Swift storage URL is specified in the "debci_swift_url" config key, and
+# can be retrieved with "swift stat -v|grep StorageURL".
+#
+# Container layout is expected to be similar to our local data format, but with
+# some compression/grouping:
+#
+#   release/arch/prefix/pkgname/YYYYMMDD_HHMMSS@/
+#     result.tar
+#     log.gz
+#     artifacts.tar.gz
+#
+# debci-collect-swift only downloads the small result.tar with the minimal
+# metadata required by debci (exit code, testpkg-version, testbed-packages,
+# duration). In that mode you should set "debci_artifacts_url_base" to the public
+# Swift storage URL (which might be different than the cloud-internal
+# "debci_swift_url", hence using a new key); then the test run pages will link
+# log.gz and artifacts.tar.gz directly on Swift.
+#
+# debci-collect-swift should be called regularly from cron. Then it replaces
+# debci-collector (which receives the results directly through AMQP).
+set -eu
+
+usage() {
+  cat <<EOF
+usage: debci-collect-swift [OPTIONS]
+
+$@
+EOF
+}
+
+NEW_RESULTS=
+
+debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
+. $debci_base_dir/lib/environment.sh
+. $debci_base_dir/lib/functions.sh
+
+if [ -z "$debci_swift_url" ]; then
+    echo "ERROR: debci_swift_url config option not set" >&2
+    exit 1
+fi
+
+# download a path from autopkgtest-$SUITE container
+download() {
+    wget -q -O- "$debci_swift_url/autopkgtest-${debci_suite}/$1"
+}
+
+# download one test run
+collect_run() {
+    if [ -e "$debci_data_basedir/autopkgtest/$1" ]; then
+        # this is the case most of the time, so don't spam unless we really
+        # want to debug
+        [ -z "${DEBUG:-}" ] || log "$1 already in data dir, skipping"
+        return
+    fi
+    local destdir="$debci_data_basedir/autopkgtest-incoming/$1"
+    if [ -e "$destdir" ]; then
+        log "$1 already downloaded to incoming dir, skipping"
+        return
+    fi
+    log "downloading run $1"
+    mkdir -p "$destdir"
+    if ! download "$1/result.tar" | tar -C "$destdir" -x; then
+        echo "ERROR: cannot download $1/result.tar, ignoring run" >&2
+        return
+    fi
+    NEW_RESULTS=1
+}
+
+# containers names are "autopkgtest-$SUITE"
+# container files are organized like this:
+# release/arch/prefix/pkgname/YYYYMMDD_HHMMSS@/{result.tar,log.gz,artifacts.tar.gz}
+# iterate over all runs of our suite/arch
+for run in $(download "?prefix=${debci_suite}/${debci_arch}/&delimiter=@"); do
+    collect_run "$run"
+done
+
+[ -z "$NEW_RESULTS" ] || debci-generate-index
