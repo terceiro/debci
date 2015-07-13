@@ -47,10 +47,16 @@ if [ ! -e "$root/$name" ]; then
 deb-src $mirror $SUITE $COMPONENTS" > "$TARGET/etc/apt/sources.list"
 
   # add buildd sources
+  #FIXME duplicates logic in backends/schroot/create-testbed
   if grep -q debian "$TARGET/etc/apt/sources.list"; then
+    if [ "$SUITE" = unstable ]; then
+      buildd_suite=buildd-$SUITE
+    else
+      buildd_suite=buildd-$SUITE-proposed-updates
+    fi
     cat >> "$TARGET/etc/apt/sources.list" <<EOF
-deb http://incoming.debian.org/debian-buildd buildd-$SUITE main
-deb-src http://incoming.debian.org/debian-buildd buildd-$SUITE main
+deb http://incoming.debian.org/debian-buildd $buildd_suite main
+deb-src http://incoming.debian.org/debian-buildd $buildd_suite main
 EOF
   fi
 
