@@ -29,4 +29,6 @@ if which create-testbed >/dev/null 2>/dev/null; then
   else
     run_with_exclusive_lock "$debci_testbed_lock" create-testbed >>$log 2>&1
   fi
+else
+  echo "I: $debci_backend backend does not provide a way to create a testbed"
 fi
