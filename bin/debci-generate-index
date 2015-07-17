@@ -143,6 +143,14 @@ exitcode_to_statusmsg()
       status=fail
       message='Tests failed, and at least one test skipped'
       ;;
+    8)
+      status=fail
+      message='No tests in this package'
+      ;;
+    12)
+      status=fail
+      message='Erroneous package'
+      ;;
     *)
       status=tmpfail
       message='Could not run tests due to a temporary failure'
