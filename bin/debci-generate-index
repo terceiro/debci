@@ -126,7 +126,8 @@ generate_package_run_log_file()
 # set $status and $message from $adtresult's exit code
 exitcode_to_statusmsg()
 {
-  case $(cat "$adtresult/exitcode") in
+  code=$(cat "$adtresult/exitcode")
+  case "$code" in
     0)
       status=pass
       message='All tests passed'
@@ -151,9 +152,13 @@ exitcode_to_statusmsg()
       status=fail
       message='Erroneous package'
       ;;
+    16)
+      status=tmpfail
+      message='Could not run tests due to a temporary testbed failure'
+      ;;
     *)
       status=tmpfail
-      message='Could not run tests due to a temporary failure'
+      message="Unexpected adt-run exit code $code"
       ;;
   esac
 }
