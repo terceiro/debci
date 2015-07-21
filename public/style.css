@@ -49,6 +49,27 @@
 }
 
 /* -----------------------------------------------------------------
+ * icons
+ * ----------------------------------------------------------------- */
+
+#icon-rss:before {
+  content: "\f09e ";
+  color: orange;
+}
+
+#icon-rss:hover {
+  text-decoration: none !important;
+}
+
+#icon-tracker:before {
+  content: "\f05a ";
+}
+
+#icon-tracker:hover {
+  text-decoration: none !important;
+}
+
+/* -----------------------------------------------------------------
  * navbar
  * ----------------------------------------------------------------- */
 
