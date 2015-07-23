@@ -132,6 +132,10 @@
   margin-left: 2em;
 }
 
+#package-select li .search-sub-links a {
+  display: block;
+}
+
 #package-select a.package-page:hover {
   background-color: #eeeeec;
 }
