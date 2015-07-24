@@ -42,7 +42,7 @@ check-ui-and-docs: all
 
 test: check
 
-public/doc/index.html public/doc/jq/jquery.js: README.md RUBYAPI.md HACKING.md $(shell find lib -name '*.rb')
+public/doc/index.html public/doc/jq/jquery.js: README.md MAINTAINERS.md INSTALL.md RUBYAPI.md HACKING.md $(shell find lib -name '*.rb')
 	$(RM) public/doc/js/jquery.js
 	yardoc --markup markdown --output-dir public/doc --main README.md lib - $^
 	ln -sf ../../jquery.js public/doc/js/jquery.js
