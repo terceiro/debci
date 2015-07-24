@@ -1,4 +1,4 @@
-all: public/doc/index.html
+all: doc
 
 include links.mk
 
@@ -42,10 +42,15 @@ check-ui-and-docs: all
 
 test: check
 
-public/doc/index.html public/doc/jq/jquery.js: README.md MAINTAINERS.md INSTALL.md RUBYAPI.md HACKING.md $(shell find lib -name '*.rb')
+doc: public/doc/index.html public/doc/architecture.svg
+
+public/doc/index.html public/doc/jq/jquery.js: README.md MAINTAINERS.md INSTALL.md RUBYAPI.md HACKING.md  $(shell find lib -name '*.rb')
 	$(RM) public/doc/js/jquery.js
 	yardoc --markup markdown --output-dir public/doc --main README.md lib - $^
 	ln -sf ../../jquery.js public/doc/js/jquery.js
+
+public/doc/architecture.svg: architecture.svg
+	cp architecture.svg public/doc/
 
 .PHONY: tags
 
