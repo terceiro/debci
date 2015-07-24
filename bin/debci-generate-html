@@ -8,7 +8,9 @@ writer = Debci::HTML.new
 
 if Dir["#{Debci.config.data_basedir}/*"].empty?
   writer.index('index.html')
-  abort
+  writer.status('status/index.html')
+  writer.prefix(nil, "packages/index.html")
+  exit
 end
 
 writer.index('index.html')

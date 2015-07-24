@@ -11,6 +11,9 @@
           <% @package_prefixes.each do |prefix| %>
                <li><h5><a href="/packages/<%= prefix %>/"><%= prefix %></a></h5></li>
           <% end %>
+          <% if @package_prefixes.empty? %>
+            <li><em>(no data yet)</em></li>
+          <% end %>
 
           </ul>
       </div>
