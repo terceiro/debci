@@ -27,6 +27,6 @@ outdir="$2"
 [ $debci_suite = unstable ] && debci_suite=sid
 
 rc=0
-adt-run --gnupg-home="$debci_gnupg_dir" --output-dir "$outdir" "$package" --- lxc adt-${debci_suite}-${debci_arch} || rc=$?
+adt-run --output-dir "$outdir" "$package" --- lxc adt-${debci_suite}-${debci_arch} || rc=$?
 echo $rc > "$outdir/exitcode"
 exit $rc

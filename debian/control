@@ -25,7 +25,7 @@ Package: debci
 Architecture: all
 Depends:
  adduser,
- autopkgtest (>= 2.12),
+ autopkgtest (>= 3.16),
  debootstrap,
  fonts-font-awesome (>= 4.0.3~),
  libjs-bootstrap,
