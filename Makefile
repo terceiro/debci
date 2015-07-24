@@ -21,6 +21,16 @@ functional-tests:
 	test/runall.sh
 	$(RM) -v test/erl_crash.dump
 
+backends = $(shell ls -1 backends/)
+test_backends = $(patsubst %, test-%, $(backends))
+.PHONY: $(test_backends)
+
+test-backends: $(test_backends)
+
+$(test_backends): test-% : backends/%/test-package
+	@./test/banner "Test backend $*"
+	/usr/bin/time ./bin/debci test -b $* test/fake-package/
+
 check: all check-ui-and-docs spec functional-tests
 
 check-ui-and-docs: all

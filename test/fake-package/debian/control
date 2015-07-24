@@ -1,0 +1,17 @@
+Source: fake-package
+Section: ruby
+Priority: optional
+Maintainer: Antonio Terceiro <terceiro@debian.org>
+Build-Depends: debhelper (>= 7.0.50~)
+Standards-Version: 3.9.6
+Testsuite: autopkgtest
+
+Package: fake-package
+Architecture: all
+Depends: dpkg
+Description: fake package to test debci backends
+ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pharetra
+ nisi quis justo tincidunt, sed dictum neque rhoncus. Aliquam in nisl a sem
+ tempus feugiat. Ut lacinia vulputate orci at gravida. Vivamus elit ante,
+ interdum in risus nec, lacinia commodo purus. Quisque mollis magna nunc, non
+ tincidunt neque fringilla non.

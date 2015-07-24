@@ -23,7 +23,9 @@ fi
 package="$1"
 outdir="$2"
 
+session_id="${debci_chroot_name}-$(basename "$package")"
+
 rc=0
-adt-run --user debci --output-dir "$outdir" "$package" --- adt-virt-schroot --session-id="${debci_chroot_name}-${package}" "${debci_chroot_name}" || rc=$?
+adt-run --user debci --output-dir "$outdir" "$package" --- adt-virt-schroot --session-id="${session_id}" "${debci_chroot_name}" || rc=$?
 echo $rc > "$outdir/exitcode"
 exit $rc
