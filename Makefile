@@ -13,9 +13,11 @@ checkdeps:
 	@if which dpkg-checkbuilddeps >/dev/null && which grep-dctrl >/dev/null; then dpkg-checkbuilddeps -d "$$(grep-dctrl -n -s Depends . debian/control | grep -v '\$$')"; fi
 
 spec:
+	@./test/banner 'Ruby unit tests'
 	rspec --color
 
 functional-tests:
+	@./test/banner 'Functional tests'
 	test/runall.sh
 	$(RM) -v test/erl_crash.dump
 
