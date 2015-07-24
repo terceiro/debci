@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 echo "debci-worker: building testbed in the background"
 debci setup > /dev/null 2>&1 &
 
