@@ -8,7 +8,7 @@ process() {
   pkg="$1"
   dependencies="$2"
   DEBCI_FAKE_DEPS="$dependencies" \
-    debci test "$pkg" --quiet
+    debci test --quiet "$pkg"
     debci generate-index --quiet
   __day=$(($__day + 1))
 }
