@@ -25,6 +25,7 @@ Package: debci
 Architecture: all
 Depends:
  adduser,
+ autodep8 (>= 0.2),
  autopkgtest (>= 3.16),
  debootstrap,
  fonts-font-awesome (>= 4.0.3~),
