@@ -1,2 +1,3 @@
 /etc/debci
+/etc/debci/conf.d
 /usr/bin

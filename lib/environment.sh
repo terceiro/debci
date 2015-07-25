@@ -26,6 +26,15 @@ debci_config_dir="${debci_config_dir:-${debci_default_config_dir}}"
 if [ -r "$debci_config_dir/debci.conf" ]; then
   . "$debci_config_dir/debci.conf"
 fi
+# load conf.d/ directory
+debci_conf_d="${debci_config_dir}/conf.d"
+if [ -d "${debci_conf_d}" ]; then
+  for config in \
+    $(find "${debci_conf_d}" -type f -name '[0-9a-z-_]*.conf' | sort)
+  do
+    . $config
+  done
+fi
 
 # default values
 # for Debian, NAME is "Debian GNU/Linux", shorten this
