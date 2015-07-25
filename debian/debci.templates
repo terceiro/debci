@@ -1,0 +1,6 @@
+Template: debci/amqp_server
+Type: string
+_Description: Address of the AMQP server
+ The debci components communicate with each other through an AMQP server. It
+ can be a hostname, an IP address, host:port, ip:port. If left blank, debci
+ will try to use an AMQP server on "localhost", and the standard AMQP port.

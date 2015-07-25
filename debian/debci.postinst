@@ -3,6 +3,8 @@
 
 set -eu
 
+. /usr/share/debconf/confmodule
+
 setup_system() {
     if [ ! -d /var/lib/debci ]; then
         mkdir /var/lib/debci
@@ -42,9 +44,17 @@ migrate_data() {
     su --login --command '/usr/bin/debci migrate' debci
 }
 
+create_config() {
+    db_get debci/amqp_server
+    if [ -n "$RET" ]; then
+        echo "debci_amqp_server=amqp://$RET" > /etc/debci/conf.d/00_debconf.conf
+    fi
+}
+
 case "$1" in
     configure)
         setup_system
+        create_config
         migrate_data
     ;;
 
@@ -56,6 +66,8 @@ case "$1" in
         exit 1
     ;;
 esac
+
+db_stop
 
 #DEBHELPER#
 
