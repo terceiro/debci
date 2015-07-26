@@ -102,7 +102,7 @@ generate_package_run_log_file()
   # platform information
   banner "Platform information"
   echo "Package versions:"
-  dpkg-query --show debci autopkgtest autodep8 2>/dev/null| indent
+  dpkg-query --show debci autopkgtest autodep8 2>/dev/null | column -t | indent
   echo "Backend: $debci_backend"
 
   # reason for run
