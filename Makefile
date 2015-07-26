@@ -31,6 +31,13 @@ $(test_backends): test-% : backends/%/test-package
 	@./test/banner "Test backend $*"
 	/usr/bin/time ./bin/debci test -b $* test/fake-package/
 
+deb:
+	mkdir -p tmp/deb
+	rm -f tmp/deb/debci*
+	DEB_BUILD_OPTIONS=nocheck gbp buildpackage --git-export-dir=tmp/deb
+	@echo
+	@echo "Debian packages available in tmp/deb/!"
+
 check: all check-ui-and-docs spec functional-tests
 
 check-ui-and-docs: all

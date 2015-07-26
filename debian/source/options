@@ -4,3 +4,4 @@ tar-ignore = gnupg
 tar-ignore = config
 tar-ignore = tags
 tar-ignore = .git
+tar-ignore = tmp
