@@ -1,11 +1,56 @@
 #!/bin/sh
 
+set -ex
+
 export DEBIAN_FRONTEND=noninteractive
 
-apt-get install -qy lighttpd
+# enable backports
+if [ -f /etc/apt/sources.list.d/backports.list ]; then
+  sed -e 's/\bjessie\b/jessie-backports/' /etc/apt/sources.list > \
+    /etc/apt/sources.list.d/backports.list
+fi
 
-lighttpd-enable-mod simple-vhost
-mkdir -p /srv/localhost
-ln -sf /usr/share/debci/public /srv/localhost/htdocs
+# serve debci data
+apt-get install -qy apache2
+a2enmod headers
+cat > /etc/apache2/sites-enabled/debci.conf <<EOF
+<VirtualHost *:80>
+  ServerName localhost
+  DocumentRoot /usr/share/debci/public
+  ErrorLog \${APACHE_LOG_DIR}/debci.error.log
+  CustomLog \${APACHE_LOG_DIR}/debci.access.log combined
+  <Directory /usr/share/debci/public>
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Require all granted
+  </Directory>
+  <IfModule mod_headers.c>
+    <FilesMatch "log$">
+      Header set Content-Type "text/plain; charset=utf-8"
+    </FilesMatch>
+    <FilesMatch "log\.gz$">
+      # Serve correct encoding type.
+      Header append Content-Encoding gzip
+      Header set Content-Type "text/plain; charset=utf-8"
+    </FilesMatch>
+  </IfModule>
+</VirtualHost>
+EOF
+service apache2 reload
 
-service lighttpd restart
+# install AMQP server
+apt-get install -qy rabbitmq-server
+
+# install debci from locally built packages
+if test -d /vagrant/tmp/deb; then
+  dpkg --unpack /vagrant/tmp/deb/*.deb
+  apt-get install -qyf
+else
+  echo
+  set +x
+  echo "To install locally-built packages into the vagrant box for testing,"
+  echo "run on the host:"
+  echo
+  echo '  $ make deb'
+  echo '  $ vagrant provision'
+fi

@@ -162,3 +162,22 @@ following:
 
 If your code passed the appropriate tests, you will see that there
 are no failures reported by rspec.
+
+# testing Debian packages with vagrant
+
+First build the packages locally:
+
+    $ make deb
+
+Then bring up the vagrant virtual machine:
+
+    $ vagrant up
+
+This will install the locally-built packages into the vagrant box, and setup
+lighttpd to serve the web UI at http://localhost:8080/ from your host machine.
+
+If you make changes to the packages and want to update them in the virtual
+machine, just do:
+
+    $ make deb
+    $ vagrant provision
