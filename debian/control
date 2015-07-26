@@ -2,19 +2,18 @@ Source: debci
 Section: devel
 Priority: optional
 Maintainer: Antonio Terceiro <terceiro@debian.org>
-Build-Depends:
- amqp-tools,
- debhelper (>= 9.0.0),
- devscripts,
- dh-systemd (>= 1.5),
- patchutils,
- rabbitmq-server,
- ruby,
- ruby-rspec (>= 2.14),
- shunit2,
- fonts-font-awesome (>= 4.0.3~),
- yard,
- dctrl-tools,
+Build-Depends: amqp-tools,
+               dctrl-tools,
+               debhelper (>= 9.0.0),
+               devscripts,
+               dh-systemd (>= 1.5),
+               fonts-font-awesome (>= 4.0.3~),
+               patchutils,
+               rabbitmq-server,
+               ruby,
+               ruby-rspec (>= 2.14),
+               shunit2,
+               yard
 Standards-Version: 3.9.6
 Homepage: http://ci.debian.net/
 Vcs-Git: git://anonscm.debian.org/collab-maint/debci.git
@@ -23,29 +22,27 @@ Testsuite: autopkgtest
 
 Package: debci
 Architecture: all
-Depends:
- adduser,
- autodep8 (>= 0.2~),
- autopkgtest (>= 3.16),
- debootstrap,
- fonts-font-awesome (>= 4.0.3~),
- libjs-bootstrap,
- libjs-jquery,
- libjs-jquery-flot,
- patchutils,
- ruby,
- devscripts,
- dctrl-tools,
- amqp-tools,
- sudo,
- ${misc:Depends},
- ${shlibs:Depends}
-Recommends:
- apt-cacher-ng,
- moreutils,
- rabbitmq-server,
- ntp,
- schroot
+Depends: adduser,
+         amqp-tools,
+         autodep8 (>= 0.2~),
+         autopkgtest (>= 3.16),
+         dctrl-tools,
+         debootstrap,
+         devscripts,
+         fonts-font-awesome (>= 4.0.3~),
+         libjs-bootstrap,
+         libjs-jquery,
+         libjs-jquery-flot,
+         patchutils,
+         ruby,
+         sudo,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Recommends: apt-cacher-ng,
+            moreutils,
+            ntp,
+            rabbitmq-server,
+            schroot
 Description: continuous integration system for Debian
  debci will scan the Debian archive for packages that contain DEP-8 compliant
  test suites, and run those test suites whenever a new version of the package,
@@ -59,14 +56,19 @@ Description: continuous integration system for Debian
 
 Package: debci-worker
 Architecture: all
-Depends: debci, schroot | lxc, ${misc:Depends}, ${shlibs:Depends}
+Depends: debci,
+         schroot | lxc,
+         ${misc:Depends},
+         ${shlibs:Depends}
 Description: continuous integration system for Debian (worker daemon)
  This package provides cron and init integration for running debci worker
  daemons that will listen to AMQP queues and run test jobs.
 
 Package: debci-collector
 Architecture: all
-Depends: debci, ${misc:Depends}, ${shlibs:Depends}
+Depends: debci,
+         ${misc:Depends},
+         ${shlibs:Depends}
 Description: continuous integration system for Debian (collector daemon)
  This package provides the collector daemon, which will receive test results
  published by debci worker hosts, store them centrally, and generate the static
