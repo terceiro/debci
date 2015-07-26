@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: debci\n"
 "Report-Msgid-Bugs-To: debci@packages.debian.org\n"
-"POT-Creation-Date: 2015-07-26 19:58-0300\n"
+"POT-Creation-Date: 2015-07-26 20:09-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 #. Type: string
 #. description
 #: ../debci.templates:1001
-msgid "Address of the AMQP server"
+msgid "Address of the AMQP server:"
 msgstr ""
 
 #. Type: string
