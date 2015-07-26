@@ -1,17 +1,12 @@
 #!/usr/bin/ruby
 
+require 'fileutils'
+
 require 'debci'
 require 'debci/html'
 require 'debci/graph'
 
 writer = Debci::HTML.new
-
-if Dir["#{Debci.config.data_basedir}/*"].empty?
-  writer.index('index.html')
-  writer.status('status/index.html')
-  writer.prefix(nil, "packages/index.html")
-  exit
-end
 
 writer.index('index.html')
 writer.status('status/index.html')
@@ -92,6 +87,7 @@ packages.each do |pkg|
   entry['platforms'] = platforms
   entry['status'] = all_statuses
 end
+FileUtils.mkdir_p File.dirname(json_filename)
 File.open(json_filename, 'w') do |f|
   f.write(JSON.pretty_generate(json_package_data))
 end
