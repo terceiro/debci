@@ -9,6 +9,13 @@ module Debci
       @config ||= Debci::Config.new
     end
 
+    def config!(data)
+      data.each do |k,v|
+        ENV["debci_#{k}"] = v
+      end
+      @config = nil
+    end
+
   end
 
 end
