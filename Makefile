@@ -38,6 +38,9 @@ deb:
 	@echo
 	@echo "Debian packages available in tmp/deb/!"
 
+ruby-console:
+	irb -Ilib -rdebci
+
 check: all check-ui-and-docs spec functional-tests
 
 check-ui-and-docs: all
