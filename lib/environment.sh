@@ -46,7 +46,6 @@ debci_backend=${debci_backend:-schroot}
 debci_data_basedir=${debci_data_basedir:-$(readlink -f "${debci_base_dir}/data")}
 debci_quiet="${debci_quiet:-false}"
 debci_amqp_server=${debci_amqp_server:-"amqp://localhost"}
-debci_amqp_queue=${debci_amqp_queue:-"debci-${debci_suite}-${debci_arch}-${debci_backend}"}
 debci_amqp_results_queue=${debci_amqp_results_queue:-"debci_results"}
 debci_swift_url=${debci_swift_url:-}
 debci_sendmail_from="${debci_sendmail_from:-$debci_distro_name Continuous Integration <owner@localhost>}"
@@ -144,6 +143,8 @@ debci_log_dir="${debci_base_dir}/log"
 debci_user=$(stat -c %U "${debci_data_basedir}")
 debci_uid=$(stat -c %u "${debci_data_basedir}")
 debci_group=$(stat -c %G "${debci_data_basedir}")
+
+debci_amqp_queue=${debci_amqp_queue:-"debci-${debci_suite}-${debci_arch}-${debci_backend}"}
 
 # lock files
 debci_testbed_lock=/var/lock/debci-testbed-${debci_suite}-${debci_arch}.lock
