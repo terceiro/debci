@@ -7,14 +7,14 @@ coordinates the execution of automated tests against packages in the
 
 ## Documentation for package maintainers
 
-The {file:MAINTAINERS.md FAQ for package maintainers} contains useful
+The {file:docs/MAINTAINERS.md FAQ for package maintainers} contains useful
 information on how to declare the test suite, how the test is executed,
 how to reproduce the test runs locally, etc.
 
 ## Deployment
 
-See the {file:INSTALL.md installation guide} for instructions on how to deploy
-debci to your own infrastructure.
+See the {file:docs/INSTALL.md installation guide} for instructions on how to
+deploy debci to your own infrastructure.
 
 ## Reporting Bugs
 
@@ -25,8 +25,8 @@ in the [Debian BTS](http://bugs.debian.org/).
 
 * Get source: `git clone https://alioth.debian.org/anonscm/git/collab-maint/debci.git`
 * [Browse source](http://anonscm.debian.org/gitweb/?p=collab-maint/debci.git)
-* {file:HACKING.md How to setup a development environment}
-* {file:RUBYAPI.md The Ruby API to the debci data store}
+* {file:docs/HACKING.md How to setup a development environment}
+* {file:docs/RUBYAPI.md The Ruby API to the debci data store}
 
 ## Contact
 
