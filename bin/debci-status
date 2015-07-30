@@ -15,6 +15,14 @@ optparse = OptionParser.new do |opts|
   opts.banner = 'Usage: debci status [OPTIONS] [PACKAGE]'
   opts.separator 'Options:'
 
+  opts.on('-a ARCH', '--arch ARCH', 'Sets architecture to act on') do |arch|
+    Debci.config!(arch: arch)
+  end
+
+  opts.on('-s SUITE', '--suite SUITE', 'Sets suite to act on') do |suite|
+    Debci.config!(suite: suite)
+  end
+
   opts.on('-l', '--all', 'show status for all packages') do
     $all = true
   end
