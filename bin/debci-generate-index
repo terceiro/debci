@@ -28,6 +28,8 @@ trap cleanup INT TERM EXIT
 # outputs a list of packages that got new results
 generate_packages() {
   local pkgs=''
+  artifacts_url_base="$(echo "${debci_artifacts_url_base}" | sed "s/{SUITE}/${debci_suite}/")"
+
   for test_run_exit_code in $(find "$debci_autopkgtest_incoming_dir" -name exitcode | sort); do
     incoming_dir=$(dirname $test_run_exit_code)
     target_dir=$(echo "$incoming_dir" | sed -e 's#/autopkgtest-incoming/#/autopkgtest/#')
@@ -267,6 +269,11 @@ generate_package_json() {
     previous_status=$(debci-status --field previous_status "$pkg")
   fi
 
+  if [ -n "$artifacts_url_base" ]; then
+    extra_fields=",
+  \"log_url\": \"$artifacts_url_base/${target_dir#${debci_data_basedir}/autopkgtest/}/log.gz\",
+  \"artifacts_url\": \"$artifacts_url_base/${target_dir#${debci_data_basedir}/autopkgtest/}/artifacts.tar.gz\""
+  fi
   # latest entry
   cat > "${status_file}" <<EOF
 {
@@ -279,7 +286,7 @@ generate_package_json() {
   "previous_status": "${previous_status}",
   "duration_seconds": "${duration}",
   "duration_human": "${duration_human}",
-  "message": "${message}"
+  "message": "${message}"${extra_fields}
 }
 EOF
 
