@@ -273,6 +273,8 @@ generate_package_json() {
     extra_fields=",
   \"log_url\": \"$artifacts_url_base/${target_dir#${debci_data_basedir}/autopkgtest/}/log.gz\",
   \"artifacts_url\": \"$artifacts_url_base/${target_dir#${debci_data_basedir}/autopkgtest/}/artifacts.tar.gz\""
+  else
+    extra_fields=''
   fi
   # latest entry
   cat > "${status_file}" <<EOF
