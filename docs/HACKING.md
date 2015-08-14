@@ -2,6 +2,8 @@
 
 ## Setting up a development environment
 
+### Grab the dependencies and required software
+
 Install the dependencies and build dependencies (look at debian/control).
 
 There are a few extra packages that are not strictly dependencies, but you will
@@ -27,6 +29,8 @@ debci:
 $ server rabbitmq-server start
 ```
 
+### Set up the test environment
+
 After having the dependencies installed, the first step is to set up the test
 environment. To do that, you need to run the following command (which needs
 root permissions):
@@ -36,6 +40,8 @@ root permissions):
 Once the setup is complete, run the following:
 
     $ sudo ln -s $(pwd)/etc/schroot/debci /etc/schroot/debci
+
+### Edit the configuration
 
 If you run debci right now, it would run the tests for **every package** in
 Debian that has tests, and you don't want that for a development environment.
@@ -64,6 +70,8 @@ following contents:
 ```
 debci_backend=fake
 ```
+
+### Get debci up and running
 
 Now you need to compile a few files that will be part of the user interface:
 
