@@ -1,4 +1,6 @@
-# debci - setting up a development environment
+# debci development
+
+## Setting up a development environment
 
 Install the dependencies and build dependencies (look at debian/control).
 
@@ -104,9 +106,9 @@ process):
 
     $ ./tools/gen-fake-data.sh
 
-# debci web UI development
+## debci web UI development
 
-## Starting out
+### Starting out
 If you are interested in working on the web UI, first make sure that you have
 a development environment setup and some test data.
 
@@ -137,7 +139,7 @@ the web page.
 **NOTE: Try to keep lines under 80 characters in length unless it would cause
 the code to look weird or less readable.**
 
-## Implementing new features for the debci web interface
+### Implementing new features for the debci web interface
 
 If you are developing a new feature for the debci web UI, make sure that
 if you develop any new debci Ruby API calls that you add tests for them in the
