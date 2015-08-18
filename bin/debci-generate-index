@@ -355,6 +355,7 @@ generate_all_packages() {
     generate_history
     generate_packages_status
     debci-generate-html $updated_packages
+    debci-hint
   fi
 }
 
