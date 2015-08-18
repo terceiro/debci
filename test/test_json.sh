@@ -2,11 +2,22 @@
 
 . $(dirname $0)/test_helper.sh
 
-test_valid_json() {
+test_valid_json_after_batch() {
   start_worker
   debci batch
   wait_for_results
+  check_valid_json
+}
 
+test_valid_json_after_one_single_run() {
+  start_worker
+  debci enqueue rake
+  wait_for_results rake
+  check_valid_json
+
+}
+
+check_valid_json() {
   ruby <<EOF || fail 'found invalid JSON files'
     require 'json'
     failed = 0

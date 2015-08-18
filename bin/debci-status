@@ -87,8 +87,8 @@ if $json
     sep = ''
     packages.each do |p|
       status_file = get_status_file(p)
-      puts sep
       if File.exist?(status_file)
+        puts sep
         File.readlines(status_file).each do |line|
           puts '  ' + line
         end
