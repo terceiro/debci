@@ -23,7 +23,14 @@ module Debci
     end
 
     def status(filename)
+      @status_nav = load_template(:status_nav)
       expand_template(:status, filename)
+    end
+
+    def status_alerts(filename)
+      @tmpfail = @repository.tmpfail_packages
+      @alert_number = @tmpfail.length
+      expand_template(:status_alerts, filename)
     end
 
     def package(package, filename)
@@ -55,8 +62,8 @@ module Debci
 
     private
 
-    def with_layout
-      read_template(:layout).result(binding)
+    def load_template(template)
+      read_template(template).result(binding)
     end
 
     def read_template(name)
@@ -72,7 +79,7 @@ module Debci
 
       @root = directory.split('/').map { |_| '..' }.join('/')
 
-      html = with_layout do
+      html = load_template(:layout) do
         read_template(template).result(binding)
       end
 
