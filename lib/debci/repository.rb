@@ -40,6 +40,27 @@ module Debci
       @prefixes ||= @data_dirs.map { |d| Dir.glob(File.join(d, '*/')) }.flatten.map { |d| File.basename(d) }.uniq.sort
     end
 
+    # Returns an Array of packages known to this debci instance that are
+    # temporarily failing. If no packages are temporarily failing, nothing
+    # is returned.
+    def tmpfail_packages
+      tmpfail_packages = []
+
+      packages.each do |package|
+        suites.each do |suite|
+          architectures.each do |arch|
+            status = load_status(File.join(data_dir(suite, arch, package), "latest.json"), suite, arch)
+
+            if status.status == :tmpfail
+              tmpfail_packages << package
+            end
+          end
+        end
+      end
+
+      tmpfail_packages.sort.map { |p| Debci::Package.new(p, self) }
+    end
+
     # Returns an Array of suites for which there is data for +package+.
     def suites_for(package)
       package = String(package)
