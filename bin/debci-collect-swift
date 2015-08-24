@@ -75,9 +75,16 @@ collect_run() {
 # containers names are "autopkgtest-$SUITE"
 # container files are organized like this:
 # release/arch/prefix/pkgname/YYYYMMDD_HHMMSS@/{result.tar,log.gz,artifacts.tar.gz}
-# iterate over all runs of our suite/arch
-for run in $(download "?prefix=${debci_suite}/${debci_arch}/&delimiter=@"); do
-    collect_run "$run"
+# iterate over all runs of our suite/arch; we might need several batches
+last=''
+while true; do
+    [ -z "${DEBUG:-}" ] || log "starting batch with marker '$last'"
+    run=''
+    for run in $(download "?prefix=${debci_suite}/${debci_arch}/&delimiter=@&marker=$last"); do
+        collect_run "$run"
+    done
+    [ -n "$run" ] || break
+    last="$run"
 done
 
 [ -z "$NEW_RESULTS" ] || debci-generate-index
