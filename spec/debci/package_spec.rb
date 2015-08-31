@@ -1,5 +1,4 @@
 require 'debci/package'
-require 'debci/status'
 
 describe Debci::Package do
 
@@ -37,30 +36,6 @@ describe Debci::Package do
 
     expect(package).to receive(:failures).and_return(nil)
     expect(package.failures).to eq(nil)
-  end
-
-  it 'detects if it has temporary failures' do
-    status = Set.new
-
-    first_status = Debci::Status.new
-    first_status.suite = 'unstable'
-    first_status.architecture = 'amd64'
-    first_status.status = :tmpfail
-
-    second_status = Debci::Status.new
-    second_status.suite = 'unstable'
-    second_status.architecture = 'i386'
-    second_status.status = :pass
-
-    status << first_status << second_status
-
-    expect(repository).to receive(:status_for).twice.with(package).and_return(status)
-    expect(package.status).to eq(status)
-
-    tmpfail = package.tmpfail
-
-    expect(tmpfail).to include("unstable/amd64")
-    expect(tmpfail).to_not include("unstable/i386")
   end
 
   it 'converts to string' do

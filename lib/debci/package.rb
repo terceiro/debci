@@ -75,12 +75,6 @@ module Debci
       return failing_status unless failing_status.empty?
     end
 
-    # Returns an Array of suite/architectures that this package is temporarily
-    # failing. If there are no temporary failures, nothing is returned.
-    def tmpfail
-      status.flatten.select { |p| p.status == :tmpfail }.map { |s| "#{s.suite}/#{s.architecture}" }
-    end
-
     def to_s
       # :nodoc:
       "<Package #{name}>"
