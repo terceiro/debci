@@ -58,34 +58,25 @@ end
 packages.each do |pkg|
   package = repository.find_package(pkg)
 
-  platforms = []
+  status = {}
 
-  package.suites.each do |suite|
-    package.architectures.each do |arch|
-      begin
-        if package.history(suite, arch)
-          platforms.push("#{suite}/#{arch}")
-        end
-      rescue JSON::ParserError
-        puts "[ERROR] #{package.name} <#{suite}/#{arch}> history: Could not parse JSON"
+  package.status.flatten.each do |s|
+    begin
+      if package.history(s.suite, s.architecture)
+        status["#{s.suite}/#{s.architecture}"] = s.status if s.status != :no_test_data
       end
+    rescue JSON::ParserError
+      puts "[ERROR] #{package.name} <#{s.suite}/#{s.architecture}> history: Could not parse JSON"
     end
   end
 
-  all_statuses = []
-
-  package.status.each do |row|
-    row.each do |status|
-      all_statuses.push(status.status) if status.status != :no_test_data
-    end
-  end
   entry = json_package_data.find { |entry| entry['package'] == pkg }
   if !entry
     entry = { 'package' => pkg }
     json_package_data.push(entry)
   end
-  entry['platforms'] = platforms
-  entry['status'] = all_statuses
+
+  entry['status'] = status
 end
 FileUtils.mkdir_p File.dirname(json_filename)
 File.open(json_filename, 'w') do |f|
