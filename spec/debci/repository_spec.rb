@@ -37,9 +37,6 @@ describe Debci::Repository do
     mkdir_p 'packages/testing/amd64/r/ruby-ffi'
     mkdir_p 'packages/testing/i386/r/ruby-ffi'
 
-    latest_status 'packages/unstable/amd64/r/ruby-ffi', {'status' => 'tmpfail',
-                                                         'previous_status' => 'pass' }
-
     mkdir_p 'packages/unstable/amd64/r/rubygems-integration'
     mkdir_p 'packages/unstable/i386/r/rubygems-integration'
     mkdir_p 'packages/testing/amd64/r/rubygems-integration'
@@ -183,22 +180,6 @@ describe Debci::Repository do
       expect(item.date).to be_a(Time)
 
       expect([:pass, :fail, :tmpfail]).to include(item.status)
-    end
-  end
-
-  it 'knows which packages are temporarily failing' do
-    tmpfail_packages = repository.tmpfail_packages
-
-    expect(tmpfail_packages).to be_a(Array)
-    expect(tmpfail_packages.length).to eq(1)
-
-    tmpfail_packages.each do |package|
-      expect(package).to be_a(Debci::Package)
-      expect(package.name).to eq('ruby-ffi')
-
-      package.status.flatten.each do |p|
-        expect([:tmpfail, :no_test_data]).to include(p.status)
-      end
     end
   end
 end
