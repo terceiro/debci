@@ -120,11 +120,11 @@ jQuery(function($) {
         var $sublinks = $('<div></div>');
         $sublinks.addClass('search-sub-links');
 
-        for (var platform in item.platforms) {
+        for (var platform in item.status) {
           var $link = $('<a></a>');
           $link.addClass(item.status[platform]);
-          $link.attr('href', '/packages/' + package_dir + '/' + item.platforms[platform]);
-          $link.html(item.platforms[platform]);
+          $link.attr('href', '/packages/' + package_dir + '/' + platform);
+          $link.html(platform);
           $sublinks.append($link)
         }
         $item.append($sublinks);
