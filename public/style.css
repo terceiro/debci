@@ -3,10 +3,6 @@
   width: 100%;
 }
 
-#status-nav {
-  margin-top: -1.5em;
-}
-
 /* -----------------------------------------------------------------
  * headings
  * ----------------------------------------------------------------- */
@@ -55,25 +51,6 @@
 /* -----------------------------------------------------------------
  * icons
  * ----------------------------------------------------------------- */
-
-#icon-alert:before {
-  content: "\f071 ";
-  color: orange;
-  padding-right: 0.3em;
-}
-
-#icon-alert:hover {
-  text-decoration: none !important;
-}
-
-#icon-chart:before {
-  content: "\f1fe ";
-  padding-right: 0.3em;
-}
-
-#icon-chart:hover {
-  text-decoration: none !important;
-}
 
 #icon-rss:before {
   content: "\f09e ";

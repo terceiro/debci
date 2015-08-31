@@ -10,7 +10,6 @@ writer = Debci::HTML.new
 
 writer.index('index.html')
 writer.status('status/index.html')
-writer.status_alerts('status/alerts/index.html')
 
 repository = Debci::Repository.new
 
