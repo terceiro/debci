@@ -1,0 +1,32 @@
+<div class='container'>
+  <div class='row'>
+    <div class='col-md-12'>
+      <h1 class='page-header'>Status <small>/ Alerts</small></h1>
+      <%= @status_nav %>
+
+      <h4>There are currently <b><%= @alert_number %></b> packages with status alerts.</h4>
+
+      <% if @tmpfail %>
+        <table class='table'>
+          <tr>
+            <th>Package</th>
+            <th>Status</th>
+          </tr>
+
+        <% @tmpfail.each do |package| %>
+            <tr>
+              <td>
+                <a href="/packages/<%= package.prefix %>/<%= package.name %>"><%= package.name %></a>
+              </td>
+
+              <td class='tmpfail'>
+                Tmpfail on <%= package.tmpfail.map { |p| "<a href='/packages/#{package.prefix}/#{package.name}/#{p}'>#{p}</a>" }.join(', ') %>
+              </td>
+            </tr>
+        <% end %>
+        </table>
+      <% end %>
+
+    </div> <!-- class='col-md-12' -->
+  </div> <!-- class='row' -->
+</div> <!-- class='container' -->
