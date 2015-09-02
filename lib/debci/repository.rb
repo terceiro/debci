@@ -53,6 +53,7 @@ module Debci
 
             if status.status == :tmpfail
               tmpfail_packages << package
+              break
             end
           end
         end
