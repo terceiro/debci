@@ -1,8 +1,14 @@
-debci (0.13) UNRELEASED; urgency=medium
+debci (1.0~0) UNRELEASED; urgency=medium
 
-  * debci-generate-feeds: add test run duration to feed items
+  * WIP
 
  -- Antonio Terceiro <terceiro@debian.org>  Thu, 08 Jan 2015 15:39:38 -0200
+
+debci (0.13) unstable; urgency=medium
+
+  * debci hint: generate a britney hints file
+
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 18 Aug 2015 16:52:06 +0200
 
 debci (0.12) unstable; urgency=medium
 
