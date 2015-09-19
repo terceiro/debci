@@ -40,11 +40,11 @@ module Debci
       @prefixes ||= @data_dirs.map { |d| Dir.glob(File.join(d, '*/')) }.flatten.map { |d| File.basename(d) }.uniq.sort
     end
 
-    # Returns an Array of packages known to this debci instance that are
+    # Returns a Set of packages known to this debci instance that are
     # temporarily failing. If no packages are temporarily failing, nothing
     # is returned.
     def tmpfail_packages
-      tmpfail_packages = []
+      tmpfail_packages = Set.new
 
       packages.each do |package|
         suites.each do |suite|
@@ -53,7 +53,6 @@ module Debci
 
             if status.status == :tmpfail
               tmpfail_packages << package
-              break
             end
           end
         end
