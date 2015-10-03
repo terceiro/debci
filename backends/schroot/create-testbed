@@ -87,6 +87,17 @@ setup_schroot() {
     user=debci
   fi
 
+  if grep -q '^nodev\s*aufs$' /proc/filesystems; then
+    union_type=aufs
+  fi
+  if grep -q '^nodev\s*overlay$' /proc/filesystems; then
+    union_type=overlay
+  fi
+  if [ -z "$union_type" ]; then
+    echo "E: can't find an usable union mount filesystem (tried: overlay, aufs)"
+    exit 1
+  fi
+
   cat > /etc/schroot/chroot.d/"${debci_chroot_name}" <<EOF
 [$debci_chroot_name]
 type=directory
@@ -98,7 +109,7 @@ groups=$user
 root-users=$user
 source-root-users=$user
 root-groups=root
-union-type=aufs
+union-type=$union_type
 EOF
 
   if [ ! -e /etc/schroot/debci ]; then
