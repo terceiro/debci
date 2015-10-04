@@ -9,6 +9,9 @@ $@
 EOF
 }
 
+# skip when running tests
+if [ -n "$DEBCI_RUNNING_TESTS" ]; then exit; fi
+
 base=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $base/lib/environment.sh
 
