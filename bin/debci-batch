@@ -44,7 +44,7 @@ touch -d '1 month ago' "${one_month_ago}"
 
 run() {
   log "I: building/updating chdist for $debci_suite"
-  debci-setup-chdist
+  run_with_exclusive_lock "$debci_chdist_lock" debci-setup-chdist
 
   log "I: start processing of all packages"
 
