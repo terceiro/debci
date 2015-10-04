@@ -9,6 +9,7 @@ output_filename = File.join(Debci.config.data_basedir, 'britney', 'failing.txt')
 FileUtils.mkdir_p(File.dirname(output_filename))
 
 data = JSON.load(input)
+data = [data] if data.is_a?(Hash)
 exit(0) unless data.respond_to?(:each)
 
 File.open(output_filename, 'w') do |output|
