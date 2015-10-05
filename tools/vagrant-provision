@@ -5,7 +5,7 @@ set -ex
 export DEBIAN_FRONTEND=noninteractive
 
 # enable backports
-if [ -f /etc/apt/sources.list.d/backports.list ]; then
+if [ ! -f /etc/apt/sources.list.d/backports.list ]; then
   sed -e 's/\bjessie\b/jessie-backports/' /etc/apt/sources.list > \
     /etc/apt/sources.list.d/backports.list
 fi
