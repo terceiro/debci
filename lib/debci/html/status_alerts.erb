@@ -6,7 +6,7 @@
 
       <h4>There are currently <b><%= @alert_number %></b> packages with status alerts.</h4>
 
-      <% if @tmpfail %>
+      <% if not @tmpfail.empty? %>
         <table class='table'>
           <tr>
             <th>Package</th>
