@@ -33,7 +33,7 @@ $(test_backends): test-% : backends/%/test-package
 
 deb:
 	mkdir -p tmp/deb
-	rm -f tmp/deb/debci*
+	rm -rf tmp/deb/debci*
 	DEB_BUILD_OPTIONS=nocheck gbp buildpackage --git-export-dir=tmp/deb
 	@echo
 	@echo "Debian packages available in tmp/deb/!"
