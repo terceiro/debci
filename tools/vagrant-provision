@@ -16,6 +16,7 @@ a2enmod headers
 cat > /etc/apache2/sites-enabled/debci.conf <<EOF
 <VirtualHost *:80>
   ServerName localhost
+  ServerAlias debci.local
   DocumentRoot /usr/share/debci/public
   ErrorLog \${APACHE_LOG_DIR}/debci.error.log
   CustomLog \${APACHE_LOG_DIR}/debci.access.log combined
@@ -41,9 +42,13 @@ service apache2 reload
 # install AMQP server
 apt-get install -qy rabbitmq-server
 
+for base in /vagrant /debci; do
+  if [ -d $base ]; then break; fi
+done
+
 # install debci from locally built packages
-if test -d /vagrant/tmp/deb; then
-  dpkg --unpack /vagrant/tmp/deb/*.deb
+if test -d $base/tmp/deb; then
+  dpkg --unpack $base/tmp/deb/*.deb
   apt-get install -qyf
 else
   echo
