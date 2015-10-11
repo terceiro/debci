@@ -26,6 +26,9 @@ tags=''
 # Process one request. Read the AMQP message from stdin.
 do_request() {
   read pkg specs || true  # we expect EOF and thus read to fail
+
+  sudo $(which debci-setup)
+
   log "I: Running test for package $pkg"
 
   local tmp_dir=$(mktemp -d)

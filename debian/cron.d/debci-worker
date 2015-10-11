@@ -1,3 +1,0 @@
-21 */6 * * * root [ -x /usr/share/debci/bin/debci-setup ] && /usr/share/debci/bin/debci-setup
-
-# vim: ft=crontab
