@@ -87,6 +87,7 @@ setup_schroot() {
     user=debci
   fi
 
+  union_type=''
   if grep -q '^nodev\s*aufs$' /proc/filesystems; then
     union_type=aufs
   fi
