@@ -24,11 +24,23 @@ if [ ! -f "$log" ]; then
 fi
 
 if which create-testbed >/dev/null 2>/dev/null; then
+  if [ -e "$debci_testbed_timestamp" ]; then
+    last_update=$(stat --format=%Y "$debci_testbed_timestamp")
+    now=$(date +%s)
+    if [ $(($now - $last_update)) -le 86400 ]; then # 24h
+      echo "I: testbed already updated in the last 24h, no need to update"
+      exit
+    fi
+  fi
+
   if [ -t 1 ]; then
     run_with_exclusive_lock "$debci_testbed_lock" create-testbed 2>&1 | tee --append "$log"
   else
     run_with_exclusive_lock "$debci_testbed_lock" create-testbed >>$log 2>&1
   fi
+
+  # record timestamp
+  touch "$debci_testbed_timestamp"
 else
   echo "I: $debci_backend backend does not provide a way to create a testbed"
 fi

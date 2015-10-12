@@ -146,8 +146,9 @@ debci_group=$(stat -c %G "${debci_data_basedir}")
 
 debci_amqp_queue=${debci_amqp_queue:-"debci-${debci_suite}-${debci_arch}-${debci_backend}"}
 
-# lock files
-debci_testbed_lock=/var/lock/debci-testbed-${debci_suite}-${debci_arch}.lock
+# lock/timestamp files
+debci_testbed_lock=/var/lock/debci-testbed-${debci_suite}-${debci_arch}-${debci_backend}.lock
+debci_testbed_timestamp=/var/lock/debci-testbed-${debci_suite}-${debci_arch}-${debci_backend}.stamp
 debci_chdist_lock=/var/lock/debci-chdist-${debci_suite}-${debci_arch}.lock
 
 for dir in \
