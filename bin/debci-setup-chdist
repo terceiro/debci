@@ -14,6 +14,7 @@ if [ -n "${DEBCI_RUNNING_TESTS:-}" ]; then exit; fi
 
 base=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $base/lib/environment.sh
+. $base/lib/functions.sh
 
 root="$debci_data_basedir/chdist"
 name="${debci_suite}-${debci_arch}"
@@ -24,14 +25,14 @@ if [ -f "$timestamp" ]; then
   ts=$(stat --format=%Y "$timestamp")
   now=$(date +%s)
   if [ $(($now - $ts)) -le 3600 ]; then
-    echo "I: chdist updated in the last hour, no need to update"
+    log "I: chdist updated in the last hour, no need to update"
     exit
   fi
 fi
 
 # create new chdist if it doesn't exist already
 if [ ! -e "$root/$name" ]; then
-  echo "Creating new chdist $root/$name"
+  log "I: Creating new chdist $root/$name"
   chdist --data-dir "$root" create "$name" >/dev/null
 
   # figure out default mirror from debootstrap scripts

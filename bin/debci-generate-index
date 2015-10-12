@@ -350,7 +350,7 @@ generate_all_packages() {
   fi
   local updated_packages="$(generate_packages)"
   if [ -n "$updated_packages" ]; then
-    run_with_exclusive_lock "$debci_chdist_lock" debci-setup-chdist
+    run_with_exclusive_lock "$debci_chdist_lock" debci-setup-chdist --quiet
 
     debci-generate-feeds $updated_packages
     generate_status_entry
