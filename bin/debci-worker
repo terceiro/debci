@@ -27,7 +27,7 @@ tags=''
 do_request() {
   read pkg specs || true  # we expect EOF and thus read to fail
 
-  sudo $(which debci-setup)
+  sudo --non-interactive $(which debci-setup)
 
   log "I: Running test for package $pkg"
 
