@@ -10,6 +10,12 @@ if [ $(whoami) != root ]; then
   exit 1
 fi
 
+# fail right away if lxc is not installed
+if ! which lxc-create >/dev/null; then
+  echo "E: lxc is not installed"
+  exit 1
+fi
+
 # debootstrap doesn't like "unstable"
 [ $debci_suite = unstable ] && debci_suite=sid
 
