@@ -54,6 +54,8 @@ Description: continuous integration system for Debian
  rabbitmq-server for this; but it is also possible to run RabbitMQ on a
  different server than debci, in which case you do not need to install that
  recommendation.
+ .
+ This package contains the debci core.
 
 Package: debci-worker
 Architecture: all
@@ -62,6 +64,16 @@ Depends: debci,
          ${misc:Depends},
          ${shlibs:Depends}
 Description: continuous integration system for Debian (worker daemon)
+ debci will scan the Debian archive for packages that contain DEP-8 compliant
+ test suites, and run those test suites whenever a new version of the package,
+ or of any package in its dependency chain (modulo the base system), is
+ available.
+ .
+ The requests are distributed to worker machines through AMQP queues. You need
+ rabbitmq-server for this; but it is also possible to run RabbitMQ on a
+ different server than debci, in which case you do not need to install that
+ recommendation.
+ .
  This package provides cron and init integration for running debci worker
  daemons that will listen to AMQP queues and run test jobs.
 
@@ -71,6 +83,16 @@ Depends: debci,
          ${misc:Depends},
          ${shlibs:Depends}
 Description: continuous integration system for Debian (collector daemon)
+ debci will scan the Debian archive for packages that contain DEP-8 compliant
+ test suites, and run those test suites whenever a new version of the package,
+ or of any package in its dependency chain (modulo the base system), is
+ available.
+ .
+ The requests are distributed to worker machines through AMQP queues. You need
+ rabbitmq-server for this; but it is also possible to run RabbitMQ on a
+ different server than debci, in which case you do not need to install that
+ recommendation.
+ .
  This package provides the collector daemon, which will receive test results
  published by debci worker hosts, store them centrally, and generate the static
  HTML files for the debci user interface.
