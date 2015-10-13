@@ -27,8 +27,8 @@ if which create-testbed >/dev/null 2>/dev/null; then
   if [ -e "$debci_testbed_timestamp" ]; then
     last_update=$(stat --format=%Y "$debci_testbed_timestamp")
     now=$(date +%s)
-    if [ $(($now - $last_update)) -le 86400 ]; then # 24h
-      echo "I: testbed already updated in the last 24h, no need to update"
+    if [ $(($now - $last_update)) -le 43200 ]; then # 12h
+      log "I: testbed already updated in the last 12h, no need to update"
       exit
     fi
   fi
@@ -42,5 +42,5 @@ if which create-testbed >/dev/null 2>/dev/null; then
   # record timestamp
   touch "$debci_testbed_timestamp"
 else
-  echo "I: $debci_backend backend does not provide a way to create a testbed"
+  log "I: $debci_backend backend does not provide a way to create a testbed"
 fi

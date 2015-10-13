@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = configure ] && [ -z "$2" ]; then
+  # build test immediately on first install
+  echo "Building testbed in background ..."
+  debci setup --quiet
+fi
+
+##DEBHELPER##

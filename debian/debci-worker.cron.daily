@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+log=$(mktemp)
+cleanup() {
+  rm -f "$log"
+}
+trap cleanup INT TERM EXIT
+
+# only output anything if `debci setup` fails
+rc=0
+debci setup --quiet >"$log" 2>&1 || rc=$?
+if [ $rc -ne 0 ]; then
+  cat "$log"
+fi
+exit $rc
