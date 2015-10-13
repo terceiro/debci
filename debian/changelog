@@ -1,6 +1,12 @@
 debci (1.0~0) UNRELEASED; urgency=medium
 
-  * WIP
+  * This is a major overhaul of the debci infrastructure. debci now works as a
+    distributed system, with one or more workers that process test runs, and
+    one central node that collects tests results and generates the HTML web
+    UI. The nodes communicate using an AMQP server (usually rabbitmq-server),
+    and test requests can be submitted from any host that can connect to the
+    AMQP server. One will usually have one specific node, perhaps the one that
+    runs the result collection/web UI, running `debci batch` to schedule tests.
 
  -- Antonio Terceiro <terceiro@debian.org>  Thu, 08 Jan 2015 15:39:38 -0200
 
