@@ -3,9 +3,21 @@
 set -e
 
 if [ "$1" = configure ] && [ -z "$2" ]; then
-  # build test immediately on first install
+  # build testbed immediately on first install
   echo "Building testbed in background ..."
-  debci setup --quiet
+  debci setup --quiet &
+
+  # enable && start first instance
+  #
+  # FIXME manually creating symlink, deb-systemd-helper does not support
+  # template services yet.
+  ln -sf /lib/systemd/system/debci-worker@.service \
+    /etc/systemd/system/multi-user.target.wants/debci-worker@1.service
+  # tell systemd to reload
+  if [ -d /run/systemd/system ]; then
+    systemctl --system daemon-reload >/dev/null || true
+  fi
+  deb-systemd-invoke start  debci-worker@1.service
 fi
 
 ##DEBHELPER##

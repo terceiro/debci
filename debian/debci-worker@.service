@@ -1,0 +1,17 @@
+# systemd service template for individual debci-worker instances
+
+[Unit]
+Description=debci-worker instance %i
+PartOf=debci-worker.service
+After=rabbitmq-server.service network-online.target
+ReloadPropagatedFrom=debci-worker.service
+
+[Service]
+User=debci
+WorkingDirectory=/usr/share/debci
+ExecStart=/usr/share/debci/bin/debci worker
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

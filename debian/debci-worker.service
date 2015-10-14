@@ -1,13 +1,14 @@
+# systemd service for managing all debci-worker instances on the
+# system
+
 [Unit]
 Description=debci worker daemon
-After=rabbitmq-server.service network-online.target
 
 [Service]
-User=debci
-WorkingDirectory=/usr/share/debci
-ExecStart=/usr/share/debci/bin/debci worker
-Restart=on-failure
-RestartSec=5
+Type=oneshot
+ExecStart=/bin/true
+ExecReload=/bin/true
+RemainAfterExit=on
 
 [Install]
 WantedBy=multi-user.target
