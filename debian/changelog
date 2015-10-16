@@ -8,6 +8,16 @@ debci (1.0~0) UNRELEASED; urgency=medium
     AMQP server. One will usually have one specific node, perhaps the one that
     runs the result collection/web UI, running `debci batch` to schedule tests.
 
+  * New packages:
+    + debci-worker: contains the systemd service units necessary to run the
+      worker daemons; must be installed on worker nodes.
+    + debci-collector: contains the systemd service unit necessary to run the
+      debci collector daemon: will receive test results, and generate the HTML
+      web interface; must be installed on a single node in the network
+  * The `debci` package contains the debci core, and is still the package that
+    needs to be installed for developers trying out debci locally as
+    instructed the documentation.
+
   [ Martin Pitt ]
   * Initial implementation of the master/worker setup
   * Add support for importing data from test runs executed elsewhere
