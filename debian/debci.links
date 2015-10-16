@@ -2,5 +2,4 @@ etc/debci                                    usr/share/debci/config
 usr/share/debci/bin/debci                    usr/bin/debci
 var/lib/debci/chroots                        usr/share/debci/chroots
 var/lib/debci/data                           usr/share/debci/data
-var/lib/debci/gnupg                          usr/share/debci/gnupg
 var/log/debci                                usr/share/debci/log
