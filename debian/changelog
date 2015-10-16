@@ -15,6 +15,7 @@ debci (1.0~0) UNRELEASED; urgency=medium
   [ Antonio Terceiro ]
   * Finished implementation of the master/worker setup
   * schroot/create-testbed: find usable union-type (Closes: #799760)
+  * debian/debci.postrm: remove /var/lib/debci on purge (Closes: #769766)
 
   [ Chris Lamb ]
   * Document how to get started without a virtualisation regime
