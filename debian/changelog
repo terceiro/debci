@@ -8,7 +8,23 @@ debci (1.0~0) UNRELEASED; urgency=medium
     AMQP server. One will usually have one specific node, perhaps the one that
     runs the result collection/web UI, running `debci batch` to schedule tests.
 
- -- Antonio Terceiro <terceiro@debian.org>  Thu, 08 Jan 2015 15:39:38 -0200
+  [ Martin Pitt ]
+  * Initial implementation of the master/worker setup
+  * Add support for importing data from test runs executed elsewhere
+
+  [ Antonio Terceiro ]
+  * Finished implementation of the master/worker setup
+  * schroot/create-testbed: find usable union-type (Closes: #799760)
+
+  [ Chris Lamb ]
+  * Document how to get started without a virtualisation regime
+    (Closes: #777531)
+
+  [ Brandon Fairchild ]
+  * Several documentation and frontend updates
+    + Including displaying correct failing architectures (Closes: #797198)
+
+ -- Antonio Terceiro <terceiro@debian.org>  Thu, 15 Oct 2015 22:58:11 -0300
 
 debci (0.13) unstable; urgency=medium
 
