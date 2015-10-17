@@ -2,4 +2,8 @@ Tests: ruby-test-suite test-suite
 Depends: debci, shunit2, ruby-rspec (>= 2.14)
 Restrictions: allow-stderr needs-recommends
 
+Tests: integration-test
+Depends: debci, shunit2, rabbitmq-server
+Restrictions: allow-stderr, isolation-container, needs-root
+
 # vim: ft=debcontrol

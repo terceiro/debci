@@ -1,0 +1,64 @@
+#!/bin/sh
+
+#######################################################################
+
+set -ex
+
+export DEBIAN_FRONTEND=noninteractive
+alias apt='apt -qy'
+
+echo 'debci_backend=fake' > /etc/debci/conf.d/backend.conf
+apt install debci-collector debci-worker
+
+p='r'
+pkg=ruby-defaults
+arch=$(dpkg --print-architecture)
+data=/var/lib/debci/data
+html=$data/.html
+
+debci enqueue $pkg
+sleep 5s
+
+set +ex
+
+#######################################################################
+
+assertFileExists() {
+  local file_description="$1"
+  local filename="$2"
+  assertTrue "missing $file_description ($filename)" \
+    "[ -f $filename ]"
+}
+
+test_has_global_status_file() {
+  assertFileExists 'global status file' \
+    "${data}/status/unstable/$arch/status.json"
+}
+
+test_has_global_package_status_file() {
+  assertFileExists 'global package status file' \
+    "${data}/status/unstable/$arch/packages.json"
+}
+
+test_has_package_data_file() {
+  assertFileExists 'package status file' \
+    "${data}/packages/unstable/$arch/$p/$pkg/latest.json"
+}
+
+test_has_package_history_file() {
+  assertFileExists 'package history file' \
+    "${data}/packages/unstable/$arch/$p/$pkg/history.json"
+}
+
+test_has_package_page() {
+  assertFileExists 'package page' \
+    "${html}/packages/$p/$pkg/index.html"
+}
+
+test_has_package_arch_page() {
+  assertFileExists 'architecture-specific package page' \
+    "${html}/packages/$p/$pkg/unstable/$arch/index.html"
+}
+
+. shunit2
+
