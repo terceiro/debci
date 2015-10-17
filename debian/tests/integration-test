@@ -5,10 +5,10 @@
 set -ex
 
 export DEBIAN_FRONTEND=noninteractive
-alias apt='apt -qy'
 
 echo 'debci_backend=fake' > /etc/debci/conf.d/backend.conf
-apt install debci-collector debci-worker
+apt-get install -qy --no-install-recommends \
+  debci-collector debci-worker
 
 p='r'
 pkg=ruby-defaults
