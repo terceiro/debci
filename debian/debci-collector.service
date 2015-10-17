@@ -4,6 +4,7 @@ After=rabbitmq-server.service network-online.target
 
 [Service]
 User=debci
+Group=debci
 WorkingDirectory=/usr/share/debci
 ExecStart=/usr/share/debci/bin/debci collector
 Restart=on-failure
