@@ -35,6 +35,7 @@ deb:
 	mkdir -p tmp/deb
 	rm -rf tmp/deb/debci*
 	DEB_BUILD_OPTIONS=nocheck gbp buildpackage --git-export-dir=tmp/deb
+	cd tmp/deb && dpkg-scanpackages . > Packages
 	@echo
 	@echo "Debian packages available in tmp/deb/!"
 
