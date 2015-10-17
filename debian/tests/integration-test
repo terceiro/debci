@@ -10,18 +10,18 @@ echo 'debci_backend=fake' > /etc/debci/conf.d/backend.conf
 apt-get install -qy --no-install-recommends \
   debci-collector debci-worker
 
-p='r'
-pkg=ruby-defaults
-arch=$(dpkg --print-architecture)
-data=/var/lib/debci/data
-html=$data/.html
-
 debci enqueue $pkg
 sleep 5s
 
 set +ex
 
 #######################################################################
+
+p='r'
+pkg=ruby-defaults
+arch=$(dpkg --print-architecture)
+data=/var/lib/debci/data
+html=$data/.html
 
 assertFileExists() {
   local file_description="$1"
