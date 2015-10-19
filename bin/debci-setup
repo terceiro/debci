@@ -15,14 +15,6 @@ export debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 
 prepare_args
 
-mkdir -p "$debci_log_dir"
-log="$debci_log_dir/debci-setup.log"
-if [ ! -f "$log" ]; then
-  touch "$log"
-  user_group=$(stat -c %U:%G "${debci_log_dir}")
-  chown $user_group "$log"
-fi
-
 if which create-testbed >/dev/null 2>/dev/null; then
   if [ -e "$debci_testbed_timestamp" ]; then
     last_update=$(stat --format=%Y "$debci_testbed_timestamp")
@@ -32,6 +24,21 @@ if which create-testbed >/dev/null 2>/dev/null; then
       exit
     fi
   fi
+
+  mkdir -p "$debci_log_dir"
+  log="$debci_log_dir/debci-setup.$(date +%d).log"
+  touch "$log"
+  user_group=$(stat -c %U:%G "${debci_log_dir}")
+  chown $user_group "$log"
+  ln -sf "$(basename "$log")" "$debci_log_dir/debci-setup.log"
+  chown $user_group "$debci_log_dir/debci-setup.log"
+  find "$debci_log_dir" -mtime +30 -and -name '*.log' -delete
+
+  (
+    msg="debci-setup started on $(LANG=C date)"
+    echo "$msg"
+    echo "$msg" | sed -s 's/./-/g'
+  ) >> $log 2>&1
 
   if [ -t 1 ] && [ "$debci_quiet" = false ]; then
     run_with_exclusive_lock "$debci_testbed_lock" create-testbed 2>&1 | tee --append "$log"
