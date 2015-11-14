@@ -41,7 +41,6 @@ Depends: adduser,
 Recommends: apt-cacher-ng,
             moreutils,
             ntp,
-            rabbitmq-server,
 Description: continuous integration system for Debian
  debci will scan the Debian archive for packages that contain DEP-8 compliant
  test suites, and run those test suites whenever a new version of the package,
@@ -82,6 +81,7 @@ Architecture: all
 Depends: debci,
          ${misc:Depends},
          ${shlibs:Depends}
+Recommends: rabbitmq-server,
 Description: continuous integration system for Debian (collector daemon)
  debci will scan the Debian archive for packages that contain DEP-8 compliant
  test suites, and run those test suites whenever a new version of the package,
