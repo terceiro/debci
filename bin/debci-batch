@@ -23,8 +23,6 @@ EOF
 short_options='f'
 long_options='force,offline,online'
 
-requested_packages=' '
-
 debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 cd $debci_base_dir
 . lib/environment.sh
@@ -73,7 +71,6 @@ process_all_packages() {
   # determine packages which need to be tested and request tests
   for pkg in $(all_packages_with_fastest_first); do
     if needs_processing $pkg; then
-      requested_packages="${requested_packages}${pkg} "
       debci-enqueue "$pkg"
     else
       report_status "$pkg" "skip"
