@@ -27,7 +27,7 @@ tags=''
 do_request() {
   read pkg specs || true  # we expect EOF and thus read to fail
 
-  log "I: Running test for package $pkg"
+  log "$pkg started"
 
   local tmp_dir=$(mktemp -d)
 
