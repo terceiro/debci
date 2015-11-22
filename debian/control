@@ -56,7 +56,7 @@ Description: continuous integration system for Debian
 
 Package: debci-worker
 Architecture: all
-Depends: debci,
+Depends: debci (= ${binary:Version}),
          autodep8 (>= 0.2~),
          autopkgtest (>= 3.16),
          schroot | lxc,
@@ -78,7 +78,7 @@ Description: continuous integration system for Debian (worker daemon)
 
 Package: debci-collector
 Architecture: all
-Depends: debci,
+Depends: debci (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
 Recommends: rabbitmq-server,
