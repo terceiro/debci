@@ -70,7 +70,7 @@ process_all_packages() {
 
   # determine packages which need to be tested and request tests
   for pkg in $(all_packages_with_fastest_first); do
-    if needs_processing $pkg && ! already_enqueued $pkg; then
+    if (! already_enqueued $pkg) && needs_processing $pkg; then
       record_enqueued "$pkg"
       debci-enqueue "$pkg"
     else
