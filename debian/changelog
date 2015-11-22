@@ -1,4 +1,4 @@
-debci (1.0~1) UNRELEASED; urgency=medium
+debci (1.0~2) UNRELEASED; urgency=medium
 
   * This is a major overhaul of the debci infrastructure. debci now works as a
     distributed system, with one or more workers that process test runs, and
@@ -36,7 +36,7 @@ debci (1.0~1) UNRELEASED; urgency=medium
   * Several documentation and frontend updates
     + Including displaying correct failing architectures (Closes: #797198)
 
- -- Antonio Terceiro <terceiro@debian.org>  Sun, 22 Nov 2015 10:51:30 -0200
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 22 Nov 2015 18:29:57 -0200
 
 debci (0.13) unstable; urgency=medium
 
