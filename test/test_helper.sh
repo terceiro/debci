@@ -9,6 +9,7 @@ export DEBCI_RUNNING_TESTS=yes
 export debci_quiet='true'
 export debci_backend='fake'
 export debci_amqp_server="amqp://localhost:$TEST_RABBIT_PORT"
+export debci_amqp_queue="debci-unstable-$(dpkg --print-architecture)"
 
 if [ -n "${TESTCASE:-}" ]; then
   suite() {
@@ -159,4 +160,8 @@ stop_collector() {
     amqp-delete-queue --url $debci_amqp_server -q debci_results > /dev/null
     COLLECTOR_PID=''
   fi
+}
+
+clean_queue() {
+  amqp-delete-queue --url $debci_amqp_server -q $debci_amqp_queue
 }

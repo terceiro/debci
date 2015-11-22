@@ -10,10 +10,6 @@ request() {
   debci-enqueue $1
 }
 
-clean_queue() {
-  amqp-delete-queue --url $debci_amqp_server -q $debci_amqp_queue
-}
-
 settle_processes() {
   local timeout=100
   while [ $timeout -gt 0 ]; do
