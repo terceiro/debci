@@ -70,7 +70,8 @@ process_all_packages() {
 
   # determine packages which need to be tested and request tests
   for pkg in $(all_packages_with_fastest_first); do
-    if needs_processing $pkg; then
+    if needs_processing $pkg && ! already_enqueued $pkg; then
+      record_enqueued "$pkg"
       debci-enqueue "$pkg"
     else
       report_status "$pkg" "skip"
@@ -121,6 +122,32 @@ needs_processing() {
   fi
 
   return $run
+}
+
+already_enqueued() {
+  local pkg="$1"
+  # XXX if you change the line below also change in record_enqueued()
+  local queue_marker="$(status_dir_for_package "$pkg")/queue.txt"
+  local last_result="$(status_dir_for_package "$pkg")/latest.json"
+  if [ -e "$queue_marker" ]; then
+    if [ -e "$last_result" ]; then
+      # already enqueued if last result is older than last request
+      test "$last_result" -ot "$queue_marker"
+    else
+      # already enqueued, just not finished yet
+      return 0
+    fi
+  else
+    # never enqueued before
+    return 1
+  fi
+}
+
+record_enqueued() {
+  local pkg="$1"
+  # XXX if you change the line below also change in already_enqueued()
+  local queue_marker="$(status_dir_for_package "$pkg")/queue.txt"
+  echo "Enqueued at $(date)" > "$queue_marker"
 }
 
 # default configuration

@@ -140,6 +140,16 @@ test_batch_force() {
   echo "$log" | grep -q 'changes.*dependenc' && fail "log claims dep change:\n$log"
 }
 
+test_batch_wont_enqueue_twice() {
+  start_rabbitmq_server
+  echo "mypkg" > $debci_config_dir/whitelist
+  debci batch --force
+  debci batch --force
+
+  num_requests=$(clean_queue)
+  assertEquals 1 $num_requests
+}
+
 test_status_for_all_packages() {
   result_pass start_worker
   debci batch
