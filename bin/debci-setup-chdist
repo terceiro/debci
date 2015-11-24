@@ -102,6 +102,16 @@ fi
 
 update_chdist() {
   chdist --data-dir "$root" apt-get "$name" update
+
+  base_system="$root/$name/base-system.txt"
+  # dpgk-dev is added to all clean test beds by debci itself
+  base_packages="dpkg-dev $(chdist --data-dir "$root" grep-dctrl-packages "$name" -n -s Package -F Priority required --or important)"
+  chdist \
+    --data-dir "$root" \
+    apt-get "$name" --simulate --quiet --no-install-recommends install $base_packages \
+    | awk '{ if ($1 == "Inst") {print($2)}}' | sort > "$base_system"
+
+  awk '{print("/^"$1"\\s/d")}' $base_system > "${root}/${name}/exclude-base-system.sed"
 }
 
 if [ "$debci_quiet" = 'true' ]; then
