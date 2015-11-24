@@ -20,13 +20,7 @@ debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $debci_base_dir/lib/functions.sh
 
 write_results() {
-  results=$(tar xzfv - -C "$debci_data_basedir" | grep exitcode | xargs dirname)
-  maybe_update_indexes
-}
-
-maybe_update_indexes() {
-  if [ -n "${DEBCI_RUNNING_TESTS:-}" ]; then return; fi
-  debci-generate-index
+  tar xzf - -C "$debci_data_basedir"
 }
 
 while true; do
