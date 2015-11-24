@@ -16,6 +16,9 @@ export debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 prepare_args
 
 if which create-testbed >/dev/null 2>/dev/null; then
+
+  log "Starting testbed setup: $(date)"
+
   if [ -e "$debci_testbed_timestamp" ]; then
     last_update=$(stat --format=%Y "$debci_testbed_timestamp")
     now=$(date +%s)
@@ -48,6 +51,8 @@ if which create-testbed >/dev/null 2>/dev/null; then
 
   # record timestamp
   touch "$debci_testbed_timestamp"
+
+  log "Finished testbed setup: $(date)"
 else
   log "I: $debci_backend backend does not provide a way to create a testbed"
 fi

@@ -146,7 +146,4 @@ if ! which schroot >/dev/null; then
   exit 1
 fi
 
-log "Starting testbed setup"
 setup_suite
-log  "Finished testbed setup"
-echo '--------------------------------------------'
