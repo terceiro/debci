@@ -20,7 +20,9 @@ debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $debci_base_dir/lib/functions.sh
 
 write_results() {
-  tar xzf - -C "$debci_data_basedir"
+  local exitcode=$(tar xzfv - -C "$debci_data_basedir" | grep 'exitcode$')
+  local package=$(basename $(dirname $(dirname $exitcode)))
+  log "$package results received (exit code: $(cat $debci_data_basedir/$exitcode))"
 }
 
 while true; do
@@ -35,5 +37,6 @@ while true; do
   esac
 done
 
+log "I: Connecting to AMQP queue ${debci_amqp_results_queue} on ${debci_amqp_server}"
 amqp-declare-queue --url="$debci_amqp_server" --durable --queue="$debci_amqp_results_queue" >/dev/null
 exec amqp-consume --url="$debci_amqp_server" --queue="$debci_amqp_results_queue" -- $0 --write-results
