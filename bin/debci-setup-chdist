@@ -100,8 +100,15 @@ EOF
   echo 'Acquire::Languages "none";' > "$TARGET/etc/apt/apt.conf.d/99translations"
 fi
 
-# update apt indexes
-chdist --data-dir "$root" apt-get "$name" update
+update_chdist() {
+  chdist --data-dir "$root" apt-get "$name" update
+}
+
+if [ "$debci_quiet" = 'true' ]; then
+  update_chdist >/dev/null 2>&1
+else
+  update_chdist
+fi
 
 # record timestamp
 touch "$timestamp"
