@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+
+rm -rf /etc/systemd/system/debci-worker.service.wants
+
+##DEBHELPER##
