@@ -2,6 +2,8 @@
 
 set -e
 
-rm -rf /etc/systemd/system/debci-worker.service.wants
+if [ "$1" = 'purge' ]; then
+  rm -rf /etc/systemd/system/debci-worker.service.wants
+fi
 
 ##DEBHELPER##
