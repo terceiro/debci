@@ -18,4 +18,5 @@ if [ -f "$bindir/../lib/debci.rb" ]; then
 fi
 
 export PATH=$bindir:$PATH
+export debci_base_dir="$(dirname $bindir)"
 exec debci-$program "$@"
