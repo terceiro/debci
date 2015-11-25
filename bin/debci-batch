@@ -41,6 +41,8 @@ touch -d '1 month ago' "${one_month_ago}"
 
 
 run() {
+  log "I: debci-batch started $(date)"
+
   log "I: building/updating chdist for $debci_suite"
   run_with_exclusive_lock "$debci_chdist_lock" debci-setup-chdist
 
@@ -48,7 +50,7 @@ run() {
 
   process_all_packages
 
-  log "I: finished processing of all packages"
+  log "I: debci-batch finished $(date)"
 }
 
 all_packages_with_fastest_first() {
