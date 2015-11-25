@@ -58,7 +58,7 @@ if [ ! -e "$root/$name" ]; then
 
   # write apt sources.list
   mkdir -p $TARGET/etc/apt/
-  echo "deb $mirror $SUITE $COMPONENTS
+  echo "deb [arch=${debci_arch}] $mirror $SUITE $COMPONENTS
 deb-src $mirror $SUITE $COMPONENTS" > "$TARGET/etc/apt/sources.list"
 
   # add buildd sources
@@ -70,7 +70,7 @@ deb-src $mirror $SUITE $COMPONENTS" > "$TARGET/etc/apt/sources.list"
       buildd_suite=buildd-$SUITE-proposed-updates
     fi
     cat >> "$TARGET/etc/apt/sources.list" <<EOF
-deb http://incoming.debian.org/debian-buildd $buildd_suite main
+deb [arch=${debci_arch}] http://incoming.debian.org/debian-buildd $buildd_suite main
 deb-src http://incoming.debian.org/debian-buildd $buildd_suite main
 EOF
   fi
