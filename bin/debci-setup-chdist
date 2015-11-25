@@ -36,7 +36,7 @@ if [ ! -e "$root/$name" ]; then
   chdist --data-dir "$root" create "$name" >/dev/null
 
   # figure out default mirror from debootstrap scripts
-  DEF_MIRROR="http://ftp.debian.org/debian"
+  DEF_MIRROR="http://http.debian.net/debian"
   SUITE=$debci_suite
   TARGET="$root/$name"
   ARCH=$debci_arch
