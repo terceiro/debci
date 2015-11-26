@@ -20,7 +20,7 @@ debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $debci_base_dir/lib/functions.sh
 
 write_results() {
-  local exitcode_file=$(run_with_exclusive_lock "$debci_generate_index_lock" tar xzfv - -C "$debci_data_basedir" | grep 'exitcode$')
+  local exitcode_file=$(tar xzfv - -C "$debci_data_basedir" | grep 'exitcode$')
   local duration_file=${exitcode_file%%/exitcode}/duration
   local package=$(basename $(dirname $(dirname $exitcode_file)))
 
@@ -46,4 +46,7 @@ done
 
 log "I: Connecting to AMQP queue ${debci_amqp_results_queue} on ${debci_amqp_server}"
 amqp-declare-queue --url="$debci_amqp_server" --durable --queue="$debci_amqp_results_queue" >/dev/null
-exec amqp-consume --url="$debci_amqp_server" --queue="$debci_amqp_results_queue" -- $0 --write-results
+
+ensure_lockfile "$debci_generate_index_lock"
+exec amqp-consume --url="$debci_amqp_server" --queue="$debci_amqp_results_queue" -- \
+  flock --exclusive "$debci_generate_index_lock" $0 --write-results
