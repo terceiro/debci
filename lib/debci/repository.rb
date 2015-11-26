@@ -32,7 +32,7 @@ module Debci
 
     # Returns a Set of packages known to this debci instance
     def packages
-      @packages ||= @data_dirs.map { |d| Dir.glob(File.join(d, '*/*')) }.flatten.map { |d| File.basename(d) }.to_set
+      @packages ||= (@data_dirs.map { |d| Dir.glob(File.join(d, '*/*')) }.flatten.map { |d| File.basename(d) } + Debci.blacklist.packages.keys).to_set
     end
 
     # Returns an Array of package prefixes known to this debci instance

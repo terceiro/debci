@@ -32,16 +32,14 @@ end
 packages = ARGV
 if packages.empty?
   packages = repository.packages
+else
+  packages += Debci.blacklist.packages.keys
 end
 
 prefixes = Set.new
 
-(packages + Debci.blacklist.packages.keys).each do |pkg|
-  begin
-    package = repository.find_package(pkg)
-  rescue Debci::Repository::PackageNotFound
-    next
-  end
+packages.each do |pkg|
+  package = repository.find_package(pkg)
 
   writer.package(package, "packages/#{package.prefix}/#{package.name}/index.html")
   package.suites.each do |suite|
