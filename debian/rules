@@ -14,7 +14,3 @@ override_dh_clean:
 
 override_dh_installinit:
 	@true
-
-override_dh_systemd_start:
-	dh_systemd_start
-	dh_systemd_start -p debci-collector debci-generare-index.path
