@@ -2,7 +2,7 @@
 Description=debci test run results
 
 [Path]
-PathExistsGlob=/var/lib/debci/data/autopkgtest-incoming/*/*/*/*/*/duration
+PathChanged=/var/lib/debci/data/autopkgtest-incoming
 
 [Install]
 WantedBy=paths.target

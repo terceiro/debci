@@ -23,6 +23,7 @@ write_results() {
   local exitcode=$(run_with_exclusive_lock "$debci_generate_index_lock" tar xzfv - -C "$debci_data_basedir" | grep 'exitcode$')
   local package=$(basename $(dirname $(dirname $exitcode)))
   log "$package results received (exit code: $(cat $debci_data_basedir/$exitcode))"
+  date > "${debci_autopkgtest_incoming_dir}/.timestamp"
 }
 
 while true; do
