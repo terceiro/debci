@@ -1,8 +1,0 @@
-[Unit]
-Description=debci test run results
-
-[Path]
-PathChanged=/var/lib/debci/data/autopkgtest-incoming
-
-[Install]
-WantedBy=paths.target
