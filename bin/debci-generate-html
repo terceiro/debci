@@ -11,6 +11,7 @@ writer = Debci::HTML.new
 writer.index('index.html')
 writer.status('status/index.html')
 writer.status_alerts('status/alerts/index.html')
+writer.blacklist('status/blacklist/index.html')
 
 repository = Debci::Repository.new
 
@@ -35,8 +36,13 @@ end
 
 prefixes = Set.new
 
-packages.each do |pkg|
-  package = repository.find_package(pkg)
+(packages + Debci.blacklist.packages.keys).each do |pkg|
+  begin
+    package = repository.find_package(pkg)
+  rescue Debci::Repository::PackageNotFound
+    next
+  end
+
   writer.package(package, "packages/#{package.prefix}/#{package.name}/index.html")
   package.suites.each do |suite|
     package.architectures.each do |arch|

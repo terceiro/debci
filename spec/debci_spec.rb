@@ -15,4 +15,13 @@ describe Debci do
     expect(Debci.config.packages_dir).to match('arm64')
   end
 
+  it 'has a blacklist' do
+    expect(Debci.blacklist).to respond_to(:include?)
+  end
+
+  it 'resets blacklist object when configuration is changed' do
+    b1 = Debci.blacklist; Debci.config!(foo: 'bar'); b2 = Debci.blacklist
+    expect(b2).to_not be(b1)
+  end
+
 end

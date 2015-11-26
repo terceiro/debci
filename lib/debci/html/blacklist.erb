@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1 class='page-header'>Status <small>/ Blacklist</small></h1>
+      <%= @status_nav %>
+      <table class='table table-striped'>
+        <% Debci.blacklist.packages.each do |package, reason| %>
+          <tr>
+            <td><a href="/packages/<%= Debci::Package.new(package).prefix %>/<%= package %>/"><%= package %></a></td>
+            <td>
+              <% if reason && !reason.empty? %>
+                <%= reason %>
+              <% else %>
+                <em>No reason provided</em>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>

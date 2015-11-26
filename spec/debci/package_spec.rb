@@ -75,4 +75,10 @@ describe Debci::Package do
     expect(Debci::Package.new('libreoffice').prefix).to eq('libr')
   end
 
+  it 'may be blacklisted' do
+    pkg = Debci::Package.new('mypkg')
+    allow(Debci.blacklist).to receive(:include?).with(pkg).and_return(true)
+    expect(pkg).to be_blacklisted
+  end
+
 end

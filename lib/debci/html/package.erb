@@ -21,6 +21,12 @@
       </small>
     </h2>
 
+    <% if @package.blacklisted? %>
+      <div class='alert alert-warning'>
+        This package is currently <a href="/status/blacklist/">blacklisted</a> and will not have any new test runs.
+      </div>
+    <% end %>
+
       <table class="table" style='width: auto'>
 
         <tr>

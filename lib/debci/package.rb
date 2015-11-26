@@ -96,6 +96,10 @@ module Debci
       $1
     end
 
+    def blacklisted?
+      Debci.blacklist.include?(self)
+    end
+
   end
 
 end

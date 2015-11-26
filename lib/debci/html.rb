@@ -33,6 +33,11 @@ module Debci
       expand_template(:status_alerts, filename)
     end
 
+    def blacklist(filename)
+      @status_nav = load_template(:status_nav)
+      expand_template(:blacklist, filename)
+    end
+
     def package(package, filename)
       @package = package
       expand_template(:package, filename)
