@@ -113,6 +113,16 @@ report_status() {
   fi >&2
 }
 
+seconds_to_human_time() {
+  local seconds="$1"
+  local hours=$(( $seconds / 3600 ))
+  local minutes=$(( ($seconds % 3600) / 60 ))
+  local seconds=$(( $seconds - ($hours * 3600) - ($minutes * 60) ))
+  local human_time="${hours}h ${minutes}m ${seconds}s"
+
+  echo "$human_time"
+}
+
 
 command_available() {
   which "$1" >/dev/null 2>/dev/null
