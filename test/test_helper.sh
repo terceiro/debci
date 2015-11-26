@@ -21,6 +21,7 @@ setUp() {
   export __tmpdir="$(mktemp -d)"
   mkdir -p $__tmpdir/data
   mkdir -p $__tmpdir/config
+  mkdir -p $__tmpdir/lock
   cat > "$__tmpdir/config/whitelist" <<EOF
 ruby
 ruby-ffi
@@ -29,6 +30,7 @@ rake
 EOF
   export debci_data_basedir="$__tmpdir/data"
   export debci_config_dir="$__tmpdir/config"
+  export debci_lock_dir="$__tmpdir/lock"
   export debci_arch=$(dpkg --print-architecture)
 }
 

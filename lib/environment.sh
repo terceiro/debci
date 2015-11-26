@@ -147,11 +147,13 @@ debci_group=$(stat -c %G "${debci_data_basedir}")
 
 debci_amqp_queue=${debci_amqp_queue:-"debci-${debci_suite}-${debci_arch}-${debci_backend}"}
 
+debci_lock_dir=${debci_lock_dir:-/var/lock}
+
 # lock/timestamp files
-debci_testbed_lock=/var/lock/debci-testbed-${debci_suite}-${debci_arch}-${debci_backend}.lock
-debci_testbed_timestamp=/var/lock/debci-testbed-${debci_suite}-${debci_arch}-${debci_backend}.stamp
-debci_chdist_lock=/var/lock/debci-chdist-${debci_suite}-${debci_arch}.lock
-debci_generate_index_lock=/var/lock/debci-generate-index-${debci_suite}-${debci_arch}.lock
+debci_testbed_lock=${debci_lock_dir}/debci-testbed-${debci_suite}-${debci_arch}-${debci_backend}.lock
+debci_testbed_timestamp=${debci_lock_dir}/debci-testbed-${debci_suite}-${debci_arch}-${debci_backend}.stamp
+debci_chdist_lock=${debci_lock_dir}/debci-chdist-${debci_suite}-${debci_arch}.lock
+debci_generate_index_lock=${debci_lock_dir}/debci-generate-index-${debci_suite}-${debci_arch}.lock
 
 for dir in \
   "${debci_base_dir}/backends/${debci_backend}" \
