@@ -154,6 +154,8 @@ debci_testbed_lock=${debci_lock_dir}/debci-testbed-${debci_suite}-${debci_arch}-
 debci_testbed_timestamp=${debci_lock_dir}/debci-testbed-${debci_suite}-${debci_arch}-${debci_backend}.stamp
 debci_chdist_lock=${debci_lock_dir}/debci-chdist-${debci_suite}-${debci_arch}.lock
 debci_generate_index_lock=${debci_lock_dir}/debci-generate-index-${debci_suite}-${debci_arch}.lock
+debci_batch_lock=${debci_lock_dir}/debci-batch-${debci_suite}-${debci_arch}.lock
+
 
 for dir in \
   "${debci_base_dir}/backends/${debci_backend}" \

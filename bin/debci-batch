@@ -181,6 +181,4 @@ if [ -e "${offline_marker}" ]; then
   exit 0
 fi
 
-run_with_lock_or_exit \
-  /var/lock/debci-batch-${debci_suite}-${debci_arch}.lock \
-  run "$@"
+run_with_lock_or_exit "$debci_batch_lock" run "$@"
