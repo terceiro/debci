@@ -10,7 +10,7 @@ There are a few extra packages that are not strictly dependencies, but you will
 need:
 
 ```
-$ sudo apt-get install ruby-foreman apt-cacher-ng \
+$ sudo apt-get install rerun ruby-foreman apt-cacher-ng \
   moreutils lighttpd rabbitmq-server
 ```
 
@@ -91,6 +91,7 @@ This will start:
 - one debci worker daemon, which runs tests.
 - one debci collector daemon, which receives test results, and generates data files and HTML for the web interface.
 - one web server daemon.
+- one indexer daemon, which generates the HTML UI from the data directory
 
 To visualize the web interface, browse to
 [http://localhost:8888/](http://localhost:8888/)
