@@ -151,6 +151,7 @@ debci_amqp_queue=${debci_amqp_queue:-"debci-${debci_suite}-${debci_arch}-${debci
 debci_testbed_lock=/var/lock/debci-testbed-${debci_suite}-${debci_arch}-${debci_backend}.lock
 debci_testbed_timestamp=/var/lock/debci-testbed-${debci_suite}-${debci_arch}-${debci_backend}.stamp
 debci_chdist_lock=/var/lock/debci-chdist-${debci_suite}-${debci_arch}.lock
+debci_generate_index_lock=/var/lock/debci-generate-index-${debci_suite}-${debci_arch}.lock
 
 for dir in \
   "${debci_base_dir}/backends/${debci_backend}" \

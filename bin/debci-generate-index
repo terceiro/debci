@@ -362,8 +362,7 @@ generate_all_packages() {
 }
 
 if [ -d "$debci_autopkgtest_incoming_dir" ]; then
-  run_with_lock_or_exit \
-    /var/lock/debci-generate-index-${debci_suite}-${debci_arch}.lock \
+  run_with_lock_or_exit $debci_generate_index_lock \
     generate_all_packages
 else
   # running before even having data: generate at least an almost empty index
