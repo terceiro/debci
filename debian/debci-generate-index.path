@@ -1,0 +1,8 @@
+[Unit]
+Description=debci test run results
+
+[Path]
+PathExistsGlob=/var/lib/debci/data/autopkgtest-incoming/*/*/*/*/*/duration
+
+[Install]
+WantedBy=paths.target

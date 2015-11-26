@@ -1,0 +1,2 @@
+debian/debci-generate-index.path     lib/systemd/system/
+debian/debci-generate-index.service  lib/systemd/system/
