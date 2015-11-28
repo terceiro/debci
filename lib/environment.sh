@@ -43,7 +43,7 @@ debci_suite=${debci_suite:-unstable}
 debci_arch=${debci_arch:-$(dpkg --print-architecture)}
 # debci-setup-chdist determines the default from debootstrap, don't set one here
 debci_mirror=
-debci_backend=${debci_backend:-schroot}
+debci_backend=${debci_backend:-lxc}
 debci_data_basedir=${debci_data_basedir:-$(readlink -f "${debci_base_dir}/data")}
 debci_quiet="${debci_quiet:-false}"
 debci_amqp_server=${debci_amqp_server:-"amqp://localhost"}
@@ -64,7 +64,7 @@ usage_shared_options="Common options:
   -a, --arch ARCH           selects the architecture to run tests for
                             (default: host architecture)
   -n, --backend BACKEND     selects the backends to run tests on
-                            (default: schroot)
+                            (default: lxc)
   -s, --suite SUITE         selects suite to run tests for
                             (default: unstable)
   -d DIR, --data-dir DIR    the directory in which debci will store its data,

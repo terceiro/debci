@@ -7,7 +7,6 @@ debci (1.0~11) UNRELEASED; urgency=medium
     and test requests can be submitted from any host that can connect to the
     AMQP server. One will usually have one specific node, perhaps the one that
     runs the result collection/web UI, running `debci batch` to schedule tests.
-
   * New packages:
     + debci-worker: contains the systemd service units necessary to run the
       worker daemons; must be installed on worker nodes.
@@ -17,6 +16,7 @@ debci (1.0~11) UNRELEASED; urgency=medium
   * The `debci` package contains the debci core, and is still the package that
     needs to be installed for developers trying out debci locally as
     instructed the documentation.
+  * Change default backend to `lxc`
 
   [ Martin Pitt ]
   * Initial implementation of the master/worker setup
