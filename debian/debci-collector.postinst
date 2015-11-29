@@ -4,7 +4,7 @@ set -e
 
 if [ "$1" = configure ] && [ -z "$2" ]; then
   # produce empty but existing HTML output on first install
-  sudo -u debci debci generate-index
+  sudo -u debci -g debci debci generate-index
 fi
 rm -f /etc/cron.d/debci-collector
 
