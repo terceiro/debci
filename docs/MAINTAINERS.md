@@ -59,7 +59,7 @@ YOUR_USERNAME       ALL = NOPASSWD:SETENV: /usr/bin/lxc-*
 Now install and configure `debci`:
 
 ```
-$ sudo apt install debci
+$ sudo apt install debci autopkgtest
 $ sudo debci setup
 ```
 
@@ -94,7 +94,7 @@ For more details, see the documentation for the `autopkgtest` package.
 Install a configure `debci` and `schroot`:
 
 ```
-$ sudo apt install debci schroot
+$ sudo apt install debci autopkgtest schroot
 $ sudo debci setup --backend schroot
 ```
 
