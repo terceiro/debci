@@ -1,4 +1,4 @@
-debci (1.0~11) UNRELEASED; urgency=medium
+debci (1.0) UNRELEASED; urgency=medium
 
   * This is a major overhaul of the debci infrastructure. debci now works as a
     distributed system, with one or more workers that process test runs, and
