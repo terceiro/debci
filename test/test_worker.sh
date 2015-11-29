@@ -7,7 +7,7 @@ set -u
 export debci_amqp_queue="${debci_amqp_queue:-debci-unstable-amd64}-fake"
 
 request() {
-  debci-enqueue $1
+  debci enqueue $1
 }
 
 settle_processes() {

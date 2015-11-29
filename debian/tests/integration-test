@@ -1,8 +1,13 @@
 #!/bin/sh
 
+set -ex
+
 #######################################################################
 
-set -ex
+p='r'
+pkg=ruby-defaults
+
+#######################################################################
 
 export DEBIAN_FRONTEND=noninteractive
 
@@ -17,8 +22,6 @@ set +ex
 
 #######################################################################
 
-p='r'
-pkg=ruby-defaults
 arch=$(dpkg --print-architecture)
 data=/var/lib/debci/data
 html=$data/.html
