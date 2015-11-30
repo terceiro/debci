@@ -17,6 +17,8 @@ apt-get install -qy --no-install-recommends \
 
 debci enqueue $pkg
 sleep 5s
+sudo systemctl start debci-generate-index.service
+sleep 5s
 
 set +ex
 
