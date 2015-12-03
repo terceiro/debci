@@ -16,7 +16,7 @@ module Debci
   Config = Struct.new(:data_basedir, :html_dir, :sendmail_from, :sendmail_to, :url_base, :artifacts_url_base, :config_dir, :packages_dir, :distro_name) do
 
     # for development usage
-    if !system('which debci >/dev/null')
+    if !ENV['ADTTMP'] && !system('which debci >/dev/null')
       bin = File.dirname(__FILE__) + '/../../bin'
       if File.exists?(bin)
         ENV['PATH'] = [bin,ENV['PATH']].join(':')
