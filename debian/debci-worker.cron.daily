@@ -2,6 +2,10 @@
 
 set -e
 
+if [ ! -x /usr/bin/debci ]; then
+  exit
+fi
+
 log=$(mktemp)
 cleanup() {
   rm -f "$log"
