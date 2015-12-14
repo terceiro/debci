@@ -1,4 +1,4 @@
-debci (1.0.1) UNRELEASED; urgency=medium
+debci (1.0.1) unstable; urgency=medium
 
   * debian/debci-worker.cron.daily: exit immediately if debci is no longer
     installed (Closes: #807360)
@@ -6,7 +6,7 @@ debci (1.0.1) UNRELEASED; urgency=medium
   * bin/debci-batch: make sure package status directory exists before creating
     queue marker
 
- -- Antonio Terceiro <terceiro@debian.org>  Tue, 08 Dec 2015 11:23:21 -0200
+ -- Antonio Terceiro <terceiro@debian.org>  Mon, 14 Dec 2015 15:17:30 -0200
 
 debci (1.0) unstable; urgency=medium
 
