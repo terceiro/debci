@@ -149,6 +149,7 @@ record_enqueued() {
   local pkg="$1"
   # XXX if you change the line below also change in already_enqueued()
   local queue_marker="$(status_dir_for_package "$pkg")/queue.txt"
+  mkdir -p "$(dirname "$queue_marker")"
   echo "Enqueued at $(date)" > "$queue_marker"
 }
 
