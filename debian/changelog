@@ -1,3 +1,10 @@
+debci (1.0.2) UNRELEASED; urgency=medium
+
+  * Fix some excessive amd64 hardcoding in the test suite. Thanks Colin
+    Watson!
+
+ -- Martin Pitt <mpitt@debian.org> Mon, 28 Dec 2015 04:08:41 +0000
+
 debci (1.0.1) unstable; urgency=medium
 
   * debian/debci-worker.cron.daily: exit immediately if debci is no longer

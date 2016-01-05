@@ -4,7 +4,7 @@ set -u
 . $(dirname $0)/test_helper.sh
 
 # let's mess with a seperate queue just for this test
-export debci_amqp_queue="${debci_amqp_queue:-debci-unstable-amd64}-fake"
+export debci_amqp_queue="${debci_amqp_queue:-debci-unstable-$(dpkg --print-architecture)}-fake"
 
 request() {
   debci enqueue $1
@@ -128,7 +128,7 @@ test_smoke() {
   while [ $completed -lt $NUM_REQUESTS ] && [ $timeout -gt 0 ]; do
     sleep 0.1
     timeout=$((timeout - 1))
-    while [ $(find $debci_data_basedir/autopkgtest-incoming/unstable/amd64/p/pkg$(($completed + 1)) -name duration 2>/dev/null | wc -l) -gt 0 ]; do
+    while [ $(find $debci_data_basedir/autopkgtest-incoming/unstable/$debci_arch/p/pkg$(($completed + 1)) -name duration 2>/dev/null | wc -l) -gt 0 ]; do
       completed=$(($completed + 1))
     done
   done
