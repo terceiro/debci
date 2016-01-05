@@ -29,8 +29,8 @@ test-backends: $(test_backends)
 
 $(test_backends): test-% : backends/%/test-package
 	@./test/banner "Test backend $*"
-	./bin/debci test -b $* test/fake-package/ # local source package
-	./bin/debci test -b $* ruby-defaults      # source package from archive
+	./bin/debci test -b $* test/fake-package/ > log/test-$*.log 2>&1 # local source package
+	./bin/debci test -b $* ruby-defaults      > log/test-$*.log 2>&1 # source package from archive
 
 deb:
 	mkdir -p tmp/deb
