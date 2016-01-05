@@ -3,14 +3,16 @@
 base=$(dirname $0)/..
 . $base/test/test_helper.sh
 
-__day=0
+__need_sleep=
 process() {
+  # ensure that the time stamps in run IDs are different
+  [ -z "$__need_sleep" ] || sleep 1
   pkg="$1"
   dependencies="$2"
   DEBCI_FAKE_DEPS="$dependencies" \
     debci test --quiet "$pkg"
     debci generate-index --quiet
-  __day=$(($__day + 1))
+  __need_sleep=1
 }
 
 test_package_that_never_passed_a_test_cant_blame() {

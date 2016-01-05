@@ -2,8 +2,10 @@ debci (1.0.2) UNRELEASED; urgency=medium
 
   * Fix some excessive amd64 hardcoding in the test suite. Thanks Colin
     Watson!
+  * test/test_blame.sh: Sleep for one second between process() calls, to
+    ensure that timestamps in run IDs are different. (Closes: #809265)
 
- -- Martin Pitt <mpitt@debian.org> Mon, 28 Dec 2015 04:08:41 +0000
+ -- Martin Pitt <mpitt@debian.org>  Mon, 28 Dec 2015 04:08:41 +0000
 
 debci (1.0.1) unstable; urgency=medium
 
