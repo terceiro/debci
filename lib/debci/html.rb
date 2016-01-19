@@ -40,11 +40,13 @@ module Debci
 
     def package(package, filename)
       @package = package
+      @moretitle = package.name
       expand_template(:package, filename)
     end
 
     def prefix(prefix, filename)
       @prefix = prefix
+      @moretitle = prefix
       expand_template(:packagelist, filename)
     end
 
@@ -62,6 +64,7 @@ module Debci
       @autopkgtest_dir = 'data/autopkgtest'
       @site_url = expand_url(Debci.config.url_base, @suite)
       @artifacts_url_base = expand_url(Debci.config.artifacts_url_base, @suite)
+      @moretitle = "#{package.name}/#{suite}/#{architecture}"
       expand_template(:history, filename)
     end
 
