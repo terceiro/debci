@@ -6,6 +6,10 @@ debci (1.0.2) unstable; urgency=medium
   * test/test_blame.sh: Sleep for one second between process() calls, to
     ensure that timestamps in run IDs are different. (Closes: #809265)
 
+  [ Brian Murray ]
+  * Include extra information in HTML <title> tags, such as package name,
+    architecture, suite, etc (Closes: #811563)
+
  -- Antonio Terceiro <terceiro@debian.org>  Mon, 25 Jan 2016 18:57:03 -0200
 
 debci (1.0.1) unstable; urgency=medium
