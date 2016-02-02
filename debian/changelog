@@ -1,3 +1,9 @@
+debci (1.0.3) UNRELEASED; urgency=medium
+
+  * remove unused debian/po directory (Closes: #813447)
+
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 02 Feb 2016 10:53:18 -0200
+
 debci (1.0.2) unstable; urgency=medium
 
   [ Martin Pitt ]
