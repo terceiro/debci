@@ -110,7 +110,13 @@ stop_rabbitmq_server() {
   if [ -n "${DEBUG:-}" ]; then
     echo "stopping local rabbit server"
   fi
-  kill -9 $TEST_RABBIT_SERVER_PID
+
+  env RABBITMQ_MNESIA_BASE=$TEST_RABBIT_SERVER_DIR/mnesia \
+    RABBITMQ_LOG_BASE=$TEST_RABBIT_SERVER_DIR/log \
+    RABBITMQ_NODE_IP_ADDRESS=127.0.0.1 \
+    HOME=$TEST_RABBIT_SERVER_DIR \
+    /usr/lib/rabbitmq/bin/rabbitmqctl stop > $TEST_RABBIT_SERVER_DIR/log/stop_output.txt 2>&1 &
+
   wait $TEST_RABBIT_SERVER_PID
   if [ -z "${DEBUG:-}" ]; then
     rm -rf "$TEST_RABBIT_SERVER_DIR"
