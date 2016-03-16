@@ -11,7 +11,7 @@ esac
 call_chdist() {
   local cmd="$1"
   shift
-  chdist --data-dir "${debci_data_basedir}/chdist" "$cmd" "${debci_suite}-${debci_arch}" "$@"
+  chdist --arch "$debci_arch" --data-dir "${debci_data_basedir}/chdist" "$cmd" "${debci_suite}-${debci_arch}" "$@"
 }
 
 grep_packages() {
