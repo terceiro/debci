@@ -8,6 +8,7 @@
 /config/debci
 /config/*.html
 /config/debci.conf
+/config/conf.d/*.conf
 /chroots/*
 /gnupg/*
 /tags
