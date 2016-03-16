@@ -8,12 +8,18 @@ case $- in
     ;;
 esac
 
+call_chdist() {
+  local cmd="$1"
+  shift
+  chdist --data-dir "${debci_data_basedir}/chdist" "$cmd" "${debci_suite}-${debci_arch}" "$@"
+}
+
 grep_packages() {
-  chdist --data-dir "${debci_data_basedir}/chdist" grep-dctrl-packages ${debci_suite}-${debci_arch} "$@"
+  call_chdist grep-dctrl-packages "$@"
 }
 
 grep_sources() {
-  chdist --data-dir "${debci_data_basedir}/chdist" grep-dctrl-sources ${debci_suite}-${debci_arch} "$@"
+  call_chdist grep-dctrl-sources "$@"
 }
 
 

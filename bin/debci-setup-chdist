@@ -33,7 +33,7 @@ fi
 # create new chdist if it doesn't exist already
 if [ ! -e "$root/$name" ]; then
   log "I: Creating new chdist $root/$name"
-  chdist --data-dir "$root" create "$name" >/dev/null
+  call_chdist create >/dev/null
 
   # figure out default mirror from debootstrap scripts
   DEF_MIRROR="http://http.debian.net/debian"
@@ -101,11 +101,11 @@ EOF
 fi
 
 update_chdist() {
-  chdist --data-dir "$root" apt-get "$name" update
+  call_chdist apt-get update
 
   base_system="$root/$name/base-system.txt"
   # dpgk-dev is added to all clean test beds by debci itself
-  base_packages="dpkg-dev $(chdist --data-dir "$root" grep-dctrl-packages "$name" -n -s Package -F Priority required --or important)"
+  base_packages="dpkg-dev $(call_chdist grep-dctrl-packages -n -s Package -F Priority required --or important)"
   chdist \
     --data-dir "$root" \
     apt-get "$name" --simulate --quiet --no-install-recommends install $base_packages \
