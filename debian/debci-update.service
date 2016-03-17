@@ -6,4 +6,4 @@ Type=oneshot
 User=debci
 Group=debci
 ExecStart=/bin/sleep 1s
-ExecStart=/usr/bin/debci generate-index
+ExecStart=/usr/bin/debci update

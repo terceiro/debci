@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -eu
+
+arch_list=$(debci config --values-only arch_list)
+
+for arch in $arch_list; do
+  debci-generate-index --arch="$arch" "$@"
+done
+
+debci-generate-html
+debci-hint

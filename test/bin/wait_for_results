@@ -46,4 +46,4 @@ for pkg in $requested_packages; do
   done
 done
 
-debci generate-index
+debci update

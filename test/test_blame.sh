@@ -11,7 +11,7 @@ process() {
   dependencies="$2"
   DEBCI_FAKE_DEPS="$dependencies" \
     debci test --quiet "$pkg"
-    debci generate-index --quiet
+    debci update --quiet
   __need_sleep=1
 }
 

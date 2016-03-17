@@ -4,6 +4,8 @@ require 'json'
 require 'fileutils'
 require 'debci'
 
+# FIXME should handle multiple architectures
+
 input = IO.popen(['debci-status', '--all', '--status-file'])
 output_filename = File.join(Debci.config.data_basedir, 'britney', 'failing.txt')
 FileUtils.mkdir_p(File.dirname(output_filename))

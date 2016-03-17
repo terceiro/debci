@@ -1,2 +1,2 @@
-debian/debci-generate-index.service  lib/systemd/system/
-debian/debci-generate-index.timer    lib/systemd/system/
+debian/debci-update.service  lib/systemd/system/
+debian/debci-update.timer    lib/systemd/system/

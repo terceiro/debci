@@ -1,4 +1,4 @@
 web: ./tools/server.sh
-worker: ./bin/debci worker
+workers: ./tools/workers.sh
 collector: ./bin/debci collector
 indexer: ./tools/indexer.sh
