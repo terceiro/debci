@@ -15,7 +15,7 @@ Build-Depends: amqp-tools,
                ruby-rspec (>= 2.14),
                shunit2,
                yard
-Standards-Version: 3.9.6
+Standards-Version: 3.9.7
 Homepage: http://ci.debian.net/
 Vcs-Git: https://anonscm.debian.org/git/collab-maint/debci.git
 Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/debci.git
