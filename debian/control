@@ -17,8 +17,8 @@ Build-Depends: amqp-tools,
                yard
 Standards-Version: 3.9.6
 Homepage: http://ci.debian.net/
-Vcs-Git: git://anonscm.debian.org/collab-maint/debci.git
-Vcs-Browser: http://anonscm.debian.org/gitweb?p=collab-maint/debci.git;a=summary
+Vcs-Git: https://anonscm.debian.org/git/collab-maint/debci.git
+Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/debci.git
 Testsuite: autopkgtest
 
 Package: debci
