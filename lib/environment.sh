@@ -149,12 +149,14 @@ debci_amqp_queue=${debci_amqp_queue:-"debci-${debci_suite}-${debci_arch}-${debci
 
 debci_lock_dir=${debci_lock_dir:-/var/lock}
 
-# lock/timestamp files
+# per-suite/architecture lock/timestamp files
 debci_testbed_lock=${debci_lock_dir}/debci-testbed-${debci_suite}-${debci_arch}-${debci_backend}.lock
 debci_testbed_timestamp=${debci_lock_dir}/debci-testbed-${debci_suite}-${debci_arch}-${debci_backend}.stamp
 debci_chdist_lock=${debci_lock_dir}/debci-chdist-${debci_suite}-${debci_arch}.lock
-debci_generate_index_lock=${debci_lock_dir}/debci-generate-index-${debci_suite}-${debci_arch}.lock
 debci_batch_lock=${debci_lock_dir}/debci-batch-${debci_suite}-${debci_arch}.lock
+
+# global lock/timestamp files
+debci_generate_index_lock=${debci_lock_dir}/debci-generate-index.lock
 
 
 for dir in \
