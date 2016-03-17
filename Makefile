@@ -35,7 +35,7 @@ $(test_backends): test-% : backends/%/test-package
 deb:
 	mkdir -p tmp/deb
 	rm -rf tmp/deb/debci*
-	DEB_BUILD_OPTIONS=nocheck gbp buildpackage --git-export-dir=tmp/deb
+	DEB_BUILD_OPTIONS=nocheck gbp buildpackage --git-ignore-branch --git-export-dir=tmp/deb
 	cd tmp/deb && dpkg-scanpackages . > Packages
 	@echo
 	@echo "Debian packages available in tmp/deb/!"
