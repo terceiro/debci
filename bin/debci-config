@@ -6,28 +6,46 @@ usage() {
   echo "Usage: debci config [OPTIONS] KEY [KEY ..]"
   echo
   echo "Display the values for the passed KEYs"
-  if [ $# -ne 0 ]; then
-    echo
-    echo "$@"
-  fi
+  echo
+  echo "Options:"
+  echo
+  echo "  -v, --values-only   Display only the values corresponding to the given keys"
+  echo
+  echo "$@"
 }
+
+short_options='v'
+long_options='values-only'
 
 debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 cd $debci_base_dir
 . lib/environment.sh
-prepare_args
 
-if [ $# -eq 0 ]; then
-  usage
-  exit 1
-fi
+values_only=false
+
+while true; do
+  arg="$1"
+  shift
+  case "$arg" in
+    -v|--values-only)
+      values_only=true
+      ;;
+    --)
+      break
+      ;;
+  esac
+done
 
 notfound=0
 for key in "$@"; do
   eval "value=\"\${debci_${key}:-}\""
   eval "set=\"\${debci_${key}+set}\""
   if [ -n "$set" ]; then\
-    echo "$key=$value"
+    if [ "$values_only" = true ]; then
+      echo "$value"
+    else
+      echo "$key=$value"
+    fi
   else
     echo "E: key $key not found!" >&2
     notfound=$(expr $notfound + 1)
