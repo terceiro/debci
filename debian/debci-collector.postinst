@@ -16,9 +16,12 @@ if [ "$1" = configure ]; then
     # upgrades
     ###################################################################
 
-    # debci-generate-index.service got renamed into debci-update.service
+    # debci-generate-index.{service,timer} renamed to
+    # debci-update.{service,timer}
     deb-systemd-helper purge debci-generate-index.service
+    deb-systemd-helper purge debci-generate-index.timer
     deb-systemd-helper unmask debci-generate-index.service
+    deb-systemd-helper unmask debci-generate-index.timer
 
   fi
 fi
