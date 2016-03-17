@@ -2,9 +2,25 @@
 
 set -e
 
-if [ "$1" = configure ] && [ -z "$2" ]; then
-  # produce empty but existing HTML output on first install
-  sudo -u debci -g debci debci update
+if [ "$1" = configure ]; then
+  if [ -z "$2" ]; then
+    ###################################################################
+    # new installs
+    ###################################################################
+
+    # produce empty but existing HTML output on first install
+    sudo -u debci -g debci debci update
+
+  else
+    ###################################################################
+    # upgrades
+    ###################################################################
+
+    # debci-generate-index.service got renamed into debci-update.service
+    deb-systemd-helper purge debci-generate-index.service
+    deb-systemd-helper unmask debci-generate-index.service
+
+  fi
 fi
 rm -f /etc/cron.d/debci-collector
 
