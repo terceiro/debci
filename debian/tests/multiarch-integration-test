@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -ex
+
+other_arch=arm64
+if [ "$(dpkg --print-architecture)" = arm64 ]; then
+  other_arch=amd64 # on arm64, the "other" arch is amd64
+fi
+
+export other_arch
+$(dirname $0)/integration-test

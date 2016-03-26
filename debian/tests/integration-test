@@ -6,14 +6,42 @@ set -ex
 
 p='r'
 pkg=ruby-defaults
+native_arch=$(dpkg --print-architecture)
 
 #######################################################################
 
 export DEBIAN_FRONTEND=noninteractive
 
 echo 'debci_backend=fake' > /etc/debci/conf.d/backend.conf
+
+if [ -n "$other_arch" ]; then
+  echo "debci_arch_list='$native_arch $other_arch'" > /etc/debci/conf.d/arch_list.conf
+  test_arch="$other_arch"
+else
+  test_arch="$native_arch"
+fi
+
 apt-get install -qy --no-install-recommends \
   debci-collector debci-worker
+
+if [ -n "$other_arch" ]; then
+  # start worker for other architecture. This is safe because we are using the
+  # "fake" backend, which does not _really_ run code; but we are testing that all
+  # other components work OK in a multi-architecture setup.
+  other_worker=/etc/systemd/system/debci-worker@2.service
+  ln -s /lib/systemd/system/debci-worker@.service $other_worker
+  mkdir ${other_worker}.d
+  cat > ${other_worker}.d/arch.conf <<EOF
+[Service]
+ExecStart=
+ExecStart=/usr/bin/debci worker --arch $other_arch
+EOF
+  systemctl daemon-reload
+  systemctl start debci-worker@2.service
+
+  # submit job for other architecture
+  debci enqueue --arch $other_arch  $pkg
+fi
 
 debci enqueue $pkg
 sleep 5s
@@ -24,7 +52,6 @@ set +ex
 
 #######################################################################
 
-arch=$(dpkg --print-architecture)
 data=/var/lib/debci/data
 html=$data/.html
 
@@ -37,32 +64,36 @@ assertFileExists() {
 
 test_has_global_status_file() {
   assertFileExists 'global status file' \
-    "${data}/status/unstable/$arch/status.json"
+    "${data}/status/unstable/$test_arch/status.json"
 }
 
 test_has_global_package_status_file() {
   assertFileExists 'global package status file' \
-    "${data}/status/unstable/$arch/packages.json"
+    "${data}/status/unstable/$test_arch/packages.json"
 }
 
 test_has_package_data_file() {
   assertFileExists 'package status file' \
-    "${data}/packages/unstable/$arch/$p/$pkg/latest.json"
+    "${data}/packages/unstable/$test_arch/$p/$pkg/latest.json"
 }
 
 test_has_package_history_file() {
   assertFileExists 'package history file' \
-    "${data}/packages/unstable/$arch/$p/$pkg/history.json"
+    "${data}/packages/unstable/$test_arch/$p/$pkg/history.json"
 }
 
 test_has_package_page() {
   assertFileExists 'package page' \
     "${html}/packages/$p/$pkg/index.html"
+  assertTrue "grep $test_arch ${html}/packages/$p/$pkg/index.html"
+  if [ -n $other_arch ]; then
+    assertTrue "grep $native_arch ${html}/packages/$p/$pkg/index.html"
+  fi
 }
 
 test_has_package_arch_page() {
   assertFileExists 'architecture-specific package page' \
-    "${html}/packages/$p/$pkg/unstable/$arch/index.html"
+    "${html}/packages/$p/$pkg/unstable/$test_arch/index.html"
 }
 
 . shunit2

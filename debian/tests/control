@@ -6,4 +6,8 @@ Tests: integration-test
 Depends: debci, shunit2, rabbitmq-server
 Restrictions: allow-stderr, isolation-container, needs-root
 
+Tests: multiarch-integration-test
+Depends: debci, shunit2, rabbitmq-server
+Restrictions: allow-stderr, isolation-container, needs-root
+
 # vim: ft=debcontrol
