@@ -1,6 +1,28 @@
-debci (1.0.3) UNRELEASED; urgency=medium
+debci (1.1.0) UNRELEASED; urgency=medium
+
+  New features:
+
+  * debci-config: added option to output only values and not keys
+  * Proper support for multiple architectures.
+    - list of architectures is declared in the configuration file using the
+      `debci_arch_list` variable.
+    - new script debci-update will call debci-generate-index for each of the
+      architectures in $debci_arch_list, and them call debci-generate-html
+      which was already architecture-independent.
+    - systemd unit files debci-generate-index.{service,timer} renamed to
+      debci-update.{service,timer}. debci-update.service and changed to call
+      `debci update` instead of `debci generate-index`.
+
+  Bug fixes:
 
   * remove unused debian/po directory (Closes: #813447)
+  * test_helper: stop rabbitmq-server the right way
+
+  Minor packaging updates:
+
+  * remove deprecated and unused tools
+  * debian/control: Use https URLs in Vcs-* fields
+  * debian/control: Bump Standars-Version to 3.9.7; no changes needed
 
  -- Antonio Terceiro <terceiro@debian.org>  Tue, 02 Feb 2016 10:53:18 -0200
 
