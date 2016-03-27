@@ -7,6 +7,7 @@ set -ex
 p='r'
 pkg=ruby-defaults
 native_arch=$(dpkg --print-architecture)
+max_wait=30
 
 #######################################################################
 
@@ -45,8 +46,29 @@ fi
 
 debci enqueue $pkg
 sleep 5s
+
+# wait until all queues are empty
+pending_jobs() {
+  rabbitmqctl list_queues | awk '{ if ($1 ~ /debci/) { print($2) } }' | sort -n -u
+}
+waited=0
+while [ "$(pending_jobs)" -ne 0 ] && [ $waited -lt $max_wait ]; do
+  sleep 1s
+  waited=$(($waited + 1))
+done
+
 sudo systemctl start debci-update.service
 sleep 5s
+# wait until autopkgtest-incoming is empty
+pending_test_results() {
+  find /var/lib/debci/data/autopkgtest-incoming -name exitcode | wc -l
+}
+waited=0
+while [ "$(pending_test_results)" -ne 0 ] && [ $waited -le $max_wait ]; do
+  sleep 1s
+  waited=$(($waited + 1))
+done
+
 
 set +ex
 
@@ -58,7 +80,12 @@ html=$data/.html
 assertFileExists() {
   local file_description="$1"
   local filename="$2"
-  assertTrue "missing $file_description ($filename)" \
+  local waited=0
+  while [ ! -f "$filename" ] && [ "$waited" -lt "$max_wait" ]; do
+    sleep 1s
+    waited=$(($waited + 1))
+  done
+  assertTrue "missing $file_description ($filename); waited $max_wait seconds" \
     "[ -f $filename ]"
 }
 
