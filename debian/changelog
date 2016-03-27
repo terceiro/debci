@@ -7,6 +7,8 @@ debci (1.1.1) UNRELEASED; urgency=medium
   * Add integration tests for schroot and lxc backends
   * debian/tests/integration-test: wait until test jobs have been processed,
     to avoid failures due to not waiting long enough on slow machines.
+  * debin/tests/control: force throwing away used testbed after
+    integration-test and multiarch-integration-test
 
  -- Antonio Terceiro <terceiro@debian.org>  Sun, 27 Mar 2016 14:32:09 -0300
 
