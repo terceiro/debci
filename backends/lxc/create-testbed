@@ -50,6 +50,7 @@ if [ -z "$http_proxy" ]; then
 fi
 
 # guess apt proxy for the guest:
+GUEST_PROXY=
 if [ -n "$http_proxy" ]; then
   local_proxy=no
   case "$http_proxy" in
