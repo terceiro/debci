@@ -1,3 +1,10 @@
+debci (1.1.1) UNRELEASED; urgency=medium
+
+  * Adjust debian/sudoers.d/debci: adjust to work with autopkgtest >= 3.19.3,
+    which will also call `timeout` under sudo.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 27 Mar 2016 14:32:09 -0300
+
 debci (1.1.0) unstable; urgency=medium
 
   New features:
