@@ -4,6 +4,7 @@ debci (1.1.1) UNRELEASED; urgency=medium
     which will also call `timeout` under sudo.
   * backends/lxc/create-testbed: initialize $GUEST_PROXY before use, for the
     case when no proxy is detected.
+  * Add integration tests for schroot and lxc backends
 
  -- Antonio Terceiro <terceiro@debian.org>  Sun, 27 Mar 2016 14:32:09 -0300
 

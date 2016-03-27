@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -ex
+
+# forward to apt-cacher-ng on host
+if nc -z gateway 3142; then
+  redir redir --lport 3142 --cport 3142 --caddr gateway &
+  trap "kill -9 $!" INT TERM EXIT
+fi
+
+sudo virsh net-start default
+sudo virsh net-autostart default
+tee /etc/lxc/default.conf <<EOF
+lxc.network.type = veth
+lxc.network.link = virbr0
+lxc.network.flags = up
+EOF
+
+debci setup --backend lxc
+sudo -u debci debci test --backend lxc debian/tests/testpkg/
+

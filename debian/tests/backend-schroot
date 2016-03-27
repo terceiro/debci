@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -ex
+
+# forward to apt-cacher-ng on host
+if nc -z gateway 3142; then
+  redir redir --lport 3142 --cport 3142 --caddr gateway &
+  trap "kill -9 $!" INT TERM EXIT
+fi
+
+# load overlay driver
+modprobe overlay
+
+debci setup --backend schroot
+sudo -u debci debci test --backend schroot debian/tests/testpkg/
