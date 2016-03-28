@@ -39,6 +39,7 @@ ExecStart=/usr/bin/debci worker --arch $other_arch
 EOF
   systemctl daemon-reload
   systemctl start debci-worker@2.service
+  sleep 5s
 
   # submit job for other architecture
   debci enqueue --arch $other_arch  $pkg
