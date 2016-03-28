@@ -50,7 +50,7 @@ sleep 5s
 
 # wait until all queues are empty
 pending_jobs() {
-  rabbitmqctl list_queues | awk '{ if ($1 ~ /debci/) { print($2) } }' | sort -n -u
+  rabbitmqctl list_queues | awk 'BEGIN { c = 0 } { if ($1 ~ /debci/) { c += $2 } } END { print(c) }'
 }
 waited=0
 while [ "$(pending_jobs)" -ne 0 ] && [ $waited -lt $max_wait ]; do
@@ -69,7 +69,6 @@ while [ "$(pending_test_results)" -ne 0 ] && [ $waited -le $max_wait ]; do
   sleep 1s
   waited=$(($waited + 1))
 done
-
 
 set +ex
 
