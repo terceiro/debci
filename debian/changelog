@@ -1,3 +1,10 @@
+debci (1.1.2) UNRELEASED; urgency=medium
+
+  * debian/tests/control: restrict backend-schroot to only running on VMs
+    (i.e. not on containers)
+
+ -- Antonio Terceiro <terceiro@debian.org>  Mon, 28 Mar 2016 14:10:06 -0300
+
 debci (1.1.1) unstable; urgency=medium
 
   * debian/sudoers.d/debci: adjust to work with autopkgtest >= 3.19.3,
