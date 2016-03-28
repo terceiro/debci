@@ -1,16 +1,16 @@
-debci (1.1.1) UNRELEASED; urgency=medium
+debci (1.1.1) unstable; urgency=medium
 
-  * Adjust debian/sudoers.d/debci: adjust to work with autopkgtest >= 3.19.3,
+  * debian/sudoers.d/debci: adjust to work with autopkgtest >= 3.19.3,
     which will also call `timeout` under sudo.
   * backends/lxc/create-testbed: initialize $GUEST_PROXY before use, for the
     case when no proxy is detected.
   * Add integration tests for schroot and lxc backends
   * debian/tests/integration-test: wait until test jobs have been processed,
     to avoid failures due to not waiting long enough on slow machines.
-  * debin/tests/control: force throwing away used testbed after
+  * debian/tests/control: force throwing away used testbed after
     integration-test and multiarch-integration-test
 
- -- Antonio Terceiro <terceiro@debian.org>  Sun, 27 Mar 2016 14:32:09 -0300
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 27 Mar 2016 22:42:29 -0300
 
 debci (1.1.0) unstable; urgency=medium
 
