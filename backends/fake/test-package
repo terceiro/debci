@@ -24,6 +24,9 @@ if ENV["DEBCI_FAKE_COMMAND"]
   log = [ '$ ' + ENV['DEBCI_FAKE_COMMAND'], io.read].join("\n")
   io.close
   rc = $?.exitstatus
+  if rc != 0
+    rc = 4
+  end
 else
   puts "Not really running anything .."
   puts "This will fail, pass or tmpfail randomly. Passing is twice as probable as fail and tmpfail"
