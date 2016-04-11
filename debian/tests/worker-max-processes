@@ -1,0 +1,43 @@
+#!/bin/sh
+
+set -exu
+
+export DEBIAN_FRONTEND=noninteractive
+
+echo 'debci_backend=fake' > /etc/debci/conf.d/backend.conf
+
+mkdir -p /etc/systemd/system/debci-worker@1.service.d
+cat > /etc/systemd/system/debci-worker@1.service.d/command.conf <<EOF
+[Service]
+Environment=DEBCI_FAKE_COMMAND=$(pwd)/debian/tests/miniforkbomb
+EOF
+
+apt-get install -qy rabbitmq-server debci-worker debci-collector
+
+debci enqueue testpkg
+sleep 5s
+
+pending_jobs() {
+  rabbitmqctl list_queues | awk 'BEGIN { c = 0 } { if ($1 ~ /debci/) { c += $2 } } END { print(c) }'
+}
+waited=0
+max_wait=30
+while [ "$(pending_jobs)" -ne 0 ] && [ $waited -lt $max_wait ]; do
+  sleep 1s
+  waited=$(($waited + 1))
+done
+
+pkill -f sleep
+systemctl status debci-worker@1.service
+systemctl start debci-update.service
+
+waited=0
+while [ ! -f /var/lib/debci/data/autopkgtest/unstable/*/t/testpkg/*/exitcode ]; do
+  sleep 1s
+  waited=$(($waited + 1))
+  if [ $waited -gt $max_wait ]; then
+    break
+  fi
+done
+
+grep '^0$' /var/lib/debci/data/autopkgtest/unstable/*/t/testpkg/*/exitcode

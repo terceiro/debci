@@ -1,0 +1,11 @@
+#!/bin/sh
+
+exec 2>&1
+set -exu
+
+for i in $(seq 1 1000); do
+  sleep 1000 &
+done
+
+sleep 5s
+pkill -f sleep
