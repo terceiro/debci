@@ -7,6 +7,7 @@ After=rabbitmq-server.service network-online.target
 ReloadPropagatedFrom=debci-worker.service
 
 [Service]
+TasksMax=infinity
 User=debci
 Group=debci
 WorkingDirectory=/usr/share/debci

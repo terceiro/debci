@@ -2,6 +2,10 @@ debci (1.1.2) UNRELEASED; urgency=medium
 
   * debian/tests/control: restrict backend-schroot to only running on VMs
     (i.e. not on containers)
+  * debian/debci-worker@.service: make sure there is no maximum number of
+    processes; otherwise when using the lxc backend, we might get random
+    failures saying `Cannot fork: resource temporarily unavailable` with
+    systemd from stretch onwards.
 
  -- Antonio Terceiro <terceiro@debian.org>  Mon, 28 Mar 2016 14:10:06 -0300
 
