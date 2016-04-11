@@ -10,21 +10,6 @@ end
 pkg = ARGV.shift
 outdir = ARGV.shift
 
-puts "Not really running anything .."
-puts "This will fail, pass or tmpfail randomly. Passing is twice as probable as fail and tmpfail"
-
-r = nil
-case ENV['DEBCI_FAKE_RESULT']
-when 'pass'
-  r = 0
-when 'fail'
-  r = 2
-when 'tmpfail'
-  r = 3
-else
-  r = rand(4)
-end
-
 FileUtils.mkdir(outdir)
 if ENV["DEBCI_FAKE_DEPS"]
   File.open(File.join(outdir, 'foo0t-mytest-packages'), 'w') do |f|
@@ -34,16 +19,38 @@ if ENV["DEBCI_FAKE_DEPS"]
   end
 end
 
-case r
-when 0..1
-  log = "Passed :-)\n"
-  rc = 0
-when 2
-  log = "Failed :-(\n"
-  rc = 4
-when 3
-  log = "Some error ocurred\n"
-  rc = 16
+if ENV["DEBCI_FAKE_COMMAND"]
+  io = IO.popen(ENV["DEBCI_FAKE_COMMAND"])
+  log = [ '$ ' + ENV['DEBCI_FAKE_COMMAND'], io.read].join("\n")
+  io.close
+  rc = $?.exitstatus
+else
+  puts "Not really running anything .."
+  puts "This will fail, pass or tmpfail randomly. Passing is twice as probable as fail and tmpfail"
+
+  r = nil
+  case ENV['DEBCI_FAKE_RESULT']
+  when 'pass'
+    r = 0
+  when 'fail'
+    r = 2
+  when 'tmpfail'
+    r = 3
+  else
+    r = rand(4)
+  end
+
+  case r
+  when 0..1
+    log = "Passed :-)\n"
+    rc = 0
+  when 2
+    log = "Failed :-(\n"
+    rc = 4
+  when 3
+    log = "Some error ocurred\n"
+    rc = 16
+  end
 end
 
 if ENV["DEBCI_FAKE_KILLPARENT"]

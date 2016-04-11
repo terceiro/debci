@@ -9,6 +9,8 @@ debci (1.1.2) UNRELEASED; urgency=medium
   * Add new backend `null`, which just uses the `null` virtualization regime
     in adt-run. This will be useful for running tests, but can also be used
     for running tests with zero overhead on trusted packages.
+  * backends/fake: add support for executing an specific command instead of
+    producing a random result if $DEBCI_FAKE_COMMAND is set.
 
  -- Antonio Terceiro <terceiro@debian.org>  Mon, 28 Mar 2016 14:10:06 -0300
 
