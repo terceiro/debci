@@ -27,7 +27,7 @@ while [ "$(pending_jobs)" -ne 0 ] && [ $waited -lt $max_wait ]; do
   waited=$(($waited + 1))
 done
 
-pkill -f sleep
+pkill -f sleep || true
 systemctl status debci-worker@1.service
 systemctl start debci-update.service
 
