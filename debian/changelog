@@ -1,4 +1,4 @@
-debci (1.1.2) UNRELEASED; urgency=medium
+debci (1.1.2) unstable; urgency=medium
 
   * debian/tests/control: restrict backend-schroot to only running on VMs
     (i.e. not on containers)
@@ -13,7 +13,7 @@ debci (1.1.2) UNRELEASED; urgency=medium
   * backends/fake: add support for executing an specific command instead of
     producing a random result if $DEBCI_FAKE_COMMAND is set.
 
- -- Antonio Terceiro <terceiro@debian.org>  Mon, 28 Mar 2016 14:10:06 -0300
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 12 Apr 2016 11:23:17 -0300
 
 debci (1.1.1) unstable; urgency=medium
 
