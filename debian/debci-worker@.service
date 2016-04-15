@@ -8,6 +8,7 @@ ReloadPropagatedFrom=debci-worker.service
 
 [Service]
 TasksMax=infinity
+LimitNPROC=infinity
 User=debci
 Group=debci
 WorkingDirectory=/usr/share/debci
