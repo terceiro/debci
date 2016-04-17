@@ -26,7 +26,10 @@ outdir="$2"
 # see create-testbed
 [ $debci_suite = unstable ] && debci_suite=sid
 
+container_name=adt-${debci_suite}-${debci_arch}-$(basename ${package})-$(date +%s)
+
 rc=0
-adt-run --user debci --output-dir "$outdir" "$package" --apt-upgrade --- lxc --sudo adt-${debci_suite}-${debci_arch} || rc=$?
+adt-run --user debci --output-dir "$outdir" "$package" --apt-upgrade --- lxc --sudo --name ${container_name} adt-${debci_suite}-${debci_arch} || rc=$?
+
 echo $rc > "$outdir/exitcode"
 exit $rc

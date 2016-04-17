@@ -58,7 +58,7 @@ Package: debci-worker
 Architecture: all
 Depends: debci (= ${binary:Version}),
          autodep8 (>= 0.2~),
-         autopkgtest (>= 3.16),
+         autopkgtest (>= 3.20),
          schroot | lxc,
          ${misc:Depends},
          ${shlibs:Depends}
