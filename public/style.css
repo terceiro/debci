@@ -57,6 +57,7 @@
  * ----------------------------------------------------------------- */
 
 #icon-alert:before {
+  font-family: "FontAwesome";
   content: "\f071 ";
   color: orange;
   padding-right: 0.3em;
@@ -67,6 +68,7 @@
 }
 
 #icon-chart:before {
+  font-family: "FontAwesome";
   content: "\f1fe ";
   padding-right: 0.3em;
 }
@@ -76,6 +78,7 @@
 }
 
 #icon-rss:before {
+  font-family: "FontAwesome";
   content: "\f09e ";
   color: orange;
 }
@@ -85,6 +88,7 @@
 }
 
 #icon-tracker:before {
+  font-family: "FontAwesome";
   content: "\f05a ";
 }
 

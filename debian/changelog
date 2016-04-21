@@ -1,10 +1,15 @@
 debci (1.1.3) UNRELEASED; urgency=medium
 
+  [ Antonio Terceiro ]
   * debian/debci-worker@.service: also bump LimitNPROC to infinity to avoid
     the `Cannot fork` issue.
   * backends/lxc/test-package: use adt-virt-lxc --name option to facilitate
     mapping from a running test to package names. This requires autopkgtest
     (>= 3.20).
+
+  [ Jakub Wilk ]
+  * public/style.css: Set correct font for alert, chart, rss, and tracker
+    icons. (Closes: #821932)
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 15 Apr 2016 15:36:17 -0300
 
