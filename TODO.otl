@@ -1,29 +1,24 @@
-[_] setup https
-[_] first adt-run execution will sometimes hang
-  : waiting for gpg key generation due to low entropy
-[_] add timeout to guard against unbehaving test suites
+[_] multi-architecture support
+  [_] debci-collector: display architecture and suite in "results received" log messages
+  [_] debci batch: display architecture and suite in "requested/skip" log messages
+  [_] add status page for architecture-specific failures
+    : i.e. a package fails in some architectures and passes on others
+[_] qemu support
+  [_] add qemu backend
+    [_] test qemu
+    [_] test qemu on arm64
+  [_] add mechanism for overriding the backend for specific packages at submission time
+  [_] automatically override backend for packages that require isolation-machine
+    : e.g. find /var/lib/debci/data/packages -name latest-autopkgtest -exec zgrep
+    : -l SKIP.*machine.*isolation '{}/log.gz' ';' (should this go into the
+    :  Debian CI config, or as a postprocessing step in debci-generate-index?)
+    :  if handled in debci-generate-index, we might re-enqueue the package
+    :  right away
 [_] add a postrm to remove all traces on package purge
   [_] remove data directory
   [_] remove schroot setup
-[_] figure out how to deal with test suites that leave garbage behind
-  : schroot sessions are left behind. some of them I can just terminate if
-  : `schroot --end-session --chroot $SESSIONID`; others won't go away because
-  : there are processes left running in them, for example sometimes there is a
-  : leftover /usr/bin/gdomap daemon running (didn't figure out which package
-  : leaves that yet).
-  :
-  : maybe the cleanest solution is going full virtualization with kvm or at
-  : least a lxc container instead of chroots despite how good schroot is.
-[_] notity test suite status changes to fedmsg
-[_] investigate random download failures
-  : e.g. http://ci.debian.net/data/packages/a/adequate/2014-01-18.log
-[_] generate a dd-list of failing packages
-[_] graceful degradation for user with JS disabled
-  : or generate only static HTML
-[_] procenv
-  : <doko>  and could you run procenv after setting up the chroot?
-  : <doko>  my experience is that a lot of time goes into setting up the
-  :         environement and understanding the env
-[_] ci.debian.net: also test packages from experimenal
-[_] list largest log files
-[_] list longest duration between test jobs
+[_] QA
+  [_] list packages with longest test durations
+  [_] status: list "slow" packages (i.e. duration > 1h)
+  [_] investigate bug
+  [_] Dependency chain changes incorrect (#812856)
