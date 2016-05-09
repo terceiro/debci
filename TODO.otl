@@ -3,6 +3,9 @@
   [X] debci batch: display architecture and suite in "requested/skip" log messages
   [_] add status page for architecture-specific failures
     : i.e. a package fails in some architectures and passes on others
+[_] UI improvements
+  [_] reduce size of JSON data download for search in home page
+  [_] reduce size of JSON data download for charts in status page
 [_] qemu support
   [_] add qemu backend
     [_] test qemu
