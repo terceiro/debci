@@ -1,0 +1,25 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1 class='page-header'>Status <small>/ Platform-Specific issues</small></h1>
+      <%= @status_nav %>
+      <table class='table table-striped'>
+        <tr>
+          <th>Package</th>
+          <th>Status</th>
+        </tr>
+        <% @issues.each do |package, statuses| %>
+          <tr>
+            <td><%= package %></td>
+            <td>
+              <% statuses.each do |status| %>
+                <a class='<%= status.status %>' href="/packages/<%= Debci::Package.new(package).prefix %>/<%= package %>/<%= status.suite %>/<%= status.architecture %>/"><%= status.suite %>/<%= status.architecture%> <%= status.status %></a>
+                &nbsp;
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>

@@ -33,6 +33,12 @@ module Debci
       expand_template(:status_alerts, filename)
     end
 
+    def platform_specific_issues(filename)
+      @status_nav = load_template(:status_nav)
+      @issues = @repository.platform_specific_issues
+      expand_template(:platform_specific_issues, filename)
+    end
+
     def blacklist(filename)
       @status_nav = load_template(:status_nav)
       expand_template(:blacklist, filename)

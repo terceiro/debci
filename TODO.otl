@@ -1,7 +1,7 @@
-[_] multi-architecture support
+[X] multi-architecture support
   [X] debci-collector: display architecture and suite in "results received" log messages
   [X] debci batch: display architecture and suite in "requested/skip" log messages
-  [_] add status page for architecture-specific failures
+  [X] add status page for architecture-specific failures
     : i.e. a package fails in some architectures and passes on others
 [_] UI improvements
   [_] reduce size of JSON data download for search in home page

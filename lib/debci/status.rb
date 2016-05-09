@@ -114,6 +114,10 @@ module Debci
       status
     end
 
+    def inspect
+      "<#{suite}/#{architecture} #{status}>"
+    end
+
   end
 
 end

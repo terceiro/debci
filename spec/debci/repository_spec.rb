@@ -44,6 +44,15 @@ describe Debci::Repository do
     mkdir_p 'packages/unstable/i386/r/rubygems-integration'
     mkdir_p 'packages/testing/amd64/r/rubygems-integration'
     mkdir_p 'packages/testing/i386/r/rubygems-integration'
+
+    latest_status 'packages/unstable/amd64/r/rubygems-integration', {
+      'status' => 'pass',
+      'previous_status' => 'pass',
+    }
+    latest_status 'packages/unstable/i386/r/rubygems-integration', {
+      'status' => 'fail',
+      'previous_status' => 'fail',
+    }
   end
 
   attr_reader :now
@@ -200,5 +209,11 @@ describe Debci::Repository do
         expect([:tmpfail, :no_test_data]).to include(p.status)
       end
     end
+  end
+
+  it 'knows about platform-specific issues' do
+    issues = repository.platform_specific_issues
+    expect(issues).to have_key('rubygems-integration')
+    expect(issues['rubygems-integration'].map(&:class).uniq).to eq([Debci::Status])
   end
 end

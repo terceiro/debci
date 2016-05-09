@@ -135,6 +135,17 @@ module Debci
       end
     end
 
+    def platform_specific_issues
+      result = {}
+      packages.each do |package|
+        statuses = status_for(package).flatten
+        if statuses.map(&:status).reject { |s| s == :no_test_data }.uniq.size > 1
+          result[package] = statuses
+        end
+      end
+      result
+    end
+
     # Backend implementation for Debci::Package#history
     def history_for(package, suite, architecture)
       return unless File.exists?(file = File.join(data_dir(suite, architecture, package), 'history.json'))
