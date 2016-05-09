@@ -23,12 +23,14 @@ write_results() {
   local exitcode_file=$(tar xzfv - -C "$debci_data_basedir" | grep 'exitcode$')
   local duration_file=${exitcode_file%%/exitcode}/duration
   local package=$(basename $(dirname $(dirname $exitcode_file)))
+  local arch=$(basename $(dirname $(dirname $(dirname $(dirname $exitcode_file)))))
+  local suite=$(basename $(dirname $(dirname $(dirname $(dirname $(dirname $exitcode_file))))))
 
   local exitcode="$(cat $debci_data_basedir/$exitcode_file)"
   local duration="$(cat $debci_data_basedir/$duration_file)"
   local duration_human="$(seconds_to_human_time "$duration")"
 
-  log "$package results received (exit code: $exitcode, duration: $duration_human)"
+  log "$package $suite/$arch results received (exit code: $exitcode, duration: $duration_human)"
   date > "${debci_autopkgtest_incoming_dir}/.timestamp"
 }
 

@@ -1,6 +1,6 @@
 [_] multi-architecture support
-  [_] debci-collector: display architecture and suite in "results received" log messages
-  [_] debci batch: display architecture and suite in "requested/skip" log messages
+  [X] debci-collector: display architecture and suite in "results received" log messages
+  [X] debci batch: display architecture and suite in "requested/skip" log messages
   [_] add status page for architecture-specific failures
     : i.e. a package fails in some architectures and passes on others
 [_] qemu support

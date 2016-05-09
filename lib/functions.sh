@@ -113,9 +113,9 @@ report_status() {
         color=5 # should never get here though
         ;;
     esac
-    log "${pkg} \033[38;5;${color}m${status}\033[m" "$duration"
+    log "${pkg} ${debci_suite}/${debci_arch} \033[38;5;${color}m${status}\033[m" "$duration"
   else
-    log "$pkg" "$status" "$duration"
+    log "$pkg ${debci_suite}/${debci_arch}" "$status" "$duration"
   fi >&2
 }
 

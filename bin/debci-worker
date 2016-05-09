@@ -27,7 +27,7 @@ tags=''
 do_request() {
   read pkg specs || true  # we expect EOF and thus read to fail
 
-  log "$pkg started"
+  log "$pkg $debci_suite/$debci_arch started"
 
   local tmp_dir=$(mktemp -d)
 

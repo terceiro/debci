@@ -6,6 +6,8 @@ debci (1.1.3) UNRELEASED; urgency=medium
   * backends/lxc/test-package: use adt-virt-lxc --name option to facilitate
     mapping from a running test to package names. This requires autopkgtest
     (>= 3.20).
+  * bin/debci-collector, bin/debci-worker, lib/functions.sh#report_status:
+    display suite and architecture together with package names
 
   [ Jakub Wilk ]
   * public/style.css: Set correct font for alert, chart, rss, and tracker
