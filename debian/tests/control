@@ -18,8 +18,4 @@ Tests: backend-lxc
 Depends: debci, libnss-myhostname, netcat-openbsd, redir, autopkgtest, lxc, rsync, libvirt-clients, libvirt-daemon-system, iptables, ebtables, dnsmasq-base
 Restrictions: allow-stderr, isolation-machine, needs-root
 
-Tests: worker-max-processes
-Depends: debci
-Restrictions: allow-stderr, needs-root
-
 # vim: ft=debcontrol
