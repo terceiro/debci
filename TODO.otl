@@ -23,5 +23,4 @@
 [_] QA
   [_] list packages with longest test durations
   [_] status: list "slow" packages (i.e. duration > 1h)
-  [_] investigate bug
   [_] Dependency chain changes incorrect (#812856)
