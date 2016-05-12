@@ -47,11 +47,9 @@ describe Debci::Graph do
   end
 
   it 'gets status history data' do
-    data = graph.get_data
-
-    expect(data.pass).to include(100, 200)
-    expect(data.fail).to include(200, 150)
-    expect(data.tmpfail).to include(20, 20)
-    expect(data.total).to include(320, 370)
+    expect(graph.pass).to include(100, 200)
+    expect(graph.fail).to include(200, 150)
+    expect(graph.tmpfail).to include(20, 20)
+    expect(graph.total).to include(320, 370)
   end
 end

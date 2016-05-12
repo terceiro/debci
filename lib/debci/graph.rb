@@ -14,38 +14,34 @@ module Debci
       @repository = repository
       @suite = suite
       @architecture = architecture
-      @data = get_data
+      load_data
     end
 
     # Returns the value of the last data entry for the specified field
     def current_value(field)
-      data = @data.send(field)
+      data = send(field)
       data[-1] || 0
     end
 
     # Returns the value of the second to last data entry for the
     # specified field
     def previous_value(field)
-      data = @data.send(field)
+      data = send(field)
       data[-2] || 0
     end
 
     # Read the status data
-    def get_data
+    def load_data
       data = @repository.status_history(@suite, @architecture)
 
       return unless data
 
-      entries = self
-
-      entries.date = data.map { |entry| Time.parse(entry['date'] + ' UTC') }
-      entries.pass = data.map { |entry| entry['pass'] }
-      entries.fail = data.map { |entry| entry['fail'] }
-      entries.tmpfail = data.map { |entry| entry['tmpfail'] ? entry['tmpfail'] : 0 }
-      entries.total = data.map { |entry| entry['total'] }
-      entries.pass_percentage = data.map { |entry| entry['pass'].to_f / entry['total'].to_f }
-
-      entries
+      self.date = data.map { |entry| Time.parse(entry['date'] + ' UTC') }
+      self.pass = data.map { |entry| entry['pass'] }
+      self.fail = data.map { |entry| entry['fail'] }
+      self.tmpfail = data.map { |entry| entry['tmpfail'] ? entry['tmpfail'] : 0 }
+      self.total = data.map { |entry| entry['total'] }
+      self.pass_percentage = data.map { |entry| entry['pass'].to_f / entry['total'].to_f }
     end
 
   end
