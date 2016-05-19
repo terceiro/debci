@@ -22,7 +22,7 @@ jQuery(function($) {
 
         $.get(STATUS_DIR + item.platform + '/history.json', function(data) {
           if (data.length < 2) {
-            $('.chart').html("Not enough data for plot. Wait until the next run");
+            $('.chart-' + item.platform.replace('/', '-')).html("Not enough data for plot. Wait until we get more data.");
             return;
           }
 
