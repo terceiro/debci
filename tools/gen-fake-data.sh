@@ -2,8 +2,6 @@
 
 set -eu
 
-n=${1:-15}
-
 configdir=$(dirname $0)/../config
 
 if [ ! -f $configdir/whitelist ]; then
@@ -12,8 +10,8 @@ if [ ! -f $configdir/whitelist ]; then
   done > $configdir/whitelist
 fi
 
-while [ "$n" -gt 0 ]; do
-  pkg=$(shuf $configdir/whitelist | head -1)
-  ./bin/debci enqueue "$pkg"
-  n=$(($n - 1))
+for arch in $(./bin/debci config --values-only arch_list); do
+  for pkg in $(cat $configdir/whitelist); do
+    ./bin/debci enqueue --arch "$arch" "$pkg"
+  done
 done
