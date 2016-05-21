@@ -8,7 +8,7 @@ module Debci
   # suite and architecture.
   class Graph
 
-    attr_accessor :date, :pass, :fail, :tmpfail, :total, :pass_percentage
+    attr_accessor :suite, :architecture, :entries
 
     def initialize(repository, suite, architecture)
       @repository = repository
@@ -17,31 +17,21 @@ module Debci
       load_data
     end
 
-    # Returns the value of the last data entry for the specified field
-    def current_value(field)
-      data = send(field)
-      data[-1] || 0
-    end
+    private
 
-    # Returns the value of the second to last data entry for the
-    # specified field
-    def previous_value(field)
-      data = send(field)
-      data[-2] || 0
-    end
-
-    # Read the status data
     def load_data
-      data = @repository.status_history(@suite, @architecture)
+      # load all the data
+      @entries = @repository.status_history(@suite, @architecture)
 
-      return unless data
+      return unless @entries
+      return if @entries.size <= 100
 
-      self.date = data.map { |entry| Time.parse(entry['date'] + ' UTC') }
-      self.pass = data.map { |entry| entry['pass'] }
-      self.fail = data.map { |entry| entry['fail'] }
-      self.tmpfail = data.map { |entry| entry['tmpfail'] ? entry['tmpfail'] : 0 }
-      self.total = data.map { |entry| entry['total'] }
-      self.pass_percentage = data.map { |entry| entry['pass'].to_f / entry['total'].to_f }
+      # simplify the data: pick 101 points in the history
+      original_entries = @entries
+      @entries = (0..100).map do |i|
+        j = (i * (original_entries.size-1).to_f / 100).round
+        @entries[j]
+      end
     end
 
   end

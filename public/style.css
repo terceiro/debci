@@ -1,6 +1,22 @@
+#status h3 {
+  border-bottom: 1px solid #888a85;
+}
+
+.arch-charts {
+  height: 250px;
+}
+
 .chart {
   height: 180px;
-  width: 100%;
+}
+
+.chart h4 {
+  text-align: center;
+}
+
+.chart-canvas {
+   width: 100%;
+   height: 200px;
 }
 
 #status-nav {

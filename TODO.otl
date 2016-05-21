@@ -5,7 +5,7 @@
     : i.e. a package fails in some architectures and passes on others
 [_] UI improvements
   [_] reduce size of JSON data download for search in home page
-  [_] reduce size of JSON data download for charts in status page
+  [X] reduce size of JSON data download for charts in status page
 [_] qemu support
   [_] add qemu backend
     [_] test qemu

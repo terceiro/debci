@@ -2,90 +2,50 @@
   <div class="row">
     <div class="col-md-12">
 
-        <h1 class='page-header'>Status <small>/ Charts</small></h1>
-        <%= @status_nav %>
+      <h1 class='page-header'>Status <small>/ Charts</small></h1>
+      <%= @status_nav %>
 
-        <div id='status'>
-          <h3 class='page-header'>Pass/Fail</h3>
+      <div id='status'>
+        <% @repository.architectures.each do |arch| %>
+          <% @repository.suites.each do |suite| %>
+            <% chart = Debci::Graph.new(@repository, suite, arch) %>
+            <meta name='data-<%= suite %>-<%= arch %>' content='<%= chart.entries.to_json%>'/>
+            <h3><%= "#{suite}/#{arch}" %></h3>
+            <noscript>
+              <table>
+                <tr>
+                  <th>Date</th>
+                  <th>Pass</th>
+                  <th>Fail</th>
+                  <th>Temporary failure</th>
+                  <th>Pass percentage</th>
+                </tr>
+                <% chart.entries.each do |entry| %>
+                  <tr>
+                    <td><%= entry['date'] %></td>
+                    <td><%= entry['pass'] %></td>
+                    <td><%= entry['fail'] %></td>
+                    <td><%= entry['tmpfail'] %></td>
+                    <td><%= 100 * entry['pass'].to_f / entry['total'].to_f %>%</td>
+                  </tr>
+                <% end %>
+              </table>
+            </noscript>
+            <div class='arch-charts row'>
+              <div class='chart col-md-4'>
+                <h4>Pass/Fail</h4>
+                <div class='chart-canvas' id='chart-pass-fail-<%= suite %>-<%= arch %>'></div>
+              </div>
+              <div class='chart col-md-4'>
+                <h4>Pass percentage</h4>
+                <div class='chart-canvas' id='chart-pass-percentage-<%= suite %>-<%= arch %>'></div>
+              </div>
+            </div>
 
-          <% @repository.architectures.each do |arch| %>
-            <div class='row'>
-            <% @repository.suites.each do |suite| %>
-
-              <div class='col-md-4'>
-                <div class='text-center'><h4><%= "#{suite}/#{arch}" %></h4></div>
-                  <% if @repository.status_history(suite, arch) %>
-                       <noscript>
-                         <% chart = Debci::Graph.new(@repository, suite, arch) %>
-
-                         <table class='table text-center'>
-                           <tr>
-                             <td><%= chart.previous_value('date') %></td>
-                             <td><%= chart.current_value('date') %></td>
-                           </tr>
-                           <tr>
-                             <td class='pass'><%= chart.previous_value('pass') %></td>
-                             <td class='pass'><%= chart.current_value('pass') %></td>
-                           </tr>
-                           <tr>
-                             <td class='fail'><%= chart.previous_value('fail') %></td>
-                             <td class='fail'><%= chart.current_value('fail') %></td>
-                           </tr>
-                           <tr>
-                             <td class='tmpfail'><%= chart.previous_value('tmpfail') %></td>
-                             <td class='tmpfail'><%= chart.current_value('tmpfail') %></td>
-                           </tr>
-                         </table>
-
-                       </noscript>
-
-                       <div class='chart chart-<%= suite %>-<%= arch%>' id='chart-pass-fail<%= suite %>-<%= arch %>'></div>
-                  <% else %>
-                       <h4 class='text-center'>No data available</h4>
-                  <% end %>
-                </div>
-
-            <% end %>
-           </div>
           <% end %>
+        <% end %>
 
-          <br><br>
-          <h3 class='page-header'>Pass Percentage</h3>
-
-          <% @repository.architectures.each do |arch| %>
-            <div class='row'>
-            <% @repository.suites.each do |suite| %>
-
-              <div class='col-md-4'>
-                <div class='text-center'><h4><%= "#{suite}/#{arch}" %></h4></div>
-                  <% if @repository.status_history(suite, arch) %>
-                       <noscript>
-                         <% chart = Debci::Graph.new(@repository, suite, arch) %>
-
-                         <table class='table text-center'>
-                           <tr>
-                             <td><%= chart.previous_value('date') %></td>
-                             <td><%= chart.current_value('date') %></td>
-                           </tr>
-                           <tr>
-                             <td class='pass'><%= (chart.previous_value('pass_percentage') * 100).round(2) %>%</td>
-                             <td class='pass'><%= (chart.current_value('pass_percentage') * 100).round(2) %>%</td>
-                           </tr>
-                         </table>
-
-                       </noscript>
-
-                       <div class='chart chart-<%= suite %>-<%= arch%>' id='chart-pass-percentage<%= suite %>-<%= arch %>'></div>
-                  <% else %>
-                       <h4 class='text-center'>No data available</h4>
-                  <% end %>
-                </div>
-
-            <% end %>
-           </div>
-          <% end %>
-
-        </div>
+      </div>
     </div> <!-- class='col-md-12' -->
   </div> <!-- class='row -->
 </div> <!-- class='container' -->

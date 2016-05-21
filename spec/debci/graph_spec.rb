@@ -30,26 +30,19 @@ describe Debci::Graph do
   let(:repository) { Debci::Repository.new(@datadir) }
   let(:graph) { Debci::Graph.new(repository, 'unstable', 'amd64') }
 
-  it 'returns the current/last value for a set of data' do
-    expect(graph.current_value('date')).to eq(Time.parse('2014-08-15 01:30:15' + ' UTC'))
-    expect(graph.current_value('pass')).to eq(200)
-    expect(graph.current_value('fail')).to eq(150)
-    expect(graph.current_value('tmpfail')).to eq(20)
-    expect(graph.current_value('total')).to eq(370)
+  it 'gets history snapshots as entries' do
+    expect(graph.entries.size).to eq(2)
   end
 
-  it 'returns the second to last value for a set of data' do
-    expect(graph.previous_value('date')).to eq(Time.parse('2014-08-10 12:12:30' + ' UTC'))
-    expect(graph.previous_value('pass')).to eq(100)
-    expect(graph.previous_value('fail')).to eq(200)
-    expect(graph.previous_value('tmpfail')).to eq(20)
-    expect(graph.previous_value('total')).to eq(320)
-  end
+  it 'reduces history do 101 entries' do
+    initial_date = Time.parse('2014-08-10 12:12:30 UTC')
+    data = (0..150).map do |i|
+      { 'date' => initial_date + 3600*24*i, 'pass' => 100, 'fail' => 200, 'tmpfail' => 20, 'total' => 320 }
+    end
+    history 'status/unstable/amd64', data
 
-  it 'gets status history data' do
-    expect(graph.pass).to include(100, 200)
-    expect(graph.fail).to include(200, 150)
-    expect(graph.tmpfail).to include(20, 20)
-    expect(graph.total).to include(320, 370)
+    expect(graph.entries.size).to eq(101)
+    expect(Time.parse(graph.entries.first['date'])).to eq(initial_date)
+    expect(Time.parse(graph.entries.last['date'])).to eq(initial_date + 150*24*3600)
   end
 end
