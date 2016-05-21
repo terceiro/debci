@@ -15,7 +15,7 @@ checkdeps:
 spec:
 	@./test/banner 'Ruby unit tests'
 	@echo rspec --color
-	@rspec --color || (if [ -n "$(DISPLAY)" ]; then notify-send --urgency=critical "FAILED!!!"; fi; false)
+	@rspec --color || (if [ -n "$(DISPLAY)" ]; then notify-send --urgency=critical --expire-time=5 "FAILED!!!"; fi; false)
 
 functional-tests:
 	@./test/banner 'Functional tests'
