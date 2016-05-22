@@ -359,8 +359,4 @@ generate_all_packages() {
 if [ -d "$debci_autopkgtest_incoming_dir" ]; then
   run_with_lock_or_exit $debci_generate_index_lock \
     generate_all_packages
-else
-  # running before even having data: generate at least an almost empty index
-  # page
-  debci-generate-html
 fi
