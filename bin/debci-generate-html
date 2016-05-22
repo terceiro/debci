@@ -6,6 +6,8 @@ require 'debci'
 require 'debci/html'
 require 'debci/graph'
 
+$DEBCI_HTML_FAST = (ENV['DEBCI_HTML_FAST'] != nil)
+
 writer = Debci::HTML.new
 
 writer.index('index.html')
@@ -15,20 +17,6 @@ writer.blacklist('status/blacklist/index.html')
 writer.platform_specific_issues('status/platform-specific-issues/index.html')
 
 repository = Debci::Repository.new
-
-# Generate a JSON file for storing the current suite/architectures that are
-# available. The file is used for the JavaScript data charts.
-File.open(File.join(Debci.config.html_dir, 'status/platforms.json'), 'w') do |file|
-  platforms = []
-
-  repository.suites.each do |suite|
-    repository.architectures.each do |arch|
-      platforms.push("platform" => suite + '/' + arch) if repository.status_history(suite, arch)
-    end
-  end
-
-  file.write(JSON.pretty_generate(platforms))
-end
 
 packages = ARGV
 if packages.empty?
@@ -49,48 +37,14 @@ packages.each do |pkg|
     end
   end
   prefixes << package.prefix
-end
+end unless $DEBCI_HTML_FAST
 
-
-# Maintain a JSON file for storing a package's suite/architectures and
-# status. The file is used for the JavaScript package search.
-json_filename = File.join(Debci.config.html_dir, 'packages/packages.json')
-if File.exist?(json_filename)
-  json_package_data = JSON.load(File.read(json_filename))
-else
-  json_package_data = []
-end
-
-packages.each do |pkg|
-  package = repository.find_package(pkg)
-
-  status = {}
-
-  package.status.flatten.each do |s|
-    begin
-      if package.history(s.suite, s.architecture)
-        status["#{s.suite}/#{s.architecture}"] = s.status if s.status != :no_test_data
-      end
-    rescue JSON::ParserError
-      puts "[ERROR] #{package.name} <#{s.suite}/#{s.architecture}> history: Could not parse JSON"
-    end
-  end
-
-  entry = json_package_data.find { |entry| entry['package'] == pkg }
-  if !entry
-    entry = { 'package' => pkg }
-    json_package_data.push(entry)
-  end
-
-  entry['status'] = status
-end
-FileUtils.mkdir_p File.dirname(json_filename)
-File.open(json_filename, 'w') do |f|
-  f.write(JSON.pretty_generate(json_package_data))
-end
-
-writer.prefix(nil, "packages/index.html")
+writer.obsolete_packages_page("packages/index.html")
 
 prefixes.each do |p|
   writer.prefix(p, "packages/#{p}/index.html")
 end
+
+# remove files that are not used anymore
+FileUtils.rm_f(File.join(Debci.config.html_dir, 'status/platforms.json'))
+FileUtils.rm_f(File.join(Debci.config.html_dir, 'packages/packages.json'))

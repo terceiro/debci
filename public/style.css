@@ -153,37 +153,3 @@
   background-color: #E90051;
   color: white;
 }
-
-/* -----------------------------------------------------------------
- * package search
- * ----------------------------------------------------------------- */
-
-#package-select {
-  font-size: 14px;
-  margin: 0px;
-  padding: 0px;
-}
-
-#package-select li {
-  margin-top: 1em;
-  list-style: none;
-  border-bottom: 1px solid #eeeeee;
-}
-
-#package-select li .search-sub-links {
-  margin-top: 0.25em;
-  margin-left: 2em;
-}
-
-#package-select li .search-sub-links a {
-  display: block;
-}
-
-#package-select a.package-page:hover {
-  background-color: #eeeeec;
-}
-
-.search-count, .search-no-results {
-  padding: 0.25em;
-  color: #d5d7df;
-}

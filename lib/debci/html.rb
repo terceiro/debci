@@ -56,6 +56,10 @@ module Debci
       expand_template(:packagelist, filename)
     end
 
+    def obsolete_packages_page(filename)
+      expand_template(:packages, filename)
+    end
+
     # expand { SUITE } macro in URLs
     def expand_url(url, suite)
       url && url.gsub('{SUITE}', suite)

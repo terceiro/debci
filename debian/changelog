@@ -16,6 +16,8 @@ debci (1.1.3) UNRELEASED; urgency=medium
     * rewrite Status charts page. In special, instead of loading the full
       history via AJAX, which takes quite a while, embed a reduced view of the
       data in the HTML itself.
+    * remove search functionality: it was too heavy/slow. If one day the UI
+      stops being only static HTML, we can a search feature again.
   * Drop debian/tests/worker-max-processes. The original issue was caused by
     (and fixed in) systemd >= 228 (see bug #823530), and the test ended up not
     being very reliable and keeps flapping on CI.

@@ -6,72 +6,40 @@
         <div class="panel-heading panel-heading-browse">
           <h2>Browse</h2>
         </div>
-          <ul class="list-inline">
+        <ul class="list-inline">
 
           <% @package_prefixes.each do |prefix| %>
-               <li><h5><a href="/packages/<%= prefix %>/"><%= prefix %></a></h5></li>
+            <li><h5><a href="/packages/<%= prefix %>/"><%= prefix %></a></h5></li>
           <% end %>
           <% if @package_prefixes.empty? %>
             <li><em>(no data yet)</em></li>
           <% end %>
 
-          </ul>
+        </ul>
       </div>
     </div>
 
     <div class="col-md-9">
-        <%
-          @repository.search('^' + (@prefix || '-')).tap do |packages|
-            if packages.empty?
-              %>
-                <h2>Search</h2>
-                <div id='package-filter' class='form-inline'>
-                  <div class="input-group">
-                    <input type='text' id='package-search' class='form-control' size='200' placeholder="Search packages (regex welcome)"/>
-                    <noscript><p class='text-center'>Cannot search without JavaScript</p></noscript>
-                    <div class='search-count' style='display: none'>
-                      <span class='count'>N</span> result(s) found.
-                    </div>
-                    <div class='search-no-results' style='display: none'>
-                      No results found for your query.
-                    </div>
-                    <ul id='package-select'></ul>
-                  </div>
-                </div>
-              <%
-            else
-              %>
-              <table class="table" style="text-align: left">
-                <tr>
-                  <td><b>Package</b></td>
-                  <td><b>Status</b></td>
-                </tr>
-              <%
-              packages.each do |package|
-              %>
-
-              <% if package.prefix == @prefix %>
-                   <tr>
-                     <td><a href="/packages/<%= @prefix %>/<%= package.name %>"><%= package.name %></a></td>
-
-                  <% if package.failures %>
-
-                       <td class='fail'>
-                         Failing on <%= package.failures.map { |arch| "<a href='/packages/#{@prefix}/#{package.name}/#{arch}'>#{arch}</a>" }.join(', ') %>
-                       </td>
-
-                  <% else %>
-                       <td><div class='pass'>Passing everywhere</div></td>
-                  <% end %>
-                   </tr>
-              <% end
-              end
-              %>
-              </table>
-              <%
-            end
-          end
-        %>
+      <% @repository.search('^' + (@prefix || '-')).tap do |packages| %>
+        <table class="table" style="text-align: left">
+          <tr>
+            <td><b>Package</b></td>
+            <td><b>Status</b></td>
+          </tr>
+          <% packages.each do |package| %>
+            <tr>
+              <td><a href="/packages/<%= @prefix %>/<%= package.name %>"><%= package.name %></a></td>
+              <% if package.failures %>
+                <td class='fail'>
+                  Failing on <%= package.failures.map { |arch| "<a href='/packages/#{@prefix}/#{package.name}/#{arch}'>#{arch}</a>" }.join(', ') %>
+              </td>
+              <% else %>
+                <td><div class='pass'>Passing everywhere</div></td>
+              <% end %>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
     </div>
   </div>
 </div>
