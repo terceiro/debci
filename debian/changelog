@@ -1,4 +1,4 @@
-debci (1.2) UNRELEASED; urgency=medium
+debci (1.2) unstable; urgency=medium
 
   [ Antonio Terceiro ]
   * debian/debci-worker@.service: also bump LimitNPROC to infinity to avoid
@@ -31,7 +31,7 @@ debci (1.2) UNRELEASED; urgency=medium
   [ Brandon Fairchild ]
   * HTML UI: fix final copyright year in the footer
 
- -- Antonio Terceiro <terceiro@debian.org>  Fri, 15 Apr 2016 15:36:17 -0300
+ -- Antonio Terceiro <terceiro@debian.org>  Mon, 23 May 2016 10:31:19 -0300
 
 debci (1.1.2) unstable; urgency=medium
 
