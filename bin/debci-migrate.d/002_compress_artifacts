@@ -14,7 +14,7 @@ if [ -d "$datadir/autopkgtest" ]; then
     (
       cd $test_run_dir
       tar -caf artifacts.tar.gz --exclude='log.gz' *
-      tar -taf artifacts.tar.gz | xargs rm -f
+      tar -taf artifacts.tar.gz | xargs rm -rf
     )
 
     compressed=$(($compressed + 1))
