@@ -5,7 +5,7 @@ set -eu
 configdir=$(dirname $0)/../config
 
 if [ ! -f $configdir/whitelist ]; then
-  for pkg in ruby-defaults rake ruby-ffi gem2deb; do
+  for pkg in ruby-defaults rubygems-integration autodep8 pristine-tar; do
     echo "$pkg"
   done > $configdir/whitelist
 fi
