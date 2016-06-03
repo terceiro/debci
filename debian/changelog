@@ -7,6 +7,9 @@ debci (1.3) UNRELEASED; urgency=medium
     - use one tmp_dir per package/suite/architecture
   * bin/debci-generate-index
     - use one tmp_dir per package/suite/architecture
+    - compress artifacts (except log) in a single tarball so that instead of N
+      files per test run, we only keep 2 files per test run: log.gz and
+      artifacts.tar.gz. This should significantly reduce the usage of inodes.
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 03 Jun 2016 14:45:08 -0300
 

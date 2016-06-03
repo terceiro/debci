@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -eu
+
+datadir="$1"
+
+if [ -d "$datadir/autopkgtest" ]; then
+  echo "Compressing artifacts; this might take a while ..."
+  compressed=0
+  find "$datadir/autopkgtest" -name exitcode | while read exitcode; do
+    test_run_dir=$(dirname $exitcode)
+    test_run_id=$(basename $test_run_dir)
+
+    (
+      cd $test_run_dir
+      tar -caf artifacts.tar.gz --exclude='log.gz' *
+      tar -taf artifacts.tar.gz | xargs rm -f
+    )
+
+    compressed=$(($compressed + 1))
+    if [ $(($compressed % 100)) -eq 0 ]; then
+      echo "$compressed test runs compressed"
+    fi
+  done
+fi

@@ -77,6 +77,7 @@ generate_package_run() {
 
   duration_human=$(seconds_to_human_time "$duration")
 
+  extract_latest_autopkgtest
   generate_package_run_log_file > "$log_file"
   report_status "$pkg" "$status" "($duration_human)"
 
@@ -95,6 +96,16 @@ generate_package_run() {
   fi
   ln -s "../../../../..${adtresult#$debci_data_basedir}" \
     "${status_dir}/latest-autopkgtest"
+
+  compress_artifacts "$adtresult"
+}
+
+extract_latest_autopkgtest() {
+  mkdir -p ${tmp_dir}/latest-autopkgtest
+  local latest_artifacts="${status_dir}/latest-autopkgtest/artifacts.tar.gz"
+  if [ -f "$latest_artifacts" ]; then
+    tar -xaf "$latest_artifacts" -C "${tmp_dir}/latest-autopkgtest"
+  fi
 }
 
 # write package test log to stdout (gets redirected to $log_file)
@@ -171,9 +182,9 @@ generate_package_run_testbed_packages() {
     return 0
   fi
 
-  if [ -f "${status_dir}/latest-autopkgtest/testbed-packages" ]; then
+  if [ -f "${tmp_dir}/latest-autopkgtest/testbed-packages" ]; then
     if ! diff -u \
-      --label previous-run/testbed-packages "${status_dir}/latest-autopkgtest/testbed-packages" \
+      --label previous-run/testbed-packages "${tmp_dir}/latest-autopkgtest/testbed-packages" \
       --label current-run/testbed-packages "${adtresult}/testbed-packages" \
         > "${tmp_dir}/base.diff"; then
       banner "Change in the base system since last run"
@@ -193,8 +204,8 @@ generate_package_run_dependencies() {
   if [ -n "$deps" ]; then
     banner "Test dependencies"
     echo "$deps"
-    if [ -d ${status_dir}/latest-autopkgtest ]; then
-      cat ${status_dir}/latest-autopkgtest/*t-*-packages | sort -u > $tmp_dir/last_test_packages
+    if [ -d ${tmp_dir}/latest-autopkgtest ]; then
+      cat ${tmp_dir}/latest-autopkgtest/*t-*-packages 2>/dev/null | sort -u > $tmp_dir/last_test_packages
       if [ -s "$tmp_dir/last_test_packages" ]; then
         if ! echo "$deps" | diff -u --label last-run/test-packages "$tmp_dir/last_test_packages" --label current-run/test-packages - > "$tmp_dir/test-packages.diff"; then
           banner "Change in test packages for $pkg since last test run"
@@ -331,6 +342,15 @@ generate_status_entry() {
 }
 EOF
   ln -sf "${date}.json" "${debci_status_dir}/status.json"
+}
+
+compress_artifacts() {
+  local resultdir="$1"
+  (
+    cd $resultdir
+    tar -caf artifacts.tar.gz --exclude=log.gz *
+    tar -taf artifacts.tar.gz | xargs rm -f
+  )
 }
 
 generate_history() {
