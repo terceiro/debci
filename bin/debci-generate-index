@@ -15,10 +15,10 @@ debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $debci_base_dir/lib/environment.sh
 . $debci_base_dir/lib/functions.sh
 
-tmp_dir=$(mktemp -d)
+base_tmp_dir=$(mktemp -d)
 cleanup() {
-  if [ -d "$tmp_dir" ]; then
-    rm -rf "$tmp_dir"
+  if [ -d "$base_tmp_dir" ]; then
+    rm -rf "$base_tmp_dir"
   fi
 }
 trap cleanup INT TERM EXIT
@@ -62,6 +62,8 @@ generate_package_run() {
   last_status=$($debci_bin_dir/debci-status "$pkg")
   status_file="${status_dir}/${run_id}.json"
   log_file="${status_dir}/${run_id}.log"
+  tmp_dir="${base_tmp_dir}/${debci_suite}/${debci_arch}/${pkg}/${run_id}"
+  mkdir -p "$tmp_dir"
 
   # get run duration
   if [ -f "$adtresult/duration" ]; then

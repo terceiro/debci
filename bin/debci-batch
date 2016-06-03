@@ -28,15 +28,15 @@ cd $debci_base_dir
 . lib/environment.sh
 . lib/functions.sh
 
-tmp_dir=$(mktemp -d)
+base_tmp_dir=$(mktemp -d)
 cleanup() {
-  if [ -d "$tmp_dir" ]; then
-    rm -rf "$tmp_dir"
+  if [ -d "$base_tmp_dir" ]; then
+    rm -rf "$base_tmp_dir"
   fi
 }
 trap cleanup INT TERM EXIT
 
-one_month_ago="${tmp_dir}/one_month_ago"
+one_month_ago="${base_tmp_dir}/one_month_ago"
 touch -d '1 month ago' "${one_month_ago}"
 
 
@@ -82,6 +82,8 @@ process_all_packages() {
 }
 
 needs_processing() {
+  local tmp_dir="$base_tmp_dir/${debci_suite}/${debci_arch}/${pkg}"
+  mkdir -p "$tmp_dir"
   status_dir=$(status_dir_for_package "$pkg")
   last_status=$(debci-status "$pkg")
   mkdir -p "${status_dir}"
