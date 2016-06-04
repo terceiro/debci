@@ -19,8 +19,10 @@
                 <a href="/packages/<%= package.prefix %>/<%= package.name %>"><%= package.name %></a>
               </td>
 
-              <td class='tmpfail'>
-                Tmpfail on <%= package.tmpfail.map { |p| "<a href='/packages/#{package.prefix}/#{package.name}/#{p}'>#{p}</a>" }.join(', ') %>
+              <td>
+              <% package.tmpfail.each do |s| %>
+                <a class='tmpfail' href='/packages/#{package.prefix}/#{package.name}/#{p}'><%= s.version %> <%= s.status %> on <%= s.suite %>/<%= s.architecture %></a>
+              <% end %>
               </td>
             </tr>
         <% end %>

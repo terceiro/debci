@@ -49,7 +49,7 @@
                                    "/#{row.first.architecture}"
                   %>
                   <td class="<%= status.status %>">
-                    <a href=<%= package_dir %>><%= status.title %></a>
+                    <a href=<%= package_dir %>><%= status.version %>  <%= status.title %></a>
                   </td>
               <% end %>
             <% end %>

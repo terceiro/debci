@@ -31,12 +31,12 @@ module Debci
     # Returns a headline for this status object, to be used as a short
     # description of the event it represents
     def headline
-      "#{package} tests #{status.upcase}ED on #{suite}/#{architecture}"
+      "#{package} #{version} #{status.upcase}ED on #{suite}/#{architecture}"
     end
 
     # A longer version of the headline
     def description
-      "The tests for #{package} #{status.upcase}ED on #{suite}/#{architecture} but have previously #{previous_status.upcase}ED."
+      "The tests for #{package}, version #{version}, #{status.upcase}ED on #{suite}/#{architecture} but have previously #{previous_status.upcase}ED."
     end
 
     def blame=(value)

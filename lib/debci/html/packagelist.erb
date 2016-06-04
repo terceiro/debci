@@ -29,10 +29,14 @@
           <% packages.each do |package| %>
             <tr>
               <td><a href="/packages/<%= @prefix %>/<%= package.name %>"><%= package.name %></a></td>
-              <% if package.failures %>
-                <td class='fail'>
-                  Failing on <%= package.failures.map { |arch| "<a href='/packages/#{@prefix}/#{package.name}/#{arch}'>#{arch}</a>" }.join(', ') %>
-              </td>
+              <% if package.failures.any? %>
+                <td>
+                  <% package.failures.each do |s| %>
+                    <a class='fail' href='<%= "/packages/#{@prefix}/#{package.name}/#{s.suite}/#{s.architecture}"%>'>
+                      <%= s.version %> <%= s.status.upcase %> <%= s.suite %>/<%= s.architecture %>
+                    </a>
+                  <% end %>
+                </td>
               <% else %>
                 <td><div class='pass'>Passing everywhere</div></td>
               <% end %>

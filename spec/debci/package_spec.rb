@@ -31,36 +31,32 @@ describe Debci::Package do
     expect(package.news).to be(news)
   end
 
-  it 'detects if it has a failure' do
-    expect(package).to receive(:failures).and_return(['unstable/amd64'])
-    expect(package.failures).to eq(['unstable/amd64'])
-
-    expect(package).to receive(:failures).and_return(nil)
-    expect(package.failures).to eq(nil)
-  end
-
-  it 'detects if it has temporary failures' do
+  it 'detects if it has failures and temporary failures' do
     status = Set.new
 
-    first_status = Debci::Status.new
-    first_status.suite = 'unstable'
-    first_status.architecture = 'amd64'
-    first_status.status = :tmpfail
+    tmpfail_status = Debci::Status.new
+    tmpfail_status.suite = 'unstable'
+    tmpfail_status.architecture = 'amd64'
+    tmpfail_status.status = :tmpfail
 
-    second_status = Debci::Status.new
-    second_status.suite = 'unstable'
-    second_status.architecture = 'i386'
-    second_status.status = :pass
+    pass_status = Debci::Status.new
+    pass_status.suite = 'unstable'
+    pass_status.architecture = 'i386'
+    pass_status.status = :pass
 
-    status << first_status << second_status
+    fail_status = Debci::Status.new
+    fail_status.suite = 'unstable'
+    fail_status.architecture = 'i386'
+    fail_status.status = :fail
+
+    status << tmpfail_status << pass_status << fail_status
 
     allow(repository).to receive(:status_for).with(package).and_return(status)
     expect(package.status).to eq(status)
 
-    tmpfail = package.tmpfail
+    expect(package.tmpfail).to eq([tmpfail_status])
 
-    expect(tmpfail).to include("unstable/amd64")
-    expect(tmpfail).to_not include("unstable/i386")
+    expect(package.failures).to eq([fail_status])
   end
 
   it 'converts to string' do

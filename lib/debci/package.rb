@@ -41,44 +41,14 @@ module Debci
       repository.news_for(self)
     end
 
-    # Returns an array containing the suite/architectures this package is
-    # failing. If this package is passing on all suite/architectures, nothing
-    # is returned.
+    # Returns an Array of statuses where this package is temporarily failing.
     def failures
-      failing_status = []
-
-      status.each do |architecture|
-        architecture.each do |suite|
-          case suite.status
-            when :tmpfail
-              # Determine if there was a failure before the tmpfail
-              history(suite.suite, suite.architecture).each do |test|
-
-                # If there wasn't a failure before the tmpfail,
-                # stop looking through the test history
-                if test.status == :pass
-                  break
-                end
-
-                if test.status == :fail
-                  failing_status.push(suite.suite + '/' + suite.architecture)
-                  break
-                end
-
-              end
-            when :fail
-              failing_status.push(suite.suite + '/' + suite.architecture)
-          end
-        end
-      end
-
-      return failing_status unless failing_status.empty?
+      status.flatten.select { |p| p.status == :fail }
     end
 
-    # Returns an Array of suite/architectures that this package is temporarily
-    # failing. If there are no temporary failures, nothing is returned.
+    # Returns an Array of statuses where this package is temporarily failing. If
     def tmpfail
-      status.flatten.select { |p| p.status == :tmpfail }.map { |s| "#{s.suite}/#{s.architecture}" }
+      status.flatten.select { |p| p.status == :tmpfail }
     end
 
     def to_s

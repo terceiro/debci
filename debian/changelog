@@ -2,6 +2,8 @@ debci (1.4) UNRELEASED; urgency=medium
 
   * bin/debci-migrate.d/002_compress_artifacts: also remove directories after
     compressing artifacts
+  * Web UI:
+    - include version numbers almost everywhere.
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 03 Jun 2016 17:33:16 -0300
 
