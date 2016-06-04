@@ -19,6 +19,12 @@ if ENV["DEBCI_FAKE_DEPS"]
   end
 end
 
+version = `(apt-cache showsrc #{pkg} | grep-dctrl -n -s Version '' | head -1) 2>/dev/null`
+if version == ''
+  version = `date +0.0.0-1~%Y%M%d`.strip
+end
+File.open(File.join(outdir, 'testpkg-version'), 'w') { |f| f.puts version }
+
 if ENV["DEBCI_FAKE_COMMAND"]
   io = IO.popen(ENV["DEBCI_FAKE_COMMAND"])
   log = [ '$ ' + ENV['DEBCI_FAKE_COMMAND'], io.read].join("\n")
