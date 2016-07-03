@@ -1,5 +1,9 @@
 # Tutorial: Functional testing of Debian packages
 
+This is a transcription of a Debconf15 talk, which you might want to
+[watch](http://meetings-archive.debian.net/pub/debian-meetings/2015/debconf15/Tutorial_functional_testing_of_Debian_packages.webm)
+(WebM format, 469MB).
+
 Do you maintain a Debian package? This tutorial covers implementing autopkgtests
 for your Debian packages.
 
