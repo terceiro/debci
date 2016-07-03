@@ -29,12 +29,18 @@
 
       <table class="table" style='width: auto'>
 
-        <tr>
-          <td></td>
+        <% if @package.status.first %>
+          <tr>
+            <td></td>
             <% @package.status.first.each do |status| %>
               <td><b><%= status.suite %></b></td>
             <% end %>
-        </tr>
+          </tr>
+        <% else %>
+          <tr>
+            <td><em>(no data yet)</em></td>
+          </tr>
+        <% end %>
 
         <% @package.status.each do |row| %>
           <tr>
