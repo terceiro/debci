@@ -26,7 +26,7 @@ If you disabled rabbitmq-server, you will need to start it before hacking on
 debci:
 
 ```
-$ server rabbitmq-server start
+$ service rabbitmq-server start
 ```
 
 ### Set up the test environment
