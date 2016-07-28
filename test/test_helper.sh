@@ -9,7 +9,7 @@ export DEBCI_RUNNING_TESTS=yes
 export debci_quiet='true'
 export debci_backend='fake'
 export debci_amqp_server="amqp://localhost:$TEST_RABBIT_PORT"
-export debci_amqp_queue="debci-unstable-$(dpkg --print-architecture)"
+export debci_amqp_queue="debci-$(dpkg --print-architecture)-test"
 
 if [ -n "${TESTCASE:-}" ]; then
   suite() {

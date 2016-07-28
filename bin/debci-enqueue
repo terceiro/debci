@@ -21,6 +21,6 @@ for pkg in $@; do
     --url "${debci_amqp_server}" \
     --persistent \
     --routing-key "$debci_amqp_queue" \
-    --body "$pkg"
+    --body "$pkg $debci_suite"
   report_status "$pkg" "requested"
 done

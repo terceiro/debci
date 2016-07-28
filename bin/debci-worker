@@ -25,9 +25,16 @@ tags=''
 
 # Process one request. Read the AMQP message from stdin.
 do_request() {
-  read pkg specs || true  # we expect EOF and thus read to fail
+  local pkg
+  local suite
 
-  log "$pkg $debci_suite/$debci_arch started"
+  read pkg suite || true  # we expect EOF and thus read to fail
+
+  if [ -z "$suite" ]; then
+    suite="$debci_suite"
+  fi
+
+  log "$pkg $suite/$debci_arch started"
 
   local tmp_dir=$(mktemp -d)
 
@@ -36,6 +43,7 @@ do_request() {
     debci-test \
       --quiet \
       --data-dir "$tmp_dir" \
+      --suite "$suite" \
       --print-output "$pkg"
   )"
 
@@ -44,15 +52,18 @@ do_request() {
     exit 2
   fi
 
+  # debci_suite has to passed in to report_status because the worker is running
+  # using the "default" suite which is usually unstable, which might be
+  # different from the suite in which the test has actually just been executed.
   case $(cat "$result_dir/exitcode") in
       0|2)
-          report_status $pkg pass
+          debci_suite="$suite" report_status $pkg pass
           ;;
       4|6|8|12)
-          report_status $pkg fail
+          debci_suite="$suite" report_status $pkg fail
           ;;
       *)
-          report_status $pkg tmpfail
+          debci_suite="$suite" report_status $pkg tmpfail
           ;;
   esac
 
