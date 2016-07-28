@@ -32,7 +32,12 @@ do_request() {
   local tmp_dir=$(mktemp -d)
 
   # run the test
-  local result_dir="$(debci-test --quiet --data-dir "$tmp_dir" --print-output $pkg)"
+  local result_dir="$(
+    debci-test \
+      --quiet \
+      --data-dir "$tmp_dir" \
+      --print-output "$pkg"
+  )"
 
   if [ ! -s "$result_dir/exitcode" ]; then
     log "E: Test for package $pkg produced no exit code, aborting"
