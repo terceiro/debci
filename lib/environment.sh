@@ -40,6 +40,7 @@ fi
 # for Debian, NAME is "Debian GNU/Linux", shorten this
 debci_distro_name="${debci_distro_name:-$(. /etc/os-release; echo ${NAME% *})}"
 debci_suite=${debci_suite:-unstable}
+debci_suite_list=${debci_suite_list:-${debci_suite}}
 debci_arch=${debci_arch:-$(dpkg --print-architecture)}
 debci_arch_list="${debci_arch_list:-${debci_arch}}"
 # debci-setup-chdist determines the default from debootstrap, don't set one here

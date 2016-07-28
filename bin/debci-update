@@ -3,9 +3,12 @@
 set -eu
 
 arch_list=$(debci config --values-only arch_list)
+suite_list=$(debci config --values-only suite_list)
 
-for arch in $arch_list; do
-  debci-generate-index --arch="$arch" "$@"
+for suite in $suite_list; do
+  for arch in $arch_list; do
+    debci-generate-index --arch="$arch" --suite="$suite" "$@"
+  done
 done
 
 debci-generate-html
