@@ -6,6 +6,7 @@ debci (1.4) UNRELEASED; urgency=medium
     - include version numbers almost everywhere.
   * lib/debci/html/package.erb: avoid crashing when installing a fresh system
     with no data, but with packages already blacklisted.
+  * debian/debci.postrm: remove /var/log/debci on purge (Closes: #810701)
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 03 Jun 2016 17:33:16 -0300
 
