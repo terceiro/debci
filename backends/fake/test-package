@@ -35,28 +35,27 @@ if ENV["DEBCI_FAKE_COMMAND"]
   end
 else
   puts "Not really running anything .."
-  puts "This will fail, pass or tmpfail randomly. Passing is twice as probable as fail and tmpfail"
-
+  puts "This has 80% chance of passing, 10% of failing, and 10% of tmpfailing"
   r = nil
   case ENV['DEBCI_FAKE_RESULT']
   when 'pass'
     r = 0
   when 'fail'
-    r = 2
+    r = 8
   when 'tmpfail'
-    r = 3
+    r = 9
   else
-    r = rand(4)
+    r = rand(10)
   end
 
   case r
-  when 0..1
+  when 0..7
     log = "Passed :-)\n"
     rc = 0
-  when 2
+  when 8
     log = "Failed :-(\n"
     rc = 4
-  when 3
+  when 9
     log = "Some error ocurred\n"
     rc = 16
   end
