@@ -19,6 +19,9 @@ debci (1.4) UNRELEASED; urgency=medium
       test job
     - Added debci-update-worker as a wrapper for callling debci-setup for each
       supported suite.
+  * backends/lxc:
+    - retry `apt-get update` until it works. Most of the time when the testbed
+      setup fails on production is during `apt-get update`.
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 03 Jun 2016 17:33:16 -0300
 
