@@ -7,6 +7,18 @@ debci (1.4) UNRELEASED; urgency=medium
   * lib/debci/html/package.erb: avoid crashing when installing a fresh system
     with no data, but with packages already blacklisted.
   * debian/debci.postrm: remove /var/log/debci on purge (Closes: #810701)
+  * Add support for running tests for multiple suites (See: #831975).
+    .
+    Not that we already currently couldn't do that, but it would require
+    specific workers for each suite. With these changes, a worker node for a
+    given architecture can now run tests on any suite for that architecture.
+    .
+    - debci-worker will now expect the suite name as a second argument on test
+      jobs (defaulting to whatever is in $debci_suite).
+    - debci-enqueue will now send the suite name as a second argument on each
+      test job
+    - Added debci-update-worker as a wrapper for callling debci-setup for each
+      supported suite.
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 03 Jun 2016 17:33:16 -0300
 
