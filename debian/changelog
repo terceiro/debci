@@ -9,9 +9,9 @@ debci (1.4) UNRELEASED; urgency=medium
   * debian/debci.postrm: remove /var/log/debci on purge (Closes: #810701)
   * Add support for running tests for multiple suites (See: #831975).
     .
-    Not that we already currently couldn't do that, but it would require
-    specific workers for each suite. With these changes, a worker node for a
-    given architecture can now run tests on any suite for that architecture.
+    Not that we couldn't do that already, but it would require specific
+    workers for each suite. With these changes, a worker node for a given
+    architecture can now run tests on any suite for that architecture.
     .
     - debci-worker will now expect the suite name as a second argument on test
       jobs (defaulting to whatever is in $debci_suite).
