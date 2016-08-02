@@ -4,8 +4,8 @@ set -e
 
 if [ "$1" = configure ] && [ -z "$2" ]; then
   # build testbed immediately on first install
-  echo "Building testbed in background ..."
-  debci setup --quiet &
+  echo "Building testbeds in background ..."
+  debci update-worker --quiet &
 
   # enable && start first instance
   #

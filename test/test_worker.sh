@@ -4,7 +4,7 @@ set -u
 . $(dirname $0)/test_helper.sh
 
 # let's mess with a seperate queue just for this test
-export debci_amqp_queue="${debci_amqp_queue:-debci-unstable-$(dpkg --print-architecture)}-fake"
+export debci_amqp_queue="${debci_amqp_queue}-stress"
 
 request() {
   debci enqueue $1
