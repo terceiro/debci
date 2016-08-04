@@ -28,6 +28,54 @@ module Debci
       }.fetch(status, "Unknown")
     end
 
+    # a larger set of possible test result states, to show
+    # "at a glance" the package's test history
+    # potentially other attributes could be included here
+    #  * partial or total failure if there are multiple tests
+    #  * dependency failure vs test failure
+    #  * guessed nondeterminism
+    # but probably too many combinations will make this unhelpful
+    def extended_status
+      case status
+      when :pass
+        :pass
+      # distinguish between always failing, and whether the test has
+      # previously passed for this or older versions
+      when :fail
+        case last_pass_version
+        when "never"
+          :fail_passed_never
+        when version
+          :fail_passed_current
+        when "unknown"
+          :fail
+        else
+          :fail_passed_old
+        end
+      # tmpfail is usually not interesting to the observer, so provide
+      # a hint if it is masking a previous pass or fail
+      when :tmpfail
+        case previous_status
+        when :pass
+          :tmpfail_pass
+        when :fail
+          :tmpfail_fail
+        else
+          :tmpfail
+        end
+      else
+        status
+      end
+    end
+
+    def failmsg
+      {
+        :fail_passed_never => "never passed",
+        :fail_passed_current => "previously passed",
+        :fail_passed_old => "#{last_pass_version} passed"
+      }.fetch(extended_status, "unknown")
+    end
+
     # Returns a headline for this status object, to be used as a short
     # description of the event it represents
     def headline
