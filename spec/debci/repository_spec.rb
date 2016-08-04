@@ -199,15 +199,14 @@ describe Debci::Repository do
     tmpfail_packages = repository.tmpfail_packages
 
     expect(tmpfail_packages).to be_a(Array)
-    expect(tmpfail_packages.length).to eq(1)
+    expect(tmpfail_packages.length).to be >= 1
 
-    tmpfail_packages.each do |package|
-      expect(package).to be_a(Debci::Package)
-      expect(package.name).to eq('ruby-ffi')
+    package = tmpfail_packages.find { |pkg| pkg.name == 'ruby-ffi' }
+    expect(package).to be_a(Debci::Package)
+    expect(package.name).to eq('ruby-ffi')
 
-      package.status.flatten.each do |p|
-        expect([:tmpfail, :no_test_data]).to include(p.status)
-      end
+    package.status.flatten.each do |p|
+      expect([:tmpfail, :no_test_data]).to include(p.status)
     end
   end
 
