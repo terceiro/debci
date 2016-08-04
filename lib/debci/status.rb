@@ -79,12 +79,25 @@ module Debci
     # Returns a headline for this status object, to be used as a short
     # description of the event it represents
     def headline
-      "#{package} #{version} #{status.upcase}ED on #{suite}/#{architecture}"
+      msg = "#{package} #{version} #{status.upcase}ED on #{suite}/#{architecture}"
+      if status == :fail
+        msg += " (#{failmsg})"
+      end
+      msg
     end
 
     # A longer version of the headline
+    # for a new failure, include whether this version previously passed
     def description
-      "The tests for #{package}, version #{version}, #{status.upcase}ED on #{suite}/#{architecture} but have previously #{previous_status.upcase}ED."
+      msg = "The tests for #{package}, version #{version}, #{status.upcase}ED on #{suite}/#{architecture} but have previously #{previous_status.upcase}ED"
+      msg += case extended_status
+        when :fail_passed_current
+          " for the current version."
+        when :fail_passed_old
+          " for version #{last_pass_version}."
+        else
+          "."
+        end
     end
 
     def blame=(value)
