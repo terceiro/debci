@@ -45,6 +45,7 @@ describe Debci::Repository do
     mkdir_p 'packages/testing/amd64/r/rubygems-integration'
     mkdir_p 'packages/testing/i386/r/rubygems-integration'
 
+    # platform specific issue
     latest_status 'packages/unstable/amd64/r/rubygems-integration', {
       'status' => 'pass',
       'previous_status' => 'pass',
@@ -52,6 +53,18 @@ describe Debci::Repository do
     latest_status 'packages/unstable/i386/r/rubygems-integration', {
       'status' => 'fail',
       'previous_status' => 'fail',
+    }
+
+    # NOT a platform specific issue - tmpfail should be ignored
+    mkdir_p 'packages/unstable/amd64/r/racc'
+    mkdir_p 'packages/unstable/i386/r/racc'
+    latest_status 'packages/unstable/amd64/r/racc', {
+      'status' => 'pass',
+      'previous_status' => 'pass',
+    }
+    latest_status 'packages/unstable/i386/r/racc', {
+      'status' => 'tmpfail',
+      'previous_status' => 'pass',
     }
   end
 
@@ -214,5 +227,10 @@ describe Debci::Repository do
     issues = repository.platform_specific_issues
     expect(issues).to have_key('rubygems-integration')
     expect(issues['rubygems-integration'].map(&:class).uniq).to eq([Debci::Status])
+  end
+
+  it 'does not consider tmpfail as a platform-specific issue' do
+    issues = repository.platform_specific_issues
+    expect(issues).to_not have_key('racc')
   end
 end

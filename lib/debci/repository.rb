@@ -139,7 +139,7 @@ module Debci
       result = {}
       packages.each do |package|
         statuses = status_for(package).flatten
-        if statuses.map(&:status).reject { |s| s == :no_test_data }.uniq.size > 1
+        if statuses.map(&:status).reject { |s| [:no_test_data, :tmpfail].include?(s) }.uniq.size > 1
           result[package] = statuses
         end
       end
