@@ -36,6 +36,7 @@ Depends: adduser,
          patchutils,
          ruby,
          sudo,
+         jq,
          ${misc:Depends},
          ${shlibs:Depends}
 Recommends: apt-cacher-ng,
