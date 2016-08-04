@@ -265,6 +265,24 @@ generate_package_blame() {
   fi
 }
 
+# this reads all previous result json files, but should only run
+# once for each package, after which the last_pass_version is cached
+# in each successive json and copied forwards
+find_last_pass_version() {
+  last_pass_version="never"
+  last_pass_date="never"
+  result_json=$(find "${status_dir}" -name '*.json' \
+                -and -not -name latest.json \
+                -and -not -name history.json \
+                | sort -V)
+  for f in ${result_json}; do
+    if [ $(jq -r .status ${f}) = 'pass' ]; then
+      last_pass_version="$(jq -r .version ${f})"
+      last_pass_date="$(jq -r .date ${f})"
+    fi
+  done
+}
+
 # arguments: <timestamp>
 generate_package_json() {
   local timestamp="$1"
@@ -277,6 +295,22 @@ generate_package_json() {
   local previous_status="${last_status}"
   if [ "${previous_status}" = 'tmpfail' ]; then
     previous_status=$(debci-status --field previous_status "$pkg")
+  fi
+
+  # record the last version and date for which the test passed,
+  # to distinguish between packages which have never passed, never
+  # passed for the current version, or failed recently
+  local last_pass_version=""
+  local last_pass_date=""
+
+  if [ "${status}" = 'pass' ]; then
+    last_pass_version="${version}"
+    last_pass_date="${timestamp}"
+  elif [ $(debci-status --field last_pass_version "$pkg") != 'unknown' ]; then
+    last_pass_version="$(jq -r .last_pass_version ${status_dir}/latest.json)"
+    last_pass_date="$(jq -r .last_pass_date ${status_dir}/latest.json)"
+  else
+    find_last_pass_version
   fi
 
   if [ -n "$artifacts_url_base" ]; then
@@ -298,7 +332,9 @@ generate_package_json() {
   "previous_status": "${previous_status}",
   "duration_seconds": "${duration}",
   "duration_human": "${duration_human}",
-  "message": "${message}"${extra_fields}
+  "message": "${message}",
+  "last_pass_version": "${last_pass_version}",
+  "last_pass_date": "${last_pass_date}"${extra_fields}
 }
 EOF
 
