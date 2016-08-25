@@ -2,7 +2,7 @@
 
 set -eu
 
-bindir=$(dirname $(readlink -f $0))
+bindir=$(dirname "$(readlink -f "$0")")
 
 program="${1:-}"
 if [ -z "$program" ]; then
@@ -18,5 +18,8 @@ if [ -f "$bindir/../lib/debci.rb" ]; then
 fi
 
 export PATH=$bindir:$PATH
-export debci_base_dir="$(dirname $bindir)"
-exec debci-$program "$@"
+
+debci_base_dir="$(dirname "$bindir")"
+export debci_base_dir
+
+exec "debci-$program" "$@"
