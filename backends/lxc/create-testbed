@@ -93,7 +93,7 @@ deb-src http://incoming.debian.org/debian-buildd $buildd_suite main
 EOF
   while ! chroot "$rootfs" apt-get update; do
     echo "I: apt-get update failed, let's wait some time and try again "
-    sleep 10s
+    sleep 10
   done
 fi
 
