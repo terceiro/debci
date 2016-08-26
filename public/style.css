@@ -44,7 +44,8 @@
  * status marks
  * ----------------------------------------------------------------- */
 
-.pass, .fail, .tmpfail, .no_test_data {
+.pass, .fail, .tmpfail, .no_test_data, .fail_passed_never,
+.fail_passed_current, .fail_passed_old, .tmpfail_pass, .tmpfail_fail {
   font-family: 'FontAwesome';
 }
 
@@ -66,6 +67,31 @@
 .no_test_data:before {
   content: "\f06a ";
   color: #babdb6;
+}
+
+.fail_passed_never:before {
+  content: "\f165 \f05e ";
+  color: #ef2929;
+}
+
+.fail_passed_current:before {
+  content: "\f165 \f0e7 ";
+  color: #9e0000;
+}
+
+.fail_passed_old:before {
+  content: "\f165 \f063 ";
+  color: #c80c0c;
+}
+
+.tmpfail_pass:before {
+  content: "\f059 \f164 ";
+  color: #fffa62;
+}
+
+.tmpfail_fail:before {
+  content: "\f059 \f165 ";
+  color: #ffb062;
 }
 
 /* -----------------------------------------------------------------

@@ -32,8 +32,8 @@
               <% if package.failures.any? %>
                 <td>
                   <% package.failures.each do |s| %>
-                    <a class='fail' href='<%= "/packages/#{@prefix}/#{package.name}/#{s.suite}/#{s.architecture}"%>'>
-                      <%= s.version %> <%= s.status.upcase %> <%= s.suite %>/<%= s.architecture %>
+                    <a class='<%= s.extended_status %>' href='<%= "/packages/#{@prefix}/#{package.name}/#{s.suite}/#{s.architecture}"%>'>
+                      <%= s.version %> <%= s.status.upcase %> <%= s.suite %>/<%= s.architecture %> (<%= s.failmsg %>)
                     </a>
                   <% end %>
                 </td>

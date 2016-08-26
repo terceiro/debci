@@ -48,7 +48,7 @@
 
             <% row.each do |status| %>
               <% if status.status.eql?(:no_test_data) %>
-                  <td class="<%= status.status %>"><%= status.title %></td>
+                  <td class="<%= status.extended_status %>"><%= status.title %></td>
               <% else %>
                   <% package_dir = "/packages/#{@package.prefix}" +
                                    "/#{@package.name}/#{status.suite}" +

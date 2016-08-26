@@ -13,7 +13,7 @@
             <td><%= package %></td>
             <td>
               <% statuses.each do |status| %>
-                <a  class='<%= status.status %>'
+                <a  class='<%= status.extended_status %>'
                     href="/packages/<%= Debci::Package.new(package).prefix %>/<%= package %>/<%= status.suite %>/<%= status.architecture %>/">
                   <%= status.suite %>/<%= status.architecture%> <%= status.status %> (<%= status.duration_human %>)
                 </a>

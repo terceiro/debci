@@ -1,5 +1,6 @@
 debci (1.4) UNRELEASED; urgency=medium
 
+  [ Antonio Terceiro ]
   * bin/debci-migrate.d/002_compress_artifacts: also remove directories after
     compressing artifacts
   * Web UI:
@@ -26,6 +27,14 @@ debci (1.4) UNRELEASED; urgency=medium
     Those are already being tracked by "Status alerts".
   * test/test_shell_best_practices.sh: start checking scripts with shellcheck;
     not failing on issues just yet.
+
+  [ Gordon Ball ]
+  * Add the concept of failure states, to distinguish between
+    * tests which have never passed
+    * tests which passed for a previous version, but never for the current
+      version
+    * tests which previously passed for the current version
+
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 03 Jun 2016 17:33:16 -0300
 

@@ -29,6 +29,12 @@
         </div>
       <% end %>
 
+      <% if @latest && @latest.status == :fail %>
+        <div class='alert alert-warning <%= @latest.extended_status %>'>
+          This package is failing and has <%= @latest.failmsg %>.
+        </div>
+      <% end %>
+
       <table class="table">
         <tr>
           <td><b>Version</b></td>
