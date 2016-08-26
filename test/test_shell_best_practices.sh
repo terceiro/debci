@@ -24,7 +24,7 @@ check_shell_usage() {
 scripts="$(cd $base && find bin/ backends -type f -executable | xargs grep -l '#!/bin/sh') $(cd $base && echo lib/*.sh)"
 script_test_names=""
 
-for f in $scripts lib/*.sh; do
+for f in $scripts; do
   ff=$(echo "$f" | sed -e 's/[^a-zA-Z0-9]\+/_/g')
   script_test_names="${script_test_names} test_${ff}"
   eval "test_$ff() { check_shell_usage '$base/$f' || assertTrue \"$f shell usage problems. See messages above\" '${SHUNIT_FALSE}'; }"
