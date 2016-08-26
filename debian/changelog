@@ -24,6 +24,8 @@ debci (1.4) UNRELEASED; urgency=medium
       setup fails on production is during `apt-get update`.
   * "Platform-Specific issues" will now not consider tmpfail as an issue.
     Those are already being tracked by "Status alerts".
+  * test/test_shell_best_practices.sh: start checking scripts with shellcheck;
+    not failing on issues just yet.
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 03 Jun 2016 17:33:16 -0300
 

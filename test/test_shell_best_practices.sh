@@ -19,6 +19,11 @@ check_shell_usage() {
     failed_checks=$(($failed_checks + 1))
   fi
 
+  if ! shellcheck --shell dash "$script" >/dev/null 2>&1; then
+    # not failing on shellcheck issues yet
+    echo "W: shellcheck reports warnings on $script; please fix them"
+  fi
+
   return $failed_checks
 }
 scripts="$(cd $base && find bin/ backends -type f -executable | xargs grep -l '#!/bin/sh') $(cd $base && echo lib/*.sh)"

@@ -13,6 +13,7 @@ Build-Depends: amqp-tools,
                rabbitmq-server,
                ruby,
                ruby-rspec (>= 2.14),
+               shellcheck,
                shunit2,
                yard
 Standards-Version: 3.9.8
