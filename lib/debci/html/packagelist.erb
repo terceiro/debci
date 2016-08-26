@@ -33,7 +33,7 @@
                 <td>
                   <% package.failures.each do |s| %>
                     <a class='<%= s.extended_status %>' href='<%= "/packages/#{@prefix}/#{package.name}/#{s.suite}/#{s.architecture}"%>'>
-                      <%= s.version %> <%= s.status.upcase %> <%= s.suite %>/<%= s.architecture %> (<%= s.failmsg %>)
+                      <%= s.version %> <%= s.status.upcase %> <%= s.suite %>/<%= s.architecture %> <%= s.failmsg && '(%s)' % s.failmsg %>
                     </a>
                   <% end %>
                 </td>

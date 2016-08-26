@@ -29,7 +29,7 @@
         </div>
       <% end %>
 
-      <% if @latest && @latest.status == :fail %>
+      <% if @latest && @latest.status == :fail && @latest.failmsg %>
         <div class='alert alert-warning <%= @latest.extended_status %>'>
           This package is failing and has <%= @latest.failmsg %>.
         </div>

@@ -73,14 +73,14 @@ module Debci
         :fail_passed_never => "never passed",
         :fail_passed_current => "previously passed",
         :fail_passed_old => "#{last_pass_version} passed"
-      }.fetch(extended_status, "unknown")
+      }[extended_status]
     end
 
     # Returns a headline for this status object, to be used as a short
     # description of the event it represents
     def headline
       msg = "#{package} #{version} #{status.upcase}ED on #{suite}/#{architecture}"
-      if status == :fail
+      if status == :fail && failmsg
         msg += " (#{failmsg})"
       end
       msg
