@@ -5,5 +5,5 @@ set -eu
 suite_list=$(debci config --values-only suite_list)
 
 for suite in $suite_list; do
-  debci setup --suite="$suite" "$@"
+  debci-setup --suite="$suite" "$@"
 done

@@ -2,8 +2,8 @@
 
 set -eu
 
-arch_list=$(debci config --values-only arch_list)
-suite_list=$(debci config --values-only suite_list)
+arch_list=$(debci-config --values-only arch_list)
+suite_list=$(debci-config --values-only suite_list)
 
 for suite in $suite_list; do
   for arch in $arch_list; do
