@@ -19,7 +19,7 @@ check_shell_usage() {
     failed_checks=$(($failed_checks + 1))
   fi
 
-  if ! shellcheck --shell dash "$script" >/dev/null 2>&1; then
+  if ! shellcheck --external-sources --shell dash "$script" >/dev/null 2>&1; then
     # not failing on shellcheck issues yet
     echo "W: shellcheck reports warnings on $script; please fix them"
   fi
