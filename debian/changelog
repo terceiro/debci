@@ -1,3 +1,10 @@
+debci (1.5) UNRELEASED; urgency=medium
+
+  * debci setup
+    - add -f/--force option to force an update, ignoring the testbed timestamp
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 04 Sep 2016 19:06:27 -0300
+
 debci (1.4) unstable; urgency=medium
 
   [ Antonio Terceiro ]

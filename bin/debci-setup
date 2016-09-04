@@ -6,18 +6,41 @@ usage() {
   cat <<EOF
 usage: debci-setup [OPTIONS]
 
+Options:
+  -f, --force               Force update, even if the testbed has already been
+                            updated recently.
 $@
 EOF
 }
+
+short_options='f'
+long_options='force'
+
 export debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $debci_base_dir/lib/environment.sh
 . $debci_base_dir/lib/functions.sh
 
-prepare_args
+force=
+while true; do
+  arg="$1"
+  shift
+  case "$arg" in
+    -f|--force)
+      force="$arg"
+      ;;
+    --)
+      break
+      ;;
+  esac
+done
 
 if which create-testbed >/dev/null 2>/dev/null; then
 
   log "Starting testbed setup: $(date)"
+
+  if [ -n "$force" ]; then
+    rm -f "$debci_testbed_timestamp"
+  fi
 
   if [ -e "$debci_testbed_timestamp" ]; then
     last_update=$(stat --format=%Y "$debci_testbed_timestamp")
