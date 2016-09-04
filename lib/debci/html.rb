@@ -75,7 +75,8 @@ module Debci
       @site_url = expand_url(Debci.config.url_base, @suite)
       @artifacts_url_base = expand_url(Debci.config.artifacts_url_base, @suite)
       @moretitle = "#{package.name}/#{suite}/#{architecture}"
-      @latest = package.history(@suite, @architecture).first
+      history = package.history(@suite, @architecture)
+      @latest = history && history.first
       expand_template(:history, filename)
     end
 
