@@ -21,7 +21,7 @@
 
               <td>
               <% package.tmpfail.each do |s| %>
-                <a class='tmpfail' href='/packages/#{package.prefix}/#{package.name}/#{p}'><%= s.version %> <%= s.status %> on <%= s.suite %>/<%= s.architecture %></a>
+                <a class='tmpfail' href='/packages/<%= package.prefix %>/<%= package.name %>/<%= s.suite %>/<%= s.architecture %>/'><%= s.version %> <%= s.status %> on <%= s.suite %>/<%= s.architecture %></a>
               <% end %>
               </td>
             </tr>
