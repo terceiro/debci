@@ -34,6 +34,11 @@ done
 
 # calls from functions
 while read line; do
+  case "$line" in
+    \#*)
+      continue
+      ;;
+  esac
   if echo "$line" | grep -q '^\S*()'; then
     func=$(echo "$line" | sed -e 's/().*//')
   else
