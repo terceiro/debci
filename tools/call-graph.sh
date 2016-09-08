@@ -2,8 +2,13 @@
 
 set -eu
 
-programs=$(find bin/ -type f -name 'debci-*' | xargs -n 1 basename)
-functions_file=lib/functions.sh
+if [ $# -eq 0 ]; then
+  programs=$(find bin/ -type f -name 'debci-*' | xargs -n 1 basename)
+  functions_file=lib/functions.sh
+else
+  programs=""
+  functions_file="$@"
+fi
 
 the_functions=$(sed -e '/^\S\+()/!d; s/().*//' "$functions_file")
 
@@ -42,11 +47,17 @@ while read line; do
   if echo "$line" | grep -q '^\S*()'; then
     func=$(echo "$line" | sed -e 's/().*//')
   else
-    for f in $the_functions; do
-      if echo "$line" | grep -q "\b$f\b"; then
-        echo "  \"$func\" -> \"${f}\";"
+    if echo "$line" | grep -q '^}$'; then
+      func=
+    else
+      if [ -n "$func" ]; then
+        for f in $the_functions; do
+          if echo "$line" | grep -q "\b$f[^=]\|$f\$"; then
+            echo "  \"$func\" -> \"${f}\";"
+          fi
+        done
       fi
-    done
+    fi
   fi
 done < "$functions_file"
 
