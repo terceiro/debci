@@ -3,16 +3,18 @@
 set -eu
 
 programs=$(find bin/ -type f -name 'debci-*' | xargs -n 1 basename)
-lib_functions=$(sed -e '/^\S\+()/!d; s/().*//' lib/functions.sh)
+functions_file=lib/functions.sh
+
+the_functions=$(sed -e '/^\S\+()/!d; s/().*//' "$functions_file")
 
 echo "digraph \"debci call graph\" {"
 
 # declare function nodes
 echo "  subgraph cluster_functions {"
-for func in $lib_functions; do
+for func in $the_functions; do
   echo "    \"${func}\" [shape=ellipse];"
 done
-echo "    label=\"lib/functions.sh\";"
+echo "    label=\"$functions_file\";"
 echo "    graph[style=dashed];"
 echo "  }"
 
@@ -23,7 +25,7 @@ done
 
 # calls from programs
 for caller in $programs; do
-  for callee in $programs $lib_functions; do
+  for callee in $programs $the_functions; do
     if [ "$caller" != "$callee" ] && grep -q "$callee" bin/"$caller"; then
       echo "  \"${caller}\" -> \"${callee}\";"
     fi
@@ -35,12 +37,12 @@ while read line; do
   if echo "$line" | grep -q '^\S*()'; then
     func=$(echo "$line" | sed -e 's/().*//')
   else
-    for f in $lib_functions; do
+    for f in $the_functions; do
       if echo "$line" | grep -q "\b$f\b"; then
         echo "  \"$func\" -> \"${f}\";"
       fi
     done
   fi
-done < lib/functions.sh
+done < "$functions_file"
 
 echo "}"
