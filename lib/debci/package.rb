@@ -1,3 +1,5 @@
+require 'debian'
+
 module Debci
 
   # This class represents a single package. See Debci::Repository for how to
@@ -26,6 +28,34 @@ module Debci
     # Each cell of the matrix contains a Debci::Status object.
     def status
       repository.status_for(self)
+    end
+
+    # return the most recent version number tested on any architecture
+    def latest_version(suite)
+        statuses = status.flatten.select { |s| s.suite == suite }
+        versions = statuses.map {|s| s.version}
+
+        versions.sort! do |x,y|
+            case
+            when x == y
+                0
+            when Debian::Dpkg::compare_versions(x, "lt", y)
+                -1
+            else
+                1
+            end
+        end
+        versions.last
+    end
+
+    # return whether a given status object reflects the most recent version
+    # which has been tested
+    # TODO: it might be worth marking as obsolete results over, say 90 days
+    # old regardless of version (given they should be re-tested ~monthly), in
+    # order to catch packages which have subsequently deleted their tests,
+    # for example
+    def outdated?(status)
+        status.version != latest_version(status.suite)
     end
 
     # Returns an array of Debci::Status objects that represent the test
