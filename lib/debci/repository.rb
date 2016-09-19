@@ -140,7 +140,7 @@ module Debci
       packages.each do |package|
         statuses = status_for(package).flatten
         if statuses.map(&:status).reject { |s| [:no_test_data, :tmpfail].include?(s) }.uniq.size > 1
-          result[package] = statuses
+          result[Debci::Package.new(package, self)] = statuses
         end
       end
       result
@@ -202,7 +202,6 @@ module Debci
     end
 
     private
-
     def data_dir(suite, arch, package)
       File.join(@path, 'packages', "#{suite}", "#{arch}", prefix(package), package)
     end
