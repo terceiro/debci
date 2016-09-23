@@ -1,9 +1,13 @@
 debci (1.5) UNRELEASED; urgency=medium
 
+  [ Antonio Terceiro ]
   * debci setup
     - add -f/--force option to force an update, ignoring the testbed timestamp
   * web UI
     - fix links to packages in "status alerts" page
+
+  [ David Steele ]
+  * Update MAINTAINERS.md for 'autopkgtest' vs. the deprecated 'adt-run'.
 
  -- Antonio Terceiro <terceiro@debian.org>  Sun, 04 Sep 2016 19:06:27 -0300
 

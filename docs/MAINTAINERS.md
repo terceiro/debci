@@ -18,7 +18,7 @@ To run the test suite from **the root of a source package** against the
 currently installed packages, run:
 
 ```
-$ adt-run --output-dir /tmp/output-dir ./ --- null
+$ autopkgtest --output-dir /tmp/output-dir ./ -- null
 ```
 
 For more details, see the documentation for the `autopkgtest` package.
@@ -74,7 +74,7 @@ To run the test suite **from a source package in the archive**, just pass the
 _source package name_ to adt-run:
 
 ```
-$ adt-run --user debci --output-dir /tmp/output-dir SOURCEPACKAGE --- lxc --sudo adt-sid-amd64
+$ autopkgtest --output-dir /tmp/output-dir SOURCEPACKAGE -- lxc --sudo autopkgtest-sid
 ```
 
 To run the test suite against **a locally-built source package**, using the
@@ -82,9 +82,9 @@ test suite from that source package and the binary packages you just built, you
 can pass the `.changes` file to adt-run:
 
 ```
-$ adt-run --user debci --output-dir /tmp/output-dir \
+$ autopkgtest --output-dir /tmp/output-dir \
   /path/to/PACKAGE_x.y-z_amd64.changes \
-  --- lxc --sudo adt-sid-amd64
+  -- lxc --sudo autopkgtest-sid
 ```
 
 For more details, see the documentation for the `autopkgtest` package.
@@ -132,7 +132,7 @@ To run the test suite **from a source package in the archive**, you pass the
 _package name_ to adt-run:
 
 ```
-$ adt-run --user debci --output-dir /tmp/output-dir SOURCEPACKAGE --- schroot debci-unstable-amd64
+$ autopkgtest --output-dir /tmp/output-dir SOURCEPACKAGE -- schroot debci-unstable-amd64
 ```
 
 To run the test suite against **a locally-built source package**, using the
@@ -140,9 +140,9 @@ test suite from that source package and the binary packages you just built, you
 can pass the `.changes` file to adt-run:
 
 ```
-$ adt-run --user debci --output-dir /tmp/output-dir \
+$ autopkgtest --output-dir /tmp/output-dir \
   /path/to/PACKAGE_x.y-z_amd64.changes \
-  --- schroot debci-unstable-amd64
+  -- schroot debci-unstable-amd64
 ```
 
 For more details, see the documentation for the `autopkgtest` package.
