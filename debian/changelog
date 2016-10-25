@@ -4,6 +4,11 @@ debci (1.5) UNRELEASED; urgency=medium
     - add -f/--force option to force an update, ignoring the testbed timestamp
   * web UI
     - fix links to packages in "status alerts" page
+  * packaging:
+    + debci-worker: move `apt-cacher-ng` from Recommends: to Suggests:. In
+      practice, workers should usually be close to a good mirror; having a
+      local cache increases the maintaince burden as the disk usage might go
+      too high.
 
  -- Antonio Terceiro <terceiro@debian.org>  Sun, 04 Sep 2016 19:06:27 -0300
 
