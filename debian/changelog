@@ -9,6 +9,9 @@ debci (1.5) UNRELEASED; urgency=medium
       practice, workers should usually be close to a good mirror; having a
       local cache increases the maintaince burden as the disk usage might go
       too high.
+  * lxc backend:
+    + drop "adt-sid-amd64-" prefix from container names. In practice,
+      container names longer than 64 characters cause problems.
 
  -- Antonio Terceiro <terceiro@debian.org>  Sun, 04 Sep 2016 19:06:27 -0300
 
