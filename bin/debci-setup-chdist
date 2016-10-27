@@ -19,17 +19,6 @@ base=$(readlink -f $(dirname $(readlink -f $0))/..)
 root="$debci_data_basedir/chdist"
 name="${debci_suite}-${debci_arch}"
 
-# skip if already updated in the last hour
-timestamp="$root/$name/.timestamp"
-if [ -f "$timestamp" ]; then
-  ts=$(stat --format=%Y "$timestamp")
-  now=$(date +%s)
-  if [ $(($now - $ts)) -le 3600 ]; then
-    log "I: chdist updated in the last hour, no need to update"
-    exit
-  fi
-fi
-
 # create new chdist if it doesn't exist already
 if [ ! -e "$root/$name" ]; then
   log "I: Creating new chdist $root/$name"
@@ -119,6 +108,3 @@ if [ "$debci_quiet" = 'true' ]; then
 else
   update_chdist
 fi
-
-# record timestamp
-touch "$timestamp"

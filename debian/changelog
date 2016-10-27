@@ -12,6 +12,10 @@ debci (1.5) UNRELEASED; urgency=medium
   * lxc backend:
     + drop "adt-sid-amd64-" prefix from container names. In practice,
       container names longer than 64 characters cause problems.
+  * setup-chdist:
+    + drop usage of timestamp to control when to call `apt-get update`. Just
+      update always. an `apt-get update` on a updated tree should be quick
+      enough.
 
  -- Antonio Terceiro <terceiro@debian.org>  Sun, 04 Sep 2016 19:06:27 -0300
 
