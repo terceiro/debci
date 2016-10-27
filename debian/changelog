@@ -1,4 +1,4 @@
-debci (1.5) UNRELEASED; urgency=medium
+debci (1.5) unstable; urgency=medium
 
   * debci setup
     - add -f/--force option to force an update, ignoring the testbed timestamp
@@ -17,7 +17,7 @@ debci (1.5) UNRELEASED; urgency=medium
       update always. an `apt-get update` on a updated tree should be quick
       enough.
 
- -- Antonio Terceiro <terceiro@debian.org>  Sun, 04 Sep 2016 19:06:27 -0300
+ -- Antonio Terceiro <terceiro@debian.org>  Thu, 27 Oct 2016 19:38:44 -0200
 
 debci (1.4) unstable; urgency=medium
 
