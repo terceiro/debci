@@ -287,4 +287,5 @@ Note: `sadt` hides output and `adt-run ./ --- null` gives full output.
 # Miscellaneous
 
 In addition to https://ci.debian.net, CI data is also available in the
-UDD/DMD, DDPO, and package tracker.
+UDD/DMD, [DDPO](https://qa.debian.org/developer.php), and
+[package tracker](https://packages.qa.debian.org/common/index.html).
