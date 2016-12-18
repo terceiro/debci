@@ -2,7 +2,7 @@
 
 set -eu
 
-configdir=$(dirname $0)/../config
+configdir=`$(dirname $0)/../bin/debci config --values-only config_dir`
 
 if [ ! -f $configdir/whitelist ]; then
   for pkg in ruby-defaults rubygems-integration autodep8 pristine-tar; do
