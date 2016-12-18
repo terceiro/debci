@@ -25,7 +25,7 @@ if [ ! -e "$root/$name" ]; then
   call_chdist create >/dev/null
 
   # figure out default mirror from debootstrap scripts
-  DEF_MIRROR="http://http.debian.net/debian"
+  DEF_MIRROR="${MIRROR:-http://http.debian.net/debian}"
   SUITE=$debci_suite
   TARGET="$root/$name"
   ARCH=$debci_arch
