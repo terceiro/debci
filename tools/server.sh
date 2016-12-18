@@ -2,7 +2,7 @@
 
 case $# in
   0)
-    port=8888
+    port=8080
     ;;
   1)
     port="$1"

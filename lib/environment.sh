@@ -53,7 +53,7 @@ debci_amqp_results_queue=${debci_amqp_results_queue:-"debci_results"}
 debci_swift_url=${debci_swift_url:-}
 debci_sendmail_from="${debci_sendmail_from:-$debci_distro_name Continuous Integration <owner@localhost>}"
 debci_sendmail_to="${debci_sendmail_to:-%s@localhost}"
-debci_url_base="${debci_url_base:-http://localhost:8888}"
+debci_url_base="${debci_url_base:-http://localhost:8080}"
 debci_artifacts_url_base="${debci_artifacts_url_base:-}"
 
 shared_short_options='c:s:a:b:d:hq'

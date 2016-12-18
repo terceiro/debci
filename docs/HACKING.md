@@ -94,7 +94,7 @@ This will start:
 - one indexer daemon, which generates the HTML UI from the data directory
 
 To visualize the web interface, browse to
-[http://localhost:8888/](http://localhost:8888/)
+[http://localhost:8080/](http://localhost:8080/)
 
 To schedule a batch of test runs, run
 
