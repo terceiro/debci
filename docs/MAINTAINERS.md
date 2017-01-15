@@ -48,18 +48,22 @@ lxc.network.link = virbr0
 lxc.network.flags = up
 ```
 
-You will also need permissions to run the `lxc-*` commands as root, preserving
-your environment. An easy way to do that is to drop the following content into
-`/etc/sudoers.d/lxc`, replacing `YOUR_USERNAME` by your actual username.
-
-```
-YOUR_USERNAME       ALL = NOPASSWD:SETENV: /usr/bin/lxc-*
-```
-
 Now install and configure `debci`:
 
 ```
 $ sudo apt install debci autopkgtest
+```
+
+You will also need permissions to run the `lxc-*` commands as root, preserving
+your environment. An easy way to do that is to add yourself to the debci group.
+
+```
+$ sudo addgroup YOUR_USERNAME debci
+```
+
+You're now ready to create the lxc container:
+
+```
 $ sudo debci setup
 ```
 
