@@ -68,7 +68,7 @@ $ sudo debci setup
 ```
 
 This might take a few minutes since it will create a fresh container from
-stratch.
+scratch.
 
 Now to actually run tests, we'll use the adt-run tool from `autopkgtest`
 directly. The following examples assume your architecture is amd64, replace it
