@@ -1,12 +1,21 @@
-debci (1.5.1) UNRELEASED; urgency=medium
+debci (1.5.1) unstable; urgency=medium
 
+  [ Brandon Fairchild ]
+  * TUTORIAL.md: Add links to DDPO and package tracker
+
+  [ Antonio Terceiro ]
+  * docs/TUTORIAL.md: add link to DMD as well
   * debci-setup-chdist:
     - use $MIRROR as default mirror
+  * debci-generate-index:
+    - handle sub-directories of the artifacts/ directory produced by
+      autopkgtest.
 
-  * debci-generate-index: handle sub-directories under the artifacts directory
-    produced by autopkgtest.
+  [ Paul Gevers ]
+  * Simplify the instructions to enable sudo to work on lxc-* now that debci
+    ships an sudoers.d/debci file
 
- -- Antonio Terceiro <terceiro@debian.org>  Sun, 18 Dec 2016 11:48:42 -0200
+ -- Antonio Terceiro <terceiro@debian.org>  Thu, 26 Jan 2017 10:27:45 -0200
 
 debci (1.5) unstable; urgency=medium
 
