@@ -385,7 +385,7 @@ compress_artifacts() {
   (
     cd $resultdir
     tar -caf artifacts.tar.gz --exclude=log.gz *
-    tar -taf artifacts.tar.gz | xargs rm -f
+    tar -taf artifacts.tar.gz | xargs rm -rf
   )
 }
 

@@ -3,6 +3,8 @@ debci (1.5.1) UNRELEASED; urgency=medium
   * debci-setup-chdist:
     - use $MIRROR as default mirror
 
+  * debci-generate-index: handle sub-directories under the artifacts directory
+    produced by autopkgtest.
 
  -- Antonio Terceiro <terceiro@debian.org>  Sun, 18 Dec 2016 11:48:42 -0200
 
