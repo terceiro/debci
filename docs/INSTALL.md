@@ -26,21 +26,23 @@ The following picture represents the debci architecture:
 
 ## Deployment procedure
 
-First install rabbitmq:
-
-```
-$ sudo apt install rabbitmq-server
-```
-
 Install the debci-collector:
 
 ```
 $ sudo apt install debci-collector
 ```
 
-The installation will prompt for the address of the AMQP server. If
-`debci-collector` is on the same host as `rabbitmq-server`, that prompt can be
-left blank.
+`debci-collector` recommends `rabbitmq-server`, and debci-collector will use a
+locally-installed rabbitmq server by default. If you want to use a remote
+rabbitmq, you need to add a configuration file with the `.conf` extension to
+`/etc/debci/conf.d` with something like this:
+
+```
+debci_amqp_server=amqp://MYRABBITMQSERVER
+```
+
+Note that if `MYRABBITMQSERVER` is network accessible, it has to have the
+proper ACLs configured. Check the rabbitmq documentation for details.
 
 On each worker node, install `apt-cacher-ng` to cache package downloads, and
 `debci-worker` itself:
@@ -49,9 +51,9 @@ On each worker node, install `apt-cacher-ng` to cache package downloads, and
 $ sudo apt install apt-cacher-ng debci-worker
 ```
 
-As with `debci-collector`, you will also be prompted for the address of AMQP
-server, and can also leave it blank if the worker is on the same server as
-`rabbitmq-server`.
+As with `debci-collector`, `debci-worker` will connect to a local rabbitmq by
+default. To make it connect to a remote rabbitmq-server you can do the same as
+above.
 
 Note that when first installed, `debci-worker` will first build a testbed (a
 chroot, container, or a virtual machine image, depening on the selected
