@@ -4,4 +4,6 @@ set -eu
 
 datadir="$1"
 
-find "$datadir/packages/" -name \*.autopkgtest.log.gz -delete
+if [ -d "$datadir/packages" ]; then
+  find "$datadir/packages" -name \*.autopkgtest.log.gz -delete
+fi
