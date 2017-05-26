@@ -21,7 +21,7 @@ module Debci
 
     def load_data
       # load all the data
-      @entries = @repository.status_history(@suite, @architecture)
+      @entries = Array(@repository.status_history(@suite, @architecture))
 
       return unless @entries
       return if @entries.size <= 100
