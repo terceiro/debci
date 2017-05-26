@@ -2,6 +2,7 @@
 
 [Unit]
 Description=debci-worker instance %i
+Documentation=https://ci.debian.net/doc/
 PartOf=debci-worker.service
 After=rabbitmq-server.service network-online.target
 ReloadPropagatedFrom=debci-worker.service

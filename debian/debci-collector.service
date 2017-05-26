@@ -1,5 +1,6 @@
 [Unit]
 Description=debci collector daemon
+Documentation=https://ci.debian.net/doc/
 After=rabbitmq-server.service network-online.target
 
 [Service]

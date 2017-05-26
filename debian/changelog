@@ -9,6 +9,7 @@ debci (1.6) unstable; urgency=medium
   * debian/rules: skip running tests during build (Closes: #841708, #848054)
   * debci-worker.cron.daily: skip if debci-worker is not installed
     (Closes: #822896)
+  * debian/*.service: add Documentation entry, pointing to online debci docs
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 26 May 2017 19:47:51 -0300
 

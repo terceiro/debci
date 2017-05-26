@@ -1,5 +1,6 @@
 [Unit]
 Description=debci index generator
+Documentation=https://ci.debian.net/doc/
 
 [Service]
 Type=oneshot

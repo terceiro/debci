@@ -3,6 +3,7 @@
 
 [Unit]
 Description=debci worker daemon
+Documentation=https://ci.debian.net/doc/
 
 [Service]
 Type=oneshot
