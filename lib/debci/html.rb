@@ -88,7 +88,9 @@ module Debci
 
     def read_template(name)
       filename = File.join(File.dirname(__FILE__), 'html', name.to_s + '.erb')
-      ERB.new(File.read(filename))
+      template = ERB.new(File.read(filename))
+      template.filename = filename
+      template
     end
 
     def expand_template(template, filename)
