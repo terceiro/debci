@@ -131,6 +131,24 @@ describe Debci::Status do
     end
   end
 
+  context 'handling data retention' do
+    it 'should be expired after the data retention period' do
+      expect(Debci.config).to receive(:data_retention_days).and_return('180')
+      s = Debci::Status.new.tap { |_s| _s.date = Time.now - (190*24*60*60) }
+      expect(s).to be_expired
+    end
+    it 'should NOT be expired before the data retention period' do
+      expect(Debci.config).to receive(:data_retention_days).and_return('180')
+      s = Debci::Status.new.tap { |_s| _s.date = Time.now - (170*24*60*60) }
+      expect(s).to_not be_expired
+    end
+    it 'should never be  expired when there is no data retention period configured' do
+      expect(Debci.config).to receive(:data_retention_days).and_return('0')
+      s = Debci::Status.new.tap { |_s| _s.date = Time.now - (365*24*60*60) }
+      expect(s).to_not be_expired
+    end
+  end
+
   def status_with(data)
     s = Debci::Status.new
     data.each do |k,v|

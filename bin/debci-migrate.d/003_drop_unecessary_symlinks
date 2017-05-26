@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+datadir="$1"
+
+find "$datadir/packages/" -name \*.autopkgtest.log.gz -delete

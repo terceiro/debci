@@ -160,6 +160,9 @@ debci_batch_lock=${debci_lock_dir}/debci-batch-${debci_suite}-${debci_arch}.lock
 # global lock/timestamp files
 debci_generate_index_lock=${debci_lock_dir}/debci-generate-index.lock
 
+# data retention policy (numbers of days)
+debci_data_retention_days=180
+
 
 for dir in \
   "${debci_base_dir}/backends/${debci_backend}" \
