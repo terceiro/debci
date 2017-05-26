@@ -2,7 +2,7 @@
 
 set -e
 
-if [ ! -x /usr/bin/debci ]; then
+if ! dpkg-query --show debci-worker >/dev/null 2>&1; then
   exit
 fi
 
