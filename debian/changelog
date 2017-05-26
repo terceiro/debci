@@ -1,3 +1,17 @@
+debci (1.6) unstable; urgency=medium
+
+  * docs/INSTALL.md: update rabbitmq-related instructions
+  * Debci::HTML: record template filename
+  * Debci::Graph: assume empty array when there is no data
+  * debci-expire: control data retention
+  * Drop unnecessary symlinks to autopkgtest logs
+  * web UI: don't link to removed files
+  * debian/rules: skip running tests during build (Closes: #841708, #848054)
+  * debci-worker.cron.daily: skip if debci-worker is not installed
+    (Closes: #822896)
+
+ -- Antonio Terceiro <terceiro@debian.org>  Fri, 26 May 2017 19:47:51 -0300
+
 debci (1.5.1) unstable; urgency=medium
 
   [ Brandon Fairchild ]
