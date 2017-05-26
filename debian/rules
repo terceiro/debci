@@ -12,5 +12,9 @@ override_dh_clean:
 	$(RM) debian/debci.substvars
 	$(RM) debian/files
 
+override_dh_auto_test:
+	# skip buid-time tests for now
+	@true
+
 override_dh_installinit:
 	@true
