@@ -11,7 +11,7 @@ debci (1.6) unstable; urgency=medium
     (Closes: #822896)
   * debian/*.service: add Documentation entry, pointing to online debci docs
 
- -- Antonio Terceiro <terceiro@debian.org>  Fri, 26 May 2017 19:47:51 -0300
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 28 May 2017 17:22:50 -0300
 
 debci (1.5.1) unstable; urgency=medium
 
