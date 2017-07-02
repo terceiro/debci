@@ -1,3 +1,10 @@
+debci (1.7) UNRELEASED; urgency=medium
+
+  [ Martin Pitt ]
+  * Move from obsolete adt-run to autopkgtest CLI
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 02 Jul 2017 12:43:51 -0300
+
 debci (1.6) unstable; urgency=medium
 
   * docs/INSTALL.md: update rabbitmq-related instructions
