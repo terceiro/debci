@@ -70,7 +70,7 @@ test_batch_skip_after_result() {
   start_worker
   # XXX it's unfortunate that we need to wait a bit here, but for now there is
   # no way to tap in the enqueueing process to make sure nothing is scheduled.
-  timeout 3s wait_for_results
+  timeout 3s "$testbin"/wait_for_results
   num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
   assertEquals 1 $num_logs
 }

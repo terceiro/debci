@@ -1,7 +1,6 @@
 set -u
 
 . $(dirname $0)/dep8_helper.sh
-export PATH="$(dirname $0)/bin:$PATH"
 
 TEST_RABBIT_PORT=5677
 
@@ -172,4 +171,9 @@ stop_collector() {
 
 clean_queue() {
   amqp-delete-queue --url $debci_amqp_server -q $debci_amqp_queue
+}
+
+testbin="$(dirname $0)/bin"
+wait_for_results() {
+  "$testbin"/wait_for_results "$@"
 }
