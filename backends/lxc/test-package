@@ -29,7 +29,7 @@ outdir="$2"
 container_name=$(basename ${package})-$(date +%s)
 
 rc=0
-adt-run --user debci --output-dir "$outdir" "$package" --apt-upgrade --- lxc --sudo --name ${container_name} adt-${debci_suite}-${debci_arch} || rc=$?
+autopkgtest --user debci --output-dir "$outdir" --apt-upgrade "$package" -- lxc --sudo --name ${container_name} autopkgtest-${debci_suite}-${debci_arch} || rc=$?
 
 echo $rc > "$outdir/exitcode"
 exit $rc

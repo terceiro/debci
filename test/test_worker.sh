@@ -13,7 +13,7 @@ request() {
 settle_processes() {
   local timeout=100
   while [ $timeout -gt 0 ]; do
-    PS=$(ps hx -o pid,comm|egrep "(debci|test-package|adt-run|amqp-consume)"|sort -u)
+    PS=$(ps hx -o pid,comm|egrep "(debci|test-package|autopkgtest|amqp-consume)"|sort -u)
     [ -n "$PS" ] || break
     timeout=$((timeout - 1))
     sleep 0.1

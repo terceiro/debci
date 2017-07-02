@@ -21,7 +21,7 @@ debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $debci_base_dir/lib/functions.sh
 
 process_package() {
-  # output directory for test-package/adt-run
+  # output directory for test-package/autopkgtest
   run_id=$(date +%Y%m%d_%H%M%S)
   local base_dir="$(autopkgtest_incoming_dir_for_package "$pkg")"
   adt_out_dir="${base_dir}/${run_id}"

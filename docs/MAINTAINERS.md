@@ -18,7 +18,7 @@ To run the test suite from **the root of a source package** against the
 currently installed packages, run:
 
 ```
-$ adt-run --output-dir /tmp/output-dir ./ --- null
+$ autopkgtest --output-dir /tmp/output-dir -B  . -- null
 ```
 
 For more details, see the documentation for the `autopkgtest` package.
@@ -70,25 +70,26 @@ $ sudo debci setup
 This might take a few minutes since it will create a fresh container from
 scratch.
 
-Now to actually run tests, we'll use the adt-run tool from `autopkgtest`
-directly. The following examples assume your architecture is amd64, replace it
-by your actual architecture if that is not the case.
+Now to actually run tests, we'll use `autopkgtest` directly. The following
+examples assume your architecture is amd64, replace it by your actual
+architecture if that is not the case.
 
 To run the test suite **from a source package in the archive**, just pass the
-_source package name_ to adt-run:
+_source package name_ to autopkgtest:
 
 ```
-$ adt-run --user debci --output-dir /tmp/output-dir SOURCEPACKAGE --- lxc --sudo adt-sid-amd64
+$ autopkgtest --user debci --output-dir /tmp/output-dir SOURCEPACKAGE \
+  -- lxc --sudo autopkgtest-sid-amd64
 ```
 
 To run the test suite against **a locally-built source package**, using the
 test suite from that source package and the binary packages you just built, you
-can pass the `.changes` file to adt-run:
+can pass the `.changes` file to autopkgtest:
 
 ```
-$ adt-run --user debci --output-dir /tmp/output-dir \
+$ autopkgtest --user debci --output-dir /tmp/output-dir \
   /path/to/PACKAGE_x.y-z_amd64.changes \
-  --- lxc --sudo adt-sid-amd64
+  -- lxc --sudo autopkgtest-sid-amd64
 ```
 
 For more details, see the documentation for the `autopkgtest` package.
@@ -133,20 +134,20 @@ The following examples assume:
 * architecture = `amd64`
 
 To run the test suite **from a source package in the archive**, you pass the
-_package name_ to adt-run:
+_package name_ to autopkgtest:
 
 ```
-$ adt-run --user debci --output-dir /tmp/output-dir SOURCEPACKAGE --- schroot debci-unstable-amd64
+$ autopkgtest --user debci --output-dir /tmp/output-dir SOURCEPACKAGE -- schroot debci-unstable-amd64
 ```
 
 To run the test suite against **a locally-built source package**, using the
 test suite from that source package and the binary packages you just built, you
-can pass the `.changes` file to adt-run:
+can pass the `.changes` file to autopkgtest:
 
 ```
-$ adt-run --user debci --output-dir /tmp/output-dir \
+$ autopkgtest --user debci --output-dir /tmp/output-dir \
   /path/to/PACKAGE_x.y-z_amd64.changes \
-  --- schroot debci-unstable-amd64
+  -- schroot debci-unstable-amd64
 ```
 
 For more details, see the documentation for the `autopkgtest` package.

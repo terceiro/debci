@@ -75,11 +75,11 @@ if [ -n "$http_proxy" ]; then
 fi
 
 
-adt-build-lxc $distro $debci_suite $debci_arch
+autopkgtest-build-lxc $distro $debci_suite $debci_arch
 
 LXC_PATH=$(lxc-config lxc.lxcpath) || LXC_PATH=/var/lib/lxc
 
-rootfs=$LXC_PATH/adt-${debci_suite}-${debci_arch}/rootfs
+rootfs=$LXC_PATH/autopkgtest-${debci_suite}-${debci_arch}/rootfs
 # FIXME duplicates logic in bin/debci-setup-chdist && backends/schroot/create-testbed
 if [ "$distro" = debian ]; then
   if [ "$debci_suite" = sid ]; then

@@ -24,6 +24,6 @@ package="$1"
 outdir="$2"
 
 rc=0
-adt-run --output-dir "$outdir" "$package" --- null || rc=$?
+autopkgtest --output-dir "$outdir" "$package" -- null || rc=$?
 echo $rc > "$outdir/exitcode"
 exit $rc

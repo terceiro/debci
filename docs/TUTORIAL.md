@@ -190,22 +190,22 @@ in the current directory on the current system.
 It is somewhat limited since it will possibly skip some tests but is useful as a
 first step.
 
-### adt-run
+### autopkgtest
 
-adt-run, from autopkgtest, can run tests from the current directory, the USC, a changefile,
+autopkgtest can run tests from the current directory, the DSC, a changefile,
 or pass additional binary DEBs.
 
 ```
-$ adt-run [adt-run options] --- [virtualization args]
+$ autopkgtest [options] -- [virtualization args]
 ```
 
-Three dashes are passed to adt-run after the input options followed by virtualization options
+Two dashes are passed to autopkgtest after the input options followed by virtualization options
 which specifies which virtual environment to use to run the tests.
 
 Let's look at a basic example:
 
 ```
-$ adt-run ./ --- null
+$ autopkgtest . -- null
 ```
 
 The command above runs the tests from the source package at the current directory, on the
@@ -214,7 +214,7 @@ current system. Note the `null` argument for the virtualization.
 Let's look at an example that uses virtualization:
 
 ```
-$ adt-run -u debci /path/to/foo_1.2.3.-1_amd64.changes --- schroot debci-unstable-amd64
+$ autopkgtest -u debci /path/to/foo_1.2.3.-1_amd64.changes -- schroot debci-unstable-amd64
 ```
 
 The command above runs tests from the source referenced by the `changes` file, using
@@ -227,7 +227,7 @@ Note: `ssh` assumes that you have a driver to instantiate VMs on the cloud or an
 location.
 
 ```
-$ adt-run -u debci /path/to/foo_1.2.3-1_amd64.changes --- lxc adt-sid-amd64
+$ autopkgtest -u debci /path/to/foo_1.2.3-1_amd64.changes -- lxc autopkgtest-sid-amd64
 ```
 
 
@@ -279,9 +279,9 @@ EOF
 
 . shunit2
 ```
-Then, we can run it with sadt or adt-run.
+Then, we can run it with sadt or autopkgtest.
 
-Note: `sadt` hides output and `adt-run ./ --- null` gives full output.
+Note: `sadt` hides output and `autopkgtest . -- null` gives full output.
 
 
 # Miscellaneous

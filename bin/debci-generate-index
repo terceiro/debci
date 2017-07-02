@@ -166,7 +166,7 @@ exitcode_to_statusmsg()
       ;;
     *)
       status=tmpfail
-      message="Unexpected adt-run exit code $code"
+      message="Unexpected autopkgtest exit code $code"
       ;;
   esac
 }

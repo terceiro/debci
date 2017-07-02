@@ -78,7 +78,7 @@ if ENV["DEBCI_FAKE_KILLPARENT"]
   end
 end
 
-log = log + "adt-run [%s]: finished\n" % Time.now.strftime('%Y-%m-%d %H:%M:%S')
+log = log + "autopkgtest [%s]: finished\n" % Time.now.strftime('%Y-%m-%d %H:%M:%S')
 
 File.open(File.join(outdir, 'log'), 'w') do |f|
   f.puts log
