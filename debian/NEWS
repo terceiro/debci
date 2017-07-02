@@ -1,0 +1,17 @@
+debci (1.7) unstable; urgency=medium
+
+  This release includes a change to use the new autopkgtest CLI, i.e.
+  invocations of `adt-run` are replaced by `autopkgtest` throughout. This also
+  means that the testbeds (chroots, containers) created by `debci setup`
+  should now be called `autopkgtest-*` instead of `adt-*`.
+
+  If you don't usually run `debci test`, you don't need to do anything.
+
+  If you do use `debci test`, you will need to re-run `debci setup` so that
+  the base testbeds are correctly created. Alternatively, you can:
+
+  - if you have debci-worker installed, wait for the next scheduled execution
+    of `debci setup` (see /etc/cron.daily/debci-worker), or
+  - call `debci setup` as root before your next use of `debci test`.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 02 Jul 2017 13:01:34 -0300
