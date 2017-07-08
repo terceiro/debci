@@ -63,7 +63,7 @@ test_batch_skip_after_result() {
   result_pass start_worker
   debci batch
   wait_for_results
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
+  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
   assertEquals 1 $num_logs
 
   debci batch
@@ -71,7 +71,7 @@ test_batch_skip_after_result() {
   # XXX it's unfortunate that we need to wait a bit here, but for now there is
   # no way to tap in the enqueueing process to make sure nothing is scheduled.
   timeout 3s "$testbin"/wait_for_results
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
+  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
   assertEquals 1 $num_logs
 }
 
@@ -82,13 +82,13 @@ test_batch_rerun_after_tmpfail() {
   result_tmpfail start_worker
   debci batch
   wait_for_results
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
+  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
   assertEquals 1 $num_logs
 
   result_pass start_worker
   debci batch
   wait_for_results
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
+  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
   assertEquals 2 $num_logs
 
   log=$(cat $(status_dir_for_package mypkg)/latest.log)
@@ -103,14 +103,14 @@ test_batch_rerun_dep_change() {
   result_pass start_worker
   debci batch
   wait_for_results
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
+  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
   assertEquals 1 $num_logs
 
   export DEBCI_FAKE_DEPS="foo 1.2.4"
   result_pass start_worker
   debci batch
   wait_for_results
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
+  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
   assertEquals 2 $num_logs
 
   log=$(cat $(status_dir_for_package mypkg)/latest.log)
@@ -126,13 +126,13 @@ test_batch_force() {
   result_pass start_worker
   debci batch
   wait_for_results
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
+  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
   assertEquals 1 $num_logs
 
   result_pass start_worker
   debci batch --force
   wait_for_results
-  num_logs=$(ls $(status_dir_for_package mypkg)/*.autopkgtest.log.gz | wc -l)
+  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
   assertEquals 2 $num_logs
 
   log=$(cat $(status_dir_for_package mypkg)/latest.log)
