@@ -67,7 +67,7 @@ if which create-testbed >/dev/null 2>/dev/null; then
   ) >> $log 2>&1
 
   if [ -t 1 ] && [ "$debci_quiet" = false ]; then
-    run_with_exclusive_lock "$debci_testbed_lock" create-testbed 2>&1 | tee --append "$log"
+    run_with_exclusive_lock $debci_testbed_lock mispipe "create-testbed 2>&1" "tee --append $log"
   else
     run_with_exclusive_lock "$debci_testbed_lock" create-testbed >>$log 2>&1
   fi
