@@ -5,7 +5,9 @@ include links.mk
 links.mk: links
 	awk '{ print("LINKS +=", $$1); print($$1, ":"); print("\tmkdir -p $$(shell dirname ", $$1, ")"); print("\tln -sf", $$2, $$1)}' $^ > $@
 
-all: $(LINKS)
+MANPAGES = $(patsubst bin/%, man/%.1, $(shell grep -rl =head1 bin/*))
+
+all: $(LINKS) $(MANPAGES)
 
 .PHONY: spec check test
 
@@ -65,10 +67,16 @@ public/doc/index.html public/doc/jq/jquery.js: README.md docs/*.md $(shell find 
 public/doc/architecture.svg: docs/architecture.svg
 	cp docs/architecture.svg public/doc/
 
+$(MANPAGES): man/%.1: bin/% man
+	pod2man --center "" --release "" --section=1 --utf8 $< $@
+
+man:
+	mkdir $@
+
 .PHONY: tags
 
 tags:
 	ctags -R --exclude=data --exclude=chroots --exclude='public/jquery*' --exclude=public/bootstrap .
 
 clean:
-	$(RM) -rf $(generated) tags public/doc links.mk $(LINKS)
+	$(RM) -rf $(generated) tags public/doc links.mk $(LINKS) man/

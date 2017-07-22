@@ -15,4 +15,5 @@
 /.yardoc/
 /doc/
 /links.mk
+/man
 /tmp
