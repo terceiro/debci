@@ -8,6 +8,8 @@ debci (1.7) UNRELEASED; urgency=medium
     `autopkgtest` from `adt-run`.
   * debci-setup: don't mask failure of the backend create-testbed script
     (Closes: #809652)
+  * backends/lxc: cleanup containers if testbed creation fails, making sure
+    that calls to debci-setup will always exit cleanly.
 
  -- Antonio Terceiro <terceiro@debian.org>  Sun, 02 Jul 2017 12:43:51 -0300
 

@@ -74,12 +74,32 @@ if [ -n "$http_proxy" ]; then
   fi
 fi
 
+container=autopkgtest-${debci_suite}-${debci_arch}
+
+completed=no
+
+cleanup() {
+  if [ "$completed" = yes ]; then return; fi
+
+  for c in $container $container.new; do
+    # is container $c running?
+    if lxc-ls -f | awk "BEGIN { rc = 1 } { if (\$1 == \"$c\" && \$2 == \"RUNNING\") { rc = 0 } } END { exit rc }"; then
+      lxc-stop --name="$c"
+    fi
+    # does container $c exist?
+    if lxc-ls -f | awk "BEGIN { rc = 1 } { if (\$1 == \"$c\") { rc = 0 } } END { exit rc }"; then
+      lxc-destroy --name="$c"
+    fi
+  done
+}
+
+trap cleanup EXIT
 
 autopkgtest-build-lxc $distro $debci_suite $debci_arch
 
 LXC_PATH=$(lxc-config lxc.lxcpath) || LXC_PATH=/var/lib/lxc
 
-rootfs=$LXC_PATH/autopkgtest-${debci_suite}-${debci_arch}/rootfs
+rootfs=$LXC_PATH/$container/rootfs
 # FIXME duplicates logic in bin/debci-setup-chdist && backends/schroot/create-testbed
 if [ "$distro" = debian ]; then
   if [ "$debci_suite" = sid ]; then
@@ -117,3 +137,5 @@ chroot "$rootfs"  \
     --shell /bin/sh \
     --home /home/debci \
     debci
+
+completed=yes
