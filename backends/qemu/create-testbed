@@ -1,0 +1,41 @@
+#!/bin/sh
+
+set -eu
+
+base=$(readlink -f $(dirname $(readlink -f $0))/../..)
+. $base/lib/environment.sh
+backend=$(readlink -f $(dirname "$0"))
+. "$backend/environment.sh"
+
+if [ $(whoami) != root ]; then
+  echo "E: This script must be run as root"
+  exit 1
+fi
+
+# detect local apt-cacher-ng
+if nc -z -w 1 localhost 3142; then
+  export http_proxy=http://localhost:3142
+fi
+
+mkdir -p "$image_dir"
+
+customize_script="$(dirname "$0")/customize.sh"
+
+vmdebootstrap \
+  --verbose \
+  --serial-console \
+  --distribution="$debci_suite" \
+  --arch="$debci_arch" \
+  --customize="$customize_script" \
+  --user=autopkgtest/autopkgtest \
+  --size=10000000000 \
+  --grub \
+  --log="$image".log \
+  --image="$image".raw
+
+qemu-img convert -O qcow2 "$image".raw  "$image".new
+
+rm -f "$image".raw
+
+# replace a potentially existing image as atomically as possible
+mv "$image".new "$image"

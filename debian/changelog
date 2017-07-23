@@ -15,6 +15,7 @@ debci (1.7) unstable; urgency=medium
     - autopkgtest calls make by backends/*/test-package will now use the
       --no-built-binaries option.
   * Add debci(1) manpage and support `debci --help` (Closes: #867891)
+  * Add an experiental `qemu` backend
 
  -- Antonio Terceiro <terceiro@debian.org>  Sun, 23 Jul 2017 19:13:07 -0300
 
