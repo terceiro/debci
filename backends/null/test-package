@@ -4,7 +4,7 @@ set -eu
 
 usage() {
   cat <<EOF
-usage: backends/lxc/test-package [OPTIONS] PACKAGE OUTPUTDIR
+usage: backends/lxc/test-package [OPTIONS] PACKAGE OUTPUTDIR [EXTRA-AUTOPKGTEST-ARGS]
 
 $@
 EOF
@@ -16,14 +16,16 @@ base=$(readlink -f $(dirname $(readlink -f $0))/../..)
 
 prepare_args
 
-if [ $# -ne 2 ]; then
+if [ $# -lt 2 ]; then
   usage
   exit 1
 fi
 package="$1"
 outdir="$2"
+shift
+shift
 
 rc=0
-autopkgtest --output-dir "$outdir" "$package" -- null || rc=$?
+autopkgtest --no-built-binaries --output-dir "$outdir" "$package" "$@" -- null || rc=$?
 echo $rc > "$outdir/exitcode"
 exit $rc

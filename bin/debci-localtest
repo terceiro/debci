@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -eu
+
+debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
+. $debci_base_dir/lib/environment.sh
+. $debci_base_dir/lib/functions.sh
+prepare_args
+
+pkg="$1"
+shift
+logs="$(mktemp --directory --tmpdir debci-localtest.XXXXXXXXXX)/artifacts"
+
+rc=0
+test-package "$pkg" "$logs" "$@" || rc="$?"
+
+echo "I: test artifacts available at $logs"
+exit "$rc"

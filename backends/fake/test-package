@@ -2,13 +2,17 @@
 
 require 'fileutils'
 
-if ARGV.length != 2
-  puts "usage: test-package [OPTIONS] PACKAGE OUTPUTDIR"
+if ARGV.length < 2
+  puts "usage: test-package [OPTIONS] PACKAGE OUTPUTDIR [EXTRA-AUTOPKGTEST-ARGS]"
   exit 1
 end
 
 pkg = ARGV.shift
 outdir = ARGV.shift
+
+ARGV.each do |a|
+  puts "W: ignoring extra argument: " + a
+end
 
 FileUtils.mkdir(outdir)
 if ENV["DEBCI_FAKE_DEPS"]

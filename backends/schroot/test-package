@@ -4,7 +4,7 @@ set -eu
 
 usage() {
   cat <<EOF
-usage: backends/schroot/test-package [OPTIONS] PACKAGE OUTPUTDIR
+usage: backends/schroot/test-package [OPTIONS] PACKAGE OUTPUTDIR [EXTRA-AUTOPKGTEST-ARGS]
 
 $@
 EOF
@@ -16,16 +16,18 @@ base=$(readlink -f $(dirname $(readlink -f $0))/../..)
 
 prepare_args
 
-if [ $# -ne 2 ]; then
+if [ $# -lt 2 ]; then
   usage
   exit 1
 fi
 package="$1"
 outdir="$2"
+shift
+shift
 
 session_id="${debci_chroot_name}-$(basename "$package")"
 
 rc=0
-autopkgtest --user debci --output-dir "$outdir" --apt-upgrade "$package" -- schroot --session-id="${session_id}" "${debci_chroot_name}" || rc=$?
+autopkgtest --no-built-binaries --user debci --output-dir "$outdir" --apt-upgrade "$package" "$@" -- schroot --session-id="${session_id}" "${debci_chroot_name}" || rc=$?
 echo $rc > "$outdir/exitcode"
 exit $rc

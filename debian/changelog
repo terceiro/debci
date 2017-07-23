@@ -10,6 +10,10 @@ debci (1.7) UNRELEASED; urgency=medium
     (Closes: #809652)
   * backends/lxc: cleanup containers if testbed creation fails, making sure
     that calls to debci-setup will always exit cleanly.
+  * New program: debci localtest. It can be used by users to reproduce locally
+    the same test environment used in ci.debian.net.
+    - autopkgtest calls make by backends/*/test-package will now use the
+      --no-built-binaries option.
 
  -- Antonio Terceiro <terceiro@debian.org>  Sun, 02 Jul 2017 12:43:51 -0300
 
