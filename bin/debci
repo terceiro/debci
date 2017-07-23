@@ -5,8 +5,13 @@ set -eu
 bindir=$(dirname "$(readlink -f "$0")")
 
 program="${1:-}"
+if [ "$program" = '--help' ] || [ "$program" = '-h' ]; then
+  pod2man --center "" --release "" "$(readlink -f "$0")" | man -l -
+  exit
+fi
 if [ -z "$program" ]; then
   echo "usage: debci COMMAND [ARGS]"
+  echo "       debci -h|--help"
   exit 1
 fi
 shift
@@ -23,3 +28,102 @@ debci_base_dir="$(dirname "$bindir")"
 export debci_base_dir
 
 exec "debci-$program" "$@"
+
+: <<EOF
+=head1 NAME
+
+debci - Debian Continuous Integration
+
+=encoding utf8
+=head1 SYNOPSIS
+
+B<debci> I<COMMAND> [I<OPTIONS>] [I<ARGUMENTS>]
+
+=head1 DESCRIPTION
+
+B<debci> is the main entry point for debci programs. Most of the commands are
+intended to be used by the debci system itself. However, there are a few
+commands that are useful for users, and they are listed below.
+
+=over
+
+=item B<debci setup> [I<OPTIONS>]
+
+Sets up a test bed for running local tests. For most of the backends, this
+should be usually ran as root.
+
+=item B<debci localtest> [I<OPTIONS>] I<SOURCEPACKAGE> [I<BINARY> ...]
+
+Runs the tests from I<SOURCEPACKAGE>, in exactly the same way they would be ran
+on I<ci.debian.net>.
+
+I<SOURCEPACKAGE> can be a source package name, a local I<.dsc> file, a local
+I<.changes> file, a local unpacked source package directory, or anything else
+that B<autopkgtest(1)> would take as a source package.
+
+You can also pass any quantity of I<BINARY> packages that will also be used in
+the test.
+
+=back
+
+=head1 COMMON OPTIONS
+
+The following options apply to every debci command.
+
+
+=over
+
+=item -c DIR, --config DIR
+
+Uses DIR as the debci configuration directory.
+
+=item -a ARCH, --arch ARCH
+
+selects the architecture to run tests for (default: host architecture)
+
+=item -n BACKEND, --backend BACKEND
+
+selects the backends to run tests on (default: lxc)
+
+=item  -s SUITE, --suite SUITE
+
+selects suite to run tests for (default: unstable)
+
+=item -d DIR, --data-dir DIR
+
+The directory in which debci will store its data, and where it will read from.
+
+=item --amqp amqp://[user:password@]hostname[:port]
+
+AMQP server to connect to (default: amqp://localhost)
+
+=item  -q, --quiet
+
+Prevents debci from producing any output on stdout. Errors and warnings will
+still be sent to stderr.
+
+=item --help
+
+Display usage information.
+
+=back
+
+=head1 SEE ALSO
+
+=over
+
+Local documentation (I</usr/share/debci/public/doc/index.html>), Online
+documentation (I<https://ci.debian.net/doc/>), B<autopkgtest(1)>.
+
+=back
+
+=head1 COPYRIGHT AND AUTHORS
+
+Copyright © the debci development team. For details on authorship, refer to the
+git repository at I<https://anonscm.debian.org/cgit/collab-maint/debci.git>
+
+debci is free software licensed under the GNU General Public License version 3
+or later.
+
+=cut
+EOF
