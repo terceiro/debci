@@ -17,7 +17,7 @@ debci (1.7) unstable; urgency=medium
   * Add debci(1) manpage and support `debci --help` (Closes: #867891)
   * Add an experiental `qemu` backend
 
- -- Antonio Terceiro <terceiro@debian.org>  Sun, 23 Jul 2017 19:13:07 -0300
+ -- Antonio Terceiro <terceiro@debian.org>  Wed, 26 Jul 2017 17:44:47 -0300
 
 debci (1.6) unstable; urgency=medium
 
