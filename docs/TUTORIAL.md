@@ -289,4 +289,4 @@ Note: `sadt` hides output and `autopkgtest . -- null` gives full output.
 In addition to https://ci.debian.net, CI data is also available in the
 [UDD/DMD](https://udd.debian.org/dmd/),
 [DDPO](https://qa.debian.org/developer.php), and
-[package tracker](https://packages.qa.debian.org/common/index.html).
+[package tracker](https://tracker.debian.org/).
