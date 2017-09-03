@@ -11,9 +11,14 @@ The {file:docs/MAINTAINERS.md FAQ for package maintainers} contains useful
 information on how to declare the test suite, how the test is executed,
 how to reproduce the test runs locally, etc.
 
-Additionally, {file:docs/TUTORIAL.md Functional testing of Debian packages}, a
-tutorial transcribed from a DebConf15 talk on autopkgtest and debci is available
-that covers declaring test suites, issues to consider, and tips and tricks.
+Additionally, we have these extra tutorial-style documentation:
+
+* {file:docs/TUTORIAL.md Functional testing of Debian packages}, a tutorial
+  transcribed from a DebConf15 talk on autopkgtest and debci is available that
+  covers declaring test suites, issues to consider, and tips and tricks.
+∙ [https://deb.li/pattestdeb](Patterns for Writing As-Installed Tests for Debian Packages)
+  is a paper describing patterns (as in "design patterns") for writing tests
+  for Debian packages.
 
 ## Deployment
 
