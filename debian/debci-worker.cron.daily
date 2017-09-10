@@ -6,6 +6,10 @@ if ! dpkg-query --show debci-worker >/dev/null 2>&1; then
   exit
 fi
 
+if ! which debci >/dev/null 2>&1; then
+  exit
+fi
+
 log=$(mktemp)
 cleanup() {
   rm -f "$log"
