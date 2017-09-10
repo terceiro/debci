@@ -1,4 +1,4 @@
-debci (1.8) UNRELEASED; urgency=medium
+debci (1.7.1) unstable; urgency=medium
 
   * debian/control:
     - debci: recommend `ntp | time-daemon` instead of just `ntp`
@@ -6,7 +6,7 @@ debci (1.8) UNRELEASED; urgency=medium
   * debian/debci-worker.cron.daily: also bail out immediately if debci is not
     installed (Closes: 822896)
 
- -- Antonio Terceiro <terceiro@debian.org>  Fri, 04 Aug 2017 16:33:40 -0300
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 10 Sep 2017 13:35:21 -0300
 
 debci (1.7) unstable; urgency=medium
 
