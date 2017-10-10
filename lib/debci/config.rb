@@ -13,7 +13,18 @@ module Debci
   #     >> Debci.config.data_basedir
   #     => "/path/to/debci/data"
   #
-  Config = Struct.new(:data_basedir, :html_dir, :sendmail_from, :sendmail_to, :url_base, :artifacts_url_base, :config_dir, :packages_dir, :distro_name, :data_retention_days) do
+  Config = Struct.new(
+    :artifacts_url_base,
+    :config_dir,
+    :data_basedir,
+    :data_retention_days,
+    :distro_name,
+    :html_dir,
+    :packages_dir,
+    :sendmail_from,
+    :sendmail_to,
+    :url_base,
+  ) do
 
     # for development usage
     if !ENV['ADTTMP'] && !system('which debci >/dev/null')
