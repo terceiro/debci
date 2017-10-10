@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -eu
+
+debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/../..)
+. "$debci_base_dir/lib/environment.sh"
+
+datadir="$1"
+
+for suite in $debci_suite_list; do
+  for arch in $debci_arch_list; do
+    dir="$debci_data_basedir/status/$suite/$arch"
+    if [ -d "$dir" ]; then
+      (
+        cd "$dir"
+        find . -maxdepth 1 -name '[0-9]*.json' \
+          | perl -MFile::Basename -MFile::Path -e '$i = 0; while (<>) { chomp; $f = basename($_); $f =~ s#^([0-9][0-9][0-9][0-9])-([0-9][0-9])-([0-9][0-9])T(.*)#$1/$2/$3/$4#; File::Path::make_path(dirname($f)); printf("%d) %s -> %s\n", $i++, $_, $f); rename($_, $f); }'
+        status=$(readlink status.json)
+        newstatus=$(echo "$status" | perl -pe 's#^([0-9][0-9][0-9][0-9])-([0-9][0-9])-([0-9][0-9])T(.*)#$1/$2/$3/$4#')
+        ln -sfTv "$newstatus" status.json
+      )
+    fi
+  done
+done
