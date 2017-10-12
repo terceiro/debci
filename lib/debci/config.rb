@@ -14,6 +14,8 @@ module Debci
   #     => "/path/to/debci/data"
   #
   Config = Struct.new(
+    :arch,
+    :arch_list,
     :artifacts_url_base,
     :config_dir,
     :data_basedir,
@@ -21,8 +23,11 @@ module Debci
     :distro_name,
     :html_dir,
     :packages_dir,
+    :secrets_dir,
     :sendmail_from,
     :sendmail_to,
+    :suite,
+    :suite_list,
     :url_base,
   ) do
 
@@ -39,6 +44,9 @@ module Debci
       IO.popen(['debci', 'config', *members.map(&:to_s)]) do |data|
         data.each_line.each do |line|
           key, value = line.strip.split('=')
+          if key =~ /_list$/
+            value = value.split
+          end
           self.send("#{key}=", value)
         end
       end

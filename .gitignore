@@ -1,4 +1,5 @@
 /data
+/secrets
 /log/*
 /public/doc/
 /public/jquery*.js

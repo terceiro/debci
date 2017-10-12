@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require 'debci/api'
+require 'thor'
+
+module Debci
+  class APICLI < Thor
+
+    desc 'setkey USERNAME [KEYNAME]', "Sets a API key for the given user"
+    def setkey(username, keyname='default')
+      key = key_manager.set_key(username, keyname)
+      puts key
+    end
+
+    desc 'auth KEY', "Checks authentication for the given KEY"
+    def  auth(key)
+      user = key_manager.authenticate(key)
+      if user
+        puts "I: Valid key for user `#{user}`"
+      else
+        $stderr.puts "E: invalid key"
+        exit(1)
+      end
+    end
+
+    no_commands do
+      def key_manager
+        @key_manager ||= Debci::API::KeyManager.new
+      end
+    end
+
+  end
+end
+
+Debci::APICLI.start

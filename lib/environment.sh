@@ -56,6 +56,8 @@ debci_sendmail_to="${debci_sendmail_to:-%s@localhost}"
 debci_url_base="${debci_url_base:-http://localhost:8080}"
 debci_artifacts_url_base="${debci_artifacts_url_base:-}"
 
+debci_secrets_dir=${debci_secrets_dir:-$(readlink -f "${debci_base_dir}/secrets")}
+
 shared_short_options='c:s:a:b:d:hq'
 shared_long_options='config:,suite:,arch:,backend:,data-dir:,amqp:,help,quiet'
 
