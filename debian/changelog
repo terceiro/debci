@@ -1,3 +1,9 @@
+debci (1.8) UNRELEASED; urgency=medium
+
+  * WIP
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 14 Oct 2017 14:04:10 -0300
+
 debci (1.7.1) unstable; urgency=medium
 
   * debian/control:
