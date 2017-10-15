@@ -46,6 +46,10 @@ module Debci
 
     attr_reader :suite, :arch, :user
 
+    get '/' do
+      redirect '/doc/file.API.html'
+    end
+
     namespace '/v1' do
 
       get '/auth' do
