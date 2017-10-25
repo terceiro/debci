@@ -25,7 +25,4 @@ outdir="$2"
 shift
 shift
 
-rc=0
-autopkgtest --no-built-binaries --output-dir "$outdir" "$package" "$@" -- null || rc=$?
-echo $rc > "$outdir/exitcode"
-exit $rc
+debci-autopkgtest "$outdir" "$package" "$@" -- null

@@ -27,7 +27,5 @@ shift
 
 session_id="${debci_chroot_name}-$(basename "$package")"
 
-rc=0
-autopkgtest --no-built-binaries --user debci --output-dir "$outdir" --apt-upgrade "$package" "$@" -- schroot --session-id="${session_id}" "${debci_chroot_name}" || rc=$?
-echo $rc > "$outdir/exitcode"
-exit $rc
+debci-autopkgtest "$outdir" --user debci --apt-upgrade "$package" "$@" \
+  -- schroot --session-id="${session_id}" "${debci_chroot_name}"

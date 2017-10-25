@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -eu
+
+if [ $# -lt 2 ]; then
+  echo "usage: $0 OUTPUDIR [AUTOPKGTEST ARGUMENTS ...]"
+  exit 1
+fi
+outputdir="$1"
+shift
+
+rc=0
+autopkgtest \
+  --no-built-binaries \
+  --output-dir "$outputdir" \
+  "$@" || rc=$?
+
+echo $rc > "$outputdir/exitcode"
+exit $rc

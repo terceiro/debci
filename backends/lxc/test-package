@@ -30,8 +30,5 @@ shift
 
 container_name=$(basename ${package})-$(date +%s)
 
-rc=0
-autopkgtest --no-built-binaries --user debci --output-dir "$outdir" --apt-upgrade "$package" "$@" -- lxc --sudo --name ${container_name} autopkgtest-${debci_suite}-${debci_arch} || rc=$?
-
-echo $rc > "$outdir/exitcode"
-exit $rc
+debci-autopkgtest "$outdir" --user debci --apt-upgrade "$package" "$@" \
+  -- lxc --sudo --name "${container_name}" "autopkgtest-${debci_suite}-${debci_arch}"

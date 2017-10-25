@@ -26,13 +26,5 @@ outdir="$2"
 shift
 shift
 
-rc=0
-autopkgtest \
-  --no-built-binaries \
-  --user debci \
-  --output-dir "$outdir" \
-  --apt-upgrade "$package" "$@" \
-  -- qemu "$image" || rc=$?
-
-echo $rc > "$outdir/exitcode"
-exit $rc
+debci-autopkgtest "$outdir" --user debci --apt-upgrade "$package" "$@" \
+  -- qemu "$image"
