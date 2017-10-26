@@ -127,7 +127,7 @@ for arg in "$@"; do
   fi
 done
 
-alias prepare_args='while [ "$1" != '--' ]; do shift; done; shift'
+alias prepare_args='while [ "$1" != "--" ]; do shift; done; shift'
 
 debci_autopkgtest_dir="${debci_data_basedir}/autopkgtest/${debci_suite}/${debci_arch}"
 debci_autopkgtest_incoming_dir="${debci_data_basedir}/autopkgtest-incoming/${debci_suite}/${debci_arch}"
