@@ -25,13 +25,22 @@ tags=''
 
 # Process one request. Read the AMQP message from stdin.
 do_request() {
+  local request
   local pkg
   local suite
 
-  read pkg suite || true  # we expect EOF and thus read to fail
-
-  if [ -z "$suite" ]; then
+  read request || true  # we expect EOF and thus read to fail
+  set -- $request
+  if [ $# -eq 0 ]; then
+    return
+  fi
+  pkg="$1"
+  suite="${2:-}"
+  if [ -n "$suite" ]; then
+    shift 2
+  else
     suite="$debci_suite"
+    shift 1
   fi
 
   log "$pkg $suite/$debci_arch started"
