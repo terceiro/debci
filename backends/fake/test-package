@@ -1,9 +1,13 @@
 #!/usr/bin/ruby
 
 require 'fileutils'
+require 'stringio'
+
+log = StringIO.new
+log.puts 'command line arguments: ' + ARGV.join(' ')
 
 if ARGV.length < 2
-  puts "usage: test-package [OPTIONS] PACKAGE OUTPUTDIR [EXTRA-AUTOPKGTEST-ARGS]"
+  $stderr.puts "usage: test-package [OPTIONS] PACKAGE OUTPUTDIR [EXTRA-AUTOPKGTEST-ARGS]"
   exit 1
 end
 
@@ -11,7 +15,7 @@ pkg = ARGV.shift
 outdir = ARGV.shift
 
 ARGV.each do |a|
-  puts "W: ignoring extra argument: " + a
+  log.puts "W: ignoring extra argument: " + a
 end
 
 FileUtils.mkdir(outdir)
@@ -31,15 +35,15 @@ File.open(File.join(outdir, 'testpkg-version'), 'w') { |f| f.puts version }
 
 if ENV["DEBCI_FAKE_COMMAND"]
   io = IO.popen(ENV["DEBCI_FAKE_COMMAND"])
-  log = [ '$ ' + ENV['DEBCI_FAKE_COMMAND'], io.read].join("\n")
+  log.puts [ '$ ' + ENV['DEBCI_FAKE_COMMAND'], io.read]
   io.close
   rc = $?.exitstatus
   if rc != 0
     rc = 4
   end
 else
-  puts "Not really running anything .."
-  puts "This has 80% chance of passing, 10% of failing, and 10% of tmpfailing"
+  log.puts "Not really running anything .."
+  log.puts "This has 80% chance of passing, 10% of failing, and 10% of tmpfailing"
   r = nil
   case ENV['DEBCI_FAKE_RESULT']
   when 'pass'
@@ -54,13 +58,13 @@ else
 
   case r
   when 0..7
-    log = "Passed :-)\n"
+    log.puts "Passed :-)"
     rc = 0
   when 8
-    log = "Failed :-(\n"
+    log.puts "Failed :-("
     rc = 4
   when 9
-    log = "Some error ocurred\n"
+    log.puts "Some error ocurred"
     rc = 16
   end
 end
@@ -82,13 +86,13 @@ if ENV["DEBCI_FAKE_KILLPARENT"]
   end
 end
 
-log = log + "autopkgtest [%s]: finished\n" % Time.now.strftime('%Y-%m-%d %H:%M:%S')
+log.puts "autopkgtest [%s]: finished\n" % Time.now.strftime('%Y-%m-%d %H:%M:%S')
 
 File.open(File.join(outdir, 'log'), 'w') do |f|
-  f.puts log
+  f.puts log.string
 end
 File.open(File.join(outdir, 'exitcode'), 'w') do |f|
   f.puts rc
 end
-puts log
+puts log.string
 exit rc
