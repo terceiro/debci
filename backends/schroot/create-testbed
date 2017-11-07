@@ -6,6 +6,9 @@ base=$(readlink -f $(dirname $(readlink -f $0))/../..)
 . $base/lib/environment.sh
 . $base/lib/functions.sh
 
+backend="$(dirname "$0")"
+. "${backend}/environment.sh"
+
 if [ $(whoami) != root ]; then
   echo "E: This script must be run as root"
   exit 1

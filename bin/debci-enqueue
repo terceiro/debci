@@ -1,11 +1,24 @@
 #!/bin/sh
 
 set -eu
+short_options='t:p:'
+long_options='trigger:,pin-packages:'
 
 usage() {
   cat <<EOF
 usage: debci enqueue [PKG [PKG ...]]
-
+Options:
+  -t=TRIGGER, --trigger=TRIGGER
+                    Associate TRIGGER as the trigger for the requested test run.
+                    TRIGGER is a treated as string, has no special meaning for
+                    debci, but can be retrieved later as part of the test run
+                    metadata
+  -p RELEASE=pkgname,src:srcname,...
+  --pin-packages RELEASE=pkgname,src:srcname,...
+                    Force specific packages to be installed from the given
+                    RELEASE. The format is the same as the --pin-packages
+                    option from autopkgtest. RELEASE will be automatically
+                    addded to the testbed APT sources.
 $@
 EOF
 }
@@ -14,13 +27,41 @@ debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $debci_base_dir/lib/environment.sh
 . $debci_base_dir/lib/functions.sh
 
-prepare_args
+trigger=""
+pin_packages=""
+
+while true; do
+  opt="$1"
+  shift
+  case "$opt" in
+    -t|--trigger)
+      trigger="$1"
+      shift
+      ;;
+    -p|--pin-packages)
+      pin_packages="$pin_packages $1"
+      shift
+      ;;
+    --)
+      break
+      ;;
+  esac
+done
+
+if [ -n "$trigger" ]; then
+  parameters="trigger:$trigger"
+else
+  parameters=""
+fi
+for p in $pin_packages; do
+  parameters="$parameters pin-packages:$p"
+done
 
 for pkg in $@; do
   amqp-publish \
     --url "${debci_amqp_server}" \
     --persistent \
     --routing-key "$debci_amqp_queue" \
-    --body "$pkg $debci_suite"
+    --body "$pkg $debci_suite $parameters"
   report_status "$pkg" "requested"
 done

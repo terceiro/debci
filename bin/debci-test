@@ -1,7 +1,7 @@
 #!/bin/sh
 
-short_options='o'
-long_options='print-output'
+short_options='ot:p:'
+long_options='print-output,trigger:,pin-packages:'
 
 usage() {
   cat <<EOF
@@ -9,7 +9,16 @@ usage: debci test [OPTIONS] srcpkg
 
 Options:
   -o, --print-output        print output directory after test finished
-
+  -t TRIGGER, --trigger TRIGGER
+                            Records TRIGGER as being the trigger for this test
+                            run. The trigger will be written to a file in the
+                            output directory, so that it can be retrieved later
+  -p RELEASE=pkgname,src:srcname,...
+  --pin-packages RELEASE=pkgname,src:srcname,...
+                    Force specific packages to be installed from the given
+                    RELEASE. The format is the same as the --pin-packages
+                    option from autopkgtest. RELEASE will be automatically
+                    addded to the testbed APT sources.
 $@
 EOF
 }
@@ -39,10 +48,20 @@ process_package() {
   start_timestamp=$(date +%s)
 
 
+  # these variables can be considered as an API by backends/*/test-package and
+  # debci-autopkgtest
+  export debci_suite
+  export debci_arch
+  export debci_test_package="$pkg"
+  export debci_test_outputdir="$adt_out_dir"
+
   if [ "$debci_quiet" = 'true' ]; then
-    run_with_shared_lock "$debci_testbed_lock" test-package "$pkg" "$adt_out_dir" >/dev/null 2>&1 || true
+    run_with_shared_lock "$debci_testbed_lock" \
+      test-package $options --output-dir "$adt_out_dir" "$pkg" \
+      >/dev/null 2>&1 || true
   else
-    run_with_shared_lock "$debci_testbed_lock" test-package "$pkg" "$adt_out_dir"  || true
+    run_with_shared_lock "$debci_testbed_lock" \
+      test-package $options --output-dir "$adt_out_dir" "$pkg" || true
   fi
 
   finish_timestamp=$(date +%s)
@@ -54,6 +73,10 @@ process_package() {
 
   echo $(($finish_timestamp - $start_timestamp)) >> "$adt_out_dir/duration"
 
+  if [ -n "$trigger" ]; then
+    echo "$trigger" > "$adt_out_dir/trigger"
+  fi
+
   if [ -n "$print_output" ]; then
       echo "$adt_out_dir"
   fi
@@ -62,19 +85,28 @@ process_package() {
 # defaults
 index=''
 print_output=''
+trigger=''
+options=''
 
 while true; do
-  case "$1" in
+  opt="$1"
+  shift
+  case "$opt" in
     -o|--print-output)
       print_output=true
+      ;;
+    -t|--trigger)
+      trigger="$1"
       shift
+      ;;
+    -p|--pin-packages)
+      pin="$1"
+      shift
+      release=$(echo "$pin" | cut -d = -f 1)
+      options="$options --add-apt-release=$release --pin-packages=$pin"
       ;;
     --)
-      shift
       break
-      ;;
-    *)
-      shift
       ;;
   esac
 done

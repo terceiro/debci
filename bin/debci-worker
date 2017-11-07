@@ -28,6 +28,7 @@ do_request() {
   local request
   local pkg
   local suite
+  local opts
 
   read request || true  # we expect EOF and thus read to fail
   set -- $request
@@ -43,6 +44,23 @@ do_request() {
     shift 1
   fi
 
+  releases=""
+  opts=""
+  for param in $@; do
+    case "$param" in
+      trigger:*)
+        opts="$opts --trigger=${param#trigger:}"
+        ;;
+      pin-packages:*)
+        arg=${param#pin-packages:}
+        opts="$opts --pin-packages=$arg"
+        ;;
+      *)
+        echo "Unknown test parameter: $param" >&2
+        ;;
+    esac
+  done
+
   log "$pkg $suite/$debci_arch started"
 
   local tmp_dir=$(mktemp -d)
@@ -53,7 +71,9 @@ do_request() {
       --quiet \
       --data-dir "$tmp_dir" \
       --suite "$suite" \
-      --print-output "$pkg"
+      --print-output \
+      $opts \
+      "$pkg"
   )"
 
   if [ ! -s "$result_dir/exitcode" ]; then

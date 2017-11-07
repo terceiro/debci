@@ -1,24 +1,50 @@
 #!/usr/bin/ruby
 
+require 'optparse'
 require 'fileutils'
 require 'stringio'
 
 log = StringIO.new
+
 log.puts 'command line arguments: ' + ARGV.join(' ')
 
-if ARGV.length < 2
-  $stderr.puts "usage: test-package [OPTIONS] PACKAGE OUTPUTDIR [EXTRA-AUTOPKGTEST-ARGS]"
-  exit 1
+pkg = nil
+outdir = nil
+
+optparse = OptionParser.new do |opts|
+  opts.banner = "Usage: test-package --output-dir OUTPUTDIR [AUTOPKGTEST-ARGS] PACKAGE"
+  opts.separator "Options:"
+
+  opts.on('--output-dir OUTPUTDIR') do |arg|
+    outdir = arg
+  end
+
+  # options with arguments
+  ['--user', '--trigger', '--add-apt-release', '--pin-packages'].each do |ign|
+    opts.on("#{ign} IGNORED") do |arg|
+      log.puts "Ignored option/argument: #{ign} #{arg}"
+    end
+  end
+
+  # options without arguments
+  ['--apt-upgrade'].each do |ign|
+    opts.on(ign) do
+      log.puts "Ignored option:# {ign}"
+    end
+  end
+end
+optparse.parse!
+
+if ARGV.length != 1 or outdir.nil?
+  log.puts optparse
+  puts log.string
+  exit(1)
 end
 
-pkg = ARGV.shift
-outdir = ARGV.shift
+pkg  = ARGV.first
 
-ARGV.each do |a|
-  log.puts "W: ignoring extra argument: " + a
-end
+FileUtils.mkdir_p(outdir)
 
-FileUtils.mkdir(outdir)
 if ENV["DEBCI_FAKE_DEPS"]
   File.open(File.join(outdir, 'foo0t-mytest-packages'), 'w') do |f|
     ENV["DEBCI_FAKE_DEPS"].split('|').each do |line|

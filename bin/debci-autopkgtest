@@ -6,14 +6,11 @@ if [ $# -lt 2 ]; then
   echo "usage: $0 OUTPUDIR [AUTOPKGTEST ARGUMENTS ...]"
   exit 1
 fi
-outputdir="$1"
-shift
 
 rc=0
 autopkgtest \
   --no-built-binaries \
-  --output-dir "$outputdir" \
   "$@" || rc=$?
 
-echo $rc > "$outputdir/exitcode"
+echo $rc > "$debci_test_outputdir/exitcode"
 exit $rc
