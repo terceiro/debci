@@ -137,6 +137,7 @@ start_worker() {
   export debci_batch_poll_interval="0.1"
   debci worker &
   TEST_WORKER_PID=$!
+  sleep 0.1
   if [ -n "${DEBUG:-}" ]; then
     echo "started worker $TEST_WORKER_PID"
   fi
