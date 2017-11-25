@@ -15,7 +15,7 @@ module Debci
 
       def key_path(user, keyname)
         keydir = File.join(Debci.config.secrets_dir, 'apikeys/user', user)
-        File.join(keydir, Digest::SHA1.hexdigest(keyname))
+        File.join(keydir, Digest::SHA1.hexdigest("#{user}::#{keyname}"))
       end
 
       def set_key(user, keyname)
