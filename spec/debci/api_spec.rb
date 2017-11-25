@@ -120,6 +120,32 @@ describe Debci::API do
         expect(last_response.status).to eq(400)
       end
 
+      test_file = File.join(File.dirname(__FILE__), 'api_test.json')
+
+      it 'handles trigger and pin' do
+        expect_any_instance_of(API).to receive(:__system__).with(
+          'debci-enqueue',
+          '--suite', suite,
+          '--arch', arch,
+          '--trigger', 'foo/1.0',
+          '--pin-packages', 'unstable=src:foo',
+          'package1')
+        post '/api/v1/test/%s/%s' % [suite, arch], tests: File.read(test_file)
+        expect(last_response.status).to eq(201)
+      end
+
+      it 'handles trigger and pin as a file upload' do
+        expect_any_instance_of(API).to receive(:__system__).with(
+          'debci-enqueue',
+          '--suite', suite,
+          '--arch', arch,
+          '--trigger', 'foo/1.0',
+          '--pin-packages', 'unstable=src:foo',
+          'package1')
+        post '/api/v1/test/%s/%s' % [suite, arch], tests: Rack::Test::UploadedFile.new(test_file, "application/json")
+        expect(last_response.status).to eq(201)
+      end
+
     end
 
   end

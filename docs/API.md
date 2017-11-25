@@ -37,12 +37,10 @@ The `tests` JSON object must be an *Array* of objects. Each object represents a
 single test request, and can contain the following keys:
 
 * `package`: the (source!) package to be tested
-* `suite`: the base suite where the tests will be executed (e.g. `testing`, or
-  `unstable`)
 * `trigger`: a string that identifies the reason why this test is being
   requested. debci only stores this string, and it does not handle this in any
   special way.
-* `extra-sources`: an array describing packages that need to be obtained from
+* `pin-packages`: an array describing packages that need to be obtained from
   different suites than the main one specified by the `suite` parameter. This
   is used e.g. to run tests on `testing` with a few packages from `unstable`,
   or on `unstable` with a few packages from `experimental`. Each item of the
@@ -61,17 +59,15 @@ $ cat tests.json
 [
   {
     "package": "debci",
-    "suite": "testing",
     "trigger": "ruby/X.Y",
-    "extra-sources": [
+    "pin-packages": [
       ["src:ruby-defaults", "unstable"]
     ]
   },
   {
     "package": "vagrant",
-    "suite": "testing",
     "trigger": "ruby/X.Y",
-    "extra-sources": [
+    "pin-packages": [
       ["src:ruby-defaults", "unstable"]
     ]
   }

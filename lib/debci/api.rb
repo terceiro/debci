@@ -73,7 +73,16 @@ module Debci
         tests = load_json(params[:tests])
         validate_packages(*tests.map { |t| t["package"] })
         tests.each do |test|
-          __system__('debci-enqueue', '--suite', suite, '--arch', arch, test["package"])
+          cmdline = ['debci-enqueue', '--suite', suite, '--arch', arch]
+          if test["trigger"]
+            cmdline << "--trigger" << test["trigger"]
+          end
+          Array(test["pin-packages"]).each do |pin|
+            pkg, suite = pin
+            cmdline << "--pin-packages" << "#{suite}=#{pkg}"
+          end
+          cmdline << test["package"]
+          __system__(*cmdline)
         end
         201
       end
@@ -101,9 +110,10 @@ module Debci
       end
     end
 
-    def load_json(str)
+    def load_json(param)
       begin
-        JSON.load(params[:tests])
+        str = param.is_a?(Hash) && File.read(param[:tempfile]) || param
+        JSON.load(str)
       rescue JSON::ParserError => error
         halt(400, "Invalid JSON: #{error}")
       end
