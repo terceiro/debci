@@ -31,6 +31,7 @@ setup_system() {
     if [ ! -d /var/lib/debci/secrets ]; then
         mkdir /var/lib/debci/secrets
         chmod 0770 /var/lib/debci/secrets
+        chmod g+s /var/lib/debci/secrets
         chown debci:debci /var/lib/debci/secrets
     fi
 
