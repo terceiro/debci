@@ -28,6 +28,12 @@ setup_system() {
         mkdir /var/lib/debci/chroots
     fi
 
+    if [ ! -d /var/lib/debci/secrets ]; then
+        mkdir /var/lib/debci/secrets
+        chmod 0770 /var/lib/debci/secrets
+        chown debci:debci /var/lib/debci/secrets
+    fi
+
     if [ ! -d /var/log/debci ]; then
         mkdir /var/log/debci
         chown debci:debci /var/log/debci
