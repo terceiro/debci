@@ -73,7 +73,7 @@ module Debci
         tests = load_json(params[:tests])
         validate_packages(*tests.map { |t| t["package"] })
         tests.each do |test|
-          cmdline = ['debci-enqueue', '--suite', suite, '--arch', arch]
+          cmdline = ['debci', 'enqueue', '--suite', suite, '--arch', arch]
           if test["trigger"]
             cmdline << "--trigger" << test["trigger"]
           end
@@ -90,7 +90,7 @@ module Debci
       post '/test/:suite/:arch/:package' do
         pkg = params[:package]
         validate_packages(pkg)
-        __system__('debci-enqueue', '--suite', suite, '--arch', arch, pkg)
+        __system__('debci', 'enqueue', '--suite', suite, '--arch', arch, pkg)
         201
       end
 

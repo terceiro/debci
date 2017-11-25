@@ -63,7 +63,7 @@ describe Debci::API do
     context 'for a single test' do
 
       it 'accepts a valid request' do
-        expect_any_instance_of(API).to receive(:__system__).with('debci-enqueue', '--suite', suite, '--arch', arch, 'mypackage')
+        expect_any_instance_of(API).to receive(:__system__).with('debci', 'enqueue', '--suite', suite, '--arch', arch, 'mypackage')
         post '/api/v1/test/%s/%s/mypackage' % [suite, arch]
         expect(last_response.status).to eq(201)
       end
@@ -89,8 +89,8 @@ describe Debci::API do
     context 'for test a batch' do
 
       it 'accepts a valid request' do
-        expect_any_instance_of(API).to receive(:__system__).with('debci-enqueue', '--suite', suite, '--arch', arch, 'package1')
-        expect_any_instance_of(API).to receive(:__system__).with('debci-enqueue', '--suite', suite, '--arch', arch, 'package2')
+        expect_any_instance_of(API).to receive(:__system__).with('debci', 'enqueue', '--suite', suite, '--arch', arch, 'package1')
+        expect_any_instance_of(API).to receive(:__system__).with('debci', 'enqueue', '--suite', suite, '--arch', arch, 'package2')
         post '/api/v1/test/%s/%s' % [suite, arch], tests: '[{"package": "package1"}, {"package": "package2"}]'
         expect(last_response.status).to eq(201)
       end
@@ -124,7 +124,7 @@ describe Debci::API do
 
       it 'handles trigger and pin' do
         expect_any_instance_of(API).to receive(:__system__).with(
-          'debci-enqueue',
+          'debci', 'enqueue',
           '--suite', suite,
           '--arch', arch,
           '--trigger', 'foo/1.0',
@@ -136,7 +136,7 @@ describe Debci::API do
 
       it 'handles trigger and pin as a file upload' do
         expect_any_instance_of(API).to receive(:__system__).with(
-          'debci-enqueue',
+          'debci', 'enqueue',
           '--suite', suite,
           '--arch', arch,
           '--trigger', 'foo/1.0',
