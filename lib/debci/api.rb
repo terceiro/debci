@@ -22,7 +22,7 @@ module Debci
         keyfile = key_path(user, keyname)
         FileUtils.mkdir_p(File.dirname(keyfile))
         key = SecureRandom.uuid
-        File.open(keyfile, 'w', 0600) do |f|
+        File.open(keyfile, 'w', 0660) do |f|
           f.puts(key)
         end
         key
