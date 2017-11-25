@@ -1,3 +1,4 @@
+require 'cgi'
 require 'erb'
 
 require 'debci'
@@ -115,6 +116,10 @@ module Debci
       if File.exist?(file_path)
         File.read(file_path)
       end
+    end
+
+    def escape(text)
+      text && CGI.escapeHTML(text)
     end
 
   end

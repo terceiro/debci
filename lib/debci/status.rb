@@ -8,7 +8,7 @@ module Debci
   class Status
 
     attr_reader :blame
-    attr_accessor :suite, :architecture, :run_id, :package, :version, :date, :status, :previous_status, :duration_seconds, :duration_human, :message, :last_pass_version, :last_pass_date
+    attr_accessor :suite, :architecture, :run_id, :package, :version, :date, :trigger, :status, :previous_status, :duration_seconds, :duration_human, :message, :last_pass_version, :last_pass_date
 
     # Returns `true` if this status object represents an important event, such
     # as a package that used to pass started failing, of vice versa.
@@ -160,6 +160,7 @@ module Debci
         rescue ArgumentError
           nil
         end
+      status.trigger = data['trigger']
       status.status = data.fetch('status', :unknown).to_sym
       status.previous_status = data.fetch('previous_status', :unknown).to_sym
       status.blame = data['blame']
