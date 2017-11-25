@@ -124,11 +124,21 @@ generate_package_run_log_file()
   generate_package_run_dependencies
   generate_package_run_testbed_packages
 
+  get_trigger
+
   # result
   exitcode_to_statusmsg
   banner "Result"
   echo "∙ Status: $status ($message)"
   echo "∙ Duration: ${duration_human}"
+}
+
+
+get_trigger() {
+  trigger=null
+  if [ -f "$adtresult/trigger" ]; then
+    trigger="\"$(cat "$adtresult/trigger")\""
+  fi
 }
 
 # set $status and $message from $adtresult's exit code
@@ -324,6 +334,7 @@ generate_package_json() {
   "version": "${version}",
   "date": "${timestamp}",
   "status": "${status}",
+  "trigger": $trigger,
   "blame": $blame,
   "previous_status": "${previous_status}",
   "duration_seconds": "${duration}",
