@@ -105,6 +105,10 @@ rootfs=$LXC_PATH/$container/rootfs
 if [ "$distro" = debian ]; then
   if [ "$debci_suite" = sid ]; then
     buildd_suite="buildd-$debci_suite"
+  elif [ "$debci_suite" = stable ]; then
+    # workaround for bug #880105
+    stable=$(curl -Ls http://deb.debian.org/debian/dists/stable/Release | grep-dctrl -n -s Codename '')
+    buildd_suite="buildd-$stable-proposed-updates"
   else
     buildd_suite="buildd-$debci_suite-proposed-updates"
   fi

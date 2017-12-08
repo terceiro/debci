@@ -34,6 +34,7 @@ Architecture: all
 Depends: adduser,
          amqp-tools,
          bsdmainutils,
+         curl,
          dctrl-tools,
          debootstrap,
          devscripts,
