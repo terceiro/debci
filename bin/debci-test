@@ -8,17 +8,17 @@ usage() {
 usage: debci test [OPTIONS] srcpkg
 
 Options:
-  -o, --print-output        print output directory after test finished
+  -o, --print-output
+      print output directory after test finished
   -t TRIGGER, --trigger TRIGGER
-                            Records TRIGGER as being the trigger for this test
-                            run. The trigger will be written to a file in the
-                            output directory, so that it can be retrieved later
+      Records TRIGGER as being the trigger for this test run. The trigger will
+      be written to a file in the output directory, so that it can be retrieved
+      later
   -p RELEASE=pkgname,src:srcname,...
   --pin-packages RELEASE=pkgname,src:srcname,...
-                    Force specific packages to be installed from the given
-                    RELEASE. The format is the same as the --pin-packages
-                    option from autopkgtest. RELEASE will be automatically
-                    addded to the testbed APT sources.
+      Force specific packages to be installed from the given RELEASE. The
+      format is the same as the --pin-packages option from autopkgtest. RELEASE
+      will be automatically addded to the testbed APT sources.
 $@
 EOF
 }
