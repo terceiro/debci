@@ -312,7 +312,7 @@ generate_package_json() {
   if [ "${status}" = 'pass' ]; then
     last_pass_version="${version}"
     last_pass_date="${timestamp}"
-  elif [ $(debci-status --field last_pass_version "$pkg") != 'unknown' ]; then
+  elif [ "$(debci-status --field last_pass_version "$pkg")" != 'unknown' ]; then
     last_pass_version="$(jq -r .last_pass_version ${status_dir}/latest.json)"
     last_pass_date="$(jq -r .last_pass_date ${status_dir}/latest.json)"
   else
