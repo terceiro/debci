@@ -57,7 +57,7 @@ version = `(apt-cache showsrc #{pkg} | grep-dctrl -n -s Version '' | head -1) 2>
 if version == ''
   version = `date +0.0.0-1~%Y%M%d`.strip
 end
-File.open(File.join(outdir, 'testpkg-version'), 'w') { |f| f.puts version }
+File.open(File.join(outdir, 'testpkg-version'), 'w') { |f| f.puts "#{pkg} #{version}" }
 
 if ENV["DEBCI_FAKE_COMMAND"]
   io = IO.popen(ENV["DEBCI_FAKE_COMMAND"])
