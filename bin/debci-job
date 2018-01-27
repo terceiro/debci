@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+
+require 'debci'
+require 'debci/status'
+require 'debci/job'
+require 'thor'
+
+module Debci
+  class JobCLI < Thor
+
+    desc 'register PACKAGE REQUESTOR RUNID', "Register a job"
+    def register(package, requestor, run_id)
+      # TODO check the format of run_id?
+      Debci::Job.create!(
+        suite: suite,
+        package: package,
+        arch: arch,
+        run_id: run_id,
+        requestor: requestor,
+      )
+    end
+
+    desc 'finished STATUS_FILE', 'Marks job as finished'
+    def finished(status_file)
+      status = Debci::Status.from_file(status_file, suite, arch)
+      job = Debci::Job.find_or_create_by(
+        suite: suite,
+        arch: arch,
+        package: status.package,
+        run_id: status.run_id
+      )
+      job.requestor ||= (ENV['USER'] || 'nobody')
+      job.version = status.version
+      job.trigger = status.trigger
+      job.status = status.status
+      job.save!
+    end
+
+    no_commands do
+      def arch
+        Debci.config.arch
+      end
+      def suite
+        Debci.config.suite
+      end
+    end
+
+  end
+end
+
+Debci::JobCLI.start

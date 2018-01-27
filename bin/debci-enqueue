@@ -1,8 +1,8 @@
 #!/bin/sh
 
 set -eu
-short_options='t:p:i:'
-long_options='trigger:,pin-packages:,run-id:'
+short_options='t:p:i:r:'
+long_options='trigger:,pin-packages:,run-id:,requestor:'
 
 usage() {
   cat <<EOF
@@ -20,6 +20,9 @@ Options:
   -i ID, --run-id ID
       Use the specific ID as the run id for the test runs, instead of
       generating one based on the current date.
+  -r REQUESTOR, --requestor REQUESTOR
+      Set the requestor of the test run. Defaults to \$USER, or 'nobody' if
+      \$USER is not set.
 $@
 EOF
 }
@@ -30,6 +33,7 @@ debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 
 trigger=""
 pin_packages=""
+requestor="${USER:-nobody}"
 run_id=""
 
 while true; do
@@ -42,6 +46,10 @@ while true; do
       ;;
     -p|--pin-packages)
       pin_packages="$pin_packages $1"
+      shift
+      ;;
+    -r|--requestor)
+      requestor="$1"
       shift
       ;;
     -i|--run-id)
@@ -78,5 +86,8 @@ for pkg in $@; do
     --persistent \
     --routing-key "$debci_amqp_queue" \
     --body "$pkg $debci_suite $parameters"
+  if [ -n "$run_id" ]; then
+    debci job register "$pkg" "$requestor" "$run_id"
+  fi
   report_status "$pkg" "requested"
 done
