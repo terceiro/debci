@@ -1,8 +1,8 @@
 #!/bin/sh
 
 set -eu
-short_options='t:p:'
-long_options='trigger:,pin-packages:'
+short_options='t:p:i:'
+long_options='trigger:,pin-packages:,run-id:'
 
 usage() {
   cat <<EOF
@@ -17,6 +17,9 @@ Options:
       Force specific packages to be installed from the given RELEASE. The
       format is the same as the --pin-packages option from autopkgtest. RELEASE
       will be automatically addded to the testbed APT sources.
+  -i ID, --run-id ID
+      Use the specific ID as the run id for the test runs, instead of
+      generating one based on the current date.
 $@
 EOF
 }
@@ -27,6 +30,7 @@ debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 
 trigger=""
 pin_packages=""
+run_id=""
 
 while true; do
   opt="$1"
@@ -40,6 +44,16 @@ while true; do
       pin_packages="$pin_packages $1"
       shift
       ;;
+    -i|--run-id)
+      run_id="$1"
+      if echo "$run_id" | grep -q '^[0-9]\{8\}_[0-9]\{6\}$' ; then
+        : ok
+      else
+        echo "E: invalid run-id: $run_id (format needs to be YYYYMMDD_HHMMSS)"
+        exit 1
+      fi
+      shift
+      ;;
     --)
       break
       ;;
@@ -50,6 +64,9 @@ if [ -n "$trigger" ]; then
   parameters="trigger:$trigger"
 else
   parameters=""
+fi
+if [ -n "$run_id" ]; then
+  parameters="$parameters run-id:$run_id"
 fi
 for p in $pin_packages; do
   parameters="$parameters pin-packages:$p"
