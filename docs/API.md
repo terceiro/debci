@@ -95,7 +95,7 @@ URL parameters:
 Example:
 
 ```
-$ curl --header "Auth-Key: $KEY" htttps://host/api/v1/test/unstable/amd64/debci
+$ curl --header "Auth-Key: $KEY" --data '' htttps://host/api/v1/test/unstable/amd64/debci
 ```
 
 ## GET /api/v1/test
