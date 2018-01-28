@@ -4,6 +4,7 @@ require 'json'
 require 'securerandom'
 require 'sinatra'
 require "sinatra/namespace"
+require 'time'
 
 require 'debci'
 
@@ -73,7 +74,14 @@ module Debci
         tests = load_json(params[:tests])
         validate_packages(*tests.map { |t| t["package"] })
         tests.each do |test|
-          cmdline = ['debci', 'enqueue', '--suite', suite, '--arch', arch]
+          cmdline = [
+            'debci',
+            'enqueue',
+            '--suite', suite,
+            '--arch', arch,
+            '--requestor', @user,
+            '--run-id', run_id,
+          ]
           if test["trigger"]
             cmdline << "--trigger" << test["trigger"]
           end
@@ -90,7 +98,14 @@ module Debci
       post '/test/:suite/:arch/:package' do
         pkg = params[:package]
         validate_packages(pkg)
-        __system__('debci', 'enqueue', '--suite', suite, '--arch', arch, pkg)
+        __system__(
+          'debci',
+          'enqueue',
+          '--suite', suite,
+          '--arch', arch,
+          '--requestor', @user,
+          '--run-id', run_id,
+          pkg)
         201
       end
 
@@ -126,13 +141,18 @@ module Debci
 
     def authenticate!
       key = env['HTTP_AUTH_KEY']
-      user = key_manager.authenticate(key)
-      if user
-        response['Auth-User'] = user
+      @user = key_manager.authenticate(key)
+      if @user
+        response['Auth-User'] = @user
       else
-        halt(403, "Invalid key")
+        halt(403, "Invalid key\n")
       end
     end
+
+    def run_id
+      Time.now.strftime('%Y%m%d_%H%M%S')
+    end
+
   end
 
 end
