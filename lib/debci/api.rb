@@ -72,8 +72,21 @@ module Debci
 
       post '/test/:suite/:arch' do
         tests = load_json(params[:tests])
-        validate_packages(*tests.map { |t| t["package"] })
+        run_id = gen_run_id()
         tests.each do |test|
+          pkg = test['package']
+          if Debci.blacklist.include?(pkg)
+            Debci::Job.create!(
+              run_id: run_id,
+              package: pkg,
+              suite: suite,
+              arch: arch,
+              requestor: @user,
+              status: 'fail',
+              trigger: test['trigger'],
+            )
+            next
+          end
           cmdline = [
             'debci',
             'enqueue',
@@ -97,14 +110,16 @@ module Debci
 
       post '/test/:suite/:arch/:package' do
         pkg = params[:package]
-        validate_packages(pkg)
+        if Debci.blacklist.include?(pkg)
+          halt(400, "Blacklisted package: #{pkg}\n")
+        end
         __system__(
           'debci',
           'enqueue',
           '--suite', suite,
           '--arch', arch,
           '--requestor', @user,
-          '--run-id', run_id,
+          '--run-id', gen_run_id,
           pkg)
         201
       end
@@ -115,14 +130,6 @@ module Debci
 
     def __system__(*args)
       system(*args)
-    end
-
-    def validate_packages(*pkgs)
-      pkgs.each do |pkg|
-        if Debci.blacklist.include?(pkg)
-          halt(400, "Blacklisted package: #{pkg}\n")
-        end
-      end
     end
 
     def load_json(param)
@@ -149,7 +156,7 @@ module Debci
       end
     end
 
-    def run_id
+    def gen_run_id
       Time.now.strftime('%Y%m%d_%H%M%S')
     end
 

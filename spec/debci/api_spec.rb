@@ -107,11 +107,25 @@ describe Debci::API do
         expect(last_response.status).to eq(400)
       end
 
-      it 'rejects blacklisted package' do
-        expect_any_instance_of(API).to_not receive(:__system__)
+      it 'marks blacklisted packages as failed right away' do
+        allow(Time).to receive(:now).and_return(Time.parse('2018-01-28 22:00:00'))
+
         allow_any_instance_of(Debci::Blacklist).to receive(:include?).with('package1').and_return(true)
+        allow_any_instance_of(Debci::Blacklist).to receive(:include?).with('package2').and_return(false)
+
+        expect_any_instance_of(API).to receive(:__system__).with(
+          'debci', 'enqueue',
+          '--suite', suite,
+          '--arch', arch,
+          '--requestor', 'theuser',
+          '--run-id', String,
+          'package2')
+
         post '/api/v1/test/%s/%s' % [suite, arch], tests: '[{"package": "package1"}, {"package": "package2"}]'
-        expect(last_response.status).to eq(400)
+        expect(last_response.status).to eq(201)
+
+        job = Debci::Job.find_by(run_id: '20180128_220000', package: 'package1', suite: suite, arch: arch)
+        expect(job.status).to eq('fail')
       end
 
       it 'handles invalid JSON gracefully' do
