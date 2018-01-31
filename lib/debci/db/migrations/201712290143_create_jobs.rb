@@ -1,7 +1,7 @@
 class CreateJobs < ActiveRecord::Migration
   def up
     create_table :jobs do |t|
-      t.datetime :created_at
+      t.timestamps(null: false)
       t.string  :run_id
       t.string  :suite
       t.string  :arch
