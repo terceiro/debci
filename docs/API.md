@@ -107,16 +107,23 @@ Parameters:
 * `since`: UNIX timestamp; tells the API to only retrieve results that are
   newer then the given timestamp.
 
+Some test results may be updated after being created, for example while a test
+is still running, it will be returned, but it's status will be `null`. After it
+is completed, it will be updated to have the correct status.  So, if you are
+processing test results, make sure you support receiving the same result more
+than once, and updating the corresponding data on your side.
+
 The response is a JSON object containing the following keys:
 
 * `until`: UNIX timestamp that represents the timestamp of the latest results
   available. can be used as the `since` parameter in subsequent requests to
   limit the list of results to only the ones newer than it.
-* `results`: a list of test results, each containing the following items:
+* `results`: a list of test results, each of each will containing at least the
+  following items:
   * `trigger`: the same string that was provided in the test submission. (string)
   * `package`: tested package (string)
-  * `arch`:    architecture where the test ran (string)
-  * `arch`:    suite where the test ran (string)
+  * `arch`: architecture where the test ran (string)
+  * `suite`:  suite where the test ran (string)
   * `version`: version of the package that was tested (string)
   * `status`:  "pass", "fail", or "tmpfail" (string), or *null* if the test
     didn't finish yet.

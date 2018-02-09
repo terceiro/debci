@@ -7,6 +7,7 @@ require "sinatra/namespace"
 require 'time'
 
 require 'debci'
+require 'debci/job'
 
 module Debci
 
@@ -56,6 +57,21 @@ module Debci
       get '/auth' do
         authenticate!
         200
+      end
+
+      get '/test' do
+        authenticate!
+        jobs = Debci::Job.where(requestor: @user)
+        if params[:since]
+          since = Time.strptime(params[:since], '%s')
+          jobs = jobs.where('updated_at >= ?', since)
+        end
+        data = {
+          "until": jobs.map(&:created_at).max.to_i,
+          "results": jobs,
+        }
+        headers['Content-Type'] = 'application/json'
+        data.to_json
       end
 
       before '/test/:suite/:arch*'do
