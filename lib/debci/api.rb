@@ -88,8 +88,8 @@ module Debci
 
       post '/test/:suite/:arch' do
         tests = load_json(params[:tests])
-        run_id = gen_run_id()
         tests.each do |test|
+          run_id = gen_run_id()
           pkg = test['package']
           if Debci.blacklist.include?(pkg)
             Debci::Job.create!(
