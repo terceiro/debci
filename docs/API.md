@@ -146,7 +146,7 @@ $ curl --header "Auth-Key: $KEY" https://host/api/v1/test?since=1508072999
       "suite": "testing",
       "version": "4.5",
       "status": "fail",
-      "run_id": "20171014221218"
+      "run_id": "20171014_221218"
     },
     {
       "trigger": "foo/1.2",
@@ -155,7 +155,7 @@ $ curl --header "Auth-Key: $KEY" https://host/api/v1/test?since=1508072999
       "suite": "testing",
       "version": "2.7",
       "status": "pass",
-      "run_id": "20171014221255"
+      "run_id": "20171014_221255"
     }
   ]
 }
