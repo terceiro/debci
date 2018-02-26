@@ -23,7 +23,7 @@ if ENV["DEBCI_FAKE_DEPS"]
   end
 end
 
-version = `(apt-cache showsrc #{pkg} | grep-dctrl -n -s Version '' | head -1) 2>/dev/null`
+version = `(rmadison --suite=testing --arch=source #{pkg} | awk '{print $3}' | sort -V | tail -n1) 2>/dev/null`.strip
 if version == ''
   version = `date +0.0.0-1~%Y%m%d`.strip
 end
