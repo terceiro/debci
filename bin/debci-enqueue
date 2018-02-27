@@ -10,8 +10,8 @@ usage: debci enqueue [PKG [PKG ...]]
 Options:
   -t=TRIGGER, --trigger=TRIGGER
       Associate TRIGGER as the trigger for the requested test run.  TRIGGER is
-      a treated as string, has no special meaning for debci, but can be
-      retrieved later as part of the test run metadata
+      treated as string, has no special meaning for debci, but can be
+      retrieved later as part of the test run metadata.
   -p RELEASE=pkgname,src:srcname,...
   --pin-packages RELEASE=pkgname,src:srcname,...
       Force specific packages to be installed from the given RELEASE. The
