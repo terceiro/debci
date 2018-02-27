@@ -87,7 +87,7 @@ for pkg in $@; do
     --routing-key "$debci_amqp_queue" \
     --body "$pkg $debci_suite $parameters"
   if [ -n "$run_id" ]; then
-    debci job register "$pkg" "$requestor" "$run_id"
+    debci job register "$pkg" "$requestor" "$run_id" "$trigger"
   fi
   report_status "$pkg" "requested"
 done

@@ -8,8 +8,8 @@ require 'thor'
 module Debci
   class JobCLI < Thor
 
-    desc 'register PACKAGE REQUESTOR RUNID', "Register a job"
-    def register(package, requestor, run_id)
+    desc 'register PACKAGE REQUESTOR RUNID TRIGGER', "Register a job"
+    def register(package, requestor, run_id, trigger)
       # TODO check the format of run_id?
       Debci::Job.create!(
         suite: suite,
@@ -17,6 +17,7 @@ module Debci
         arch: arch,
         run_id: run_id,
         requestor: requestor,
+        trigger: trigger,
       )
     end
 
