@@ -25,9 +25,6 @@ outdir="$2"
 shift
 shift
 
-# see create-testbed
-[ $debci_suite = unstable ] && debci_suite=sid
-
 container_name=$(basename ${package})-$(date +%s)
 
 rc=0

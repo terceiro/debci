@@ -16,9 +16,6 @@ if ! which lxc-create >/dev/null; then
   exit 1
 fi
 
-# debootstrap doesn't like "unstable"
-[ $debci_suite = unstable ] && debci_suite=sid
-
 # determine whether it's Debian or Ubuntu
 script=/usr/share/debootstrap/scripts/$debci_suite
 if [ -r $script ]; then
