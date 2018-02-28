@@ -8,19 +8,6 @@ require 'thor'
 module Debci
   class JobCLI < Thor
 
-    desc 'register PACKAGE REQUESTOR RUNID TRIGGER', "Register a job"
-    def register(package, requestor, run_id, trigger)
-      # TODO check the format of run_id?
-      Debci::Job.create!(
-        suite: suite,
-        package: package,
-        arch: arch,
-        run_id: run_id,
-        requestor: requestor,
-        trigger: trigger,
-      )
-    end
-
     desc 'finished STATUS_FILE', 'Marks job as finished'
     def finished(status_file)
       status = Debci::Status.from_file(status_file, suite, arch)

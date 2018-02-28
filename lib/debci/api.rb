@@ -91,18 +91,26 @@ module Debci
         tests.each do |test|
           run_id = gen_run_id()
           pkg = test['package']
+
+          enqueue = true
+          status = nil
           if Debci.blacklist.include?(pkg)
-            Debci::Job.create!(
-              run_id: run_id,
-              package: pkg,
-              suite: suite,
-              arch: arch,
-              requestor: @user,
-              status: 'fail',
-              trigger: test['trigger'],
-            )
-            next
+            enqueue = false
+            status = 'fail'
           end
+
+          Debci::Job.create!(
+            run_id: run_id,
+            package: pkg,
+            suite: suite,
+            arch: arch,
+            requestor: @user,
+            status: status,
+            trigger: test['trigger'],
+          )
+
+          next if !enqueue
+
           cmdline = [
             'debci',
             'enqueue',
