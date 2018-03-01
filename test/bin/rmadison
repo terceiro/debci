@@ -1,0 +1,5 @@
+#!/bin/sh
+
+v=$(date +0.0.0-1~%Y%m%d)
+
+echo "thepackage | ${v} | unstable | source"

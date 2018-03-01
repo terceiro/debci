@@ -135,7 +135,7 @@ start_worker() {
   stop_worker  # in case a test does multiple runs under different modes
   start_collector
   export debci_batch_poll_interval="0.1"
-  debci worker &
+  PATH="$testbin:$PATH" debci worker &
   TEST_WORKER_PID=$!
   sleep 0.1
   if [ -n "${DEBUG:-}" ]; then

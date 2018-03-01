@@ -10,8 +10,6 @@ $@
 EOF
 }
 
-# see create-testbed
-[ $debci_suite = unstable ] && debci_suite=sid
 container_name=$(basename ${debci_test_package:-unknownpackage})-$(date +%s)
 
 debci-autopkgtest --user debci --apt-upgrade "$@" \
