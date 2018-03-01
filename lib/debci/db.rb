@@ -7,7 +7,7 @@ module Debci
     def self.config
       dbdir = Debci.config.data_basedir
       default_db = File.join(dbdir, 'jobs.sqlite3')
-      @config ||= ENV['DBCONFIG'] && YAML.load(ENV['DBCONFIG']) || { adapter: 'sqlite3', database: default_db }
+      @config ||= ENV['DATABASE_URL'] || 'sqlite3://%s' % default_db
     end
 
     def self.establish_connection

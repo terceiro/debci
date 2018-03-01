@@ -1,5 +1,5 @@
 require 'yaml'
-ENV['DBCONFIG'] = { adapter: :sqlite3, database: ':memory:' }.to_yaml
+ENV['DATABASE_URL'] = 'sqlite3::memory:'
 
 RSpec.configure do |config|
   config.before(:each) do
