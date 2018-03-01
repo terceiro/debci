@@ -2,6 +2,7 @@ require 'cgi'
 require 'erb'
 
 require 'debci'
+require 'debci/job'
 require 'fileutils'
 
 module Debci
@@ -13,6 +14,7 @@ module Debci
     def initialize(root_directory=Debci.config.html_dir)
       @root_directory = root_directory
       @repository = Debci::Repository.new
+      @job = Debci::Job.new
       @package_prefixes = @repository.prefixes
 
       @head = read_config_file('head.html')
@@ -32,6 +34,13 @@ module Debci
       @tmpfail = @repository.tmpfail_packages
       @alert_number = @tmpfail.length
       expand_template(:status_alerts, filename)
+    end
+
+    def status_pending_jobs(filename)
+      @status_nav = load_template(:status_nav)
+      @pending = @job.pending
+      @pending_jobs = @pending.length
+      expand_template(:status_pending_jobs, filename)
     end
 
     def platform_specific_issues(filename)
