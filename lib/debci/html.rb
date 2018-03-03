@@ -14,7 +14,6 @@ module Debci
     def initialize(root_directory=Debci.config.html_dir)
       @root_directory = root_directory
       @repository = Debci::Repository.new
-      @job = Debci::Job.new
       @package_prefixes = @repository.prefixes
 
       @head = read_config_file('head.html')
@@ -38,8 +37,7 @@ module Debci
 
     def status_pending_jobs(filename)
       @status_nav = load_template(:status_nav)
-      @pending = @job.pending
-      @pending_jobs = @pending.length
+      @pending = Debci::Job.pending
       expand_template(:status_pending_jobs, filename)
     end
 

@@ -4,7 +4,7 @@ require 'time'
 module Debci
   class Job < ActiveRecord::Base
 
-    def pending
+    def self.pending
       jobs = Debci::Job.where(status: nil)
     end
 

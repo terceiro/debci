@@ -4,7 +4,7 @@
       <h1 class='page-header'>Status <small>/ Pending Jobs</small></h1>
       <%= @status_nav %>
 
-      <h4>There are currently <b><%= @pending_jobs %></b> jobs with results pending.</h4>
+      <h4>There are currently <b><%= @pending.length %></b> jobs with results pending.</h4>
 
       <% if not @pending.empty? %>
         <table class='table'>
