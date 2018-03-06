@@ -84,7 +84,9 @@ generate_package_run() {
   generate_package_blame
   generate_package_json "$last_timestamp"
 
-  debci job finished "${status_dir}/${run_id}.json"
+  if ! echo $run_id | grep -q _ ; then
+      debci job finished "${status_dir}/${run_id}.json"
+  fi
 
   # update "latest" links
   ln -sf "${run_id}.log" "${status_dir}/latest.log"

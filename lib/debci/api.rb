@@ -89,7 +89,6 @@ module Debci
       post '/test/:suite/:arch' do
         tests = load_json(params[:tests])
         tests.each do |test|
-          run_id = gen_run_id()
           pkg = test['package']
 
           enqueue = true
@@ -99,8 +98,7 @@ module Debci
             status = 'fail'
           end
 
-          Debci::Job.create!(
-            run_id: run_id,
+          job = Debci::Job.create!(
             package: pkg,
             suite: suite,
             arch: arch,
@@ -111,6 +109,8 @@ module Debci
 
           next if !enqueue
 
+          run_id = job.run_id.to_s
+        
           cmdline = [
             'debci',
             'enqueue',
@@ -137,13 +137,23 @@ module Debci
         if Debci.blacklist.include?(pkg)
           halt(400, "Blacklisted package: #{pkg}\n")
         end
+
+        job = Debci::Job.create!(
+            package: pkg,
+            suite: params[:suite],
+            arch: params[:arch],
+            requestor: @user,
+        )
+
+        run_id = job.run_id.to_s
+        
         __system__(
           'debci',
           'enqueue',
           '--suite', suite,
           '--arch', arch,
           '--requestor', @user,
-          '--run-id', gen_run_id,
+          '--run-id', run_id,
           pkg)
         201
       end
@@ -178,10 +188,6 @@ module Debci
       else
         halt(403, "Invalid key\n")
       end
-    end
-
-    def gen_run_id
-      Time.now.strftime('%Y%m%d_%H%M%S')
     end
 
   end

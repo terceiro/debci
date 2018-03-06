@@ -1,20 +1,18 @@
 class CreateJobs < ActiveRecord::Migration
   def up
-    create_table :jobs do |t|
+    create_table(:jobs, primary_key: 'run_id') do |t|
       t.timestamps(null: false)
-      t.string  :run_id
-      t.string  :suite
-      t.string  :arch
-      t.string  :package
-      t.string  :version
+      t.string  :suite, :limit => 100
+      t.string  :arch, :limit => 100
+      t.string  :package, :limit => 100
+      t.string  :version, :limit => 100
       t.string  :trigger
-      t.string  :status
-      t.string  :requestor
+      t.string  :status, :limit => 25
+      t.string  :requestor, :limit => 25, index: true
       t.string  :worker
     end
-    add_index :jobs, :requestor
     add_index :jobs, :created_at
-    add_index :jobs, [:package, :suite, :arch, :run_id], unique: true
+    add_index :jobs, :updated_at
   end
 
   def down

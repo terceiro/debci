@@ -115,7 +115,7 @@ while true; do
       ;;
     -i|--run-id)
       run_id="$1"
-      if echo "$run_id" | grep -q '^[0-9]\{8\}_[0-9]\{6\}$' ; then
+      if echo "$run_id" | grep -q -e '^[0-9]\{8\}_[0-9]\{6\}$' -e '^[0-9]*$' ; then
         : ok
       else
         echo "E: invalid run-id: $run_id (format needs to be YYYYMMDD_HHMMSS)"

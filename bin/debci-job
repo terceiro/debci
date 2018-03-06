@@ -11,6 +11,7 @@ module Debci
     desc 'finished STATUS_FILE', 'Marks job as finished'
     def finished(status_file)
       status = Debci::Status.from_file(status_file, suite, arch)
+      status.run_id = status.run_id.to_i
       job = Debci::Job.find_or_create_by(
         suite: suite,
         arch: arch,
