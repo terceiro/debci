@@ -14,9 +14,11 @@ module Debci
   #     => "/path/to/debci/data"
   #
   Config = Struct.new(
+    :amqp_server,
     :arch,
     :arch_list,
     :artifacts_url_base,
+    :backend,
     :config_dir,
     :data_basedir,
     :data_retention_days,

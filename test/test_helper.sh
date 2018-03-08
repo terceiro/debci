@@ -134,7 +134,7 @@ stop_rabbitmq_server() {
 TEST_WORKER_PID=''
 
 start_worker() {
-  export WORKER_START_TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+  export WORKER_START_TIMESTAMP=$(date +%s)
   start_rabbitmq_server
   stop_worker  # in case a test does multiple runs under different modes
   start_collector

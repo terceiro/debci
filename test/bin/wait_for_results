@@ -31,9 +31,8 @@ for pkg in $requested_packages; do
     results=$(echo $(autopkgtest_incoming_dir_for_package $pkg)/[0-9]*/exitcode)
     for res in $results; do
       # cut out stamp from complete path
-      stamp=${res%/exitcode}
-      stamp=${stamp##*/}
-      if [ $stamp '>' ${WORKER_START_TIMESTAMP} -o $stamp '=' ${WORKER_START_TIMESTAMP} ]; then
+      stamp=$(stat --format=%Y "$res")
+      if [ $stamp -ge "${WORKER_START_TIMESTAMP}" ]; then
         found=yes
         break
       fi

@@ -105,30 +105,12 @@ module Debci
             requestor: @user,
             status: status,
             trigger: test['trigger'],
+            pin_packages: test['pin-packages'],
           )
 
-          next if !enqueue
-
-          run_id = job.run_id.to_s
-        
-          cmdline = [
-            'debci',
-            'enqueue',
-            '--suite', suite,
-            '--arch', arch,
-            '--requestor', @user,
-            '--run-id', run_id,
-          ]
-          if test["trigger"]
-            cmdline << "--trigger" << test["trigger"]
-          end
-          Array(test["pin-packages"]).each do |pin|
-            pkg, suite = pin
-            cmdline << "--pin-packages" << "#{suite}=#{pkg}"
-          end
-          cmdline << test["package"]
-          __system__(*cmdline)
+          job.enqueue if enqueue
         end
+
         201
       end
 
@@ -144,17 +126,8 @@ module Debci
             arch: params[:arch],
             requestor: @user,
         )
+        job.enqueue
 
-        run_id = job.run_id.to_s
-        
-        __system__(
-          'debci',
-          'enqueue',
-          '--suite', suite,
-          '--arch', arch,
-          '--requestor', @user,
-          '--run-id', run_id,
-          pkg)
         201
       end
 
