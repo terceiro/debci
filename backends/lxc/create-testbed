@@ -100,7 +100,7 @@ LXC_PATH=$(lxc-config lxc.lxcpath) || LXC_PATH=/var/lib/lxc
 rootfs=$LXC_PATH/$container/rootfs
 # FIXME duplicates logic in bin/debci-setup-chdist && backends/schroot/create-testbed
 if [ "$distro" = debian ]; then
-  if [ "$debci_suite" = sid ]; then
+  if [ "$debci_suite" = unstable ]; then
     buildd_suite="buildd-$debci_suite"
   elif [ "$debci_suite" = stable ]; then
     # workaround for bug #880105
