@@ -5,7 +5,11 @@ set -u
 TEST_RABBIT_PORT=5677
 
 export DEBCI_RUNNING_TESTS=yes
-export debci_quiet='true'
+if [ -z "${DEBUG:-}" ]; then
+  export debci_quiet='true'
+else
+  export debci_quiet='false'
+fi
 export debci_backend='fake'
 export debci_amqp_server="amqp://localhost:$TEST_RABBIT_PORT"
 export debci_amqp_queue="debci-$(dpkg --print-architecture)-test"
