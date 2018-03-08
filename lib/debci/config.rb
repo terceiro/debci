@@ -20,6 +20,7 @@ module Debci
     :config_dir,
     :data_basedir,
     :data_retention_days,
+    :database_url,
     :distro_name,
     :html_dir,
     :packages_dir,
