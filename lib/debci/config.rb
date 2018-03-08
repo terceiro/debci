@@ -23,6 +23,7 @@ module Debci
     :distro_name,
     :html_dir,
     :packages_dir,
+    :quiet,
     :secrets_dir,
     :sendmail_from,
     :sendmail_to,

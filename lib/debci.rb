@@ -22,6 +22,10 @@ module Debci
       @blacklist = nil
     end
 
+    def log(*s)
+      puts(*s) unless config.quiet == 'true'
+    end
+
   end
 
 end
