@@ -14,15 +14,19 @@ module Debci
   #     => "/path/to/debci/data"
   #
   Config = Struct.new(
+    :amqp_server,
     :arch,
     :arch_list,
     :artifacts_url_base,
+    :backend,
     :config_dir,
     :data_basedir,
     :data_retention_days,
+    :database_url,
     :distro_name,
     :html_dir,
     :packages_dir,
+    :quiet,
     :secrets_dir,
     :sendmail_from,
     :sendmail_to,
@@ -32,7 +36,7 @@ module Debci
   ) do
 
     # for development usage
-    if !ENV['ADTTMP'] && !system('which debci >/dev/null')
+    if !ENV['ADTTMP']
       bin = File.dirname(__FILE__) + '/../../bin'
       if File.exists?(bin)
         ENV['PATH'] = [bin,ENV['PATH']].join(':')

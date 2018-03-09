@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -eu
+
+. $debci_base_dir/lib/environment.sh
+
+prepare_args
+
+irb -rdebci "$@"

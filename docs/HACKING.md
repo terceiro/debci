@@ -79,6 +79,12 @@ Now you need to compile a few files that will be part of the user interface:
 $ make
 ```
 
+Now initialize the database:
+
+```
+$ ./bin/debci migrate
+```
+
 debci is composed of a few daemons; you can run all of them in one shot by
 running:
 

@@ -12,15 +12,8 @@ module Debci
     def finished(status_file)
       status = Debci::Status.from_file(status_file, suite, arch)
       status.run_id = status.run_id.to_i
-      job = Debci::Job.find_or_create_by(
-        suite: suite,
-        arch: arch,
-        package: status.package,
-        run_id: status.run_id
-      )
-      job.requestor ||= (ENV['USER'] || 'nobody')
+      job = Debci::Job.find(status.run_id)
       job.version = status.version
-      job.trigger = status.trigger
       job.status = status.status
       job.save!
     end

@@ -5,7 +5,11 @@ set -u
 TEST_RABBIT_PORT=5677
 
 export DEBCI_RUNNING_TESTS=yes
-export debci_quiet='true'
+if [ -z "${DEBUG:-}" ]; then
+  export debci_quiet='true'
+else
+  export debci_quiet='false'
+fi
 export debci_backend='fake'
 export debci_amqp_server="amqp://localhost:$TEST_RABBIT_PORT"
 export debci_amqp_queue="debci-$(dpkg --print-architecture)-test"
@@ -32,6 +36,7 @@ EOF
   export debci_lock_dir="$__tmpdir/lock"
   export debci_arch=$(dpkg --print-architecture)
   export debci_secrets_dir="$__tmpdir/secrets"
+  debci migrate --quiet
 }
 
 status_dir_for_package() {
@@ -130,7 +135,7 @@ stop_rabbitmq_server() {
 TEST_WORKER_PID=''
 
 start_worker() {
-  export WORKER_START_TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+  export WORKER_START_TIMESTAMP=$(date +%s)
   start_rabbitmq_server
   stop_worker  # in case a test does multiple runs under different modes
   start_collector

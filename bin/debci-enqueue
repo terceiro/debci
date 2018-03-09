@@ -1,90 +1,67 @@
-#!/bin/sh
+#!/usr/bin/ruby
 
-set -eu
-short_options='t:p:i:r:'
-long_options='trigger:,pin-packages:,run-id:,requestor:'
+require 'optparse'
 
-usage() {
-  cat <<EOF
-usage: debci enqueue [PKG [PKG ...]]
-Options:
-  -t=TRIGGER, --trigger=TRIGGER
-      Associate TRIGGER as the trigger for the requested test run.  TRIGGER is
-      treated as string, has no special meaning for debci, but can be
-      retrieved later as part of the test run metadata.
-  -p RELEASE=pkgname,src:srcname,...
-  --pin-packages RELEASE=pkgname,src:srcname,...
-      Force specific packages to be installed from the given RELEASE. The
-      format is the same as the --pin-packages option from autopkgtest. RELEASE
-      will be automatically addded to the testbed APT sources.
-  -i ID, --run-id ID
-      Use the specific ID as the run id for the test runs, instead of
-      generating one based on the current date.
-  -r REQUESTOR, --requestor REQUESTOR
-      Set the requestor of the test run. Defaults to \$USER, or 'nobody' if
-      \$USER is not set.
-$@
-EOF
-}
+require 'debci'
+require 'debci/job'
 
-debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
-. $debci_base_dir/lib/environment.sh
-. $debci_base_dir/lib/functions.sh
+# defaults
+trigger = nil
+pin_packages = []
+run_id = nil
+requestor = ENV["USER"] || 'nobody'
+arch = Debci.config.arch
+suite = Debci.config.suite
 
-trigger=""
-pin_packages=""
-requestor="${USER:-nobody}"
-run_id=""
+# parse command line
+optparse = OptionParser.new do |opts|
+  opts.banner = "Usage: debci enqueue [OPTIONS] PKG [PKG ...]"
+  opts.separator "Options:"
 
-while true; do
-  opt="$1"
-  shift
-  case "$opt" in
-    -t|--trigger)
-      trigger="$1"
-      shift
-      ;;
-    -p|--pin-packages)
-      pin_packages="$pin_packages $1"
-      shift
-      ;;
-    -r|--requestor)
-      requestor="$1"
-      shift
-      ;;
-    -i|--run-id)
-      run_id="$1"
-      if echo "$run_id" | grep -q -e '^[0-9]\{8\}_[0-9]\{6\}$' -e '^[0-9]*$' ; then
-        : ok
-      else
-        echo "E: invalid run-id: $run_id (format needs to be YYYYMMDD_HHMMSS)"
-        exit 1
-      fi
-      shift
-      ;;
-    --)
-      break
-      ;;
-  esac
-done
+  opts.on('-s', '--suite SUITE', 'sets the suite to test') do |s|
+    suite = s
+  end
 
-if [ -n "$trigger" ]; then
-  parameters="trigger:$trigger"
-else
-  parameters=""
-fi
-if [ -n "$run_id" ]; then
-  parameters="$parameters run-id:$run_id"
-fi
-for p in $pin_packages; do
-  parameters="$parameters pin-packages:$p"
-done
+  opts.on('-a', '--arch ARCH', 'sets architecture to test') do |a|
+    arch = a
+  end
 
-for pkg in $@; do
-  amqp-publish \
-    --url "${debci_amqp_server}" \
-    --persistent \
-    --routing-key "$debci_amqp_queue" \
-    --body "$pkg $debci_suite $parameters"
-  report_status "$pkg" "requested"
-done
+  opts.on('-b', '--backend BACKEND', 'sets the test backend') do |b|
+    Debci.config.backend = b
+  end
+
+  opts.on('-t', '--trigger TRIGGER', 'associate TRIGGER as the trigger for this test run') do |t|
+    trigger = t
+  end
+
+  opts.on('-p', '--pin-packages PIN', 'sets package pinning for the test') do |p|
+    pin_suite, pin_pkg = p.split('=')
+    pin_packages << [pin_pkg, pin_suite]
+  end
+
+  opts.on('-r', '--requestor REQUESTOR', 'sets the test requestor') do |r|
+    requestor = r
+  end
+
+  opts.on('-i', '--run-id RUNID') do |id|
+    run_id = id
+  end
+
+end
+optparse.parse!
+
+ARGV.each do |pkg|
+  job = Debci::Job.new(
+    package: pkg,
+    arch: arch,
+    suite: suite,
+    requestor: requestor,
+    status: nil,
+    trigger: trigger,
+    pin_packages: pin_packages,
+    run_id: run_id,
+  )
+  job.save!
+  job.enqueue
+  Debci.log "#{pkg} requested"
+end
