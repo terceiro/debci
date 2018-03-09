@@ -36,7 +36,7 @@ module Debci
   ) do
 
     # for development usage
-    if !ENV['ADTTMP'] && !system('which debci >/dev/null')
+    if !ENV['ADTTMP']
       bin = File.dirname(__FILE__) + '/../../bin'
       if File.exists?(bin)
         ENV['PATH'] = [bin,ENV['PATH']].join(':')
