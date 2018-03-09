@@ -36,6 +36,7 @@ EOF
   export debci_lock_dir="$__tmpdir/lock"
   export debci_arch=$(dpkg --print-architecture)
   export debci_secrets_dir="$__tmpdir/secrets"
+  debci migrate --quiet
 }
 
 status_dir_for_package() {

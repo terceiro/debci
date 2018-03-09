@@ -21,4 +21,3 @@ module Debci
 end
 
 Debci::DB.establish_connection
-Debci::DB.migrate
