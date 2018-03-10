@@ -14,7 +14,7 @@ module Debci
 
     def self.migrate
       migrations_path = File.join(File.dirname(__FILE__), 'db', 'migrations')
-      ActiveRecord::Migration.verbose = false
+      ActiveRecord::Migration.verbose = !Debci.config.quiet
       ActiveRecord::Migrator.migrate(migrations_path, nil)
     end
   end
