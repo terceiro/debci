@@ -8,41 +8,11 @@ require 'time'
 
 require 'debci'
 require 'debci/job'
+require 'debci/key'
 
 module Debci
 
   class API < Sinatra::Base
-
-    class KeyManager
-
-      def key_path(user, keyname)
-        keydir = File.join(Debci.config.secrets_dir, 'apikeys/user', user)
-        File.join(keydir, Digest::SHA1.hexdigest("#{user}::#{keyname}"))
-      end
-
-      def set_key(user, keyname)
-        keyfile = key_path(user, keyname)
-        FileUtils.mkdir_p(File.dirname(keyfile))
-        key = SecureRandom.uuid
-        File.open(keyfile, 'w', 0660) do |f|
-          f.puts(key)
-        end
-        key
-      end
-
-      def authenticate(key)
-        keyfiles = File.join(Debci.config.secrets_dir, 'apikeys/user/*/*')
-        # FIXME this iterates over *all* present keys and is very inneficient
-        Dir.glob(keyfiles).each do |keyfile|
-          stored_key = File.read(keyfile).strip
-          if key == stored_key
-            user = File.basename(File.dirname(keyfile))
-            return user
-          end
-        end
-        nil
-      end
-    end
 
     register Sinatra::Namespace
 
@@ -148,14 +118,9 @@ module Debci
       end
     end
 
-    def key_manager
-      @key_manager ||= Debci::API::KeyManager.new
-    end
-
-
     def authenticate!
       key = env['HTTP_AUTH_KEY']
-      @user = key_manager.authenticate(key)
+      @user = Debci::Key.authenticate(key)
       if @user
         response['Auth-User'] = @user
       else

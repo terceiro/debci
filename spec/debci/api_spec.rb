@@ -40,8 +40,7 @@ describe Debci::API do
     end
 
     it 'authenticates with a good key' do
-      km = Debci::API::KeyManager.new
-      key = km.set_key('theuser', 'default')
+      key = Debci::Key.create!(user: 'theuser').key
 
       header 'Auth-Key', key
       get '/api/v1/auth'
@@ -53,8 +52,7 @@ describe Debci::API do
   context 'receiving test requests' do
 
     before do
-      km = Debci::API::KeyManager.new
-      key = km.set_key('theuser', 'default')
+      key = Debci::Key.create!(user: 'theuser').key
 
       header 'Auth-Key', key
     end
