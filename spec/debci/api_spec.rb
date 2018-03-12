@@ -49,6 +49,26 @@ describe Debci::API do
     end
   end
 
+  context 'getting a key' do
+    it "can't get a key with invalid auth" do
+      keys = Debci::Key.count
+
+      post '/api/v1/getkey'
+      expect(last_response.status).to eq(403)
+
+      expect(Debci::Key.count).to eq(keys)
+    end
+
+    it 'gets a key based on client certificate' do
+      post '/api/v1/getkey', {}, { 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com' }
+      expect(last_response.status).to eq(201)
+
+      key = Debci::Key.find_by(user: 'foo@bar.com')
+      expect(key).to_not be_nil
+    end
+
+  end
+
   context 'receiving test requests' do
 
     before do

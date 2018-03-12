@@ -13,6 +13,11 @@ module Debci
       key.encrypted_key = key.class.encrypt(key.key)
     end
 
+    def self.reset!(username)
+      self.find_by(user: username)&.destroy
+      self.create!(user: username)
+    end
+
     def self.authenticate(key)
       entry = self.find_by(encrypted_key: encrypt(key))
       entry && entry.user || nil

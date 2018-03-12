@@ -29,6 +29,17 @@ module Debci
         200
       end
 
+      post '/getkey' do
+        username = ENV['FAKE_CERTIFICATE_USER'] || env['SSL_CLIENT_S_DN_CN']
+        if username
+          key = Debci::Key.reset!(username)
+          headers['Content-Type'] = 'text/plain'
+          [201, key.key]
+        else
+          403
+        end
+      end
+
       post '/retry/:run_id' do
         authenticate!
         run_id = params[:run_id]
