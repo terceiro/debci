@@ -29,6 +29,27 @@ module Debci
         200
       end
 
+      post '/retry/:run_id' do
+        authenticate!
+        run_id = params[:run_id]
+        begin
+          j = Debci::Job.find(run_id)
+        rescue ActiveRecord::RecordNotFound => error
+          halt(400, "Job ID not known: #{run_id}")
+        end
+        job = Debci::Job.create!(
+          package: j.package,
+          suite: j.suite,
+          arch: j.arch,
+          requestor: j.requestor,
+          trigger: j.trigger,
+          pin_packages: j.pin_packages,
+        )
+        job.enqueue
+
+        201
+      end
+
       get '/test' do
         authenticate!
         jobs = Debci::Job.where(requestor: @user)

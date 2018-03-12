@@ -73,6 +73,41 @@ describe Debci::API do
         expect(last_response.status).to eq(201)
       end
 
+      it 'accepts a valid request and can retrigger it' do
+        package = 'mypackage'
+        user = 'myuser'
+        trigger = 'mypackage/0.0.1'
+        pin_packages = ['src:mypackage', 'unstable']
+        Debci::Job.create(
+          package: package,
+          suite: suite,
+          arch: arch,
+          requestor: user,
+          trigger: trigger,
+          pin_packages: pin_packages,
+        )
+
+        # Here we are going to retrigger it
+        post '/api/v1/retry/2'
+
+        job = Debci::Job.last
+        expect(job.run_id).to eq(3)
+        expect(job.package).to eq(package)
+        expect(job.suite).to eq(suite)
+        expect(job.arch).to eq(arch)
+        expect(job.requestor).to eq(user)
+        expect(job.trigger).to eq(trigger)
+        expect(job.pin_packages).to eq(pin_packages)
+
+        expect(last_response.status).to eq(201)
+      end
+
+      it 'rejects to retrigger an unknown run_id' do
+        post '/api/v1/retry/1'
+
+        expect(last_response.status).to eq(400)
+      end
+
       it 'rejects blacklisted package' do
         allow_any_instance_of(Debci::Blacklist).to receive(:include?).with('mypackage').and_return(true)
         post '/api/v1/test/%s/%s/mypackage' % [suite, arch]
