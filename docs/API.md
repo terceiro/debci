@@ -162,3 +162,12 @@ $ curl --header "Auth-Key: $KEY" https://host/api/v1/test?since=1508072999
 
 
 ```
+
+## POST /api/v1/retry/:run_id
+
+This endpoint can be used to reschedule a test that has already been
+performed, e.g. because the reason of the failure has been solved.
+
+URL parameters:
+
+* `:run_id`: which Job ID to retry
