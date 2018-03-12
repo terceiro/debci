@@ -15,6 +15,7 @@ module Debci
   class API < Sinatra::Base
 
     register Sinatra::Namespace
+    set :views, File.dirname(__FILE__) + '/api'
 
     attr_reader :suite, :arch, :user
 
@@ -27,6 +28,10 @@ module Debci
       get '/auth' do
         authenticate!
         200
+      end
+
+      get '/getkey' do
+        erb :getkey
       end
 
       post '/getkey' do

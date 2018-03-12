@@ -67,6 +67,12 @@ describe Debci::API do
       expect(key).to_not be_nil
     end
 
+    it 'displays a user-friendly page' do
+      get '/api/v1/getkey'
+      expect(last_response.status).to eq(200)
+      expect(last_response.content_type).to match('text/html')
+    end
+
   end
 
   context 'receiving test requests' do
