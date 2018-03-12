@@ -21,6 +21,24 @@ status if your API key is valid, and 403 (Forbidden) otherwise. The response
 also includes the username corresponding to the API key in the `Auth-User`
 header.
 
+## POST /api/v1/getkey
+
+Gets a new API key. Any existing API key is invalidated after a new one is
+obtained.
+
+This endpoint does not require an existing API key, but does require proper
+authentication with a client certificate (e.g.
+[Debian SSO](https://wiki.debian.org/DebianSingleSignOn))
+
+## GET /api/v1/getkey
+
+Displays a user-friendly HTML page that can be used by users to get an API key
+using this existing in-browser client certificate.
+
+This endpoint does not require an existing API key, but does require proper
+authentication with a client certificate (e.g.
+[Debian SSO](https://wiki.debian.org/DebianSingleSignOn))
+
 ## POST /api/v1/test/:suite/:arch
 
 URL parameters:
