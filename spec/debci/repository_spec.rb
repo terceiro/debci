@@ -23,7 +23,9 @@ describe Debci::Repository do
 
     history 'packages/unstable/amd64/r/rake', [{'status' => 'fail', 'date' => '2014-08-01 11:11:12'},
                                                {'status' => 'pass', 'date' => '2014-07-07 12:12:15'},
-                                               {'status' => 'tmpfail', 'date' => '2014-03-01 14:15:30'}]
+                                               {'status' => 'tmpfail', 'date' => '2014-03-01 14:15:30'},
+                                               {'status' => 'fail', 'date' => '2015-03-01 14:15:30'},
+                                               {'status' => 'pass', 'date' => '2016-03-01 14:15:30'}]
 
     mkdir_p 'packages/unstable/amd64/r/rake-compiler'
     mkdir_p 'packages/unstable/i386/r/rake-compiler'
@@ -206,6 +208,15 @@ describe Debci::Repository do
 
       expect([:pass, :fail, :tmpfail]).to include(item.status)
     end
+  end
+
+  it 'sorts status history for a package by date in descending order' do
+    history = repository.history_for('rake', 'unstable', 'amd64')
+
+    expect(history.first.status).to eq(:pass)
+    expect(history.first.date.to_s).to eq('2016-03-01 14:15:30 UTC')
+    expect(history.last.status).to eq(:tmpfail)
+    expect(history.last.date.to_s).to eq('2014-03-01 14:15:30 UTC')
   end
 
   it 'knows which packages are temporarily failing' do

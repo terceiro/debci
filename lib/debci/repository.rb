@@ -156,7 +156,10 @@ module Debci
         entries = JSON.load(f)
       end
 
-      entries.map { |test| Debci::Status.from_data(test, suite, architecture) }
+      entries
+        .map { |test| Debci::Status.from_data(test, suite, architecture) }
+        .sort_by(&:date)
+        .reverse
     end
 
     # Backend implementation for Debci::Package#news
