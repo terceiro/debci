@@ -8,7 +8,7 @@ class CreateJobs < ActiveRecord::Migration
       t.string  :version, :limit => 100
       t.string  :trigger
       t.string  :status, :limit => 25
-      t.string  :requestor, :limit => 25, index: true
+      t.string  :requestor, :limit => 256, index: true
       t.text    :pin_packages
       t.string  :worker
     end
