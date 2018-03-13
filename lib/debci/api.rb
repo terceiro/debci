@@ -15,6 +15,7 @@ module Debci
   class API < Sinatra::Base
 
     register Sinatra::Namespace
+    set :views, File.dirname(__FILE__) + '/api'
 
     attr_reader :suite, :arch, :user
 
@@ -27,6 +28,21 @@ module Debci
       get '/auth' do
         authenticate!
         200
+      end
+
+      get '/getkey' do
+        erb :getkey
+      end
+
+      post '/getkey' do
+        username = ENV['FAKE_CERTIFICATE_USER'] || env['SSL_CLIENT_S_DN_CN']
+        if username
+          key = Debci::Key.reset!(username)
+          headers['Content-Type'] = 'text/plain'
+          [201, key.key]
+        else
+          403
+        end
       end
 
       post '/retry/:run_id' do

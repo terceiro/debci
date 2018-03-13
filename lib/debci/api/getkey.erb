@@ -1,0 +1,81 @@
+<html>
+  <head>
+    <noscript>
+      <style type='text/css'>
+        form { display: none }
+      </style>
+    </noscript>
+    <style type='text/css'>
+      body {
+        font-family: sans-serif;
+        max-width: 960px;
+        margin: 50px auto;
+      }
+
+      pre {
+        background-color: #eeeeec;
+        border: 1px solid #babdb6;
+        border-radius: 2px;
+        padding: 0.5em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Get an API key</h1>
+
+    <noscript>
+      <p>
+      To obtain an API key from this page, you need Javascript enabled on your
+      browser.
+      </p>
+
+      <p>
+      You will need to make a HTTP POST request to this page URL, for example
+      using <code>curl</code> or <code>wget</code>, authenticated with a valid
+      SSL client certificate.
+      </p>
+    </noscript>
+
+    <form method="POST">
+      <p>
+      Once you click the "Get Key" button below, any previous key you had will
+      be invalidated.
+      </p>
+
+      <div id='key-info' style='display: none'>
+      <p>
+      Your key:
+      </p>
+      <pre id='key'></pre>
+      <p>
+      Please copy it now and store it in a safe location.
+      <em>It will not be displayed again</em>
+      </p>
+      </div>
+
+      <input type='button' value='Get Key' onclick='getkey(this)'/>
+    </form>
+
+  <script type='text/javascript'>
+    function displaykey() {
+      var status = this.status
+      if (Math.floor(status/100) == 2) {
+        var keyinfo = document.getElementById('key-info')
+        var keytext = document.getElementById('key')
+        keytext.innerHTML =  this.responseText
+        keyinfo.style.display = 'block'
+      } else {
+        var text = this.statusText
+        alert("An error ocurred while trying to get a key: " + status + " " + text)
+      }
+    }
+
+    function getkey(button) {
+      var request = new XMLHttpRequest();
+      request.addEventListener('load', displaykey)
+      request.open("POST", document.location.href)
+      request.send()
+    }
+  </script>
+  </body>
+</html>
