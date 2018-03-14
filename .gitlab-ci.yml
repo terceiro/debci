@@ -1,0 +1,18 @@
+image: 'debian:unstable'
+
+before_script:
+  - apt-get update -qq && apt-get install -y -qq devscripts equivs
+  - mk-build-deps -t 'apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -qqy' -i -r debian/control
+  - make all
+
+check-ui-and-docs:
+  script:
+    - make check-ui-and-docs
+
+spec:
+  script:
+    - make spec
+
+functional-tests:
+  script:
+    - make functional-tests
