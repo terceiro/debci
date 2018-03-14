@@ -128,7 +128,8 @@ done
 alias prepare_args='while [ "$1" != '--' ]; do shift; done; shift'
 
 debci_autopkgtest_dir="${debci_data_basedir}/autopkgtest/${debci_suite}/${debci_arch}"
-debci_autopkgtest_incoming_dir="${debci_data_basedir}/autopkgtest-incoming/${debci_suite}/${debci_arch}"
+debci_autopkgtest_incoming_basedir="${debci_data_basedir}/autopkgtest-incoming"
+debci_autopkgtest_incoming_dir="${debci_autopkgtest_incoming_basedir}/${debci_suite}/${debci_arch}"
 debci_packages_dir="${debci_data_basedir}/packages/${debci_suite}/${debci_arch}"
 debci_status_dir="${debci_data_basedir}/status/${debci_suite}/${debci_arch}"
 debci_html_dir="${debci_data_basedir}/.html"
