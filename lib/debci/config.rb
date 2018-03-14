@@ -51,6 +51,9 @@ module Debci
           if key =~ /_list$/
             value = value.split
           end
+          if key == "quiet"
+            value = (value == 'true')
+          end
           self.send("#{key}=", value)
         end
       end

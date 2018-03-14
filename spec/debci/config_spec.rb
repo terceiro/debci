@@ -16,6 +16,10 @@ describe Debci::Config do
       it "knows about #{key}" do
         expect(config.send(key)).to be_a(Array)
       end
+    elsif key == :quiet
+      it "knows about #{key}" do
+        expect(config.send(key)).to_not be_a(String)
+      end
     else
       it "knows about #{key}" do
         expect(config.send(key)).to be_a(String)
