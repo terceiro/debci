@@ -2,6 +2,11 @@ set -eu
 
 . $(dirname $0)/dep8_helper.sh
 
+testdir=$(dirname $0)
+if [ $# -eq 0 ]; then
+  set -- $(find $testdir -name 'test_*.sh' -and -not -name 'test_helper.sh')
+fi
+
 report() {
   local color="$1"
   local message="$2"
@@ -12,14 +17,11 @@ report() {
   fi
 }
 
-testdir=$(dirname $0)
-
 start_time=$(date +%s)
 tests=0
 passed=0
 failed=0
-cd "$testdir"
-for test_script in $(find . -name 'test_*.sh' -and -not -name 'test_helper.sh'); do
+for test_script in $@; do
   tests=$(($tests + 1))
   tmpdir=$(mktemp -d)
   echo "$test_script"
@@ -27,7 +29,7 @@ for test_script in $(find . -name 'test_*.sh' -and -not -name 'test_helper.sh');
     set +e
     sh $test_script
     echo "$?" > $tmpdir/.exit_status
-  ) | sed -e 's/^/    /'
+  ) 2>&1 | sed -e 's/^/    /; /warning: Insecure world writable dir/d'
   rc=$(cat $tmpdir/.exit_status)
   if [ "$rc" -eq 0 ]; then
     passed=$(($passed + 1))
