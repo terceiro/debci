@@ -10,5 +10,6 @@ RSpec.configure do |config|
     ActiveRecord::Base.connection.tables.reject { |t| t == "schema_migrations" }.each do |table|
       ActiveRecord::Base.connection.execute("DELETE FROM #{table}")
     end
+    allow_any_instance_of(Debci::Job).to receive(:enqueue)
   end
 end
