@@ -109,6 +109,17 @@
   text-decoration: none !important;
 }
 
+#icon-pending:before {
+  font-family: "FontAwesome";
+  content: "\f059 ";
+  color: green;
+  padding-right: 0.3em;
+}
+
+#icon-pending:hover {
+  text-decoration: none !important;
+}
+
 #icon-chart:before {
   font-family: "FontAwesome";
   content: "\f1fe ";

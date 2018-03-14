@@ -66,7 +66,7 @@ if which create-testbed >/dev/null 2>/dev/null; then
     echo "$msg" | sed -s 's/./-/g'
   ) >> $log 2>&1
 
-  if [ -t 1 ] && [ "$debci_quiet" = false ]; then
+  if [ "$debci_quiet" = false ]; then
     run_with_exclusive_lock $debci_testbed_lock mispipe "create-testbed --suite '$debci_suite' 2>&1" "tee --append $log"
   else
     run_with_exclusive_lock "$debci_testbed_lock" create-testbed --suite "$debci_suite" >>$log 2>&1

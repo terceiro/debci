@@ -84,6 +84,10 @@ generate_package_run() {
   generate_package_blame
   generate_package_json "$last_timestamp"
 
+  if ! echo $run_id | grep -q _ ; then
+      debci job finished "${status_dir}/${run_id}.json"
+  fi
+
   # update "latest" links
   ln -sf "${run_id}.log" "${status_dir}/latest.log"
   ln -sf "${run_id}.json" "${status_dir}/latest.json"
@@ -124,11 +128,21 @@ generate_package_run_log_file()
   generate_package_run_dependencies
   generate_package_run_testbed_packages
 
+  get_trigger
+
   # result
   exitcode_to_statusmsg
   banner "Result"
   echo "∙ Status: $status ($message)"
   echo "∙ Duration: ${duration_human}"
+}
+
+
+get_trigger() {
+  trigger=null
+  if [ -f "$adtresult/trigger" ]; then
+    trigger="\"$(cat "$adtresult/trigger")\""
+  fi
 }
 
 # set $status and $message from $adtresult's exit code
@@ -302,7 +316,7 @@ generate_package_json() {
   if [ "${status}" = 'pass' ]; then
     last_pass_version="${version}"
     last_pass_date="${timestamp}"
-  elif [ $(debci-status --field last_pass_version "$pkg") != 'unknown' ]; then
+  elif [ "$(debci-status --field last_pass_version "$pkg")" != 'unknown' ]; then
     last_pass_version="$(jq -r .last_pass_version ${status_dir}/latest.json)"
     last_pass_date="$(jq -r .last_pass_date ${status_dir}/latest.json)"
   else
@@ -324,6 +338,7 @@ generate_package_json() {
   "version": "${version}",
   "date": "${timestamp}",
   "status": "${status}",
+  "trigger": $trigger,
   "blame": $blame,
   "previous_status": "${previous_status}",
   "duration_seconds": "${duration}",

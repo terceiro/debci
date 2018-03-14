@@ -10,29 +10,8 @@ $@
 EOF
 }
 
-base=$(readlink -f $(dirname $(readlink -f $0))/../..)
-. $base/lib/environment.sh
 backend=$(readlink -f $(dirname "$0"))
 . "$backend/environment.sh"
 
-prepare_args
-
-if [ $# -lt 2 ]; then
-  usage
-  exit 1
-fi
-package="$1"
-outdir="$2"
-shift
-shift
-
-rc=0
-autopkgtest \
-  --no-built-binaries \
-  --user debci \
-  --output-dir "$outdir" \
-  --apt-upgrade "$package" "$@" \
-  -- qemu "$image" || rc=$?
-
-echo $rc > "$outdir/exitcode"
-exit $rc
+debci-autopkgtest --user debci "$@" \
+  -- qemu "$image"

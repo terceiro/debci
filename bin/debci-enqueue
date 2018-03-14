@@ -1,26 +1,67 @@
-#!/bin/sh
+#!/usr/bin/ruby
 
-set -eu
+require 'optparse'
 
-usage() {
-  cat <<EOF
-usage: debci enqueue [PKG [PKG ...]]
+require 'debci'
+require 'debci/job'
 
-$@
-EOF
-}
+# defaults
+trigger = nil
+pin_packages = []
+run_id = nil
+requestor = ENV["USER"] || 'nobody'
+arch = Debci.config.arch
+suite = Debci.config.suite
 
-debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
-. $debci_base_dir/lib/environment.sh
-. $debci_base_dir/lib/functions.sh
+# parse command line
+optparse = OptionParser.new do |opts|
+  opts.banner = "Usage: debci enqueue [OPTIONS] PKG [PKG ...]"
+  opts.separator "Options:"
 
-prepare_args
+  opts.on('-s', '--suite SUITE', 'sets the suite to test') do |s|
+    suite = s
+  end
 
-for pkg in $@; do
-  amqp-publish \
-    --url "${debci_amqp_server}" \
-    --persistent \
-    --routing-key "$debci_amqp_queue" \
-    --body "$pkg $debci_suite"
-  report_status "$pkg" "requested"
-done
+  opts.on('-a', '--arch ARCH', 'sets architecture to test') do |a|
+    arch = a
+  end
+
+  opts.on('-b', '--backend BACKEND', 'sets the test backend') do |b|
+    Debci.config.backend = b
+  end
+
+  opts.on('-t', '--trigger TRIGGER', 'associate TRIGGER as the trigger for this test run') do |t|
+    trigger = t
+  end
+
+  opts.on('-p', '--pin-packages PIN', 'sets package pinning for the test') do |p|
+    pin_suite, pin_pkg = p.split('=')
+    pin_packages << [pin_pkg, pin_suite]
+  end
+
+  opts.on('-r', '--requestor REQUESTOR', 'sets the test requestor') do |r|
+    requestor = r
+  end
+
+  opts.on('-i', '--run-id RUNID') do |id|
+    run_id = id
+  end
+
+end
+optparse.parse!
+
+ARGV.each do |pkg|
+  job = Debci::Job.new(
+    package: pkg,
+    arch: arch,
+    suite: suite,
+    requestor: requestor,
+    status: nil,
+    trigger: trigger,
+    pin_packages: pin_packages,
+    run_id: run_id,
+  )
+  job.save!
+  job.enqueue
+  Debci.log "#{pkg} requested"
+end

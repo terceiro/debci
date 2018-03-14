@@ -6,6 +6,9 @@ base=$(readlink -f $(dirname $(readlink -f $0))/../..)
 . $base/lib/environment.sh
 . $base/lib/functions.sh
 
+backend="$(dirname "$0")"
+. "${backend}/environment.sh"
+
 if [ $(whoami) != root ]; then
   echo "E: This script must be run as root"
   exit 1
@@ -52,6 +55,10 @@ create_chroot() {
   if grep -q debian "${debci_chroot_path}/etc/apt/sources.list"; then
     if [ "$debci_suite" = unstable ]; then
       buildd_suite="buildd-$debci_suite"
+    elif [ "$debci_suite" = stable ]; then
+      # workaround for bug #880105
+      stable=$(curl -Ls http://deb.debian.org/debian/dists/stable/Release | grep-dctrl -n -s Codename '')
+      buildd_suite="buildd-$stable-proposed-updates"
     else
       buildd_suite="buildd-$debci_suite-proposed-updates"
     fi

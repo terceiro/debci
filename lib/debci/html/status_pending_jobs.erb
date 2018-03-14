@@ -1,0 +1,35 @@
+<div class='container'>
+  <div class='row'>
+    <div class='col-md-12'>
+      <h1 class='page-header'>Status <small>/ Pending Jobs</small></h1>
+      <%= @status_nav %>
+
+      <h4>There are currently <b><%= @pending.length %></b> jobs with results pending.</h4>
+
+      <% if not @pending.empty? %>
+        <table class='table'>
+          <tr>
+            <th>Package</th>
+            <th>Trigger</th>
+            <th>Requested</th>
+          </tr>
+
+        <% @pending.each do |job| %>
+            <tr>
+              <td>
+              <a class='pending' href='/packages/<%= job.prefix %>/<%= job.package %>/'><%= job.package %> on <%= job.suite %></a>
+              </td>
+              <td>
+                <%= job.trigger %></a>
+              </td>
+              <td>
+                <%= job.created_at %> | <%= job.time %></a>
+              </td>
+            </tr>
+        <% end %>
+        </table>
+      <% end %>
+
+    </div> <!-- class='col-md-12' -->
+  </div> <!-- class='row' -->
+</div> <!-- class='container' -->

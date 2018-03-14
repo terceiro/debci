@@ -13,10 +13,30 @@ module Debci
   #     >> Debci.config.data_basedir
   #     => "/path/to/debci/data"
   #
-  Config = Struct.new(:data_basedir, :html_dir, :sendmail_from, :sendmail_to, :url_base, :artifacts_url_base, :config_dir, :packages_dir, :distro_name, :data_retention_days) do
+  Config = Struct.new(
+    :amqp_server,
+    :arch,
+    :arch_list,
+    :artifacts_url_base,
+    :backend,
+    :config_dir,
+    :data_basedir,
+    :data_retention_days,
+    :database_url,
+    :distro_name,
+    :html_dir,
+    :packages_dir,
+    :quiet,
+    :secrets_dir,
+    :sendmail_from,
+    :sendmail_to,
+    :suite,
+    :suite_list,
+    :url_base,
+  ) do
 
     # for development usage
-    if !ENV['ADTTMP'] && !system('which debci >/dev/null')
+    if !ENV['ADTTMP']
       bin = File.dirname(__FILE__) + '/../../bin'
       if File.exists?(bin)
         ENV['PATH'] = [bin,ENV['PATH']].join(':')
@@ -28,6 +48,12 @@ module Debci
       IO.popen(['debci', 'config', *members.map(&:to_s)]) do |data|
         data.each_line.each do |line|
           key, value = line.strip.split('=')
+          if key =~ /_list$/
+            value = value.split
+          end
+          if key == "quiet"
+            value = (value == 'true')
+          end
           self.send("#{key}=", value)
         end
       end

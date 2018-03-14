@@ -7,6 +7,9 @@ cd $base
 . $base/lib/environment.sh
 . $base/lib/functions.sh
 
+backend="$(dirname "$0")"
+. "${backend}/environment.sh"
+
 log "I: Updating $debci_chroot_name (may take a while)"
 
 schroot \

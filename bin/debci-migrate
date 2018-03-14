@@ -26,10 +26,13 @@ for migration in $(run-parts --list "$migrations_dir"); do
   version=$(basename "$migration" | sed 's/[^0-9].*//')
   if [ "$version" -gt "$current_version" ]; then
     migration_name=$(basename "$migration")
-    echo "» $migration_name ..."
+    log "» $migration_name ..."
     "$migration" "$debci_data_basedir"
     current_version="$version"
   fi
 done
 
 echo "$current_version" > "$debci_data_basedir/schema_version"
+
+# migrate relational DB
+ruby -r debci/db -e 'Debci::DB.migrate'

@@ -12,8 +12,18 @@ describe Debci::Config do
   end
 
   KEYS.each do |key|
-    it "knows about #{key}" do
-      expect(config.send(key)).to be_a(String)
+    if key =~ /_list$/
+      it "knows about #{key}" do
+        expect(config.send(key)).to be_a(Array)
+      end
+    elsif key == :quiet
+      it "knows about #{key}" do
+        expect(config.send(key)).to_not be_a(String)
+      end
+    else
+      it "knows about #{key}" do
+        expect(config.send(key)).to be_a(String)
+      end
     end
     it "strips newlines off #{key}" do
       expect(config.send(key)).to_not end_with("\n")

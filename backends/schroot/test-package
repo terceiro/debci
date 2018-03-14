@@ -10,24 +10,10 @@ $@
 EOF
 }
 
-base=$(readlink -f $(dirname $(readlink -f $0))/../..)
-. $base/lib/environment.sh
-. $base/lib/functions.sh
+backend="$(dirname "$0")"
+. "${backend}/environment.sh"
 
-prepare_args
+session_id="${debci_chroot_name}-$(basename "$debci_test_package")"
 
-if [ $# -lt 2 ]; then
-  usage
-  exit 1
-fi
-package="$1"
-outdir="$2"
-shift
-shift
-
-session_id="${debci_chroot_name}-$(basename "$package")"
-
-rc=0
-autopkgtest --no-built-binaries --user debci --output-dir "$outdir" --apt-upgrade "$package" "$@" -- schroot --session-id="${session_id}" "${debci_chroot_name}" || rc=$?
-echo $rc > "$outdir/exitcode"
-exit $rc
+debci-autopkgtest --user debci --apt-upgrade "$@" \
+  -- schroot --session-id="${session_id}" "${debci_chroot_name}"

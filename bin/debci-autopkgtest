@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -eu
+
+if [ $# -lt 2 ]; then
+  echo "usage: $0 OUTPUDIR [AUTOPKGTEST ARGUMENTS ...]"
+  exit 1
+fi
+
+rc=0
+autopkgtest \
+  --no-built-binaries \
+  "$@" || rc=$?
+
+echo $rc > "$debci_test_outputdir/exitcode"
+exit $rc

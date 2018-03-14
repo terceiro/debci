@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'debci'
+require 'debci/status'
+require 'debci/job'
+require 'thor'
+
+module Debci
+  class JobCLI < Thor
+
+    desc 'finished STATUS_FILE', 'Marks job as finished'
+    def finished(status_file)
+      status = Debci::Status.from_file(status_file, suite, arch)
+      status.run_id = status.run_id.to_i
+      job = Debci::Job.find(status.run_id)
+      job.version = status.version
+      job.status = status.status
+      job.save!
+    end
+
+    no_commands do
+      def arch
+        Debci.config.arch
+      end
+      def suite
+        Debci.config.suite
+      end
+    end
+
+  end
+end
+
+Debci::JobCLI.start

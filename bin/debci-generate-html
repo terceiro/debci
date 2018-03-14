@@ -13,6 +13,7 @@ writer = Debci::HTML.new
 writer.index('index.html')
 writer.status('status/index.html')
 writer.status_alerts('status/alerts/index.html')
+writer.status_pending_jobs('status/pending/index.html')
 writer.blacklist('status/blacklist/index.html')
 writer.platform_specific_issues('status/platform-specific-issues/index.html')
 

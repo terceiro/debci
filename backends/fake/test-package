@@ -1,20 +1,50 @@
 #!/usr/bin/ruby
 
+require 'optparse'
 require 'fileutils'
+require 'stringio'
 
-if ARGV.length < 2
-  puts "usage: test-package [OPTIONS] PACKAGE OUTPUTDIR [EXTRA-AUTOPKGTEST-ARGS]"
-  exit 1
+log = StringIO.new
+
+log.puts 'command line arguments: ' + ARGV.join(' ')
+
+pkg = nil
+outdir = nil
+
+optparse = OptionParser.new do |opts|
+  opts.banner = "Usage: test-package --output-dir OUTPUTDIR [AUTOPKGTEST-ARGS] PACKAGE"
+  opts.separator "Options:"
+
+  opts.on('--output-dir OUTPUTDIR') do |arg|
+    outdir = arg
+  end
+
+  # options with arguments
+  ['--user', '--trigger', '--add-apt-release', '--pin-packages'].each do |ign|
+    opts.on("#{ign} IGNORED") do |arg|
+      log.puts "Ignored option/argument: #{ign} #{arg}"
+    end
+  end
+
+  # options without arguments
+  ['--apt-upgrade'].each do |ign|
+    opts.on(ign) do
+      log.puts "Ignored option:# {ign}"
+    end
+  end
+end
+optparse.parse!
+
+if ARGV.length != 1 or outdir.nil?
+  log.puts optparse
+  puts log.string
+  exit(1)
 end
 
-pkg = ARGV.shift
-outdir = ARGV.shift
+pkg  = ARGV.first
 
-ARGV.each do |a|
-  puts "W: ignoring extra argument: " + a
-end
+FileUtils.mkdir_p(outdir)
 
-FileUtils.mkdir(outdir)
 if ENV["DEBCI_FAKE_DEPS"]
   File.open(File.join(outdir, 'foo0t-mytest-packages'), 'w') do |f|
     ENV["DEBCI_FAKE_DEPS"].split('|').each do |line|
@@ -23,23 +53,24 @@ if ENV["DEBCI_FAKE_DEPS"]
   end
 end
 
-version = `(rmadison --suite=testing --arch=source #{pkg} | awk '{print $3}' | sort -V | tail -n1) 2>/dev/null`.strip
+suite = ENV['debci_suite'] || 'unstable'
+version = `(rmadison --suite=#{suite} --arch=source #{pkg} | awk '{print $3}' | sort -V | tail -n1) 2>/dev/null`.strip
 if version == ''
   version = `date +0.0.0-1~%Y%m%d`.strip
 end
-File.open(File.join(outdir, 'testpkg-version'), 'w') { |f| f.puts version }
+File.open(File.join(outdir, 'testpkg-version'), 'w') { |f| f.puts "#{pkg} #{version}" }
 
 if ENV["DEBCI_FAKE_COMMAND"]
   io = IO.popen(ENV["DEBCI_FAKE_COMMAND"])
-  log = [ '$ ' + ENV['DEBCI_FAKE_COMMAND'], io.read].join("\n")
+  log.puts [ '$ ' + ENV['DEBCI_FAKE_COMMAND'], io.read]
   io.close
   rc = $?.exitstatus
   if rc != 0
     rc = 4
   end
 else
-  puts "Not really running anything .."
-  puts "This has 80% chance of passing, 10% of failing, and 10% of tmpfailing"
+  log.puts "Not really running anything .."
+  log.puts "This has 80% chance of passing, 10% of failing, and 10% of tmpfailing"
   r = nil
   case ENV['DEBCI_FAKE_RESULT']
   when 'pass'
@@ -54,13 +85,13 @@ else
 
   case r
   when 0..7
-    log = "Passed :-)\n"
+    log.puts "Passed :-)"
     rc = 0
   when 8
-    log = "Failed :-(\n"
+    log.puts "Failed :-("
     rc = 4
   when 9
-    log = "Some error ocurred\n"
+    log.puts "Some error ocurred"
     rc = 16
   end
 end
@@ -82,13 +113,13 @@ if ENV["DEBCI_FAKE_KILLPARENT"]
   end
 end
 
-log = log + "autopkgtest [%s]: finished\n" % Time.now.strftime('%Y-%m-%d %H:%M:%S')
+log.puts "autopkgtest [%s]: finished\n" % Time.now.strftime('%Y-%m-%d %H:%M:%S')
 
 File.open(File.join(outdir, 'log'), 'w') do |f|
-  f.puts log
+  f.puts log.string
 end
 File.open(File.join(outdir, 'exitcode'), 'w') do |f|
   f.puts rc
 end
-puts log
+puts log.string
 exit rc

@@ -1,6 +1,8 @@
+require 'cgi'
 require 'erb'
 
 require 'debci'
+require 'debci/job'
 require 'fileutils'
 
 module Debci
@@ -31,6 +33,12 @@ module Debci
       @tmpfail = @repository.tmpfail_packages
       @alert_number = @tmpfail.length
       expand_template(:status_alerts, filename)
+    end
+
+    def status_pending_jobs(filename)
+      @status_nav = load_template(:status_nav)
+      @pending = Debci::Job.pending
+      expand_template(:status_pending_jobs, filename)
     end
 
     def platform_specific_issues(filename)
@@ -115,6 +123,10 @@ module Debci
       if File.exist?(file_path)
         File.read(file_path)
       end
+    end
+
+    def escape(text)
+      text && CGI.escapeHTML(text)
     end
 
   end

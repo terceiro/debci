@@ -25,14 +25,45 @@ tags=''
 
 # Process one request. Read the AMQP message from stdin.
 do_request() {
+  local request
   local pkg
   local suite
+  local opts
 
-  read pkg suite || true  # we expect EOF and thus read to fail
-
-  if [ -z "$suite" ]; then
-    suite="$debci_suite"
+  read request || true  # we expect EOF and thus read to fail
+  set -- $request
+  if [ $# -eq 0 ]; then
+    return
   fi
+  pkg="$1"
+  suite="${2:-}"
+  if [ -n "$suite" ]; then
+    shift 2
+  else
+    suite="$debci_suite"
+    shift 1
+  fi
+
+  releases=""
+  opts=""
+  for param in $@; do
+    case "$param" in
+      trigger:*)
+        opts="$opts --trigger=${param#trigger:}"
+        ;;
+      pin-packages:*)
+        arg=${param#pin-packages:}
+        opts="$opts --pin-packages=$arg"
+        ;;
+      run-id:*)
+        arg=${param#run-id:}
+        opts="$opts --run-id=$arg"
+        ;;
+      *)
+        echo "Unknown test parameter: $param" >&2
+        ;;
+    esac
+  done
 
   log "$pkg $suite/$debci_arch started"
 
@@ -44,7 +75,9 @@ do_request() {
       --quiet \
       --data-dir "$tmp_dir" \
       --suite "$suite" \
-      --print-output "$pkg"
+      --print-output \
+      $opts \
+      "$pkg"
   )"
 
   if [ ! -s "$result_dir/exitcode" ]; then

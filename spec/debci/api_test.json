@@ -1,0 +1,10 @@
+[
+  {
+    "package": "package1",
+    "trigger": "foo/1.0",
+    "pin-packages": [
+      ["src:foo", "unstable"]
+    ]
+  }
+]
+

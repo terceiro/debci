@@ -10,22 +10,4 @@ $@
 EOF
 }
 
-base=$(readlink -f $(dirname $(readlink -f $0))/../..)
-. $base/lib/environment.sh
-. $base/lib/functions.sh
-
-prepare_args
-
-if [ $# -lt 2 ]; then
-  usage
-  exit 1
-fi
-package="$1"
-outdir="$2"
-shift
-shift
-
-rc=0
-autopkgtest --no-built-binaries --output-dir "$outdir" "$package" "$@" -- null || rc=$?
-echo $rc > "$outdir/exitcode"
-exit $rc
+debci-autopkgtest "$@" -- null

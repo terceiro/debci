@@ -55,6 +55,9 @@ debci_sendmail_from="${debci_sendmail_from:-$debci_distro_name Continuous Integr
 debci_sendmail_to="${debci_sendmail_to:-%s@localhost}"
 debci_url_base="${debci_url_base:-http://localhost:8080}"
 debci_artifacts_url_base="${debci_artifacts_url_base:-}"
+debci_database_url="${debci_database_url:-sqlite3://$debci_data_basedir/debci.sqlite3}"
+
+debci_secrets_dir=${debci_secrets_dir:-$(readlink -f "${debci_base_dir}/secrets")}
 
 shared_short_options='c:s:a:b:d:hq'
 shared_long_options='config:,suite:,arch:,backend:,data-dir:,amqp:,help,quiet'
@@ -125,7 +128,7 @@ for arg in "$@"; do
   fi
 done
 
-alias prepare_args='while [ "$1" != '--' ]; do shift; done; shift'
+alias prepare_args='while [ "$1" != "--" ]; do shift; done; shift'
 
 debci_autopkgtest_dir="${debci_data_basedir}/autopkgtest/${debci_suite}/${debci_arch}"
 debci_autopkgtest_incoming_basedir="${debci_data_basedir}/autopkgtest-incoming"
@@ -135,10 +138,6 @@ debci_status_dir="${debci_data_basedir}/status/${debci_suite}/${debci_arch}"
 debci_html_dir="${debci_data_basedir}/.html"
 
 debci_gnupg_dir="${debci_base_dir}/gnupg"
-
-debci_chroots_dir="${debci_base_dir}/chroots"
-debci_chroot_name="debci-${debci_suite}-${debci_arch}"
-debci_chroot_path="${debci_chroots_dir}/${debci_chroot_name}"
 
 debci_bin_dir="${debci_base_dir}/bin"
 

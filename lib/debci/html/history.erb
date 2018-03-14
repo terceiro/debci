@@ -39,6 +39,7 @@
         <tr>
           <td><b>Version</b></td>
           <td><b>Date</b></td>
+          <td><b>Trigger</b></td>
           <td><b>Duration</b></td>
           <td><b>Status</b></td>
           <td><b>Results</b></td>
@@ -51,6 +52,7 @@
             <tr>
               <td><%= test.version %></td>
               <td><%= test.date %></td>
+              <td><%= escape(test.trigger) || '&mdash;' %></td>
               <td><%= test.duration_human %></td>
               <td class="<%= test.status %>"><%= test.status %></td>
               <% if test.expired? %>

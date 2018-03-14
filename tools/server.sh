@@ -12,9 +12,7 @@ case $# in
     ;;
 esac
 
-document_root="$(dirname $0)/../public"
-
-echo "I: Go to: http://localhost:$port/"
+echo "I: Web UI at http://localhost:$port/"
 echo "I: Hit Control+C to stop"
 echo ""
-cd "$document_root" && python3 -m http.server "$port"
+rerun --background --dir lib -- rackup --include lib --port="$port"
