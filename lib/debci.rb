@@ -23,7 +23,7 @@ module Debci
     end
 
     def log(*s)
-      puts(*s) unless config.quiet == 'true'
+      puts(*s) unless config.quiet
     end
 
   end
