@@ -2,18 +2,19 @@
 
 set -eu
 
-incoming=`$(dirname $0)/../bin/debci config --values-only autopkgtest_incoming_dir`
+incoming=`$(dirname $0)/../bin/debci config --values-only autopkgtest_incoming_basedir`
 
 mkdir -p "$incoming"
 
 while true; do
   if inotifywait \
     --event modify \
+    --event create \
     --timeout 1 \
     --recursive \
     --quiet --quiet \
     "$incoming"; then
-    "echo I: changes in incoming directory; updating"
+    echo "I: changes in incoming directory; updating"
     ./bin/debci update
   fi
 done
