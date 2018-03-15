@@ -1,8 +1,37 @@
-debci (1.8) UNRELEASED; urgency=medium
+debci (1.8) unstable; urgency=medium
 
-  * WIP
+  [ Antonio Terceiro ]
+  * This release adds two major features that were developed to support
+    triggering tests to speed up Debian testing migrations:
+    * Added support for "migration tests", which are tests that run on testbeds
+      of a given suite (e.g. testing) with some packages from another suite
+      (e.g.  unstable).
+    * Added an HTTP API for requesting test runs. This will be used by britney
+      to test package versions from unstable against testing.
+  * debci setup: pass --suite to testbed creation scripts
+  * debci test: Extract autopkgtest calls into a central helper program
+  * backends/lxc: drop the unstable → sid renaming
+  * Add script to run a Ruby shell
+  * Move enqueing process to Ruby for performance reasons
+  * debian/control
+    * replace build dependency on dh-systemd with debhelper (>= 9.20160709)
+    * Bump Standards-Version to 4.1.3; no changes needed
+    * remove unnecessary Testsuite: field
 
- -- Antonio Terceiro <terceiro@debian.org>  Sat, 14 Oct 2017 14:04:10 -0300
+  [ Paul Gevers ]
+  * backends/fake: use month instead of minutes in the generated package name
+    for non-existent packages
+  * backends/fake: use rmadison get more up-to-date version numbers
+  * Initial version for a page where one can see which jobs have pending
+    results
+  * Add retrigger end point to the API
+
+  [ Lucas Kanashiro ]
+  * Update git repository URL to point to salsa
+  * UI: sort package status history based on date in descending order
+  * define pipeline via gitlab-ci.yml
+
+ -- Antonio Terceiro <terceiro@debian.org>  Thu, 15 Mar 2018 14:52:34 -0300
 
 debci (1.7.1) unstable; urgency=medium
 
