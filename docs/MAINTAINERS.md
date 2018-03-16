@@ -70,6 +70,12 @@ $ sudo debci setup
 This might take a few minutes since it will create a fresh container from
 scratch.
 
+You can use an alternative mirror using, for example:
+
+```
+$ sudo env MIRROR=http://my.local.mirror/debian debci setup
+```
+
 Now to actually run tests, we'll use `autopkgtest` directly. The following
 examples assume your architecture is amd64, replace it by your actual
 architecture if that is not the case.
