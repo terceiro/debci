@@ -85,6 +85,12 @@ Now initialize the database:
 $ ./bin/debci migrate
 ```
 
+Create a local distribution with chdist:
+
+```
+$ ./bin/debci setup-chdist
+```
+
 debci is composed of a few daemons; you can run all of them in one shot by
 running:
 
