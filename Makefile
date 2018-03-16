@@ -58,7 +58,7 @@ test: check
 
 doc: public/doc/index.html public/doc/architecture.svg
 
-public/doc/index.html public/doc/jq/jquery.js: README.md docs/*.md $(shell find lib -name '*.rb')
+public/doc/index.html public/doc/jq/jquery.js: README.md $(sort $(wildcard docs/*.md)) $(shell find lib -name '*.rb' | LC_ALL=C sort)
 	$(RM) public/doc/js/jquery.js
 	yardoc --markup markdown --output-dir public/doc --main README.md lib - $^
 	ln -sf ../../jquery.js public/doc/js/jquery.js
