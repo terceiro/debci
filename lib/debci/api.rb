@@ -45,8 +45,15 @@ module Debci
         end
       end
 
+      get '/retry/:run_id' do
+        erb :retry
+      end
+
       post '/retry/:run_id' do
-        authenticate!
+        username = ENV['FAKE_CERTIFICATE_USER'] || env['SSL_CLIENT_S_DN_CN']
+        if not username
+          authenticate!
+        end
         run_id = params[:run_id]
         begin
           j = Debci::Job.find(run_id)
