@@ -100,7 +100,7 @@ module Debci
 
           enqueue = true
           status = nil
-          if Debci.blacklist.include?(pkg)
+          if Debci.blacklist.include?(pkg) || !valid_package_name?(pkg)
             enqueue = false
             status = 'fail'
           end
@@ -125,6 +125,9 @@ module Debci
         pkg = params[:package]
         if Debci.blacklist.include?(pkg)
           halt(400, "Blacklisted package: #{pkg}\n")
+        end
+        if ! valid_package_name?(pkg)
+          halt(400, "Invalid package name: #{pkg}\n")
         end
 
         job = Debci::Job.create!(
@@ -163,6 +166,10 @@ module Debci
       else
         halt(403, "Invalid key\n")
       end
+    end
+
+    def valid_package_name?(pkg)
+      pkg =~ %r{^[a-z0-9+-]+$}
     end
 
   end

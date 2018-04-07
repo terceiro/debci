@@ -140,6 +140,13 @@ describe Debci::API do
         expect(last_response.status).to eq(400)
       end
 
+      it 'rejects invalid package names' do
+        jobs = Debci::Job.count
+        post '/api/v1/test/%s/%s/foo=bar' % [suite, arch]
+        expect(last_response.status).to eq(400)
+        expect(Debci::Job.count).to eq(jobs)
+      end
+
       it 'rejects unknown arch' do
         post '/api/v1/test/%s/%s/mypackage' % [suite, 'xyz']
         expect(last_response.status).to eq(400)
@@ -195,6 +202,17 @@ describe Debci::API do
 
         job2 = Debci::Job.find_by(package: 'package2', suite: suite, arch: arch)
         expect(job2.status).to be_nil
+      end
+
+      it 'marks invalid package names as failed right away' do
+        post '/api/v1/test/%s/%s' % [suite, arch], tests: '[{"package": "package1"}, {"package": "foo=package2"}]'
+        expect(last_response.status).to eq(201)
+
+        job1 = Debci::Job.find_by(package: 'package1', suite: suite, arch: arch)
+        expect(job1.status).to be_nil
+
+        job2 = Debci::Job.find_by(package: 'foo=package2', suite: suite, arch: arch)
+        expect(job2.status).to eq('fail')
       end
 
       it 'handles invalid JSON gracefully' do
