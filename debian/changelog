@@ -13,6 +13,7 @@ debci (1.9) unstable; urgency=medium
   * tools/init-dev.sh: initialize database
   * debci-worker: refuse invalid package names
   * api: reject invalid package names
+  * Use salsa.debian.org in Vcs-* fields
 
  -- Antonio Terceiro <terceiro@debian.org>  Sat, 07 Apr 2018 15:24:55 -0300
 
