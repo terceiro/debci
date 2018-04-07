@@ -36,7 +36,7 @@ done
 
 if which create-testbed >/dev/null 2>/dev/null; then
 
-  log "Starting testbed setup: $(date)"
+  log "Starting testbed setup for ${debci_suite}: $(date)"
 
   if [ -n "$force" ]; then
     rm -f "$debci_testbed_timestamp"
@@ -75,7 +75,7 @@ if which create-testbed >/dev/null 2>/dev/null; then
   # record timestamp
   touch "$debci_testbed_timestamp"
 
-  log "Finished testbed setup: $(date)"
+  log "Finished testbed setup for ${debci_suite}: $(date)"
 else
   log "I: $debci_backend backend does not provide a way to create a testbed"
 fi
