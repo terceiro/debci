@@ -1,3 +1,9 @@
+debci (1.9.1) unstable; urgency=medium
+
+  * api: accept + in package names
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 07 Apr 2018 15:45:26 -0300
+
 debci (1.9) unstable; urgency=medium
 
   [ Paul Gevers ]
