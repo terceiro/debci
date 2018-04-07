@@ -1,3 +1,21 @@
+debci (1.9) unstable; urgency=medium
+
+  [ Paul Gevers ]
+  * Make building debci reproducible (Closes: #880804)
+  * Move from http://http.debian.net to http://deb.debian.org (Closes: #879654)
+  * Document the use of a local mirror (Closes: #879655)
+  * Document the need for running chdist
+  * docs: fix typo
+
+  [ Antonio Terceiro ]
+  * debci-setup: mention suite in the logs
+  * tools/build.sh: tell rerun that `make` exits
+  * tools/init-dev.sh: initialize database
+  * debci-worker: refuse invalid package names
+  * api: reject invalid package names
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 07 Apr 2018 15:24:55 -0300
+
 debci (1.8) unstable; urgency=medium
 
   [ Antonio Terceiro ]
