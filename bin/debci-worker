@@ -65,6 +65,11 @@ do_request() {
     esac
   done
 
+  if ! (echo "$pkg" | grep -q '^[a-z0-9.+-]\+$'); then
+    log "W: invalid package name: $pkg, ignoring"
+    return
+  fi
+
   log "$pkg $suite/$debci_arch started"
 
   local tmp_dir=$(mktemp -d)
