@@ -248,4 +248,30 @@ describe Debci::API do
 
   end
 
+  context 'validating package names' do
+    %w[
+      foo
+      foo-bar
+      foo.bar
+      foo+
+      foo-1.0
+      libfoo++
+    ].each do |pkg|
+      it "accepts #{pkg}" do
+        expect(Debci::API.valid_package_name?(pkg)).to be_truthy
+      end
+    end
+
+    %w[
+      foo=bar
+      foo~bar
+      foo`bar`
+      foo$(bar)
+    ].each do |pkg|
+      it "rejects #{pkg}" do
+        expect(Debci::API.valid_package_name?(pkg)).to be_falsy
+      end
+    end
+  end
+
 end
