@@ -10,6 +10,8 @@
         <table class='table'>
           <tr>
             <th>Package</th>
+            <th>Suite</th>
+            <th>Architecture</th>
             <th>Trigger</th>
             <th>Requested</th>
           </tr>
@@ -17,7 +19,13 @@
         <% @pending.each do |job| %>
             <tr>
               <td>
-              <a class='pending' href='/packages/<%= job.prefix %>/<%= job.package %>/'><%= job.package %> on <%= job.suite %></a>
+                <a class='pending' href='/packages/<%= job.prefix %>/<%= job.package %>/<%= job.suite %>/<%= job.arch%>/'><%= job.package %></a>
+              </td>
+              <td>
+                <a class='pending' href='/packages/<%= job.prefix %>/<%= job.package %>/<%= job.suite %>/<%= job.arch%>/'><%= job.suite %></a>
+              </td>
+              <td>
+                <a class='pending' href='/packages/<%= job.prefix %>/<%= job.package %>/<%= job.suite %>/<%= job.arch%>/'><%= job.arch %></a>
               </td>
               <td>
                 <%= job.trigger %></a>
