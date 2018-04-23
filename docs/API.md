@@ -65,8 +65,11 @@ single test request, and can contain the following keys:
   array is another array with 2 elements: the first is the package, and the
   second is the source. Examples:
 
-  * `["foo", "unstable"]`: get `foo` from unstable
-  * `["src:bar", "unstable"]`: get all binaries built from `bar` from unstable
+    * `["foo", "unstable"]`: get `foo` from unstable
+    * `["src:bar", "unstable"]`: get all binaries built from `bar` from unstable
+    * `["foo,src:bar", "unstable"]`: get `foo` and all binaries built from `bar` from unstable
+
+  Note: each suite can be only present once.
 
 In the example below, we are requesting to test `debci` and `vagrant` from
 testing, but with all binaries that come from the `ruby-defaults` source coming
