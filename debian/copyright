@@ -1,9 +1,9 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: dep8
-Source: http://git.debian.org/?p=users/terceiro/dep8.git;a=summary
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: debci
+Source: https://salsa.debian.org/ci-team/debci
 
 Files: *
-Copyright: © 2013-2016 the debci development team
+Copyright: © 2013-2018 the debci development team
 License: GPL-3.0+
 
 License: GPL-3.0+
