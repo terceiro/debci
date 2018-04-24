@@ -2,6 +2,7 @@ Source: debci
 Section: devel
 Priority: optional
 Maintainer: Antonio Terceiro <terceiro@debian.org>
+Uploaders: Paul Gevers <elbrus@debian.org>,
 Build-Depends: amqp-tools,
                dctrl-tools,
                debhelper (>= 9.20160709),
