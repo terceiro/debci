@@ -11,7 +11,7 @@ request() {
 }
 
 settle_processes() {
-  local timeout=100
+  local timeout=600
   while [ $timeout -gt 0 ]; do
     PS=$(ps hx -o pid,comm|egrep "(debci|test-package|autopkgtest|amqp-consume)"|sort -u)
     [ -n "$PS" ] || break
@@ -26,8 +26,8 @@ run_mypkg() {
   amqp-declare-queue --url $debci_amqp_server -q $debci_amqp_queue -d > /dev/null
   start_collector
   request mypkg
-  # give it some time to process requests
-  sleep 0.7
+  # give it some time to process requests; make it large for slow systems
+  sleep 2
   if [ "${DEBCI_FAKE_KILLPARENT:-x}" = "amqp-consume" ]; then
     [ ! -e /proc/$TEST_WORKER_PID ] || fail "test worker unexpectedly survived"
   else
@@ -123,7 +123,7 @@ test_smoke() {
   # wait until all requests have been consumed; unfortunately we have no shell
   # tool (except rabbitmqctl list_queues, which needs root) to show the queue
   # status, so we poll for all packages being handled
-  local timeout=200
+  local timeout=600
   local completed=0
   while [ $completed -lt $NUM_REQUESTS ] && [ $timeout -gt 0 ]; do
     sleep 0.1
