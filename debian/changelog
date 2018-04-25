@@ -1,3 +1,12 @@
+debci (1.10) unstable; urgency=medium
+
+  * api: enable retry with client certificate and add GET response
+  * Minor packaging updates
+  * Thanks to Chris Lamb for the patches of bugs 880804, 879655 and
+    879654.
+
+ -- Paul Gevers <elbrus@debian.org>  Wed, 25 Apr 2018 15:10:36 +0200
+
 debci (1.9.1) unstable; urgency=medium
 
   * api: accept + in package names
