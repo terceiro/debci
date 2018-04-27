@@ -16,7 +16,7 @@ Additionally, we have these extra tutorial-style documentation:
 * {file:docs/TUTORIAL.md Functional testing of Debian packages}, a tutorial
   transcribed from a DebConf15 talk on autopkgtest and debci is available that
   covers declaring test suites, issues to consider, and tips and tricks.
-∙ [https://deb.li/pattestdeb](Patterns for Writing As-Installed Tests for Debian Packages)
+* [Patterns for Writing As-Installed Tests for Debian Packages](https://deb.li/pattestdeb)
   is a paper describing patterns (as in "design patterns") for writing tests
   for Debian packages.
 
