@@ -7,7 +7,6 @@ module Debci
 
   class Status
 
-    attr_reader :blame
     attr_accessor :suite, :architecture, :run_id, :package, :version, :date, :trigger, :status, :previous_status, :duration_seconds, :duration_human, :message, :last_pass_version, :last_pass_date
 
     # Returns `true` if this status object represents an important event, such
@@ -100,14 +99,6 @@ module Debci
         end
     end
 
-    def blame=(value)
-      if value.is_a?(Array)
-        @blame = value
-      else
-        @blame = []
-      end
-    end
-
     # Returns the amount of time since the date for this status object
     def time
       days = (Time.now - date)/86400
@@ -163,7 +154,6 @@ module Debci
       status.trigger = data['trigger']
       status.status = data.fetch('status', :unknown).to_sym
       status.previous_status = data.fetch('previous_status', :unknown).to_sym
-      status.blame = data['blame']
       status.duration_seconds =
         begin
           Integer(data.fetch('duration_seconds', 0))

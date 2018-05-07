@@ -81,7 +81,6 @@ generate_package_run() {
   generate_package_run_log_file > "$log_file"
   report_status "$pkg" "$status" "($duration_human)"
 
-  generate_package_blame
   generate_package_json "$last_timestamp"
 
   if ! echo $run_id | grep -q _ ; then
@@ -226,55 +225,6 @@ generate_package_run_dependencies() {
   fi
 }
 
-# compute $blame for current $pkg, from tmp_dir/test-packages.diff
-generate_package_blame() {
-  blame="$(debci-status --field blame --json "$pkg")"
-  if [ "$blame" = 'null' ]; then
-    blame='[]'
-  fi
-
-  diff="${tmp_dir}/test-packages.diff"
-  previous_diff="${status_dir}/test-packages.diff"
-
-  if [ ! -e "$diff" ]; then
-    return
-  fi
-
-  case "$status" in
-    pass)
-      blame='[]'
-      ;;
-    fail)
-      case "${last_status}" in
-        pass)
-          # identify the packages to be blamed
-          blame="$(debci-blame "${diff}" "$pkg")"
-          ;;
-        fail)
-          # update versions from the blamed packages, but not include new
-          # packages in the blame list. the file pointed to by $previous_diff
-          # is guaranteed to exist at this point
-          if [ -e "${previous_diff}" ]; then
-            blamed_pkgs="$(debci-status --field blame "$pkg" | awk '{print($1)}')"
-            if [ -z "$blamed_pkgs" ]; then
-              blame='[]'
-            else
-              combinediff "${previous_diff}" "${diff}" > "${diff}.new"
-              mv "${diff}.new" "${diff}"
-              blame=$(debci-blame "${diff}" "$pkg" $blamed_pkgs)
-            fi
-          fi
-          ;;
-      esac
-      ;;
-  esac
-
-  if [ -f "${diff}" ]; then
-    # record dependency chain diff from now to be used in future runs
-    cp "${diff}" "${previous_diff}"
-  fi
-}
-
 # this reads all previous result json files, but should only run
 # once for each package, after which the last_pass_version is cached
 # in each successive json and copied forwards
@@ -339,7 +289,6 @@ generate_package_json() {
   "date": "${timestamp}",
   "status": "${status}",
   "trigger": $trigger,
-  "blame": $blame,
   "previous_status": "${previous_status}",
   "duration_seconds": "${duration}",
   "duration_human": "${duration_human}",

@@ -17,7 +17,6 @@ describe Debci::Status do
         "version" => "10.1.1-1",
         "date" => "2014-05-01 19:24:12",
         "status" => "pass",
-        "blame" => ["foo 1.1", "bar 2.0"],
         "previous_status" => "pass",
         "duration_seconds" => "45",
         "duration_human" => "0h 0m 45s",
@@ -35,7 +34,6 @@ describe Debci::Status do
     it('gets duration in seconds') { expect(@status.duration_seconds).to eq(45)}
     it('gets duration human') { expect(@status.duration_human).to eq('0h 0m 45s') }
     it('gets message') { expect(@status.message).to eq("All tests passed") }
-    it('gets blame') { expect(@status.blame).to eq(['foo 1.1', 'bar 2.0']) }
   end
 
   context 'with invalid JSON' do
@@ -108,12 +106,6 @@ describe Debci::Status do
       it "should have a title for #{s}" do
         expect(status_with(status: s).title).to be_a(String)
       end
-    end
-  end
-
-  context 'unknown blame' do
-    it 'is always an Array' do
-      expect(status_with(blame: 'unknown').blame).to be_a(Array)
     end
   end
 

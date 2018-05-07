@@ -47,11 +47,6 @@ def insert_items(news, feed)
           "<li><a href=\"#{$site_base}/data/autopkgtest/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}/\">autopkgtest artifacts</a></li>"]
       end
 
-      item.description += [
-        status.status == :fail && "<li>Packages blamed: #{status.blame.join(', ')}</a></li>" || nil,
-        '</ul>',
-      ]
-
       item.description = item.description.compact.join("\n")
     end
   end
