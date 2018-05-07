@@ -427,6 +427,6 @@ generate_all_packages() {
 }
 
 if [ -d "$debci_autopkgtest_incoming_dir" ]; then
-  run_with_lock_or_exit $debci_generate_index_lock \
+  run_with_exclusive_lock $debci_generate_index_lock \
     generate_all_packages
 fi
