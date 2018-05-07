@@ -157,12 +157,18 @@ run_with_shared_lock() {
   local lockfile="$1"
   shift
   ensure_lockfile "$lockfile"
-  flock --shared "$lockfile" "$@"
+  (
+    flock --shared 9
+    "$@"
+  ) 9> "$lockfile"
 }
 
 run_with_exclusive_lock() {
   local lockfile="$1"
   shift
   ensure_lockfile "$lockfile"
-  flock --exclusive "$lockfile" "$@"
+  (
+    flock --exclusive 9
+    "$@"
+  ) 9> "$lockfile"
 }
