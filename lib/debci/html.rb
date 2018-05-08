@@ -90,15 +90,21 @@ module Debci
 
     private
 
+    def templates
+      @templates ||= {}
+    end
+
     def load_template(template)
       read_template(template).result(binding)
     end
 
     def read_template(name)
-      filename = File.join(File.dirname(__FILE__), 'html', name.to_s + '.erb')
-      template = ERB.new(File.read(filename))
-      template.filename = filename
-      template
+      templates[name] ||= begin
+        filename = File.join(File.dirname(__FILE__), 'html', name.to_s + '.erb')
+        template = ERB.new(File.read(filename))
+        template.filename = filename
+        template
+      end
     end
 
     def expand_template(template, filename)
