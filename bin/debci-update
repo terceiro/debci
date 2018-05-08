@@ -14,4 +14,3 @@ for suite in $suite_list; do
 done
 
 debci-generate-html
-debci-hint
