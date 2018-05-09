@@ -11,8 +11,15 @@ pkg="$1"
 shift
 logs="$(mktemp --directory --tmpdir debci-localtest.XXXXXXXXXX)/artifacts"
 
+# these variables can be considered as an API by backends/*/test-package and
+# debci-autopkgtest
+export debci_suite
+export debci_arch
+export debci_test_package="$pkg"
+export debci_test_outputdir="$logs"
+
 rc=0
-test-package "$pkg" "$logs" "$@" || rc="$?"
+test-package --output-dir="$logs" --shell-fail "$pkg" "$@" || rc="$?"
 
 echo "I: test artifacts available at $logs"
 exit "$rc"
