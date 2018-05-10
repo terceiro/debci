@@ -23,11 +23,12 @@ Debci.log('status pages html updated')
 repository = Debci::Repository.new
 
 packages = ARGV
+
 if packages.empty?
-  packages = repository.packages
-else
-  packages += Debci.blacklist.packages.keys
+  exit
 end
+
+packages += Debci.blacklist.packages.keys
 
 prefixes = Set.new
 
