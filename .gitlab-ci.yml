@@ -1,18 +1,21 @@
-image: 'debian:unstable'
-
 before_script:
-  - apt-get update -qq && apt-get install -y -qq devscripts equivs
-  - mk-build-deps -t 'apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -qqy' -i -r debian/control
+  - apt-get -q update
+  - apt-get -q -y install --no-install-recommends aspcud apt-cudf
+  - apt-get -q -y --solver aspcud -o APT::Solver::Strict-Pinning=0 -o Debug::pkgProblemResolver=yes build-dep .
   - make all
 
-check-ui-and-docs:
+.test_template: &test
   script:
-    - make check-ui-and-docs
+    - make test
 
-spec:
-  script:
-    - make spec
+unstable:
+  <<: *test
+  image: 'debian:unstable'
 
-functional-tests:
-  script:
-    - make functional-tests
+testing:
+  <<: *test
+  image: 'debian:testing'
+
+stable:
+  <<: *test
+  image: 'debian:stable'
