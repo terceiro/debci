@@ -180,7 +180,7 @@ module Debci
     end
 
     def self.valid_package_name?(pkg)
-      pkg =~ %r{^[a-z0-9+.-]+$}
+      pkg =~ %r{^[a-z0-9][a-z0-9+.-]+$}
     end
 
   end

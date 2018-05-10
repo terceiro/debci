@@ -232,6 +232,7 @@ describe Debci::API do
       foo~bar
       foo`bar`
       foo$(bar)
+      --foo
     ].each do |pkg|
       it "rejects #{pkg}" do
         expect(Debci::API.valid_package_name?(pkg)).to be_falsy
