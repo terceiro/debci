@@ -8,7 +8,9 @@ require 'debci/graph'
 
 $DEBCI_HTML_FAST = (ENV['DEBCI_HTML_FAST'] != nil)
 
+Debci.log('debci generate-html started')
 writer = Debci::HTML.new
+Debci.log('html writer initialized')
 
 writer.index('index.html')
 writer.status('status/index.html')
@@ -16,15 +18,17 @@ writer.status_alerts('status/alerts/index.html')
 writer.status_pending_jobs('status/pending/index.html')
 writer.blacklist('status/blacklist/index.html')
 writer.platform_specific_issues('status/platform-specific-issues/index.html')
+Debci.log('status pages html updated')
 
 repository = Debci::Repository.new
 
 packages = ARGV
+
 if packages.empty?
-  packages = repository.packages
-else
-  packages += Debci.blacklist.packages.keys
+  exit
 end
+
+packages += Debci.blacklist.packages.keys
 
 prefixes = Set.new
 
@@ -38,12 +42,14 @@ packages.each do |pkg|
     end
   end
   prefixes << package.prefix
+  Debci.log('%s html updated' % package.name)
 end unless $DEBCI_HTML_FAST
 
 writer.obsolete_packages_page("packages/index.html")
 
 prefixes.each do |p|
   writer.prefix(p, "packages/#{p}/index.html")
+  Debci.log('%s prefix html updated' % p)
 end
 
 # remove files that are not used anymore

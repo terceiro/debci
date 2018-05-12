@@ -63,5 +63,5 @@ ARGV.each do |pkg|
   )
   job.save!
   job.enqueue
-  Debci.log "#{pkg} requested"
+  Debci.log "#{pkg} #{suite}/#{arch} requested"
 end

@@ -7,10 +7,17 @@ suite_list=$(debci-config --values-only suite_list)
 
 debci-expire
 
+package_log="$(mktemp)"
+trap "rm -f $package_log" INT TERM EXIT
+
 for suite in $suite_list; do
   for arch in $arch_list; do
-    debci-generate-index --arch="$arch" --suite="$suite" "$@"
+    debci-generate-index \
+      --arch="$arch" \
+      --suite="$suite" \
+      --package-log="$package_log" \
+      "$@"
   done
 done
 
-debci-generate-html
+sort --unique "$package_log" | xargs debci-generate-html
