@@ -2,7 +2,7 @@
 
 The [Debian continuous integration](..) (debci) is an automated system that
 coordinates the execution of automated tests against packages in the
-[Debian](http://www.debian.org/) system. `debci` will continuously run
+[Debian](https://www.debian.org/) system. `debci` will continuously run
 `autopkgtest` test suites from source packages in the Debian archive.
 
 ## Documentation for package maintainers
@@ -28,7 +28,7 @@ deploy debci to your own infrastructure.
 ## Reporting Bugs
 
 Please report bugs against the [debci package](https://bugs.debian.org/debci)
-in the [Debian BTS](http://bugs.debian.org/).
+in the [Debian BTS](https://bugs.debian.org/).
 
 ## Developer information
 
@@ -41,12 +41,12 @@ in the [Debian BTS](http://bugs.debian.org/).
 
 For maintainer queries and general discussion:
 
-* mailing list: [debian-qa@lists.debian.org](http://lists.debian.org/debian-qa/)
+* mailing list: [debian-qa@lists.debian.org](https://lists.debian.org/debian-qa/)
 * IRC: `#debian-qa` on OFTC. Feel free to highlight `terceiro`
 
 For the development of debci itself
 
-* mailing list: [autopkgtest-devel](http://lists.alioth.debian.org/cgi-bin/mailman/listinfo/autopkgtest-devel)
+* mailing list: [debian-ci](https://lists.debian.org/debian-ci)
 * IRC: `#debci` on OFTC
 
 ## Copyright and Licensing information
