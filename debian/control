@@ -1,8 +1,8 @@
 Source: debci
 Section: devel
 Priority: optional
-Maintainer: Antonio Terceiro <terceiro@debian.org>
-Uploaders: Paul Gevers <elbrus@debian.org>,
+Maintainer: Debian CI team <team+ci@tracker.debian.org>
+Uploaders: Antonio Terceiro <terceiro@debian.org>, Paul Gevers <elbrus@debian.org>,
 Build-Depends: amqp-tools,
                autopkgtest,
                dctrl-tools,
