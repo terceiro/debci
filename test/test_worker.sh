@@ -23,7 +23,7 @@ settle_processes() {
 
 run_mypkg() {
   start_worker
-  amqp-declare-queue --url $debci_amqp_server -q $debci_amqp_queue -d > /dev/null
+  debci job declare-queue
   start_collector
   request mypkg
   # give it some time to process requests; make it large for slow systems
@@ -97,7 +97,7 @@ test_smoke() {
   unset DEBCI_FAKE_KILLPARENT
 
   start_rabbitmq_server
-  amqp-declare-queue --url $debci_amqp_server -q $debci_amqp_queue -d > /dev/null
+  debci job declare-queue
 
   local WORKERS=''
   for i in `seq $NUM_WORKERS`; do

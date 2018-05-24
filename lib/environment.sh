@@ -147,7 +147,7 @@ debci_user=$(stat -c %U "${debci_data_basedir}")
 debci_uid=$(stat -c %u "${debci_data_basedir}")
 debci_group=$(stat -c %G "${debci_data_basedir}")
 
-debci_amqp_queue=${debci_amqp_queue:-"debci-${debci_arch}-${debci_backend}"}
+debci_amqp_queue=${debci_amqp_queue:-"debci-tests-${debci_arch}-${debci_backend}"}
 
 debci_lock_dir=${debci_lock_dir:-/var/lock}
 

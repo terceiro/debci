@@ -30,7 +30,7 @@ module Debci
       end
     end
 
-    def enqueue
+    def enqueue(priority = 0)
       parameters = ['run-id:%s' % id]
       if self.trigger
         parameters << "trigger:#{trigger}"
@@ -39,14 +39,22 @@ module Debci
         pkg, suite = pin
         parameters << "pin-packages:#{suite}=#{pkg}"
       end
-      self.queue.publish("%s %s %s" % [package, suite, parameters.join(' ')])
+      queue = self.class.get_queue(arch)
+      queue.publish("%s %s %s" % [package, suite, parameters.join(' ')], priority: priority)
     end
 
-    def queue
-      @queue ||=
+    def self.get_queue(arch)
+      @queues ||= {}
+      @queues[arch] ||=
         begin
-          q = ENV['debci_amqp_queue'] || "debci-#{arch}-#{Debci.config.backend}"
-          self.class.amqp_channel.queue(q, durable: true)
+          opts = {
+            durable: true,
+            arguments: {
+              'x-max-priority': 10,
+            }
+          }
+          q = ENV['debci_amqp_queue'] || "debci-tests-#{arch}-#{Debci.config.backend}"
+          self.amqp_channel.queue(q, opts)
         end
     end
 

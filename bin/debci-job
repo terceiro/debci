@@ -18,6 +18,11 @@ module Debci
       job.save!
     end
 
+    desc 'declare-queue', 'Initializes job queue'
+    def declare_queue
+      Debci::Job.get_queue(Debci.config.arch)
+    end
+
     no_commands do
       def arch
         Debci.config.arch
