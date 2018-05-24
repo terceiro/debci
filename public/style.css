@@ -44,53 +44,39 @@
  * status marks
  * ----------------------------------------------------------------- */
 
-.pass, .fail, .tmpfail, .no_test_data, .fail_passed_never,
-.fail_passed_current, .fail_passed_old, .tmpfail_pass, .tmpfail_fail {
-  font-family: 'FontAwesome';
-}
-
-.pass:before {
-  content: "\f164 ";
+.pass {
   color: #8ae234;
 }
 
-.fail:before {
-  content: "\f165 ";
+.fail {
   color: #ef2929;
 }
 
-.tmpfail:before {
-  content: "\f059 ";
+.tmpfail {
   color: #ffd862;
 }
 
-.no_test_data:before {
-  content: "\f06a ";
+.no_test_data {
   color: #babdb6;
 }
 
-.fail_passed_never:before {
-  content: "\f165 \f05e ";
+.fail_passed_never {
   color: #ef2929;
 }
 
-.fail_passed_current:before {
-  content: "\f165 \f0e7 ";
+.fail_passed_current {
   color: #9e0000;
 }
 
-.fail_passed_old:before {
-  content: "\f165 \f063 ";
+.fail_passed_old {
   color: #c80c0c;
 }
 
-.tmpfail_pass:before {
-  content: "\f059 \f164 ";
+.tmpfail_pass {
   color: #fffa62;
 }
 
-.tmpfail_fail:before {
-  content: "\f059 \f165 ";
+.tmpfail_fail {
   color: #ffb062;
 }
 
@@ -98,55 +84,16 @@
  * icons
  * ----------------------------------------------------------------- */
 
-#icon-alert:before {
-  font-family: "FontAwesome";
-  content: "\f071 ";
+.fa-exclamation-triangle:before {
   color: orange;
-  padding-right: 0.3em;
 }
 
-#icon-alert:hover {
-  text-decoration: none !important;
+.fa-rss:before {
+  color: orange;
 }
 
-#icon-pending:before {
-  font-family: "FontAwesome";
-  content: "\f059 ";
+.fa-question-circle:before {
   color: green;
-  padding-right: 0.3em;
-}
-
-#icon-pending:hover {
-  text-decoration: none !important;
-}
-
-#icon-chart:before {
-  font-family: "FontAwesome";
-  content: "\f1fe ";
-  padding-right: 0.3em;
-}
-
-#icon-chart:hover {
-  text-decoration: none !important;
-}
-
-#icon-rss:before {
-  font-family: "FontAwesome";
-  content: "\f09e ";
-  color: orange;
-}
-
-#icon-rss:hover {
-  text-decoration: none !important;
-}
-
-#icon-tracker:before {
-  font-family: "FontAwesome";
-  content: "\f05a ";
-}
-
-#icon-tracker:hover {
-  text-decoration: none !important;
 }
 
 /* -----------------------------------------------------------------

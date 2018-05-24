@@ -32,13 +32,16 @@
               <% if package.failures.any? %>
                 <td>
                   <% package.failures.each do |s| %>
-                    <a class='<%= s.extended_status %>' href='<%= "/packages/#{@prefix}/#{package.name}/#{s.suite}/#{s.architecture}"%>'>
+                    <a href='<%= "/packages/#{@prefix}/#{package.name}/#{s.suite}/#{s.architecture}"%>'>
+                      <%= icon(s.extended_status) %>
                       <%= s.version %> <%= s.status.upcase %> <%= s.suite %>/<%= s.architecture %> <%= s.failmsg && '(%s)' % s.failmsg %>
                     </a>
                   <% end %>
                 </td>
               <% else %>
-                <td><div class='pass'>Passing everywhere</div></td>
+                <td>
+                  <div><i class='pass fa fa-thumbs-up'></i> Passing everywhere</div>
+                </td>
               <% end %>
             </tr>
           <% end %>

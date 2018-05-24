@@ -10,14 +10,10 @@
         <%= @package.name %>
 
         <small>
-        <a id='icon-rss'
-           href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'>
-        </a>
+        <a href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'><i class='fa fa-rss'></i></a>
 
-        <a id='icon-tracker'
-           href='https://tracker.debian.org/pkg/<%= @package.name %>'
-           title='On the Package Tracking System'>
-        </a>
+        <a href='https://tracker.debian.org/pkg/<%= @package.name %>'
+           title='On the Package Tracking System'><i class='fa fa-info-circle'></i></a>
       </small>
     </h2>
 
@@ -48,13 +44,14 @@
 
             <% row.each do |status| %>
               <% if status.status.eql?(:no_test_data) %>
-                  <td class="<%= status.extended_status %>"><%= status.title %></td>
+                  <td><%= icon(status.extended_status)%> <%= status.title %></td>
               <% else %>
                   <% package_dir = "/packages/#{@package.prefix}" +
                                    "/#{@package.name}/#{status.suite}" +
                                    "/#{row.first.architecture}"
                   %>
-                  <td class="<%= status.status %>">
+                  <td>
+                    <%= icon(status.status) %>
                     <a href=<%= package_dir %>><%= status.version %>  <%= status.title %></a>
                   </td>
               <% end %>

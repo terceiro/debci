@@ -12,14 +12,10 @@
         <small>
           [ <%= @suite %>/<%= @architecture %> ]
 
-          <a id='icon-rss'
-             href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'>
-          </a>
+          <a href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'><i class='fa fa-rss'></i></a>
 
-          <a id='icon-tracker'
-             href='https://tracker.debian.org/pkg/<%= @package.name %>'
-             title='On the Package Tracking System'>
-          </a>
+          <a href='https://tracker.debian.org/pkg/<%= @package.name %>'
+             title='On the Package Tracking System'><i class='fa fa-info-circle'></i></a>
         </small>
       </h2>
 
@@ -30,7 +26,8 @@
       <% end %>
 
       <% if @latest && @latest.status == :fail && @latest.failmsg %>
-        <div class='alert alert-warning <%= @latest.extended_status %>'>
+        <div class='alert alert-warning'>
+          <%= icon(@latest.extended_status) %>
           This package is failing and has <%= @latest.failmsg %>.
         </div>
       <% end %>
@@ -54,7 +51,9 @@
               <td><%= test.date %></td>
               <td><%= escape(test.trigger) || '&mdash;' %></td>
               <td><%= test.duration_human %></td>
-              <td class="<%= test.status %>"><%= test.status %></td>
+              <td>
+                <%= icon(test.status) %>
+              </td>
               <% if test.expired? %>
                 <td><span class='fa fa-trash' title='file has been removed due to data retention policy'></span></td>
               <% else %>
