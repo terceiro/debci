@@ -2,4 +2,4 @@
 
 set -e
 
-rerun --background --dir lib,docs --exit -- make
+rerun --no-notify --background --dir lib,docs --exit -- make
