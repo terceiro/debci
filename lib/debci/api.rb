@@ -68,7 +68,7 @@ module Debci
           trigger: j.trigger,
           pin_packages: j.pin_packages,
         )
-        job.enqueue
+        self.enqueue(job)
 
         201
       end
@@ -122,7 +122,7 @@ module Debci
             pin_packages: test['pin-packages'],
           )
 
-          job.enqueue if enqueue
+          self.enqueue(job) if enqueue
         end
 
         201
@@ -143,7 +143,7 @@ module Debci
             arch: params[:arch],
             requestor: @user,
         )
-        job.enqueue
+        self.enqueue(job)
 
         201
       end
@@ -173,6 +173,11 @@ module Debci
       else
         halt(403, "Invalid key\n")
       end
+    end
+
+    def enqueue(job)
+      priority = 1
+      job.enqueue(priority)
     end
 
     def valid_package_name?(pkg)

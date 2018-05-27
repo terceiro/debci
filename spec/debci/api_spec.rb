@@ -99,6 +99,11 @@ describe Debci::API do
         expect(last_response.status).to eq(201)
       end
 
+      it 'enqueues with priority' do
+        expect_any_instance_of(Debci::Job).to receive(:enqueue).with(Integer)
+        post '/api/v1/test/%s/%s/mypackage' % [suite, arch]
+      end
+
       it 'rejects blacklisted package' do
         allow_any_instance_of(Debci::Blacklist).to receive(:include?).with('mypackage').and_return(true)
         post '/api/v1/test/%s/%s/mypackage' % [suite, arch]
