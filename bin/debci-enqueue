@@ -12,6 +12,7 @@ run_id = nil
 requestor = ENV["USER"] || 'nobody'
 arch = Debci.config.arch
 suite = Debci.config.suite
+priority = 0
 
 # parse command line
 optparse = OptionParser.new do |opts|
@@ -43,6 +44,14 @@ optparse = OptionParser.new do |opts|
     requestor = r
   end
 
+  opts.on('-P', '--priority N', 'sets priority for the test (0-10)') do |p|
+    priority = Integer(p)
+    if ! (0..10).include?(priority)
+      $stderr.puts "E: priority must be a number between 0 and 10"
+      exit 1
+    end
+  end
+
   opts.on('-i', '--run-id RUNID') do |id|
     run_id = id
   end
@@ -62,6 +71,6 @@ ARGV.each do |pkg|
     run_id: run_id,
   )
   job.save!
-  job.enqueue
+  job.enqueue(priority)
   Debci.log "#{pkg} #{suite}/#{arch} requested"
 end
