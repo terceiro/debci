@@ -46,19 +46,19 @@ module Debci
     def tmpfail_packages
       tmpfail_packages = Set.new
 
-      packages.each do |package|
-        suites.each do |suite|
-          architectures.each do |arch|
-            status = load_status(File.join(data_dir(suite, arch, package), "latest.json"), suite, arch)
-
-            if status.status == :tmpfail
-              tmpfail_packages << package
-            end
-          end
+      all_statuses.each do |status|
+        if status.status == :tmpfail
+          tmpfail_packages << status.package
         end
       end
 
       tmpfail_packages.sort.map { |p| Debci::Package.new(p, self) }
+    end
+
+    def slow_packages
+      all_statuses.select do |status|
+        status.duration_seconds && status.duration_seconds > 60 * 60 # 1h
+      end
     end
 
     # Returns an Array of suites for which there is data for +package+.
@@ -224,6 +224,22 @@ module Debci
 
     def data_dirs_for(package)
       @data_dirs.select { |d| File.exist?(File.join(d, prefix(package), package)) }
+    end
+
+    def all_statuses
+      @all_statuses ||=
+        begin
+          r = []
+          packages.each do |package|
+            suites.each do |suite|
+              architectures.each do |arch|
+                status = load_status(File.join(data_dir(suite, arch, package), "latest.json"), suite, arch)
+                r << status
+              end
+            end
+          end
+          r
+        end
     end
 
   end

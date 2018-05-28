@@ -35,6 +35,11 @@ module Debci
       expand_template(:status_alerts, filename)
     end
 
+    def status_slow(filename)
+      @slow = @repository.slow_packages
+      expand_template(:status_slow, filename)
+    end
+
     def status_pending_jobs(filename)
       @status_nav = load_template(:status_nav)
       @pending = Debci::Job.pending

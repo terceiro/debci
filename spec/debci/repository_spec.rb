@@ -1,3 +1,4 @@
+require 'debci'
 require 'debci/repository'
 
 require 'tmpdir'
@@ -68,6 +69,12 @@ describe Debci::Repository do
       'status' => 'tmpfail',
       'previous_status' => 'pass',
     }
+
+    mkdir_p 'packages/unstable/amd64/s/slowpackage'
+    latest_status 'packages/unstable/amd64/s/slowpackage', {
+      'status' => 'pass',
+      'duration_seconds' => 5000,
+    }
   end
 
   attr_reader :now
@@ -81,8 +88,9 @@ describe Debci::Repository do
   end
 
   def past_status(path, data, run_id)
+    package = File.basename(path)
     File.open(File.join(@datadir, path, run_id + '.json'), 'w') do |f|
-      f.write(JSON.dump({ 'run_id' => run_id }.merge(data)))
+      f.write(JSON.dump({ 'package' => package, 'run_id' => run_id }.merge(data)))
     end
   end
 
@@ -232,6 +240,15 @@ describe Debci::Repository do
     package.status.flatten.each do |p|
       expect([:tmpfail, :no_test_data]).to include(p.status)
     end
+  end
+
+  it 'knows about slow-running tests' do
+    slow = repository.slow_packages
+    expect(slow).to be_a(Array)
+    expect(slow.length).to be >= 1
+
+    status = slow.find { |status| status.package == 'slowpackage' }
+    expect(status).to be_a(Debci::Status)
   end
 
   it 'knows about platform-specific issues' do
