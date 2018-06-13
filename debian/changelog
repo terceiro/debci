@@ -1,3 +1,32 @@
+debci (1.11) unstable; urgency=medium
+
+  [ Antonio Terceiro ]
+  * ui: pending jobs: add columns for suite and architecture
+  * debci-generate-index: make sure to always run
+  * Remove all handling of "blame"
+  * Remove generation of britney hints file
+  * Fix debci-localtest
+  * Build-Depends: autopkgtest
+  * debci-enqueue: log suite and architecture
+  * debian/tests/control: install autopkgtest to run test suite
+  * Debci::API: accept only package names starting with [a-z0-9]
+  * ui: Optimize HTML generation process
+  * Use FontAwesome via its standard API
+  * lxc: name containers ci-$EPOCH (Closes: #893595, #898875)
+  * Implement test priorities
+  * ui: improve "Status Alerts" table
+  * ui: add status page for slow-running tests
+  * Bump Standards-Version to 4.1.4, no changes needed
+
+  [ Paul Gevers ]
+  * README.md: fix unsecure http URL's and fix e-mail list address
+
+  [ Rafael Laboissiere ]
+  * d/control: Change Maintainer to Debian CI team.
+    Antonio Terceiro, the former Maintainer, is now an Uploader.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Wed, 13 Jun 2018 09:51:09 -0300
+
 debci (1.10) unstable; urgency=medium
 
   * api: enable retry with client certificate and add GET response
