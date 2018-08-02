@@ -16,6 +16,7 @@
                 <tr>
                   <th>Date</th>
                   <th>Pass</th>
+                  <th>Neutral</th>
                   <th>Fail</th>
                   <th>Temporary failure</th>
                   <th>Pass percentage</th>
@@ -24,6 +25,7 @@
                   <tr>
                     <td><%= entry['date'] %></td>
                     <td><%= entry['pass'] %></td>
+                    <td><%= entry['neutral'] %></td>
                     <td><%= entry['fail'] %></td>
                     <td><%= entry['tmpfail'] %></td>
                     <td><%= 100 * entry['pass'].to_f / entry['total'].to_f %>%</td>

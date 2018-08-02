@@ -41,9 +41,14 @@ module Debci
       repository.news_for(self)
     end
 
-    # Returns an Array of statuses where this package is temporarily failing.
+    # Returns an Array of statuses where this package is failing.
     def failures
       status.flatten.select { |p| p.status == :fail }
+    end
+
+    # Returns an Array of statuses where this package is failing or neutral.
+    def fail_or_neutral
+      status.flatten.select { |p| p.status == :fail or p.status == :neutral }
     end
 
     # Returns an Array of statuses where this package is temporarily failing. If

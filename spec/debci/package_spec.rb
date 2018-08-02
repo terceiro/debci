@@ -49,7 +49,12 @@ describe Debci::Package do
     fail_status.architecture = 'i386'
     fail_status.status = :fail
 
-    status << tmpfail_status << pass_status << fail_status
+    neutral_status = Debci::Status.new
+    neutral_status.suite = 'unstable'
+    neutral_status.architecture = 'i386'
+    neutral_status.status = :neutral
+
+    status << tmpfail_status << pass_status << fail_status << neutral_status
 
     allow(repository).to receive(:status_for).with(package).and_return(status)
     expect(package.status).to eq(status)
@@ -57,6 +62,8 @@ describe Debci::Package do
     expect(package.tmpfail).to eq([tmpfail_status])
 
     expect(package.failures).to eq([fail_status])
+
+    expect(package.fail_or_neutral).to eq([fail_status, neutral_status])
   end
 
   it 'converts to string' do

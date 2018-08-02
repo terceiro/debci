@@ -29,9 +29,9 @@
           <% packages.each do |package| %>
             <tr>
               <td><a href="/packages/<%= @prefix %>/<%= package.name %>"><%= package.name %></a></td>
-              <% if package.failures.any? %>
+              <% if package.fail_or_neutral.any? %>
                 <td>
-                  <% package.failures.each do |s| %>
+                  <% package.fail_or_neutral.each do |s| %>
                     <a href='<%= "/packages/#{@prefix}/#{package.name}/#{s.suite}/#{s.architecture}"%>'>
                       <%= icon(s.extended_status) %>
                       <%= s.version %> <%= s.status.upcase %> <%= s.suite %>/<%= s.architecture %> <%= s.failmsg && '(%s)' % s.failmsg %>

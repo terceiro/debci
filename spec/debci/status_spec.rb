@@ -77,6 +77,26 @@ describe Debci::Status do
       expect(status).to be_newsworthy
     end
 
+    it 'is newsworthy when going from pass to neutral' do
+      status = status_with(status: :neutral, previous_status: :pass)
+      expect(status).to be_newsworthy
+    end
+
+    it 'is newsworthy when going from neutral to pass' do
+      status = status_with(status: :pass, previous_status: :neutral)
+      expect(status).to be_newsworthy
+    end
+
+    it 'is newsworthy when going from neutral to fail' do
+      status = status_with(status: :fail, previous_status: :neutral)
+      expect(status).to be_newsworthy
+    end
+
+    it 'is newsworthy when going from fail to neutral' do
+      status = status_with(status: :neutral, previous_status: :fail)
+      expect(status).to be_newsworthy
+    end
+
     it 'is not newsworthy when keeps passing' do
       status = status_with(status: :pass, previous_status: :pass)
       expect(status).to_not be_newsworthy
@@ -84,6 +104,11 @@ describe Debci::Status do
 
     it 'is not newsworthiness when keeps failing' do
       status = status_with(status: :fail, previous_status: :fail)
+      expect(status).to_not be_newsworthy
+    end
+
+      it 'is not newsworthiness when remains neutral' do
+      status = status_with(status: :neutral, previous_status: :neutral)
       expect(status).to_not be_newsworthy
     end
   end
@@ -102,7 +127,7 @@ describe Debci::Status do
   end
 
   context 'title' do
-    [:pass, :fail, :tmpfail, :no_test_data, :INVALID].each do |s|
+    [:pass, :fail, :neutral, :tmpfail, :no_test_data, :INVALID].each do |s|
       it "should have a title for #{s}" do
         expect(status_with(status: s).title).to be_a(String)
       end

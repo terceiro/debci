@@ -142,6 +142,7 @@ module Debci
 
     ICONS = {
       pass: 'thumbs-up',
+      neutral: 'minus-circle',
       fail: 'thumbs-down',
       fail_passed_never: ['thumbs-down', 'ban'],
       fail_passed_current: ['thumbs-down', 'bolt'],

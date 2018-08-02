@@ -15,6 +15,10 @@ module Debci
       [
         [:fail, :pass],
         [:pass, :fail],
+        [:fail, :neutral],
+        [:pass, :neutral],
+        [:neutral, :pass],
+        [:neutral, :fail],
       ].include?([status, previous_status])
     end
 
@@ -22,6 +26,7 @@ module Debci
       {
         :pass => "Pass",
         :fail => "Fail",
+        :neutral => "No tests or all skipped",
         :tmpfail => "Temporary failure",
         :no_test_data => "No test data",
       }.fetch(status, "Unknown")
@@ -78,7 +83,7 @@ module Debci
     # Returns a headline for this status object, to be used as a short
     # description of the event it represents
     def headline
-      msg = "#{package} #{version} #{status.upcase}ED on #{suite}/#{architecture}"
+      msg = "#{package} #{version} #{status.upcase} on #{suite}/#{architecture}"
       if status == :fail && failmsg
         msg += " (#{failmsg})"
       end
@@ -88,7 +93,7 @@ module Debci
     # A longer version of the headline
     # for a new failure, include whether this version previously passed
     def description
-      msg = "The tests for #{package}, version #{version}, #{status.upcase}ED on #{suite}/#{architecture} but have previously #{previous_status.upcase}ED"
+      msg = "The tests for #{package} (version #{version}) resulted in #{status.upcase} on #{suite}/#{architecture}. Previously it was #{previous_status.upcase}"
       msg += case extended_status
         when :fail_passed_current
           " for the current version."

@@ -103,6 +103,9 @@ report_status() {
       pass)
         color=2
         ;;
+      neutral)
+        color=8
+        ;;
       fail)
         color=1
         ;;

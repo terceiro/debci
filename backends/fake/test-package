@@ -74,11 +74,13 @@ if ENV["DEBCI_FAKE_COMMAND"]
   end
 else
   log.puts "Not really running anything .."
-  log.puts "This has 80% chance of passing, 10% of failing, and 10% of tmpfailing"
+  log.puts "This has 70% chance of passing, 10% of all skipped, 10% of failing, and 10% of tmpfailing"
   r = nil
   case ENV['DEBCI_FAKE_RESULT']
   when 'pass'
     r = 0
+  when 'neutral'
+    r = 7
   when 'fail'
     r = 8
   when 'tmpfail'
@@ -88,9 +90,12 @@ else
   end
 
   case r
-  when 0..7
+  when 0..6
     log.puts "Passed :-)"
     rc = 0
+  when 7
+    log.puts "Neutral :-|"
+    rc = 8
   when 8
     log.puts "Failed :-("
     rc = 4

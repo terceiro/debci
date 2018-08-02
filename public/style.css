@@ -48,6 +48,10 @@
   color: #8ae234;
 }
 
+.neutral {
+  color: #8080ff;
+}
+
 .fail {
   color: #ef2929;
 }

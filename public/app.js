@@ -23,6 +23,7 @@ jQuery(function($) {
         console.log('skipping ' + platform + '...')
       } else {
         var pass = [];
+        var neutral = [];
         var fail = [];
         var tmpfail = [];
         var pass_percentage = [];
@@ -31,6 +32,7 @@ jQuery(function($) {
         $.each(data, function(index, entry) {
           var date = Date.parse(entry.date);
           pass.push([date, entry.pass]);
+          neutral.push([date, entry.neutral]);
           fail.push([date, entry.fail]);
           tmpfail.push([date, entry.tmpfail || 0]);
           pass_percentage.push([date, entry.pass / entry.total]);
@@ -44,6 +46,10 @@ jQuery(function($) {
         {
           label: "Pass",
           data: pass
+        },
+        {
+          label: "Neutral",
+          data: neutral
         },
         {
           label: "Fail",
@@ -64,7 +70,7 @@ jQuery(function($) {
               steps: false,
             }
           },
-          colors: [ '#8ae234', '#ef2929', '#ffd862' ],
+          colors: [ '#8ae234', '#8080ff', '#ef2929', '#ffd862' ],
           legend: {
             show: true,
             backgroundOpacity: 0.2,

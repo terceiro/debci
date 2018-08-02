@@ -183,8 +183,8 @@ exitcode_to_statusmsg()
       message='Tests failed, and at least one test skipped'
       ;;
     8)
-      status=fail
-      message='No tests in this package'
+      status=neutral
+      message='No tests in this package or all skipped'
       ;;
     12)
       status=fail
@@ -340,9 +340,10 @@ EOF
 
 generate_status_entry() {
   pass=$(grep -l '"status":\s*"pass",' ${debci_packages_dir}/*/*/latest.json | wc -l)
+  neutral=$(grep -l '"status":\s*"neutral",' ${debci_packages_dir}/*/*/latest.json | wc -l)
   fail=$(grep -l '"status":\s*"fail",' ${debci_packages_dir}/*/*/latest.json | wc -l)
   tmpfail=$(grep -l '"status":\s*"tmpfail",' ${debci_packages_dir}/*/*/latest.json | wc -l)
-  total=$(($pass + $fail + $tmpfail))
+  total=$(($pass + $neutral + $fail + $tmpfail))
   date="$(date +%Y-%m-%dT%H:%M:%S)"
   path="$(echo "$date" | tr 'T-' '/')"
   mkdir -p "$(dirname "${debci_status_dir}/${path}")"
@@ -350,6 +351,7 @@ generate_status_entry() {
 {
   "date": "$date",
   "pass": $pass,
+  "neutral": $neutral,
   "fail": $fail,
   "tmpfail": $tmpfail,
   "total": $total
