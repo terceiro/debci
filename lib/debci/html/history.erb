@@ -53,6 +53,7 @@
               <td><%= test.duration_human %></td>
               <td>
                 <%= icon(test.status) %>
+                <%= test.status %>
               </td>
               <% if test.expired? %>
                 <td><span class='fa fa-trash' title='file has been removed due to data retention policy'></span></td>
