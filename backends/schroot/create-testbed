@@ -51,7 +51,7 @@ create_chroot() {
   # add APT Source URIs
   sed -e 's/^deb\s/deb-src /' "${debci_chroot_path}/etc/apt/sources.list" > "${debci_chroot_path}/etc/apt/sources.list.d/sources.list"
 
-  # FIXME duplicates logic in bin/debci-setup-chdist
+  # FIXME duplicates logic in bin/debci-setup-chdist && backends/lxc/create-testbed
   if grep -q debian "${debci_chroot_path}/etc/apt/sources.list"; then
     if [ "$debci_suite" = unstable ]; then
       buildd_suite="buildd-$debci_suite"
@@ -63,8 +63,8 @@ create_chroot() {
       buildd_suite="buildd-$debci_suite-proposed-updates"
     fi
     cat > "${debci_chroot_path}/etc/apt/sources.list.d/buildd.list" <<EOF
-deb http://incoming.debian.org/debian-buildd $buildd_suite main
-deb-src http://incoming.debian.org/debian-buildd $buildd_suite main
+deb http://incoming.debian.org/debian-buildd $buildd_suite main contrib non-free
+deb-src http://incoming.debian.org/debian-buildd $buildd_suite main contrib non-free
 EOF
   fi
 
