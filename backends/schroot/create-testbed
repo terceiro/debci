@@ -66,6 +66,10 @@ create_chroot() {
 deb http://incoming.debian.org/debian-buildd $buildd_suite main contrib non-free
 deb-src http://incoming.debian.org/debian-buildd $buildd_suite main contrib non-free
 EOF
+  cat > "${debci_chroot_path}/etc/apt/sources.list.d/debug.list" <<EOF
+deb http://deb.debian.org/debian-debug ${debci_suite}-debug main contrib main
+deb-src http://deb.debian.org/debian-debug ${debci_suite}-debug main contrib main
+EOF
   fi
 
   # never ask for input
