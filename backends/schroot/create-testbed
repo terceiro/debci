@@ -76,12 +76,12 @@ EOF
 
   # create debci user inside the chroot, with the same UID as the debci user on
   # the host system
-  chroot "$debci_chroot_path" adduser \
-    --disabled-password \
-    --shell /bin/sh \
-    --home /home/debci \
-    --uid "$debci_uid" \
-    debci
+  chroot "$debci_chroot_path" \
+    useradd \
+      --home-dir /home/debci \
+      --create-home \
+      --uid "$debci_uid" \
+      debci
 
   chroot "$debci_chroot_path" apt-get update
 }

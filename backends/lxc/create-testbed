@@ -133,10 +133,9 @@ DEBIAN_FRONTEND=noninteractive \
   apt-get clean
 
 chroot "$rootfs"  \
-  adduser \
-    --disabled-password \
-    --shell /bin/sh \
-    --home /home/debci \
+  useradd \
+    --home-dir /home/debci \
+    --create-home \
     debci
 
 completed=yes
