@@ -77,7 +77,6 @@ EOF
   # create debci user inside the chroot, with the same UID as the debci user on
   # the host system
   chroot "$debci_chroot_path" adduser \
-    --system \
     --disabled-password \
     --shell /bin/sh \
     --home /home/debci \
