@@ -110,8 +110,12 @@ if [ "$distro" = debian ]; then
     buildd_suite="buildd-$debci_suite-proposed-updates"
   fi
   cat > "${rootfs}/etc/apt/sources.list.d/buildd.list" <<EOF
-deb http://incoming.debian.org/debian-buildd $buildd_suite main
-deb-src http://incoming.debian.org/debian-buildd $buildd_suite main
+deb http://incoming.debian.org/debian-buildd $buildd_suite main contrib main
+deb-src http://incoming.debian.org/debian-buildd $buildd_suite main contrib main
+EOF
+  cat > "${rootfs}/etc/apt/sources.list.d/debug.list" <<EOF
+deb http://deb.debian.org/debian-debug ${debci_suite}-debug main contrib main
+deb-src http://deb.debian.org/debian-debug ${debci_suite}-debug main contrib main
 EOF
   while ! chroot "$rootfs" apt-get update; do
     echo "I: apt-get update failed, let's wait some time and try again "
