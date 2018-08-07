@@ -8,7 +8,7 @@ describe Debci::Job do
     job = Debci::Job.create
     expect(job.created_at).to_not be_nil
   end
-  it 'sets created_at' do
+  it 'sets updated_at' do
     job = Debci::Job.create
     job.save!
     expect(job.updated_at).to_not be_nil
