@@ -33,17 +33,10 @@ write_results() {
   log "$package $suite/$arch results received (exit code: $exitcode, duration: $duration_human)"
 }
 
-while true; do
-  case "$1" in
-    --write-results)
-      write_results
-      exit 0
-      ;;
-    *)
-      break
-      ;;
-  esac
-done
+if [ "$1" = '--write-results' ]; then
+  write_results
+  exit 0
+fi
 
 log "I: Connecting to AMQP queue ${debci_amqp_results_queue} on ${debci_amqp_server}"
 amqp-declare-queue --url="$debci_amqp_server" --durable --queue="$debci_amqp_results_queue" >/dev/null
