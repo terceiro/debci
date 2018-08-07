@@ -17,5 +17,6 @@ if [ ! -f $configdir/conf.d/dev.conf ]; then
 fi
 
 tail -n 1000 config/whitelist config/conf.d/*.conf
+echo
 
 ./bin/debci migrate
