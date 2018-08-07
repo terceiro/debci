@@ -1,5 +1,6 @@
 require 'debci'
 require 'debci/db'
+require 'cgi'
 require 'time'
 
 require 'bunny'
@@ -30,16 +31,21 @@ module Debci
       end
     end
 
-    def enqueue(priority = 0)
+    def get_enqueue_parameters
       parameters = ['run-id:%s' % id]
       if self.trigger
-        parameters << "trigger:#{trigger}"
+        parameters << "trigger:#{CGI.escape(trigger)}"
       end
       Array(self.pin_packages).each do |pin|
         pkg, suite = pin
         parameters << "pin-packages:#{suite}=#{pkg}"
       end
+      parameters
+    end
+
+    def enqueue(priority = 0)
       queue = self.class.get_queue(arch)
+      parameters = get_enqueue_parameters()
       queue.publish("%s %s %s" % [package, suite, parameters.join(' ')], priority: priority)
     end
 

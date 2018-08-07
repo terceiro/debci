@@ -12,7 +12,7 @@ test_trigger() {
   mkdir $__tmpdir/extract
   tar xaf "$artifacts" -C $__tmpdir/extract
   trigger=$(find $__tmpdir/extract -name trigger)
-  assertEquals "foo/1.0" "$(cat "$trigger")"
+  assertEquals "foo%2F1.0" "$(cat "$trigger")"
 }
 
 test_pin_packages() {

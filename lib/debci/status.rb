@@ -1,3 +1,4 @@
+require 'cgi'
 require 'json'
 require 'time'
 
@@ -156,7 +157,7 @@ module Debci
         rescue ArgumentError
           nil
         end
-      status.trigger = data['trigger']
+      status.trigger = read_trigger(data['trigger'])
       status.status = data.fetch('status', :unknown).to_sym
       status.previous_status = data.fetch('previous_status', :unknown).to_sym
       status.duration_seconds =
@@ -190,6 +191,12 @@ module Debci
 
     def inspect
       "<#{suite}/#{architecture} #{status}>"
+    end
+
+    private
+
+    def self.read_trigger(t)
+      t && CGI.unescape(t)
     end
 
   end
