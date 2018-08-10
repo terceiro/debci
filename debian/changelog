@@ -1,3 +1,22 @@
+debci (1.12) unstable; urgency=medium
+
+  [ Antonio Terceiro ]
+  * ui: add status name back in package history page
+  * lxc, schroot: don't make `debci` a system user
+  * tools/init-dev.sh: reduce number of suites
+  * tools/init-dev.sh: separate config files from test requests
+  * debci-collector: replace pointless loop with conditional
+  * Escape triggers when enqueuing test jobs (Closes: #902337)
+
+  [ Paul Gevers ]
+  * Treat autopkgtest exit status 8 as a neutral result (Closes: #901846)
+  * debci.(pre|post)(inst|rm): call dpkg-maintscript-helper to adapt for
+    change of directory to link in previous version
+  * backends/debci-setup-chdist: add contrib and non-free (Closes: #825488)
+  * backends: add debug archive to lxc and schroot (Closes: #817080)
+
+ -- Paul Gevers <elbrus@debian.org>  Fri, 10 Aug 2018 20:06:49 +0200
+
 debci (1.11) unstable; urgency=medium
 
   [ Antonio Terceiro ]
