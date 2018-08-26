@@ -32,7 +32,7 @@
               <% if package.failures.any? %>
                 <td>
                   <% package.failures.each do |s| %>
-                    <a class='<%= s.extended_status %>' href='<%= "/packages/#{@prefix}/#{package.name}/#{s.suite}/#{s.architecture}"%>'>
+                    <a class='<%= s.extended_status %> <%= if package.outdated?(s) then "outdated" end %>' href='<%= "/packages/#{@prefix}/#{package.name}/#{s.suite}/#{s.architecture}"%>'>
                       <%= s.version %> <%= s.status.upcase %> <%= s.suite %>/<%= s.architecture %> <%= s.failmsg && '(%s)' % s.failmsg %>
                     </a>
                   <% end %>

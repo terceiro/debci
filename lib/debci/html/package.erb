@@ -54,7 +54,7 @@
                                    "/#{@package.name}/#{status.suite}" +
                                    "/#{row.first.architecture}"
                   %>
-                  <td class="<%= status.status %>">
+                  <td class="<%= status.extended_status %>  <%= if @package.outdated?(status) then 'outdated' end %>">
                     <a href=<%= package_dir %>><%= status.version %>  <%= status.title %></a>
                   </td>
               <% end %>

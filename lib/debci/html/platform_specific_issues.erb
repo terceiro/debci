@@ -10,12 +10,12 @@
         </tr>
         <% @issues.each do |package, statuses| %>
           <tr>
-            <td><%= package %></td>
+            <td><%= package.name %></td>
             <td>
               <% statuses.each do |status| %>
-                <a  class='<%= status.extended_status %>'
-                    href="/packages/<%= Debci::Package.new(package).prefix %>/<%= package %>/<%= status.suite %>/<%= status.architecture %>/">
-                  <%= status.suite %>/<%= status.architecture%> <%= status.status %> (<%= status.duration_human %>)
+                <a  class='<%= status.extended_status %> <%= if package.outdated?(status) then "outdated" end %>'
+                    href="/packages/<%= package.prefix %>/<%= package.name %>/<%= status.suite %>/<%= status.architecture %>/">
+                  <%= status.version %> <%= status.suite %>/<%= status.architecture%> <%= status.status %> (<%= status.duration_human %>)
                 </a>
                 &nbsp;
               <% end %>
