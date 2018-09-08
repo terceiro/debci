@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <noscript>
+      <style type='text/css'>
+        form { display: none }
+      </style>
+    </noscript>
+    <style type='text/css'>
+      body {
+        font-family: sans-serif;
+        max-width: 960px;
+        margin: 50px auto;
+      }
+
+      pre {
+        background-color: #eeeeec;
+        border: 1px solid #babdb6;
+        border-radius: 2px;
+        padding: 0.5em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>debci API documentation</h1>
+
+    <% host = request.scheme + '://' + request.host %>
+    <% if ! [['http', 80], ['https', 443]].include?([request.scheme, request.port]) %>
+      <% host += ":%d" % request.port %>
+    <% end %>
+
+    <p>
+    All requests to the API must provide a <a href="v1/getkey">valid API key</a>
+    in the <code>Auth-Key</code> HTTP header. The only exception are the
+    endpoints that manipulate the API keys themselves, in which case the
+    requests must be authenticated using another method (HTTP basic
+    authentication, client certificates, etc).
+    </p>
+    <p>
+    Example:
+    </p>
+    <pre>$ KEY='00000000-0000-0000-0000-000000000000'
+$ curl --header "Auth-Key: $KEY" <%= host %>/api/v1/auth</pre>
+
+    <% @doc.each do |entry| %>
+      <h2>
+        <%= entry[:method] %>
+        <%= entry[:path] %>
+      </h2>
+      <%= entry[:text].gsub('https://host', host) %>
+    <% end %>
+  </body>
+</html>

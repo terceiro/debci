@@ -1,6 +1,7 @@
 require 'digest/sha1'
 require 'fileutils'
 require 'json'
+require 'rdoc'
 require 'securerandom'
 require 'sinatra'
 require "sinatra/namespace"
@@ -10,9 +11,57 @@ require 'debci'
 require 'debci/job'
 require 'debci/key'
 
+
+class SelfDocAPI < Sinatra::Base
+  get '/doc' do
+    @doc = self.class.doc
+    erb :doc
+  end
+  class << self
+    def doc(d=nil)
+      @last_doc = format_doc(d)
+      @doc ||= []
+    end
+    def register_doc(method, path)
+      return unless @last_doc
+      entry = {
+        :method => method,
+        :path => path,
+        :text => @last_doc
+      }
+      @last_doc = nil
+      doc.push(entry)
+    end
+    def format_doc(text)
+      return nil unless text
+      lines = text.lines
+      if lines.first && lines.first.strip == ""
+        lines.first.shift
+      end
+      lines.first =~ /^\s+/; prefix = $&
+      if prefix
+        lines.map! do |line|
+          line.sub(/^#{prefix}/, '')
+        end
+      end
+      formatter = RDoc::Markup::ToHtml.new(RDoc::Options.new, nil)
+      RDoc::Markdown.parse(lines.join).accept(formatter)
+    end
+
+    def get(path, *args)
+      register_doc('GET', path)
+      super(path, *args)
+    end
+    def post(path, *args)
+      register_doc('POST', path)
+      super(path, *args)
+    end
+  end
+end
+
 module Debci
 
-  class API < Sinatra::Base
+  class API < SelfDocAPI
 
     register Sinatra::Namespace
     set :views, File.dirname(__FILE__) + '/api'
@@ -20,20 +69,48 @@ module Debci
     attr_reader :suite, :arch, :user
 
     get '/' do
-      redirect '/doc/file.API.html'
+      redirect request.script_name + '/doc'
     end
 
     namespace '/v1' do
 
+      doc <<-EOF
+      * bli
+      * bli
+      * bli
+      EOF
+
+      doc <<-EOF
+      This endpoint can be used to test your API key. It returns a 200 (OK)
+      HTTP status if your API key is valid, and 403 (Forbidden) otherwise. The
+      response also includes the username corresponding to the API key in the
+      `Auth-User` header.
+      EOF
       get '/auth' do
         authenticate!
         200
       end
 
+      doc <<-EOF
+      Displays a user-friendly HTML page that can be used by users to get an
+      API key using this existing in-browser client certificate.
+
+      This endpoint does not require an existing API key, but does require
+      proper authentication with a client certificate (e.g.
+      [Debian SSO](https://wiki.debian.org/DebianSingleSignOn)).
+      EOF
       get '/getkey' do
         erb :getkey
       end
 
+      doc <<-EOF
+      Gets a new API key. Any existing API key is invalidated after a new one
+      is obtained.
+
+      This endpoint does not require an existing API key, but does require
+      proper authentication with a client certificate (e.g.  [Debian
+      SSO](https://wiki.debian.org/DebianSingleSignOn))
+      EOF
       post '/getkey' do
         username = ENV['FAKE_CERTIFICATE_USER'] || env['SSL_CLIENT_S_DN_CN']
         if username
@@ -45,10 +122,21 @@ module Debci
         end
       end
 
+      doc <<-EOF
+      Presents a simple UI for retrying a test
+      EOF
       get '/retry/:run_id' do
         erb :retry
       end
 
+      doc <<-EOF
+      This endpoint can be used to reschedule a test that has already been
+      performed, e.g. because the reason of the failure has been solved.
+
+      URL parameters:
+
+      * `:run_id`: which Job ID to retry
+      EOF
       post '/retry/:run_id' do
         username = ENV['FAKE_CERTIFICATE_USER'] || env['SSL_CLIENT_S_DN_CN']
         if not username
@@ -73,6 +161,68 @@ module Debci
         201
       end
 
+      doc <<-EOF
+      Retrieves results for your test requests.
+
+      Parameters:
+
+      * `since`: UNIX timestamp; tells the API to only retrieve results that are
+        newer then the given timestamp.
+
+      Some test results may be updated after being created, for example while a test
+      is still running, it will be returned, but it's status will be `null`. After it
+      is completed, it will be updated to have the correct status.  So, if you are
+      processing test results, make sure you support receiving the same result more
+      than once, and updating the corresponding data on your side.
+
+      The response is a JSON object containing the following keys:
+
+      * `until`: UNIX timestamp that represents the timestamp of the latest results
+        available. can be used as the `since` parameter in subsequent requests to
+        limit the list of results to only the ones newer than it.
+      * `results`: a list of test results, each of each will containing at least the
+        following items:
+        * `trigger`: the same string that was provided in the test submission. (string)
+        * `package`: tested package (string)
+        * `arch`: architecture where the test ran (string)
+        * `suite`:  suite where the test ran (string)
+        * `version`: version of the package that was tested (string)
+        * `status`:  "pass", "fail", or "tmpfail" (string), or *null* if the test
+          didn't finish yet.
+        * `run_id`:  an id for the test run, generated by debci (integer)
+
+      Note that this endpoint will only list requests that were made by the same API
+      key that is being used to call it.
+
+      Example:
+
+      ```
+      $ curl --header "Auth-Key: $KEY" https://host/api/v1/test?since=1508072999
+      {
+        "until": 1508159423,
+        "results": [
+          {
+            "trigger": "foo/1.2",
+            "package": "bar",
+            "arch": "amd64",
+            "suite": "testing",
+            "version": "4.5",
+            "status": "fail",
+            "run_id": 12345
+          },
+          {
+            "trigger": "foo/1.2",
+            "package": "baz",
+            "arch": "amd64",
+            "suite": "testing",
+            "version": "2.7",
+            "status": "pass",
+            "run_id": 12346
+          }
+        ]
+      }
+      ```
+      EOF
       get '/test' do
         authenticate!
         jobs = Debci::Job.where(requestor: @user)
@@ -99,7 +249,69 @@ module Debci
         end
       end
 
+      doc <<-EOF
+      URL parameters:
 
+      * `:suite`: which suite to test
+      * `:arch`: which architecture to test
+
+      Other parameters:
+
+      * `tests`: a JSON object decribing the tests to be executed. This parameter can
+        be either a file upload or a regular POST parameter.
+
+      The `tests` JSON object must be an *Array* of objects. Each object represents a
+      single test request, and can contain the following keys:
+
+      * `package`: the (source!) package to be tested
+      * `trigger`: a string that identifies the reason why this test is being
+        requested. debci only stores this string, and it does not handle this in any
+        special way.
+      * `pin-packages`: an array describing packages that need to be obtained from
+        different suites than the main one specified by the `suite` parameter. This
+        is used e.g. to run tests on `testing` with a few packages from `unstable`,
+        or on `unstable` with a few packages from `experimental`. Each item of the
+        array is another array with 2 elements: the first is the package, and the
+        second is the source. Examples:
+
+          * `["foo", "unstable"]`: get `foo` from unstable
+          * `["src:bar", "unstable"]`: get all binaries built from `bar` from unstable
+          * `["foo,src:bar", "unstable"]`: get `foo` and all binaries built from `bar` from unstable
+
+        Note: each suite can be only present once.
+
+      In the example below, we are requesting to test `debci` and `vagrant` from
+      testing, but with all binaries that come from the `ruby-defaults` source coming
+      from unstable:
+
+      ```
+      $ cat tests.json
+      [
+        {
+          "package": "debci",
+          "trigger": "ruby/X.Y",
+          "pin-packages": [
+            ["src:ruby-defaults", "unstable"]
+          ]
+        },
+        {
+          "package": "vagrant",
+          "trigger": "ruby/X.Y",
+          "pin-packages": [
+            ["src:ruby-defaults", "unstable"]
+          ]
+        }
+      ]
+
+      # tests as a file upload
+      $ curl --header "Auth-Key: $KEY" --form tests=@tests.json \
+          https://host/api/v1/test/testing/amd64
+
+      # tests as a regular POST parameter
+      $ curl --header "Auth-Key: $KEY" --data="$(cat tests.json)" \
+          https://host/api/v1/test/testing/amd64
+      ```
+      EOF
       post '/test/:suite/:arch' do
         tests = load_json(params[:tests])
         tests.each do |test|
@@ -128,6 +340,21 @@ module Debci
         201
       end
 
+      doc <<-EOF
+      This is a shortcut to request a test run for a single package.
+
+      URL parameters:
+
+      * `:suite`: which suite to test
+      * `:arch`: which architecture to test
+      * `:package`: which (source!) package to test
+
+      Example:
+
+      ```
+      $ curl --header "Auth-Key: $KEY" --data '' https://host/api/v1/test/unstable/amd64/debci
+      ```
+      EOF
       post '/test/:suite/:arch/:package' do
         pkg = params[:package]
         if Debci.blacklist.include?(pkg)
