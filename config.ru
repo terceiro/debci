@@ -17,6 +17,17 @@ LISTING = <<EOF
 EOF
 
 class ServeStatic < Sinatra::Base
+
+  def static!(*args)
+    # XXX static! is a private method, so this could break at some point
+    if request.path =~ /log\.gz$/
+      headers['Content-Encoding'] = 'gzip'
+      headers['Content-Type'] = 'text/plain; charset=utf-8'
+    end
+    super
+  end
+
+
   get '/*' do
     if request.path !~ %r{/$}
       return redirect(request.path + '/')
