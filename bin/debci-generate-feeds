@@ -43,7 +43,7 @@ def insert_items(news, feed)
           "<li><a href=\"#{expand_url($artifacts_url_base, status.suite)}/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}/artifacts.tar.gz\">autopkgtest artifacts</a></li>"]
       else
         item.description += [
-          "<li><a href=\"#{$site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.autopkgtest.log.gz\">autopkgtest log</a></li>",
+          "<li><a href=\"#{$site_base}/data/autopkgtest/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}/log.gz\">autopkgtest log</a></li>",
           "<li><a href=\"#{$site_base}/data/autopkgtest/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}/\">autopkgtest artifacts</a></li>"]
       end
 
