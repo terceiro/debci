@@ -111,11 +111,6 @@ do_request() {
   # publish results
   result_dir=${result_dir##$tmp_dir/}
 
-  amqp-declare-queue \
-    --url="$debci_amqp_server" \
-    --durable \
-    --queue="$debci_amqp_results_queue" > /dev/null
-
   ( cd $tmp_dir && tar czf - "$result_dir" ) | amqp-publish \
     --url="${debci_amqp_server}" \
     --persistent \
@@ -140,6 +135,11 @@ while true; do
       ;;
   esac
 done
+
+amqp-declare-queue \
+  --url="$debci_amqp_server" \
+  --durable \
+  --queue="$debci_amqp_results_queue" > /dev/null
 
 # if the user calls this, we run forever with consuming messages;
 # amqp-consume calls ourselves with the (hidden) --do-request option
