@@ -3,7 +3,7 @@ class CompleteJobFields < Debci::DB::LegacyMigration
   def up
     add_column :jobs, :date, :datetime
     add_column :jobs, :duration_seconds, :integer
-    add_column :jobs, :last_pass_date, :date
+    add_column :jobs, :last_pass_date, :datetime
     add_column :jobs, :last_pass_version, :string
     add_column :jobs, :message, :string
     add_column :jobs, :previous_status, :string
