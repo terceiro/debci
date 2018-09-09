@@ -71,6 +71,17 @@ following contents:
 debci_backend=fake
 ```
 
+Note: the `fake` backend gets packages versions from your local system. So, for
+example if you are on Debian stable, when "running tests" for package `foo`,
+the `fake` backend will report as testing the version of `foo` that is
+available on Debian stable. If for some reason you want or need it to report,
+say, versions that look like the ones from Debian unstable, all you have to do
+is add a `sources.list` entry for Debian unstable, like this:
+
+```
+deb-src http://deb.debian.org/debian/ unstable main contrib non-free
+```
+
 ### Get debci up and running
 
 Now you need to compile a few files that will be part of the user interface:
