@@ -8,10 +8,31 @@ require 'thor'
 module Debci
   class JobCLI < Thor
 
-    desc 'import STATUS_FILE', 'Marks job as finished'
-    def import(status_file)
-      Debci::Job.import(status_file, suite, arch)
+    desc 'import STATUS_FILE [STATUS_FILE ...]', 'Import data from status file'
+    method_option :remove, type: :boolean, default: false
+    method_option :verbose, type: :boolean, default: false
+    def import(*status_files)
+      status_files.each do |status_file|
+        Debci::Job.import(status_file, suite, arch)
+        puts('I: imported %s' % status_file) if options{:verbose}
+        if options[:remove]
+          File.unlink(status_file)
+        puts('I: removed %s' % status_file) if options{:verbose}
+        end
+      end
     end
+
+    desc 'history-json PACKAGE', 'Generate package history in JSON'
+    def history_json(pkg)
+      history = Debci::Job.where(
+        package: pkg,
+        suite: suite,
+        arch: arch,
+      ).where.not(status: nil).order('run_id')
+      data = JSON.parse(history.to_json)
+      puts JSON.pretty_generate(data)
+    end
+
 
     desc 'declare-queue', 'Initializes job queue'
     def declare_queue

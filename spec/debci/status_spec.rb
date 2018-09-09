@@ -32,7 +32,7 @@ describe Debci::Status do
     it('gets status') { expect(@status.status).to eq(:pass)}
     it('gets previous status') { expect(@status.previous_status).to eq(:pass)}
     it('gets duration in seconds') { expect(@status.duration_seconds).to eq(45)}
-    it('gets duration human') { expect(@status.duration_human).to eq('0h 0m 45s') }
+    it('gets duration human') { expect(@status.duration_human).to eq('45s') }
     it('gets message') { expect(@status.message).to eq("All tests passed") }
   end
 
@@ -163,6 +163,22 @@ describe Debci::Status do
       expect(Debci.config).to receive(:data_retention_days).and_return('0')
       s = Debci::Status.new.tap { |_s| _s.date = Time.now - (365*24*60*60) }
       expect(s).to_not be_expired
+    end
+  end
+
+  context 'calculating human-friendly duration' do
+    it 'handles duration within seconds' do
+      status = status_with(duration_seconds: 5)
+      expect(status.duration_human).to eq('5s')
+    end
+    it 'handles duration within minutes' do
+      status = status_with(duration_seconds: 73)
+      expect(status.duration_human).to eq('1m 13s')
+    end
+
+    it 'handles duration within hours' do
+      status = status_with(duration_seconds: 3600 + 60 + 2)
+      expect(status.duration_human).to eq('1h 1m 2s')
     end
   end
 

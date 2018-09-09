@@ -8,7 +8,7 @@ module Debci
 
   class Status
 
-    attr_accessor :suite, :architecture, :run_id, :package, :version, :date, :trigger, :status, :previous_status, :duration_seconds, :duration_human, :message, :last_pass_version, :last_pass_date
+    attr_accessor :suite, :architecture, :run_id, :package, :version, :date, :trigger, :status, :previous_status, :duration_seconds, :message, :last_pass_version, :last_pass_date
 
     # Returns `true` if this status object represents an important event, such
     # as a package that used to pass started failing, of vice versa.
@@ -71,6 +71,16 @@ module Debci
       else
         status
       end
+    end
+
+    def duration_human
+      s = duration_seconds.to_i
+      return '0s' if s == 0
+      {
+        h: s / 3600,
+        m: (s % 3600) / 60,
+        s: s % 60,
+      }.select { |k,v| v > 0 }.map { |k,v| v.to_s + k.to_s }.join(' ')
     end
 
     def failmsg
@@ -153,25 +163,24 @@ module Debci
       status.version = data['version']
       status.date =
         begin
-          Time.parse(data.fetch('date', 'unknown') + ' UTC')
+          Time.parse((data['date'] || 'unknown') + ' UTC')
         rescue ArgumentError
           nil
         end
       status.trigger = read_trigger(data['trigger'])
-      status.status = data.fetch('status', :unknown).to_sym
-      status.previous_status = data.fetch('previous_status', :unknown).to_sym
+      status.status = (data['status'] || :unknown).to_sym
+      status.previous_status = (data['previous_status'] || :unknown).to_sym
       status.duration_seconds =
         begin
-          Integer(data.fetch('duration_seconds', 0))
+          Integer(data['duration_seconds'] || 0)
         rescue ArgumentError
           nil
         end
-      status.duration_human = data['duration_human']
       status.message = data['message']
       status.last_pass_version = data.fetch('last_pass_version', 'unknown')
       status.last_pass_date =
         begin
-          Time.parse(data.fetch('last_pass_date', 'unknown') + ' UTC')
+          Time.parse((data['last_pass_date'] || 'unknown') + ' UTC')
         rescue ArgumentError
           nil
         end

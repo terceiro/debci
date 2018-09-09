@@ -91,6 +91,8 @@ module Debci
       @moretitle = "#{package.name}/#{suite}/#{architecture}"
       history = package.history(@suite, @architecture)
       @latest = history && history.first
+      @history = package.history(@suite, @architecture)
+      @latest = @history && @history.first
       @package_links = load_template(:package_links)
       expand_template(:history, filename)
     end
@@ -155,6 +157,7 @@ module Debci
       no_test_data: 'question',
     }
     def icon(status)
+      status ||= :no_test_data
       Array(ICONS[status.to_sym]).map do |i|
         "<i class='#{status} fa fa-#{i}'></i>"
       end.join(' ')
