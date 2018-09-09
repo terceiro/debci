@@ -92,7 +92,7 @@ generate_package_run() {
   generate_package_json "$last_timestamp"
 
   if ! echo $run_id | grep -q _ ; then
-      debci job finished "${status_dir}/${run_id}.json"
+      debci job import "${status_dir}/${run_id}.json"
   fi
 
   # update "latest" links

@@ -32,4 +32,27 @@ describe Debci::Job do
     end
   end
 
+  let(:suite) { 'unstable' }
+  let(:arch) { 'amd64'}
+
+  it 'imports status file' do
+    job = Debci::Job.create(suite: suite, arch: arch)
+    file = Tempfile.new('foo')
+    file.write(
+      {
+        'run_id': job.run_id,
+        'status': 'pass',
+        'version': '1.0-1',
+      }.to_json
+    )
+    file.close
+
+    imported = Debci::Job.import(file.path, suite, arch)
+    expect(imported).to eq(job)
+
+    job.reload
+    expect(job.status).to eq('pass')
+    expect(job.version).to eq('1.0-1')
+  end
+
 end

@@ -8,14 +8,9 @@ require 'thor'
 module Debci
   class JobCLI < Thor
 
-    desc 'finished STATUS_FILE', 'Marks job as finished'
-    def finished(status_file)
-      status = Debci::Status.from_file(status_file, suite, arch)
-      status.run_id = status.run_id.to_i
-      job = Debci::Job.find(status.run_id)
-      job.version = status.version
-      job.status = status.status
-      job.save!
+    desc 'import STATUS_FILE', 'Marks job as finished'
+    def import(status_file)
+      Debci::Job.import(status_file, suite, arch)
     end
 
     desc 'declare-queue', 'Initializes job queue'

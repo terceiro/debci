@@ -10,6 +10,16 @@ module Debci
 
     serialize :pin_packages, Array
 
+    def self.import(status_file, suite, arch)
+      status = Debci::Status.from_file(status_file, suite, arch)
+      status.run_id = status.run_id.to_i
+      job = Debci::Job.find(status.run_id)
+      job.version = status.version
+      job.status = status.status
+      job.save!
+      job
+    end
+
     def self.pending
       jobs = Debci::Job.where(status: nil)
     end
