@@ -394,8 +394,7 @@ module Debci
 
     def authenticate!
       key = env['HTTP_AUTH_KEY']
-      @user = Debci::Key.authenticate(key)
-      if @user
+      if key && @user = Debci::Key.authenticate(key)
         response['Auth-User'] = @user
       else
         halt(403, "Invalid key\n")

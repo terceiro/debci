@@ -247,6 +247,11 @@ describe Debci::API do
 
   context 'retriggers' do
 
+    it 'rejects non-authenticated requests' do
+      post '/api/v1/retry/1'
+      expect(last_response.status).to eq(403)
+    end
+
     it 'displays a user friendly page' do
       get '/api/v1/retry/1'
       expect(last_response.status).to eq(200)
