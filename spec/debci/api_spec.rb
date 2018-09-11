@@ -252,9 +252,15 @@ describe Debci::API do
       expect(last_response.status).to eq(403)
     end
 
-    it 'displays a user friendly page' do
-      get '/api/v1/retry/1'
+    it 'displays a user friendly page to authenticated users' do
+      get '/api/v1/retry/1', {}, { 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com' }
       expect(last_response.status).to eq(200)
+      expect(last_response.content_type).to match('text/html')
+    end
+
+    it 'displays a "Forbidden" page to non-authenticated users' do
+      get '/api/v1/retry/1'
+      expect(last_response.status).to eq(403)
       expect(last_response.content_type).to match('text/html')
     end
 

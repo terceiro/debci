@@ -126,7 +126,12 @@ module Debci
       Presents a simple UI for retrying a test
       EOF
       get '/retry/:run_id' do
-        erb :retry
+        @user = ENV['FAKE_CERTIFICATE_USER'] || env['SSL_CLIENT_S_DN_CN']
+        if @user
+          erb :retry
+        else
+          [403, erb(:cant_retry)]
+        end
       end
 
       doc <<-EOF
@@ -138,8 +143,8 @@ module Debci
       * `:run_id`: which Job ID to retry
       EOF
       post '/retry/:run_id' do
-        username = ENV['FAKE_CERTIFICATE_USER'] || env['SSL_CLIENT_S_DN_CN']
-        if not username
+        @user = ENV['FAKE_CERTIFICATE_USER'] || env['SSL_CLIENT_S_DN_CN']
+        if not @user
           authenticate!
         end
         run_id = params[:run_id]
