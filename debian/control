@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Debian CI team <team+ci@tracker.debian.org>
 Uploaders: Antonio Terceiro <terceiro@debian.org>, Paul Gevers <elbrus@debian.org>,
 Build-Depends: amqp-tools,
-               autopkgtest,
+               autopkgtest (>= 5.5~),
                dctrl-tools,
                debhelper (>= 9.20160709),
                devscripts,
@@ -77,7 +77,7 @@ Package: debci-worker
 Architecture: all
 Depends: debci (= ${binary:Version}),
          autodep8 (>= 0.2~),
-         autopkgtest (>= 5.1~),
+         autopkgtest (>= 5.5~),
          lxc | schroot,
          ${misc:Depends},
          ${shlibs:Depends}
