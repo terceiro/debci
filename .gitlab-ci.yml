@@ -18,4 +18,4 @@ testing:
 
 stable:
   <<: *test
-  image: 'debian:stable'
+  image: 'debian:stable-backports'

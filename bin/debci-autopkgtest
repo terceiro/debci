@@ -9,7 +9,7 @@ fi
 
 rc=0
 autopkgtest \
-  --no-built-binaries \
+  --no-built-binaries --no-apt-fallback \
   "$@" || rc=$?
 
 echo $rc > "$debci_test_outputdir/exitcode"
