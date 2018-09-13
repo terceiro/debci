@@ -1,3 +1,21 @@
+debci (1.13) unstable; urgency=medium
+
+  [ Antonio Terceiro ]
+  * debci-generate-feeds: fix link to autopkgtest log
+  * api: make API self-documenting
+  * config.ru: serve compressed logs inline in development
+  * debci-worker: declare results queue only once
+  * backends/fake: drop rmadison call
+  * debci-job: rename `finished` to `import` and move logic to Debci::Job
+  * api: don't crash on failed authentication
+  * api: don't display retry button to unauthenticated users
+
+  [ Paul Gevers ]
+  * Add --no-apt-fallback to autopkgtest options
+  * .gitlab-ci.yml: use backports for stable testing
+
+ -- Paul Gevers <elbrus@debian.org>  Thu, 13 Sep 2018 15:34:35 +0200
+
 debci (1.12) unstable; urgency=medium
 
   [ Antonio Terceiro ]
