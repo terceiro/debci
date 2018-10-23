@@ -39,12 +39,8 @@ in the [Debian BTS](https://bugs.debian.org/).
 
 ## Contact
 
-For maintainer queries and general discussion:
-
-* mailing list: [debian-qa@lists.debian.org](https://lists.debian.org/debian-qa/)
-* IRC: `#debian-qa` on OFTC. Feel free to highlight `terceiro`
-
-For the development of debci itself
+For maintainer queries, general discussion, and also about the development of
+debci itself, get in touch:
 
 * mailing list: [debian-ci](https://lists.debian.org/debian-ci)
 * IRC: `#debci` on OFTC
