@@ -1,5 +1,51 @@
 # FAQ for package maintainers
 
+## Why should I use autopkgtest when my build runs the test suite?
+
+autopkgtest is intended to test packages in their *installed* state, and that
+is not the same as testing the code that is in the source tree. During the build,
+the tests run against the code in the source tree. Depending on the package,
+that could be enough, but *also* running those same tests against the installed
+package can catch a host of problems that can't be caught when running against
+the source tree, e.g.:
+
+* ABI breakages and other types of problems that are "magically" fixed with a
+  rebuild.
+* Missing dependencies (as opposed to build dependencies)
+* Some files that are essential for the software to function correctly were not
+  included in the binary package.
+
+Another practical reason to have autopkgtest tests in your package is that
+debci runs autopkgtest more frequently than packages are built. For example,
+when any of your dependencies is updated, your package is tested again against
+that new version.
+
+Now, besides running tests that normally run during the package build under
+autopkgtest as well, it is also a good idea to add tests that are specific to
+the package as installed and are more "black box", i.e. tests that don't assume
+or have access to implementation details of the package (those are usually
+called integration tests). For example:
+
+* if a package provides a service, add tests that exercises that service as a
+  client, and check the expected results of that interaction.
+* if a package provides a program, add tests that check that the invocations of
+  that program with different parameters and inputs produce the corresponding
+  expected results.
+
+This type of test can also, and most often that not should, be contributed
+upstream.
+
+## If autopkgtest can rebuild the package, why won't debci do that?
+
+The primary reason is because we want to test the packages that are actually in
+the archive, because that is what our users get from us.
+
+Weaker, but practical reasons, are:
+
+* Rebuilding every package would add significant load to the system.
+* The buildd network already builds packages and we don't want to duplicate
+  that function.
+
 ## How can I reproduce the test run locally?
 
 **NOTE:** if you intend to run tests frequently, you should consider installing
