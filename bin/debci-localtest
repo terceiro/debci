@@ -9,7 +9,7 @@ prepare_args
 
 pkg="$1"
 shift
-logs="$(mktemp --directory --tmpdir debci-localtest.XXXXXXXXXX)/artifacts"
+logs="$(mktemp --directory --tmpdir debci-localtest.XXXXXXXXXX)"
 
 # these variables can be considered as an API by backends/*/test-package and
 # debci-autopkgtest
