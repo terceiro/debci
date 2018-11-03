@@ -2,8 +2,8 @@
 
 set -eu
 
-if [ $# -lt 2 ]; then
-  echo "usage: $0 OUTPUDIR [AUTOPKGTEST ARGUMENTS ...]"
+if [ $# -lt 1 ]; then
+  echo "usage: $0 [AUTOPKGTEST ARGUMENTS ...]"
   exit 1
 fi
 
@@ -12,5 +12,7 @@ autopkgtest \
   --no-built-binaries --no-apt-fallback \
   "$@" || rc=$?
 
-echo $rc > "$debci_test_outputdir/exitcode"
+if [ -n "${debci_test_outputdir:-}" ]; then
+  echo $rc > "$debci_test_outputdir/exitcode"
+fi
 exit $rc
