@@ -1,3 +1,16 @@
+debci (1.14) unstable; urgency=medium
+
+  * lxc/create-testbed: avoid cleaning up valid containers
+  * README.md: point people to debian-ci@l.d.o and #debci (only)
+  * docs/MAINTAINERS.md: add two new FAQs
+  * debci-autopkgtest: make it work when run standalone
+  * debci-localtest: remove last component from artifacts directory
+  * debci-autopkgtest: don't hardcode autopkgtest arguments
+  * Bump Standards-Version to 4.2.1 (no changes needed)
+  * Move moreutils from Recommends: to Depends: (Closes: #910918)
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 03 Nov 2018 12:50:26 -0300
+
 debci (1.13) unstable; urgency=medium
 
   [ Antonio Terceiro ]
