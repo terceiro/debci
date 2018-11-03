@@ -45,6 +45,7 @@ Depends: adduser,
          libjs-bootstrap,
          libjs-jquery,
          libjs-jquery-flot,
+         moreutils,
          patchutils,
          ruby,
          ruby-activerecord,
@@ -57,8 +58,7 @@ Depends: adduser,
          jq,
          ${misc:Depends},
          ${shlibs:Depends}
-Recommends: moreutils,
-            ntp | time-daemon,
+Recommends: ntp | time-daemon
 Suggests: apt-cacher-ng,
 Description: continuous integration system for Debian
  debci will scan the Debian archive for packages that contain DEP-8 compliant
