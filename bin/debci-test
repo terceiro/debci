@@ -60,6 +60,7 @@ process_package() {
   # debci-autopkgtest
   export debci_suite
   export debci_arch
+  export debci_autopkgtest_args
   export debci_test_package="$pkg"
   export debci_test_outputdir="$adt_out_dir"
 

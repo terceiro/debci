@@ -163,6 +163,9 @@ debci_generate_index_lock=${debci_lock_dir}/debci-generate-index.lock
 # data retention policy (numbers of days)
 debci_data_retention_days=180
 
+# extra arguments for autopkgtest
+debci_autopkgtest_args="${debci_autopkgtest_args:-}"
+
 
 for dir in \
   "${debci_base_dir}/backends/${debci_backend}" \

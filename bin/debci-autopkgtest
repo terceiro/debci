@@ -9,7 +9,8 @@ fi
 
 rc=0
 autopkgtest \
-  --no-built-binaries --no-apt-fallback \
+  --no-built-binaries \
+  ${debci_autopkgtest_args:-} \
   "$@" || rc=$?
 
 if [ -n "${debci_test_outputdir:-}" ]; then
