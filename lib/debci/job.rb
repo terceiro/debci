@@ -21,7 +21,7 @@ module Debci
     end
 
     def self.pending
-      jobs = Debci::Job.where(status: nil)
+      jobs = Debci::Job.where(status: nil).order(:created_at)
     end
 
     def prefix

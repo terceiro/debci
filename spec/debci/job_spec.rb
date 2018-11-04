@@ -14,6 +14,21 @@ describe Debci::Job do
     expect(job.updated_at).to_not be_nil
   end
 
+  it 'lists pending jobs' do
+    job = Debci::Job.create
+    expect(Debci::Job.pending).to include(job)
+  end
+
+  it 'sorts pending jobs with older first' do
+    job1 = Debci::Job.create
+    yesterday = Time.now - 1.day
+    expect(Time).to receive(:now).and_return(yesterday)
+    job0 = Debci::Job.create
+
+    expect(Debci::Job.pending).to eq([job0, job1])
+  end
+
+
   it 'escapes trigger' do
     job = Debci::Job.new(trigger: 'foo bar')
     expect(job.get_enqueue_parameters).to_not include('trigger:foo bar')
