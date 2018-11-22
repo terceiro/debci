@@ -186,7 +186,7 @@ exitcode_to_statusmsg()
       status=neutral
       message='No tests in this package or all skipped'
       ;;
-    12)
+    12|14)
       status=fail
       message='Erroneous package'
       ;;

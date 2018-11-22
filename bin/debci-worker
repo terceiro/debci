@@ -97,7 +97,7 @@ do_request() {
       0|2)
           debci_suite="$suite" report_status $pkg pass
           ;;
-      4|6|12)
+      4|6|12|14)
           debci_suite="$suite" report_status $pkg fail
           ;;
       8)
