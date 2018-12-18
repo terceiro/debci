@@ -161,7 +161,7 @@ debci_batch_lock=${debci_lock_dir}/debci-batch-${debci_suite}-${debci_arch}.lock
 debci_generate_index_lock=${debci_lock_dir}/debci-generate-index.lock
 
 # data retention policy (numbers of days)
-debci_data_retention_days=180
+debci_data_retention_days=${debci_data_retention_days:-180}
 
 # extra arguments for autopkgtest
 debci_autopkgtest_args="${debci_autopkgtest_args:-}"
