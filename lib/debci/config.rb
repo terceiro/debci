@@ -43,17 +43,29 @@ module Debci
       end
     end
 
+    def self.types
+      @types ||= {
+        /_list$/ => lambda { |x| x.split}, # Array
+        'quiet' => lambda { |x| x == 'true' }, # boolean
+      }
+    end
+
+    def self.cast_for(key)
+      pair = types.find { |k,v| k === key }
+      if pair
+        pair[1]
+      else
+        lambda { |x| x }
+      end
+    end
+
     def initialize
       # :nodoc:
       IO.popen(['debci', 'config', *members.map(&:to_s)]) do |data|
         data.each_line.each do |line|
           key, value = line.strip.split('=')
-          if key =~ /_list$/
-            value = value.split
-          end
-          if key == "quiet"
-            value = (value == 'true')
-          end
+          cast = self.class.cast_for(key)
+          value = cast.call(value)
           self.send("#{key}=", value)
         end
       end
