@@ -1,4 +1,4 @@
-class CreateKeys < ActiveRecord::Migration
+class CreateKeys < Debci::DB::LegacyMigration
 
   def up
     create_table(:keys) do |t|
