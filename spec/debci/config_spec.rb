@@ -36,4 +36,10 @@ describe Debci::Config do
     expect(config.data_basedir).to eq('/path/to/data')
   end
 
+  it 'splits at the first equal sign only' do
+    url = "sqlite3:/path/to/db.sqlite3?timeout=5000"
+    @io.reopen("database_url=#{url}\n")
+    expect(config.database_url).to eq(url)
+  end
+
 end

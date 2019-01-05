@@ -55,7 +55,7 @@ module Debci
       if pair
         pair[1]
       else
-        lambda { |x| x }
+        lambda { |x| x == "" ? nil : x }
       end
     end
 
@@ -63,7 +63,7 @@ module Debci
       # :nodoc:
       IO.popen(['debci', 'config', *members.map(&:to_s)]) do |data|
         data.each_line.each do |line|
-          key, value = line.strip.split('=')
+          key, value = line.strip.split('=', 2)
           cast = self.class.cast_for(key)
           value = cast.call(value)
           self.send("#{key}=", value)
