@@ -1,3 +1,20 @@
+debci (1.15) unstable; urgency=medium
+
+  [ Paul Gevers ]
+  * Proper support for autopkgtest exit status 14: erroneous package with
+    skipped tests
+
+  [ Antonio Terceiro ]
+  * Debci::Job: order pending jobs by creation date
+  * config: fix setting debci_data_retention_days
+  * Debci::Config: replace conditionals with hash lookup
+  * Debci::DB: add support for ActiveRecord 5.2 (Closes: #918179)
+  * Add missing build dependency on ruby-rack-test
+  * Debci::Config: don't break config values containing "="
+  * config: add timeout to default database config
+
+ -- Antonio Terceiro <terceiro@debian.org>  Mon, 07 Jan 2019 13:54:47 -0300
+
 debci (1.14) unstable; urgency=medium
 
   * lxc/create-testbed: avoid cleaning up valid containers
