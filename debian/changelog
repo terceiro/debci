@@ -10,6 +10,7 @@ debci (1.15) unstable; urgency=medium
   * Debci::Config: replace conditionals with hash lookup
   * Debci::DB: add support for ActiveRecord 5.2 (Closes: #918179)
   * Add missing build dependency on ruby-rack-test
+  * Add missing autopkgtest dependency on ruby-rack-test
   * Debci::Config: don't break config values containing "="
   * config: add timeout to default database config
 
