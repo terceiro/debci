@@ -30,6 +30,7 @@ if [ ! -e "$root/$name" ]; then
   TARGET="$root/$name"
   ARCH=$debci_arch
   set +u
+  export DEBOOTSTRAP_DIR=/usr/share/debootstrap
   . /usr/share/debootstrap/functions
   exec 4>&1
   # this updates $DEF_MIRROR (Ubuntu, ports, ..)
