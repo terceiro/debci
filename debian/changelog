@@ -2,6 +2,8 @@ debci (1.15.1) unstable; urgency=medium
 
   * debci setup-chdist: fix debootstrap usage
   * debci collector: make sure a single file is used as exitcode
+  * Bump Standards-Version to 4.3.0; no changes needed otherwise
+
 
  -- Antonio Terceiro <terceiro@debian.org>  Wed, 06 Feb 2019 22:56:52 -0200
 
