@@ -14,6 +14,8 @@ module Debci
   #
   class Repository
 
+    attr_reader :path
+
     def initialize(path=nil) # :nodoc:
       path ||= Debci.config.data_basedir
       @path = path
