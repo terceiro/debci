@@ -4,10 +4,15 @@ set -eu
 
 configdir=`./bin/debci config --values-only config_dir`
 
+WHITELIST='autodep8
+pinpoint
+python-whitenoise
+ruby-defaults
+rubygems-integration
+vim-addon-manager'
+
 if [ ! -f $configdir/whitelist ]; then
-  for pkg in ruby-defaults rubygems-integration autodep8 pristine-tar; do
-    echo "$pkg"
-  done > $configdir/whitelist
+  echo "$WHITELIST" > "$configdir/whitelist"
 fi
 
 if [ ! -f $configdir/conf.d/dev.conf ]; then
