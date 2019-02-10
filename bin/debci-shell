@@ -6,4 +6,4 @@ set -eu
 
 prepare_args
 
-irb -rdebci "$@"
+irb -rdebci -r'debci/job' "$@"
