@@ -80,10 +80,8 @@ module Debci
               jobs = JSON.parse(File.read(json))
               jobs.each do |data|
                 # load job to database
-                job = Debci::Job.new
                 orig_run_id = data.delete('run_id')
-                job.attributes = data
-                job.save!
+                job = Debci::Job.create!(data)
 
                 pkgs.add(job.package)
 
@@ -102,7 +100,8 @@ module Debci
                         puts "# rewrite #{src} -> #{dest}"
                       end
                     else
-                      FileUtils::Verbose.mv src, dest
+                      puts "mv #{src} #{dest}"
+                      FileUtils.mv src, dest
                     end
                   end
                 end
@@ -114,10 +113,13 @@ module Debci
           puts cmd.join(' ')
           system(*cmd)
         end
+        update_html(pkgs.to_a)
+      end
 
+      def update_html(pkgs)
         if !pkgs.empty?
           puts '# updating HTML pages ...'
-          cmd = ['debci-generate-html'] + pkgs.to_a
+          cmd = ['debci-generate-html'] + pkgs
           puts cmd.join(' ')
           system(*cmd)
         end
