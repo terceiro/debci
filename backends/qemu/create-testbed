@@ -19,23 +19,7 @@ fi
 
 mkdir -p "$image_dir"
 
+mirror="${debci_mirror:-http://deb.debian.org/debian}"
 customize_script="$(dirname "$0")/customize.sh"
 
-vmdebootstrap \
-  --verbose \
-  --serial-console \
-  --distribution="$debci_suite" \
-  --arch="$debci_arch" \
-  --customize="$customize_script" \
-  --user=autopkgtest/autopkgtest \
-  --size=10000000000 \
-  --grub \
-  --log="$image".log \
-  --image="$image".raw
-
-qemu-img convert -O qcow2 "$image".raw  "$image".new
-
-rm -f "$image".raw
-
-# replace a potentially existing image as atomically as possible
-mv "$image".new "$image"
+autopkgtest-build-qemu "$debci_suite" "$image" "$mirror" "$debci_arch" "$customize_script"

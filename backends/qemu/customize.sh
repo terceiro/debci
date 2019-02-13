@@ -6,8 +6,6 @@ base=$(readlink -f $(dirname $(readlink -f $0))/../..)
 . $base/lib/environment.sh
 prepare_args
 
-/usr/share/autopkgtest/setup-commands/setup-testbed "$@"
-
 rootfs="$1"
 
 # determine whether it's Debian or Ubuntu
