@@ -6,24 +6,17 @@
 
 Install the dependencies and build dependencies (look at debian/control).
 
-There are a few extra packages that are not strictly dependencies, but you will
-need:
+
+One of the dependencies that you should have installed above is
+`rabbitmq-server`. You might not want to have it running at all times. To
+disable `rabbitmq-server`, you can run:
 
 ```
-$ sudo apt-get install rerun ruby-foreman apt-cacher-ng \
-  moreutils lighttpd rabbitmq-server
-```
-
-You might not want to have lighttpd and rabbitmq-server running at all times.
-To disable them, you can run:
-
-```
-$ sudo systemctl disable lighttpd
 $ sudo systemctl disable rabbitmq-server
 ```
 
-If you disabled rabbitmq-server, you will need to start it before hacking on
-debci:
+If you disabled rabbitmq-server, you will have to remember to start it before
+hacking on debci:
 
 ```
 $ service rabbitmq-server start
@@ -31,45 +24,24 @@ $ service rabbitmq-server start
 
 ### Set up the test environment
 
-After having the dependencies installed, the first step is to set up the test
-environment. To do that, you need to run the following command (which needs
-root permissions):
+After having the dependencies installed, you now have to do some setup. The
+exact steps depend on your goal with debci.
 
-    $ sudo ./bin/debci-setup
+The most common case isthat you want to work in aspects of the system that do
+not involve the actual test backends, e.g. the user interface, or the database.
+For that, you can use helper script to to the setup for you:
 
-Once the setup is complete, run the following:
+    $ ./tools/init-dev.sh
 
-    $ sudo ln -s $(pwd)/etc/schroot/debci /etc/schroot/debci
+The above script will create:
 
-### Edit the configuration
-
-If you run debci right now, it would run the tests for **every package** in
-Debian that has tests, and you don't want that for a development environment.
-To restrict debci to a list of packages, create a file named `whitelist` inside
-the `config` directory, containing one package name per line. Here is an
-example with packages whose tests are pretty fast:
-
-```
-$ cat config/whitelist
-ruby-defaults
-rubygems-integration
-ruby-ffi
-rake
-```
-
-You might want to test with other packages, that's fine. Just take into
-consideration that the more packages you have, the longer debci will take to
-run their tests.
-
-If you don't need to test the process of actually running tests (e.g. you are
-only working on the user interface), you can also make debci use the "fake"
-backend. This backend does not actually do anything, and will mark test runs as
-passed or failed randomly. To do that, create `config/debci.conf` with the
-following contents:
-
-```
-debci_backend=fake
-```
+* a package whitelist in `config/whitelist`; this limits the set of packages
+   that will be worked on, reducing the time it takes for processing everything
+   on your local tests.
+* a configuration file at `config/conf.d/dev.conf` which sets architectures and
+  suites. It also sets the debci backend to the `fake` backend, which is very
+  fast (because it does not really runs tests, just produces "fake" test runs
+  with random results)
 
 Note: the `fake` backend gets packages versions from your local system. So, for
 example if you are on Debian stable, when "running tests" for package `foo`,
@@ -78,9 +50,8 @@ available on Debian stable. If for some reason you want or need it to report,
 say, versions that look like the ones from Debian unstable, all you have to do
 is add a `sources.list` entry for Debian unstable, like this:
 
-```
-deb-src http://deb.debian.org/debian/ unstable main contrib non-free
-```
+If you wan to work on an actual test backend, then you will want o modify
+`config/conf.d/dev.conf` to set the backend to the one you want to work on.
 
 ### Get debci up and running
 
@@ -116,14 +87,22 @@ This will start:
 - one web server daemon.
 - one indexer daemon, which generates the HTML UI from the data directory
 
+Now leave those daemons running, and open a new terminal to continue working.
+
 To visualize the web interface, browse to
 [http://localhost:8080/](http://localhost:8080/)
 
-To schedule a batch of test runs, run
+You will notice that the web interface looks a little empty. To generate some
+test data, run
 
-```
-$ ./bin/debci batch
-```
+    $ ./tools/gen-fake-data.sh
+
+The command above will submit one test job for each package on each suite and
+each architecture. If you changed the backend from `fake` to something else,
+you might not want to do this.
+
+If you go back to the terminal that is running the debci daemons, you will see
+a  few messages there related to test jobs you just submitted.
 
 To schedule a single test run, run:
 
@@ -131,16 +110,10 @@ To schedule a single test run, run:
 $ ./bin/debci enqueue $PACKAGE
 ```
 
-If you think the web interface looks empty, it is because a single debci run
-does not provide enough data to work with.  You might want to submit a few test
-jobs to make the web interface will look a lot nicer (it might take a while to
-process):
-
-    $ ./tools/gen-fake-data.sh
-
 ## debci web UI development
 
 ### Starting out
+
 If you are interested in working on the web UI, first make sure that you have
 a development environment setup and some test data.
 
