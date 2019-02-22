@@ -76,9 +76,9 @@ to to that is by using the libvirt networking support. First, install the
 necessary packages and activate the default libvirt network:
 
 ```
-# apt install lxc libvirt-clients libvirt-daemon-system
-# virsh net-start default
-# virsh net-autostart default
+$ sudo apt install lxc libvirt-clients libvirt-daemon-system
+$ sudo virsh net-start default
+$ sudo virsh net-autostart default
 ```
 
 **Note:** the default libvirt network will use the `192.168.122.0/24` network.
@@ -86,7 +86,15 @@ If that conflicts with your local network, you will need to configure it to use
 a different IP range.
 
 Now configure lxc to use the default libvirt network, by putting the following
-content in `/etc/lxc/default.conf`:
+content in `/etc/lxc/default.conf` for lxc >= 3 (buster+):
+
+```
+lxc.net.0.type = veth
+lxc.net.0.link = virbr0
+lxc.net.0.flags = up
+```
+
+or this for lxc < 2.0 (up to stretch):
 
 ```
 lxc.network.type = veth
@@ -232,3 +240,4 @@ The test suite for a source package will be executed:
 * when the package itself changes;
 * when 1 month is passed since the test suite was run for the last time.
 
+[edit this page](https://salsa.debian.org/ci-team/debci/edit/master/docs/MAINTAINERS.md)
