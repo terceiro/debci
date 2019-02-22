@@ -61,7 +61,7 @@ if [ -n "$http_proxy" ]; then
 
   if [ "$local_proxy" = yes ]; then
     # translate 127.0.0.1 to a valid address as seen from the guest
-    bridge_interface=$(awk '{ if ($1 == "lxc.network.link") print($3)}' /etc/lxc/default.conf)
+    bridge_interface=$(awk '{ if ($1 == "lxc.network.link" || $1 == "lxc.net.0.link") print($3)}' /etc/lxc/default.conf)
     if [ -n "$bridge_interface" ]; then
       bridge_ip=$(ip -4 a show dev "$bridge_interface" | awk '/ inet / {sub(/\/.*$/, "", $2); print $2}')
       export GUEST_PROXY=http://$bridge_ip:3142
