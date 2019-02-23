@@ -4,6 +4,6 @@ set -eu
 
 printf "debci:Depends="
 grep-dctrl -n -s Build-Depends '' debian/control | \
-	grep -v 'debci:buildonly' | \
+	grep -v '!debci:runtime' | \
 	sed -e 's/^\s*//; s/<[^>]+>//; s/\n/ /' | \
 	paste -sd ' ' -
