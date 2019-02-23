@@ -19,8 +19,12 @@ export debci_autopkgtest_args
 export debci_test_package="$pkg"
 export debci_test_outputdir="$logs"
 
+extra_opts=
+if [ -t 1 ]; then
+  extra_opts=--shell-fail
+fi
 rc=0
-test-package --output-dir="$logs" --shell-fail "$pkg" "$@" || rc="$?"
+test-package --output-dir="$logs" $extra_opts "$pkg" "$@" || rc="$?"
 
 echo "I: test artifacts available at $logs"
 exit "$rc"
