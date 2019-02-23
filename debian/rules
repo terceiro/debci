@@ -6,12 +6,6 @@
 %:
 	dh $@ --with systemd
 
-override_dh_clean:
-	dh_clean --dirs-only
-	$(RM) debian/debci.debhelper.log
-	$(RM) debian/debci.substvars
-	$(RM) debian/files
-
 override_dh_auto_test:
 	# skip buid-time tests for now
 	@true
