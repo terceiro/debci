@@ -169,22 +169,3 @@ following:
 
 If your code passed the appropriate tests, you will see that there
 are no failures reported by rspec.
-
-# Development environment with vagrant
-
-Bring up the vagrant virtual machine:
-
-    $ vagrant up
-
-After that, the system should be properly setup. To run the tests, enter the VM
-(`vagrant ssh`), and from there:
-
-    $ cd /vagrant
-    $ make test
-
-
-To run the system:
-
-    $ foreman start
-
-The web UI will be available at http://localhost:8080/ from your host machine.
