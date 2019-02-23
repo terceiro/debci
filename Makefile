@@ -3,7 +3,7 @@ all: doc
 include links.mk
 
 links.mk: links
-	awk '{ print("LINKS +=", $$1); print($$1, ":"); print("\tmkdir -p $$(shell dirname ", $$1, ")"); print("\tln -sf", $$2, $$1)}' $^ > $@
+	awk '{ print("LINKS +=", $$1); print($$1, ":"); print("\ttest -e ", $$2); print("\tmkdir -p $$(shell dirname ", $$1, ")"); print("\tln -sf", $$2, $$1)}' $^ > $@
 
 MANPAGES = $(patsubst bin/%, man/%.1, $(shell grep -rl =head1 bin/*))
 
