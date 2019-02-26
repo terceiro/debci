@@ -4,8 +4,11 @@
 
 ### Grab the dependencies and required software
 
-Install the dependencies and build dependencies (look at debian/control).
+Install the dependencies and build dependencies:
 
+```
+$ sudo apt-get build-dep .
+```
 
 One of the dependencies that you should have installed above is
 `rabbitmq-server`. You might not want to have it running at all times. To
