@@ -44,7 +44,7 @@ debci_suite_list=${debci_suite_list:-${debci_suite}}
 debci_arch=${debci_arch:-$(dpkg --print-architecture)}
 debci_arch_list="${debci_arch_list:-${debci_arch}}"
 # debci-setup-chdist determines the default from debootstrap, don't set one here
-debci_mirror=
+debci_mirror=${debci_mirror:-http://deb.debian.org/debian}
 debci_backend=${debci_backend:-lxc}
 debci_data_basedir=${debci_data_basedir:-$(readlink -f "${debci_base_dir}/data")}
 debci_quiet="${debci_quiet:-false}"

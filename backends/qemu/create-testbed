@@ -19,7 +19,6 @@ fi
 
 mkdir -p "$image_dir"
 
-mirror="${debci_mirror:-http://deb.debian.org/debian}"
 customize_script="$(dirname "$0")/customize.sh"
 
-autopkgtest-build-qemu "$debci_suite" "$image" "$mirror" "$debci_arch" "$customize_script"
+autopkgtest-build-qemu "$debci_suite" "$image" "${debci_mirror}" "$debci_arch" "$customize_script"

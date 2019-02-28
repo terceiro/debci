@@ -127,7 +127,7 @@ scratch.
 You can use an alternative mirror using, for example:
 
 ```
-$ sudo env MIRROR=http://my.local.mirror/debian debci setup
+$ sudo env debci_mirror=http://my.local.mirror/debian debci setup
 ```
 
 Now to actually run tests, we'll use `autopkgtest` directly. The following
