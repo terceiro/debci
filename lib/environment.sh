@@ -133,6 +133,9 @@ for arg in "$@"; do
   fi
 done
 
+# This is used in lxc by the lxc-debian template, and by autopkgtest-build-*
+export MIRROR="${debci_mirror}"
+
 alias prepare_args='while [ "$1" != "--" ]; do shift; done; shift'
 
 debci_autopkgtest_dir="${debci_data_basedir}/autopkgtest/${debci_suite}/${debci_arch}"
