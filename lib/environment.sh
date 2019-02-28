@@ -59,8 +59,8 @@ debci_database_url="${debci_database_url:-sqlite3://$debci_data_basedir/debci.sq
 
 debci_secrets_dir=${debci_secrets_dir:-$(readlink -f "${debci_base_dir}/secrets")}
 
-shared_short_options='c:s:a:b:d:hq'
-shared_long_options='config:,suite:,arch:,backend:,data-dir:,amqp:,help,quiet'
+shared_short_options='c:s:a:b:d:m:hq'
+shared_long_options='config:,suite:,arch:,backend:,data-dir:,amqp:,mirror:,help,quiet'
 
 usage_shared_options="Common options:
 
@@ -76,6 +76,8 @@ usage_shared_options="Common options:
                             and where it will read from
   --amqp amqp://[user:password@]hostname[:port]
                             AMQP server to connect to (default: ${debci_amqp_server})
+  -m URL, --mirror URL      selects which mirror to use for APT-related actions,
+                            i.e. creating test backends, pulling sources files, etc.
   -q, --quiet               prevents debci from producing any output on stdout
   --help                    show this usage message
 "
@@ -113,6 +115,9 @@ for arg in "$@"; do
         ;;
       --amqp)
         var=debci_amqp_server
+        ;;
+      -m|--mirror)
+        var=debci_mirror
         ;;
       -q|--quiet)
         export debci_quiet=true
