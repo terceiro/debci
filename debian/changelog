@@ -1,3 +1,26 @@
+debci (2.0) unstable; urgency=medium
+
+  [ Paul Gevers ]
+  * docs/MAINTAINERS.md: add lxc 3 syntax and consistent sudo usage
+
+  [ Antonio Terceiro ]
+  * debci-data: import and export package data
+  * debci-shell: require debci/job from the start
+  * add missing dependency on rsync
+  * backends/qemu: use autopkgtest-build-qemu to build images
+  * backends/lxc: detect bridge interface on lxc 3
+  * docs/HACKING.md: improve setup instructions
+  * docs/HACKING.md: drop mention to vagrant setup
+  * links: require link target to exist during build
+  * debian/rules: remove unused, override_dh_clean
+  * debian/control: deduplicate Build-Depends and Depends
+  * debci localtest: skip --shell-fail it not on a tty
+  * docs/HACKING.md: be explicit about installing build dependencies
+  * Make mirror setting consistent across system (Closes: #923436)
+  * Add -m/--mirror parameter to most scripts
+
+ -- Antonio Terceiro <terceiro@debian.org>  Fri, 01 Mar 2019 20:57:12 -0300
+
 debci (1.15.1) unstable; urgency=medium
 
   * debci setup-chdist: fix debootstrap usage
