@@ -15,7 +15,7 @@ Depends: debci, libnss-myhostname, netcat-openbsd, redir, autopkgtest, schroot
 Restrictions: allow-stderr, isolation-machine, needs-root
 
 Tests: backend-lxc
-Depends: debci, libnss-myhostname, netcat-openbsd, redir, autopkgtest, lxc, rsync, libvirt-clients, libvirt-daemon-system, iptables, ebtables, dnsmasq-base
+Depends: debci, libnss-myhostname, netcat-openbsd, redir, autopkgtest, lxc, lxc-templates, rsync, libvirt-clients, libvirt-daemon-system, iptables, ebtables, dnsmasq-base
 Restrictions: allow-stderr, isolation-machine, needs-root
 
 # vim: ft=debcontrol

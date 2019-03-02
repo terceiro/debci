@@ -19,6 +19,7 @@ debci (2.0) unstable; urgency=medium
   * Make mirror setting consistent across system (Closes: #923436)
   * Add -m/--mirror parameter to most scripts
   * debian/tests/backend-lxc: update lxc networking config for lxc >= 3
+  * debian/tests/backend-lxc: add new test dependency on lxc-templates
 
  -- Antonio Terceiro <terceiro@debian.org>  Fri, 01 Mar 2019 20:57:12 -0300
 
