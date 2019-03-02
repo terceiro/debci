@@ -11,9 +11,9 @@ fi
 sudo virsh net-start default
 sudo virsh net-autostart default
 tee /etc/lxc/default.conf <<EOF
-lxc.network.type = veth
-lxc.network.link = virbr0
-lxc.network.flags = up
+lxc.net.0.type = veth
+lxc.net.0.link = virbr0
+lxc.net.0.flags = up
 EOF
 
 debci setup --backend lxc
