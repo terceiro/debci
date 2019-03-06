@@ -30,7 +30,7 @@ $ service rabbitmq-server start
 After having the dependencies installed, you now have to do some setup. The
 exact steps depend on your goal with debci.
 
-The most common case isthat you want to work in aspects of the system that do
+The most common case is that you want to work in aspects of the system that do
 not involve the actual test backends, e.g. the user interface, or the database.
 For that, you can use helper script to to the setup for you:
 
@@ -43,17 +43,17 @@ The above script will create:
    on your local tests.
 * a configuration file at `config/conf.d/dev.conf` which sets architectures and
   suites. It also sets the debci backend to the `fake` backend, which is very
-  fast (because it does not really runs tests, just produces "fake" test runs
+  fast (because it does not really run tests, it just produces "fake" test runs
   with random results)
 
-Note: the `fake` backend gets packages versions from your local system. So, for
+Note: the `fake` backend gets package versions from your local system. So, for
 example if you are on Debian stable, when "running tests" for package `foo`,
 the `fake` backend will report as testing the version of `foo` that is
 available on Debian stable. If for some reason you want or need it to report,
 say, versions that look like the ones from Debian unstable, all you have to do
 is add a `sources.list` entry for Debian unstable, like this:
 
-If you wan to work on an actual test backend, then you will want o modify
+If you want to work on an actual test backend, then you will want to modify
 `config/conf.d/dev.conf` to set the backend to the one you want to work on.
 
 ### Get debci up and running
