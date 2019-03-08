@@ -1,76 +1,55 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <noscript>
-      <style type='text/css'>
-        form { display: none }
-      </style>
-    </noscript>
-    <style type='text/css'>
-      body {
-        font-family: sans-serif;
-        max-width: 960px;
-        margin: 50px auto;
-      }
+<h1>Retry an autopkgtest job</h1>
 
-      pre {
-        background-color: #eeeeec;
-        border: 1px solid #babdb6;
-        border-radius: 2px;
-        padding: 0.5em;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Retry an autopkgtest job</h1>
+<noscript>
+  <p>
+  To retry an autopkgtest job via this page, you need Javascript enabled on your
+  browser.
+  </p>
 
-    <noscript>
-      <p>
-      To retry an autopkgtest job via this page, you need Javascript enabled on your
-      browser.
-      </p>
+  <p>
+  Without it, you will need to make a HTTP POST request to this page URL,
+  for example using <code>curl</code> or <code>wget</code>, authenticated
+  with a valid SSL client certificate or with a valid Debci key (see
+  the <a href="/doc/file.API.html">API documentation</a>).
+  </p>
+</noscript>
 
-      <p>
-      Without it, you will need to make a HTTP POST request to this page URL,
-      for example using <code>curl</code> or <code>wget</code>, authenticated
-      with a valid SSL client certificate or with a valid Debci key (see
-      the <a href="/doc/file.API.html">API documentation</a>).
-      </p>
-    </noscript>
+<form method="POST">
+  <p>
+  Once you click the "Retry" button below, an autopkgtest with the same
+  settings as the original will be triggered on the infrastructure.
+  </p>
 
-    <form method="POST">
-      <p>
-      Once you click the "Retry" button below, an autopkgtest with the same
-      settings as the original will be triggered on the infrastructure.
-      </p>
+  <div id='result-info' style='display: none'>
+  <p>
+  Your request has been successfully submitted.
+  </p>
+  </div>
 
-      <div id='result-info' style='display: none'>
-      <p>
-      Your request has been successfully submitted.
-      </p>
-      </div>
+  <input type='button' value='Retry' onclick='retry(this)'/>
+</form>
 
-      <input type='button' value='Retry' onclick='retry(this)'/>
-    </form>
-
-  <script type='text/javascript'>
-    function displayresult() {
-      var status = this.status
-      if (Math.floor(status/100) == 2) {
-        var resinfo = document.getElementById('result-info')
-        resinfo.style.display = 'block'
-      } else {
-        var text = this.statusText
-        alert("An error ocurred while requesting a retry: " + status + " " + text)
-      }
+<script type='text/javascript'>
+  function displayresult() {
+    var status = this.status
+    if (Math.floor(status/100) == 2) {
+      var resinfo = document.getElementById('result-info')
+      resinfo.style.display = 'block'
+    } else {
+      var text = this.statusText
+      alert("An error ocurred while requesting a retry: " + status + " " + text)
     }
+  }
 
-    function retry(button) {
-      var request = new XMLHttpRequest();
-      request.addEventListener('load', displayresult)
-      request.open("POST", document.location.href)
-      request.send()
-    }
-  </script>
-  </body>
-</html>
+  function retry(button) {
+    var request = new XMLHttpRequest();
+    request.addEventListener('load', displayresult)
+    request.open("POST", document.location.href)
+    request.send()
+  }
+</script>
+<noscript>
+  <style type='text/css'>
+    form { display: none }
+  </style>
+</noscript>

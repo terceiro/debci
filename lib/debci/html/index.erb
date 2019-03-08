@@ -1,39 +1,37 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">News
-          <a class='pull-right'
-             href="data/feeds/all-packages.xml"
-             title='Atom feed for events in all packages'><i class='fa fa-rss'></i></a>
-        </div>
-        <div class="list-group">
-        <% news = @repository.news_for('*') %>
-        <% if news.empty? %>
-          <div class='list-group-item'><em>(no news yet)</em></div>
-        <% else %>
-          <% news.each do |item| %>
-            <a href="/packages/<%= @repository.find_package(item.package).prefix %>/<%= item.package %>/<%= item.suite %>/<%= item.architecture %>" class="list-group-item"><%= icon(item.extended_status) %> <%= item.headline %><div><small class="text-muted"><%= item.date %> | <strong><%= item.time %></strong></small></div></a>
-          <% end %>
+<div class="row">
+  <div class="col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">News
+        <a class='pull-right'
+            href="data/feeds/all-packages.xml"
+            title='Atom feed for events in all packages'><i class='fa fa-rss'></i></a>
+      </div>
+      <div class="list-group">
+      <% news = @repository.news_for('*') %>
+      <% if news.empty? %>
+        <div class='list-group-item'><em>(no news yet)</em></div>
+      <% else %>
+        <% news.each do |item| %>
+          <a href="/packages/<%= @repository.find_package(item.package).prefix %>/<%= item.package %>/<%= item.suite %>/<%= item.architecture %>" class="list-group-item"><%= icon(item.extended_status) %> <%= item.headline %><div><small class="text-muted"><%= item.date %> | <strong><%= item.time %></strong></small></div></a>
         <% end %>
+      <% end %>
 
-        </div> <!-- class='list-group' -->
-      </div> <!-- class='panel panel-default' -->
-    </div> <!-- class='col-md-4' -->
+      </div> <!-- class='list-group' -->
+    </div> <!-- class='panel panel-default' -->
+  </div> <!-- class='col-md-4' -->
 
-    <div class="col-md-8">
+  <div class="col-md-8">
 
-      <h3>Packages</h3>
-      <ul class="list-inline">
-        <% @package_prefixes.each do |prefix| %>
-          <li><h5><a href="/packages/<%= prefix %>"><%= prefix %></a></h5></li>
-        <% end %>
-        <% if @package_prefixes.empty? %>
-          <em>(no data yet)</em>
-        <% end %>
-      </ul>
+    <h3>Packages</h3>
+    <ul class="list-inline">
+      <% @package_prefixes.each do |prefix| %>
+        <li><h5><a href="/packages/<%= prefix %>"><%= prefix %></a></h5></li>
+      <% end %>
+      <% if @package_prefixes.empty? %>
+        <em>(no data yet)</em>
+      <% end %>
+    </ul>
 
-    </div> <!-- class='col-md-8' -->
+  </div> <!-- class='col-md-8' -->
 
-  </div> <!-- class='row' -->
-</div> <!-- class='container' -->
+</div> <!-- class='row' -->
