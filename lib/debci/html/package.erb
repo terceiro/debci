@@ -1,66 +1,64 @@
-<div class="container">
-  <div class='row'>
-    <div class='col-lg-12'>
-      <ol class='breadcrumb'>
-        <li><a href='/packages/<%= @package.prefix %>'><%= @package.prefix %></a></li>
-        <li class='active'><%= @package.name %></li>
-      </ol>
+<div class='row'>
+  <div class='col-lg-12'>
+    <ol class='breadcrumb'>
+      <li><a href='/packages/<%= @package.prefix %>'><%= @package.prefix %></a></li>
+      <li class='active'><%= @package.name %></li>
+    </ol>
 
-      <h2>
-        <%= @package.name %>
+    <h2>
+      <%= @package.name %>
 
-        <small>
-        <a href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'><i class='fa fa-rss'></i></a>
+      <small>
+      <a href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'><i class='fa fa-rss'></i></a>
 
-        <a href='https://tracker.debian.org/pkg/<%= @package.name %>'
-           title='On the Package Tracking System'><i class='fa fa-info-circle'></i></a>
-      </small>
-    </h2>
+      <a href='https://tracker.debian.org/pkg/<%= @package.name %>'
+          title='On the Package Tracking System'><i class='fa fa-info-circle'></i></a>
+    </small>
+  </h2>
 
-    <% if @package.blacklisted? %>
-      <div class='alert alert-warning'>
-        This package is currently <a href="/status/blacklist/">blacklisted</a> and will not have any new test runs.
-      </div>
-    <% end %>
-
-      <table class="table" style='width: auto'>
-
-        <% if @package.status.first %>
-          <tr>
-            <td></td>
-            <% @package.status.first.each do |status| %>
-              <td><b><%= status.suite %></b></td>
-            <% end %>
-          </tr>
-        <% else %>
-          <tr>
-            <td><em>(no data yet)</em></td>
-          </tr>
-        <% end %>
-
-        <% @package.status.each do |row| %>
-          <tr>
-            <td><b><%= row.first.architecture %></b></td>
-
-            <% row.each do |status| %>
-              <% if status.status.eql?(:no_test_data) %>
-                  <td><%= icon(status.extended_status)%> <%= status.title %></td>
-              <% else %>
-                  <% package_dir = "/packages/#{@package.prefix}" +
-                                   "/#{@package.name}/#{status.suite}" +
-                                   "/#{row.first.architecture}"
-                  %>
-                  <td>
-                    <%= icon(status.status) %>
-                    <a href=<%= package_dir %>><%= status.version %>  <%= status.title %></a>
-                  </td>
-              <% end %>
-            <% end %>
-          </tr>
-        <% end %>
-
-      </table>
-
+  <% if @package.blacklisted? %>
+    <div class='alert alert-warning'>
+      This package is currently <a href="/status/blacklist/">blacklisted</a> and will not have any new test runs.
     </div>
+  <% end %>
+
+    <table class="table" style='width: auto'>
+
+      <% if @package.status.first %>
+        <tr>
+          <td></td>
+          <% @package.status.first.each do |status| %>
+            <td><b><%= status.suite %></b></td>
+          <% end %>
+        </tr>
+      <% else %>
+        <tr>
+          <td><em>(no data yet)</em></td>
+        </tr>
+      <% end %>
+
+      <% @package.status.each do |row| %>
+        <tr>
+          <td><b><%= row.first.architecture %></b></td>
+
+          <% row.each do |status| %>
+            <% if status.status.eql?(:no_test_data) %>
+                <td><%= icon(status.extended_status)%> <%= status.title %></td>
+            <% else %>
+                <% package_dir = "/packages/#{@package.prefix}" +
+                                  "/#{@package.name}/#{status.suite}" +
+                                  "/#{row.first.architecture}"
+                %>
+                <td>
+                  <%= icon(status.status) %>
+                  <a href=<%= package_dir %>><%= status.version %>  <%= status.title %></a>
+                </td>
+            <% end %>
+          <% end %>
+        </tr>
+      <% end %>
+
+    </table>
+
   </div>
 </div>

@@ -1,53 +1,51 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
+<div class="row">
+  <div class="col-md-12">
 
-      <h1 class='page-header'>Status <small>/ Charts</small></h1>
-      <%= @status_nav %>
+    <h1 class='page-header'>Status <small>/ Charts</small></h1>
+    <%= @status_nav %>
 
-      <div id='status'>
-        <% @repository.architectures.each do |arch| %>
-          <% @repository.suites.each do |suite| %>
-            <% chart = Debci::Graph.new(@repository, suite, arch) %>
-            <meta name='data-<%= suite %>-<%= arch %>' content='<%= chart.entries.to_json%>'/>
-            <h3><%= "#{suite}/#{arch}" %></h3>
-            <noscript>
-              <table>
+    <div id='status'>
+      <% @repository.architectures.each do |arch| %>
+        <% @repository.suites.each do |suite| %>
+          <% chart = Debci::Graph.new(@repository, suite, arch) %>
+          <meta name='data-<%= suite %>-<%= arch %>' content='<%= chart.entries.to_json%>'/>
+          <h3><%= "#{suite}/#{arch}" %></h3>
+          <noscript>
+            <table>
+              <tr>
+                <th>Date</th>
+                <th>Pass</th>
+                <th>Neutral</th>
+                <th>Fail</th>
+                <th>Temporary failure</th>
+                <th>Pass percentage</th>
+              </tr>
+              <% chart.entries.each do |entry| %>
                 <tr>
-                  <th>Date</th>
-                  <th>Pass</th>
-                  <th>Neutral</th>
-                  <th>Fail</th>
-                  <th>Temporary failure</th>
-                  <th>Pass percentage</th>
+                  <td><%= entry['date'] %></td>
+                  <td><%= entry['pass'] %></td>
+                  <td><%= entry['neutral'] %></td>
+                  <td><%= entry['fail'] %></td>
+                  <td><%= entry['tmpfail'] %></td>
+                  <td><%= 100 * entry['pass'].to_f / entry['total'].to_f %>%</td>
                 </tr>
-                <% chart.entries.each do |entry| %>
-                  <tr>
-                    <td><%= entry['date'] %></td>
-                    <td><%= entry['pass'] %></td>
-                    <td><%= entry['neutral'] %></td>
-                    <td><%= entry['fail'] %></td>
-                    <td><%= entry['tmpfail'] %></td>
-                    <td><%= 100 * entry['pass'].to_f / entry['total'].to_f %>%</td>
-                  </tr>
-                <% end %>
-              </table>
-            </noscript>
-            <div class='arch-charts row'>
-              <div class='chart col-md-4'>
-                <h4>Pass/Fail</h4>
-                <div class='chart-canvas' id='chart-pass-fail-<%= suite %>-<%= arch %>'></div>
-              </div>
-              <div class='chart col-md-4'>
-                <h4>Pass percentage</h4>
-                <div class='chart-canvas' id='chart-pass-percentage-<%= suite %>-<%= arch %>'></div>
-              </div>
+              <% end %>
+            </table>
+          </noscript>
+          <div class='arch-charts row'>
+            <div class='chart col-md-4'>
+              <h4>Pass/Fail</h4>
+              <div class='chart-canvas' id='chart-pass-fail-<%= suite %>-<%= arch %>'></div>
             </div>
+            <div class='chart col-md-4'>
+              <h4>Pass percentage</h4>
+              <div class='chart-canvas' id='chart-pass-percentage-<%= suite %>-<%= arch %>'></div>
+            </div>
+          </div>
 
-          <% end %>
         <% end %>
+      <% end %>
 
-      </div>
-    </div> <!-- class='col-md-12' -->
-  </div> <!-- class='row -->
-</div> <!-- class='container' -->
+    </div>
+  </div> <!-- class='col-md-12' -->
+</div> <!-- class='row -->

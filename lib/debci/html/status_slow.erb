@@ -1,54 +1,52 @@
-<div class='container'>
-  <div class='row'>
-    <div class='col-md-12'>
-      <h1 class='page-header'>Status <small>/ Slow running tests</small></h1>
-      <%= @status_nav %>
+<div class='row'>
+	<div class='col-md-12'>
+		<h1 class='page-header'>Status <small>/ Slow running tests</small></h1>
+		<%= @status_nav %>
 
-      <% if @slow.empty? %>
-	<em>No items</em>
-      <% else %>
-	<table class='table table-striped'>
-	  <tr>
-	    <th>Package</th>
-	    <th>Version</th>
-	    <th>Suite</th>
-	    <th>Architecture</th>
-	    <th>Status</th>
-	    <th>Test time</th>
-	  </tr>
+		<% if @slow.empty? %>
+<em>No items</em>
+		<% else %>
+<table class='table table-striped'>
+	<tr>
+		<th>Package</th>
+		<th>Version</th>
+		<th>Suite</th>
+		<th>Architecture</th>
+		<th>Status</th>
+		<th>Test time</th>
+	</tr>
 
-	  <% @slow.each do |status| %>
-	    <% prefix = status.package.sub(/^((lib)?.).*/, '\1') %>
-	    <% link = "/packages/%s/%s/%s/%s/" % [prefix, status.package, status.suite, status.architecture] %>
-	    <tr>
-	      <td>
-		<a href="<%= link %>"><%= status.package %></a>
-	      </td>
+	<% @slow.each do |status| %>
+		<% prefix = status.package.sub(/^((lib)?.).*/, '\1') %>
+		<% link = "/packages/%s/%s/%s/%s/" % [prefix, status.package, status.suite, status.architecture] %>
+		<tr>
+			<td>
+	<a href="<%= link %>"><%= status.package %></a>
+			</td>
 
-	      <td>
-		<a href="<%= link %>"><%= status.version %></a>
-	      </td>
+			<td>
+	<a href="<%= link %>"><%= status.version %></a>
+			</td>
 
-	      <td>
-		<a href="<%= link %>"><%= status.suite %></a>
-	      </td>
+			<td>
+	<a href="<%= link %>"><%= status.suite %></a>
+			</td>
 
-	      <td>
-		<a href="<%= link %>"><%= status.architecture %></a>
-	      </td>
+			<td>
+	<a href="<%= link %>"><%= status.architecture %></a>
+			</td>
 
-	      <td>
-                <%= icon(status.extended_status)%> <%= status.title %>
-	      </td>
+			<td>
+							<%= icon(status.extended_status)%> <%= status.title %>
+			</td>
 
-	      <td>
-		<%= status.duration_human %>
-	      </td>
-	    </tr>
-	  <% end %>
-	</table>
-      <% end %>
+			<td>
+	<%= status.duration_human %>
+			</td>
+		</tr>
+	<% end %>
+</table>
+		<% end %>
 
-    </div> <!-- class='col-md-12' -->
-  </div> <!-- class='row' -->
-</div> <!-- class='container' -->
+	</div> <!-- class='col-md-12' -->
+</div> <!-- class='row' -->
