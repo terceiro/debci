@@ -10,6 +10,16 @@ Install the dependencies and build dependencies:
 $ sudo apt-get build-dep .
 ```
 
+If that fails with a complaint that any package it not recent enough, then you
+probably need to enable the [backports repository](https://backports.debian.org/)
+and install those packages from there (replace `<stable>` with the current
+Debian stable release codename, and `<PACKAGE>` with the package you want to
+install):
+
+```
+sudo apt-get install -t <stable>-backports <PACKAGE>
+```
+
 One of the dependencies that you should have installed above is
 `rabbitmq-server`. You might not want to have it running at all times. To
 disable `rabbitmq-server`, you can run:
