@@ -4,8 +4,6 @@ require 'active_record'
 module Debci
   module DB
 
-    LEGACY = ActiveRecord.version.release() < Gem::Version.new('5.2.0')
-
     def self.config
       @config ||= ENV['DATABASE_URL'] || Debci.config.database_url
     end
@@ -18,14 +16,14 @@ module Debci
       migrations_path = File.join(File.dirname(__FILE__), 'db', 'migrations')
       ActiveRecord::Migration.verbose = !Debci.config.quiet
       version = nil
-      if LEGACY
+      if ActiveRecord.version.release() < Gem::Version.new('5.2.0')
         ActiveRecord::Migrator.migrate(migrations_path, nil)
       else
         ActiveRecord::MigrationContext.new(migrations_path).migrate
       end
     end
 
-    if LEGACY
+    if ActiveRecord.version.release() < Gem::Version.new('5.1.0')
       LegacyMigration = ActiveRecord::Migration
     else
       LegacyMigration = ActiveRecord::Migration[4.2]
