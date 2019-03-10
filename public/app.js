@@ -32,7 +32,7 @@ jQuery(function($) {
         $.each(data, function(index, entry) {
           var date = Date.parse(entry.date);
           pass.push([date, entry.pass]);
-          neutral.push([date, entry.neutral]);
+          neutral.push([date, entry.neutral || 0]);
           fail.push([date, entry.fail]);
           tmpfail.push([date, entry.tmpfail || 0]);
           pass_percentage.push([date, entry.pass / entry.total]);
