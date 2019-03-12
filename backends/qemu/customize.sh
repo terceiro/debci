@@ -13,6 +13,8 @@ script=/usr/share/debootstrap/scripts/$debci_suite
 if [ -r $script ]; then
   if grep -q ubuntu.com $script; then
     distro=ubuntu
+  elif grep -q kali.org $script; then
+    distro=kali
   else
     distro=debian
   fi
