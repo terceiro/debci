@@ -20,7 +20,7 @@
     </div> <!-- class='panel panel-default' -->
   </div> <!-- class='col-md-4' -->
 
-  <div class="col-md-8">
+  <div class="col-md-4">
 
     <h3>Packages</h3>
     <ul class="list-inline">
@@ -32,6 +32,23 @@
       <% end %>
     </ul>
 
-  </div> <!-- class='col-md-8' -->
+  </div> <!-- class='col-md-4' -->
+  <div class="col-md-4">
+    <h3>Search Package</h3>
+    <form action='javascript:redirect();' name="searchform" id="searchform" method="post" style="display: inline;">
+      <input autofocus="" id="package" name="package" size="20" type="text" value="">
+      <input type="submit" value="Go">
+    </form>
+    </div>
+  <script>
+    function redirect() {
+      var package = document.getElementById("package").value
+      var m = package.match(/((lib)?.)/)
+      prefix = m[0]
+      location.href = '/packages/' + prefix + '/' + package
+    }
+  </script>
+    
+  </div> <!-- class='col-md-4' -->
 
 </div> <!-- class='row' -->
