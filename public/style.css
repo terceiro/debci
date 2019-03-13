@@ -2,12 +2,8 @@
   border-bottom: 1px solid #888a85;
 }
 
-.arch-charts {
-  height: 250px;
-}
-
 .chart {
-  height: 180px;
+  height: 250px;
 }
 
 .chart h4 {
@@ -15,7 +11,7 @@
 }
 
 .chart-canvas {
-   width: 100%;
+   width: 90%;
    height: 200px;
 }
 
