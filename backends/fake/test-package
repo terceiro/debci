@@ -6,6 +6,7 @@ require 'stringio'
 
 log = StringIO.new
 
+log.puts "autopkgtest [%s]: started \n" % Time.now.strftime('%Y-%m-%d %H:%M:%S')
 log.puts 'command line arguments: ' + ARGV.join(' ')
 
 pkg = nil
@@ -122,8 +123,15 @@ if ENV["DEBCI_FAKE_KILLPARENT"]
   end
 end
 
-log.puts "autopkgtest [%s]: finished\n" % Time.now.strftime('%Y-%m-%d %H:%M:%S')
+# this will produce values larger than 3600 (1h, the threshold for "slow
+# running tests") ~6% of the time, with most values being small
+duration = (50000/((1+rand(50))**2)).round - 20
 
+log.puts "autopkgtest [%s]: finished\n" % (Time.now + duration).strftime('%Y-%m-%d %H:%M:%S')
+
+File.open(File.join(outdir, 'duration.in'), 'w') do |f|
+  f.puts(duration)
+end
 File.open(File.join(outdir, 'log'), 'w') do |f|
   f.puts log.string
 end
