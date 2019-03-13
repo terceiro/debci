@@ -80,7 +80,11 @@ process_package() {
     -name '*-stdout' -or \
     -name '*-stderr' ')' -exec gzip '{}' ';'
 
-  echo $(($finish_timestamp - $start_timestamp)) >> "$adt_out_dir/duration"
+  if [ -f "${adt_out_dir}/duration".in ]; then
+    cp "${adt_out_dir}/duration".in "${adt_out_dir}/duration"
+  else
+    echo $(($finish_timestamp - $start_timestamp)) > "$adt_out_dir/duration"
+  fi
 
   if [ -n "$trigger" ]; then
     echo "$trigger" > "$adt_out_dir/trigger"
