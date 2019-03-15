@@ -7,14 +7,8 @@
 
     <h2>
       <%= @package.name %>
-
-      <small>
-      <a href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'><i class='fa fa-rss'></i></a>
-
-      <a href='https://tracker.debian.org/pkg/<%= @package.name %>'
-          title='On the Package Tracking System'><i class='fa fa-info-circle'></i></a>
-    </small>
-  </h2>
+      <%= @package_links %>
+    </h2>
 
   <% if @package.blacklisted? %>
     <div class='alert alert-warning'>

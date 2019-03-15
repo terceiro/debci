@@ -10,12 +10,8 @@
       <%= @package.name %>
       <small>
         [ <%= @suite %>/<%= @architecture %> ]
-
-        <a href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'><i class='fa fa-rss'></i></a>
-
-        <a href='https://tracker.debian.org/pkg/<%= @package.name %>'
-            title='On the Package Tracking System'><i class='fa fa-info-circle'></i></a>
       </small>
+      <%= @package_links %>
     </h2>
 
     <% if @package.blacklisted? %>

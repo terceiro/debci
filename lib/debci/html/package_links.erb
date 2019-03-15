@@ -1,0 +1,9 @@
+<div class='btn-group'>
+  <a class='btn btn-default' href='/data/feeds/<%= @package.prefix %>/<%= @package.name %>.xml'><i class='fa fa-rss'></i></a>
+  <a class='btn btn-default' href='https://tracker.debian.org/pkg/<%= @package.name %>'
+    title='On the Package Tracking System'>Tracker</a>
+  <a class='btn btn-default' href='https://qa.debian.org/excuses.php?package=<%= @package.name %>'
+    title='On the Excuses Page'>Excuses</a>
+  <a class='btn btn-default' href='https://bugs.debian.org/<%= @package.name %>'
+    title='Bug Reports'>Bug Reports</a>
+</div>
