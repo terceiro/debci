@@ -60,6 +60,7 @@ module Debci
     def package(package, filename)
       @package = package
       @moretitle = package.name
+      @package_links = load_template(:package_links)
       expand_template(:package, filename)
     end
 
@@ -90,6 +91,7 @@ module Debci
       @moretitle = "#{package.name}/#{suite}/#{architecture}"
       history = package.history(@suite, @architecture)
       @latest = history && history.first
+      @package_links = load_template(:package_links)
       expand_template(:history, filename)
     end
 
