@@ -21,7 +21,7 @@ $ curl --header "Auth-Key: $KEY" <%= host %>/api/v1/auth</pre>
 <% @doc.each do |entry| %>
   <h2>
     <%= entry[:method] %>
-    <%= entry[:path] %>
+    <%= request.script_name %><%= entry[:path] %>
   </h2>
   <%= entry[:text].gsub('https://host', host) %>
 <% end %>
