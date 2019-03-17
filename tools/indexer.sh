@@ -6,7 +6,7 @@ incoming=`$(dirname $0)/../bin/debci config --values-only autopkgtest_incoming_b
 
 mkdir -p "$incoming"
 
-rerun \
+exec rerun \
   --no-notify \
   --exit \
   --dir "$incoming" \
