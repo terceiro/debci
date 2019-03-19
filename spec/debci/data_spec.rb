@@ -22,11 +22,11 @@ RSpec.shared_context "export/import" do
     FileUtils.rm_rf(@tmpdir)
   end
 
-  let(:output_tarball) { File.join(@tmpdir, 'export.tar.gz') }
+  let(:output_tarball) { File.join(@tmpdir, 'export.tar') }
   let(:exporter) { Debci::Data::Export.new(output_tarball) }
   let(:exported_files) { contents = `tar taf #{output_tarball}`.split }
 
-  let(:input_tarball) { File.join(@tmpdir, 'import.tar.gz') }
+  let(:input_tarball) { File.join(@tmpdir, 'import.tar') }
   let(:importer) { Debci::Data::Import.new(input_tarball) }
 
   def export!
