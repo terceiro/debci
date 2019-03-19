@@ -78,6 +78,7 @@ module Debci
         Dir.mktmpdir do |tmpdir|
           system('tar', 'xaf', tarball, '-C', tmpdir)
           Dir.chdir(tmpdir) do
+            mapping = {}
             Dir['export/*.json'].each do |json|
               jobs = JSON.parse(File.read(json))
               jobs.each do |data|
@@ -87,6 +88,7 @@ module Debci
 
                 pkgs.add(job.package)
 
+                mapping[orig_run_id] = job.run_id
                 puts"# loaded job: #{orig_run_id} -> #{job.run_id}"
                 if orig_run_id != job.run_id
                   # rename files to match database
@@ -109,6 +111,22 @@ module Debci
                 end
               end
             end
+
+            Dir['packages/*/*/*/*/history.json'].each do |history|
+              data = JSON.load(File.read(history))
+              data.each do |entry|
+                old_id = entry['run_id'].to_i
+                new_id = mapping[old_id]
+                if new_id
+                  entry['run_id'] = new_id
+                end
+              end
+              File.open(history, 'w') do |f|
+                f.write(JSON.pretty_generate(data))
+              end
+              puts "# rewrite #{history}"
+            end
+
           end
           puts('# copying data files ...')
           cmd = ['rsync', '-apq', '--exclude=/export', tmpdir + '/', repo.path + '/']
