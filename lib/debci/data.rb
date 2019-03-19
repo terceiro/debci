@@ -1,7 +1,7 @@
 require 'set'
+require 'tempfile'
 require 'tmpdir'
 
-require 'archive/tar/minitar'
 require 'thor'
 
 require 'debci'
@@ -51,10 +51,12 @@ module Debci
       end
 
       def save
-        File.open(tarball, 'wb') do |f|
-          Dir.chdir(repo.path) do
-            Archive::Tar::Minitar.pack(entries.sort, f)
-          end
+        files_from = Tempfile.new
+        files_from.puts(entries.sort)
+        files_from.close
+        target = File.expand_path(tarball)
+        Dir.chdir(repo.path) do
+          system('tar', 'caf', target, '--files-from=' + files_from.path)
         end
       end
     end
@@ -74,7 +76,7 @@ module Debci
         pkgs = Set.new
 
         Dir.mktmpdir do |tmpdir|
-          Archive::Tar::Minitar.unpack(tarball, tmpdir)
+          system('tar', 'xaf', tarball, '-C', tmpdir)
           Dir.chdir(tmpdir) do
             Dir['export/*.json'].each do |json|
               jobs = JSON.parse(File.read(json))
