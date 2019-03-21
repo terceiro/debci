@@ -18,11 +18,8 @@ report() {
 }
 
 start_time=$(date +%s)
-tests=0
-passed=0
-failed=0
+failed=""
 for test_script in $@; do
-  tests=$(($tests + 1))
   tmpdir=$(mktemp -d)
   echo "$test_script"
   (
@@ -32,15 +29,17 @@ for test_script in $@; do
   ) 2>&1 | sed -e 's/^/    /; /warning: Insecure world writable dir/d'
   rc=$(cat $tmpdir/.exit_status)
   if [ "$rc" -eq 0 ]; then
-    passed=$(($passed + 1))
     report 32 "☑ $test_script passed all tests"
   else
-    failed=$(($failed + 1))
+    failed="$failed $test_script"
     report 31 "☐ $test_script failed at least one test"
   fi
   rm -rf "$tmpdir"
 done
 end_time=$(date +%s)
+echo
 echo "Finished in $(($end_time - $start_time)) seconds"
-
-exit $failed
+for t in $failed; do
+  echo "Failed: $t"
+done
+test -z "$failed"
