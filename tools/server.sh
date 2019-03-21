@@ -1,5 +1,11 @@
 #!/bin/sh
 
+set -e
+
+# Note the line below: this script is for development only. DO NOT EVER use
+# this script for a production deployment.
+export FAKE_CERTIFICATE_USER=$USER
+
 case $# in
   0)
     port=8080
