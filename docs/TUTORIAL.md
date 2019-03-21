@@ -170,16 +170,6 @@ Tests: mess-with-kernel
 Restrictions: isolation-machine
 ```
 
-### Installing Recommends
-
-You can also state that a package needs the Recommends to be installed using
-the `needs-recommends` value.
-
-```
-Tests: test-extra-features
-Restrictions: needs-recommends
-```
-
 ## Tools
 
 ### sadt
