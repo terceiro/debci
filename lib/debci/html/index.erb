@@ -7,11 +7,10 @@
             title='Atom feed for events in all packages'><i class='fa fa-rss'></i></a>
       </div>
       <div class="list-group">
-      <% news = @repository.news_for('*') %>
-      <% if news.empty? %>
+      <% if @news.empty? %>
         <div class='list-group-item'><em>(no news yet)</em></div>
       <% else %>
-        <% news.each do |item| %>
+        <% @news.each do |item| %>
           <a href="/packages/<%= @repository.find_package(item.package).prefix %>/<%= item.package %>/<%= item.suite %>/<%= item.architecture %>" class="list-group-item"><%= icon(item.extended_status) %> <%= item.headline %><div><small class="text-muted"><%= item.date %> | <strong><%= item.time %></strong></small></div></a>
         <% end %>
       <% end %>

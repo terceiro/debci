@@ -21,6 +21,7 @@ module Debci
     end
 
     def index(filename)
+      @news = @repository.global_news
       expand_template(:index, filename)
     end
 

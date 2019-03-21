@@ -78,7 +78,7 @@ packages.each do |pkg|
   end
 end
 
-global_news = repository.news_for('*', 50)
+global_news = repository.global_news(50)
 global_feed = RSS::Maker.make('atom') do |feed|
   feed.channel.author = $distro_name + ' Continuous Integration'
   feed.channel.updated = global_news.first && global_news.first.date || past_timestamp
