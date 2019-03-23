@@ -150,14 +150,10 @@ module Debci
 
     # Backend implementation for Debci::Package#history
     def history_for(package, suite, architecture)
-      return unless File.exists?(file = File.join(data_dir(suite, architecture, package), 'history.json'))
+      file = File.join(data_dir(suite, architecture, package), 'history.json')
+      return [] unless File.exists?(file)
 
-      entries = nil
-
-      File.open(file) do |f|
-        entries = JSON.load(f)
-      end
-
+      entries = JSON.load(File.read(file))
       entries
         .map { |test| Debci::Status.from_data(test, suite, architecture) }
         .sort_by(&:date)
@@ -166,22 +162,45 @@ module Debci
 
     # Backend implementation for Debci::Package#news
     def news_for(package, n=10)
-      suites = '{' + self.suites.join(',') + '}'
-      architectures = '{' + self.architectures.join(',') + '}'
-      history = Dir.glob(File.join(data_dir(suites, architectures, package), '[0-9]*.json')).sort_by { |f| File.basename(f) }
+      history = []
+      suites.each do |suite|
+        architectures.each do |arch|
+          history += history_for(package, suite, arch)
+        end
+      end
+      history.sort_by! { |e| -e.run_id.to_i }
 
       news = []
 
       while !history.empty?
-        file = history.pop
-        dir = File.expand_path(File.dirname(file) + '/../..')
-        suite = File.basename(File.dirname(dir))
-        architecture = File.basename(dir)
-        status = load_status(file, suite, architecture)
+        status = history.shift
         if status.newsworthy?
           news << status
         end
         if news.size >= n
+          break
+        end
+      end
+
+      news
+    end
+
+    def global_news(limit = 10)
+      latest = Dir[File.join(self.path, '*/*/*/*/*/latest.json')].sort_by do |f|
+        File::Stat.new(f).mtime
+      end
+
+      news = []
+      while !latest.empty?
+        file = latest.pop
+        dir = File.expand_path(File.dirname(file) + '/../..')
+        suite = File.basename(File.dirname(dir))
+        architecture = File.basename(dir)
+        status = Debci::Status.from_file(file, suite, architecture)
+        if status.newsworthy?
+          news << status
+        end
+        if news.size >= limit
           break
         end
       end

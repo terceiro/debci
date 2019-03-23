@@ -14,6 +14,12 @@ module Debci
       status = Debci::Status.from_file(status_file, suite, arch)
       status.run_id = status.run_id.to_i
       job = Debci::Job.find(status.run_id)
+      job.duration_seconds = status.duration_seconds
+      job.date = status.date
+      job.last_pass_date = status.last_pass_date
+      job.last_pass_version = status.last_pass_version
+      job.message = status.message
+      job.previous_status = status.previous_status
       job.version = status.version
       job.status = status.status
       job.save!

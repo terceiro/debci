@@ -8,8 +8,6 @@ require 'json'
 describe Debci::Repository do
 
   before(:all) do
-    @now = Time.now.strftime('%Y%m%d_%H%M%S')
-
     @datadir = Dir.mktmpdir
     mkdir_p 'packages/unstable/amd64/r/rake'
     mkdir_p 'packages/unstable/i386/r/rake'
@@ -18,15 +16,18 @@ describe Debci::Repository do
 
     mkdir_p 'packages/unstable/amd64.old'
 
-    past_status 'packages/unstable/amd64/r/rake', { 'status' => 'pass', 'previous_status' => 'fail' }, '20140412_212642'
-    latest_status 'packages/unstable/amd64/r/rake', { 'status' => 'fail', 'previous_status' => 'pass' }
-    latest_status 'packages/testing/amd64/r/rake', { 'status' => 'fail', 'previous_status' => 'pass'}
+    history 'packages/testing/amd64/r/rake', [
+        {'status' => 'fail', 'date' => '2014-08-01 11:11:12'},
+        {'status' => 'pass', 'date' => '2014-07-07 12:12:15'},
+    ]
 
-    history 'packages/unstable/amd64/r/rake', [{'status' => 'fail', 'date' => '2014-08-01 11:11:12'},
-                                               {'status' => 'pass', 'date' => '2014-07-07 12:12:15'},
-                                               {'status' => 'tmpfail', 'date' => '2014-03-01 14:15:30'},
-                                               {'status' => 'fail', 'date' => '2015-03-01 14:15:30'},
-                                               {'status' => 'pass', 'date' => '2016-03-01 14:15:30'}]
+    history 'packages/unstable/amd64/r/rake', [
+        {'status' => 'fail', 'date' => '2014-08-01 11:11:12'},
+        {'status' => 'pass', 'date' => '2014-07-07 12:12:15'},
+        {'status' => 'tmpfail', 'date' => '2014-03-01 14:15:30'},
+        {'status' => 'fail', 'date' => '2015-03-01 14:15:30'},
+        {'status' => 'pass', 'date' => '2016-03-01 14:15:30'}
+    ]
 
     mkdir_p 'packages/unstable/amd64/r/rake-compiler'
     mkdir_p 'packages/unstable/i386/r/rake-compiler'
@@ -75,9 +76,13 @@ describe Debci::Repository do
       'status' => 'pass',
       'duration_seconds' => 5000,
     }
-  end
 
-  attr_reader :now
+    mkdir_p 'packages/unstable/amd64/n/newsworthypacakge'
+    latest_status 'packages/unstable/amd64/n/newsworthypacakge', {
+      'status' => 'pass',
+      'previous_status' => 'fail',
+    }
+  end
 
   after(:all) do
     FileUtils.rm_rf @datadir
@@ -87,24 +92,28 @@ describe Debci::Repository do
     FileUtils.mkdir_p(File.join@datadir, path)
   end
 
-  def past_status(path, data, run_id)
-    package = File.basename(path)
-    File.open(File.join(@datadir, path, run_id + '.json'), 'w') do |f|
-      f.write(JSON.dump({ 'package' => package, 'run_id' => run_id }.merge(data)))
-    end
+  def get_run_id
+    @run_id ||= 0
+    @run_id += 1
   end
 
   def history(path, data)
+    previous_status = nil
+    data.each do |entry|
+      entry['run_id'] = get_run_id
+      entry['previous_status'] = previous_status if previous_status
+      previous_status = entry['status']
+    end
     File.open(File.join(@datadir, path, 'history.json'), 'w') do |f|
       f.write(JSON.pretty_generate(data))
     end
   end
 
   def latest_status(path, data)
-    run_id = now
-    past_status(path, data, run_id)
-    Dir.chdir(File.join(@datadir, path)) do
-      FileUtils.ln_s(run_id + '.json', 'latest.json')
+    package = File.basename(path)
+    run_id = get_run_id
+    File.open(File.join(@datadir, path, 'latest.json'), 'w') do |f|
+      f.write(JSON.dump({ 'package' => package, 'run_id' => run_id }.merge(data)))
     end
   end
 
@@ -177,16 +186,18 @@ describe Debci::Repository do
   end
 
   it 'sorts news with most recent first' do
-    glob = File.join(@datadir, 'packages/{unstable}/{amd64}/r/rake/[0-9]*.json')
-    statuses_reversed = Dir.glob(glob).sort_by { |f| File.basename(f) }.reverse
-
     expect(repository).to receive(:architectures).and_return(['amd64'])
     expect(repository).to receive(:suites).and_return(['unstable'])
-    expect(Dir).to receive(:glob).with(glob).and_return(statuses_reversed)
-
     news = repository.news_for('rake')
 
-    expect(news.first.run_id).to eq(now)
+    first = news[0]
+    second = news[1]
+    expect(first.run_id).to be > second.run_id
+  end
+
+  it 'produces global news' do
+    news = repository.global_news
+    expect(news[0].package).to eq('newsworthypacakge')
   end
 
   it 'supports the Package class' do

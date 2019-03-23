@@ -40,7 +40,7 @@
       </tr>
 
       <% begin %>
-        <% Array(@package.history(@suite, @architecture)).each do |test| %>
+        <% Array(@history).each do |test| %>
           <tr>
             <td><%= test.version %></td>
             <td><%= test.date %></td>

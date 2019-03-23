@@ -16,6 +16,9 @@ cd $debci_base_dir
 . lib/functions.sh
 
 
+# migrate relational DB
+ruby -r debci/db -e 'Debci::DB.migrate'
+
 current_version=0
 if [ -f "$debci_data_basedir/schema_version" ]; then
   current_version=$(cat "$debci_data_basedir/schema_version")
@@ -33,6 +36,3 @@ for migration in $(run-parts --list "$migrations_dir"); do
 done
 
 echo "$current_version" > "$debci_data_basedir/schema_version"
-
-# migrate relational DB
-ruby -r debci/db -e 'Debci::DB.migrate'

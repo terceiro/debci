@@ -58,6 +58,12 @@ describe Debci::Job do
         'run_id': job.run_id,
         'status': 'pass',
         'version': '1.0-1',
+        'duration_seconds': 11,
+        'date': '2018-09-09 20:40:00',
+        'last_pass_date': '2018-01-09 20:40:00',
+        'last_pass_version': '0.9-1',
+        'message': 'bla bla bla',
+        'previous_status': 'fail'
       }.to_json
     )
     file.close
@@ -68,6 +74,12 @@ describe Debci::Job do
     job.reload
     expect(job.status).to eq('pass')
     expect(job.version).to eq('1.0-1')
+    expect(job.duration_seconds).to eq(11)
+    expect(job.date).to eq(Time.utc(2018, 9, 9, 20, 40, 0))
+    expect(job.last_pass_date).to eq(Time.utc(2018, 1, 9, 20, 40, 0))
+    expect(job.last_pass_version).to eq('0.9-1')
+    expect(job.message).to eq('bla bla bla')
+    expect(job.previous_status).to eq('fail')
   end
 
 end

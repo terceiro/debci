@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -eu
+
+debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/../..)
+. "$debci_base_dir/lib/environment.sh"
+
+if [ ! -d "${debci_data_basedir}/packages/" ]; then
+  exit
+fi
+
+# transform latest.json files from symlinks to copies
+find "${debci_data_basedir}/packages/" -type l -name latest.json \
+  -execdir sh -c 'f=$(readlink {}); rm {}; cp $f {}' ';' \
+  -print | sed -e 's/^/I: resolving symlink /'
+
+# handle "old" status files which do NOT correspond to database entries. They
+# are just discarded. Also delete corresponding log files, as they won't be
+# accessible anymore, anyway.
+find "${debci_data_basedir}/packages/" \
+  '(' -name '[0-9]*_[0-9]*.json' -or -name '[0-9]*_[0-9]*.log' ')'\
+  -print -delete | sed -e 's/^/I: removing /'
+
+# handle "new" status files, which correspond to database entries
+find "${debci_data_basedir}/packages/" -name "[0-9]*.json" \
+  | xargs debci job import --verbose --remove

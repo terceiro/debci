@@ -92,12 +92,17 @@ generate_package_run() {
   generate_package_json "$last_timestamp"
 
   if ! echo $run_id | grep -q _ ; then
-      debci job import "${status_dir}/${run_id}.json"
+    debci job import "${status_file}"
   fi
+
+  # history
+  history_file="$tmp_dir/history.json"
+  debci job history-json "${pkg}" > "${history_file}"
+  cp "$history_file" "$status_dir/history.json"
 
   # update "latest" links
   ln -sf "${run_id}.log" "${status_dir}/latest.log"
-  ln -sf "${run_id}.json" "${status_dir}/latest.json"
+  mv "${status_file}" "${status_dir}/latest.json"
   rm -f "${status_dir}/latest-autopkgtest"
 
   # generate relative symlinks for relocatability
@@ -242,22 +247,23 @@ generate_package_run_dependencies() {
   fi
 }
 
-# this reads all previous result json files, but should only run
-# once for each package, after which the last_pass_version is cached
-# in each successive json and copied forwards
+# this reads the history file, but should only run once for each package, after
+# which the last_pass_version is cached in each successive json and copied
+# forwards
 find_last_pass_version() {
+  local history_json="${status_dir}/history.json"
+  if [ ! -f "${history_json}" ]; then
+    return
+  fi
+
   last_pass_version="never"
   last_pass_date="never"
-  result_json=$(find "${status_dir}" -name '*.json' \
-                -and -not -name latest.json \
-                -and -not -name history.json \
-                | sort -V)
-  for f in ${result_json}; do
-    if [ $(jq -r .status ${f}) = 'pass' ]; then
-      last_pass_version="$(jq -r .version ${f})"
-      last_pass_date="$(jq -r .date ${f})"
-    fi
-  done
+  local f="${tmp_dir}/last_pass.json"
+  jq 'map(select(.status == "pass"))|last' "${history_json}" > "$f"
+  if [ $(jq -r .status ${f}) = 'pass' ]; then
+    last_pass_version="$(jq -r .version ${f})"
+    last_pass_date="$(jq -r .date ${f})"
+  fi
 }
 
 # arguments: <timestamp>
@@ -314,28 +320,6 @@ generate_package_json() {
   "last_pass_date": "${last_pass_date}"${extra_fields}
 }
 EOF
-
-  # TODO cleanup old entries (?)
-
-  # history
-  history_file="$tmp_dir/history.json"
-  echo '[' > "$history_file"
-  sep=''
-  entries=$(
-    find "$status_dir" -name '*.json' \
-      -and -not -name latest.json \
-      -and -not -name history.json \
-      | sort -Vr
-  )
-  for entry in $entries; do
-    if [ -n "$sep" ]; then
-      echo "$sep" >> "$history_file"
-    fi
-    sep=,
-    cat $entry >> "$history_file"
-  done
-  echo ']' >> "$history_file"
-  cp "$history_file" "$status_dir/history.json"
 }
 
 generate_status_entry() {
