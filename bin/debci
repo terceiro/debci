@@ -81,7 +81,7 @@ Uses DIR as the debci configuration directory.
 
 selects the architecture to run tests for (default: host architecture)
 
-=item -n BACKEND, --backend BACKEND
+=item -b BACKEND, --backend BACKEND
 
 selects the backends to run tests on (default: lxc)
 
