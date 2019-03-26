@@ -37,6 +37,11 @@ module Debci
       @packages ||= (@data_dirs.map { |d| Dir.glob(File.join(d, '*/*')) }.flatten.map { |d| File.basename(d) } + Debci.blacklist.packages.keys).to_set.sort
     end
 
+    # Returns a Set of packages known to this debci instance which are not blacklisted 
+    def non_blacklisted_packages
+      @non_blacklisted_packages ||= packages.reject { |package| Debci.blacklist.packages.include? package.to_s }
+    end
+
     # Returns an Array of package prefixes known to this debci instance
     def prefixes
       @prefixes ||= @data_dirs.map { |d| Dir.glob(File.join(d, '*/')) }.flatten.map { |d| File.basename(d) }.uniq.sort
@@ -48,7 +53,7 @@ module Debci
     def tmpfail_packages
       tmpfail_packages = Set.new
 
-      all_statuses.each do |status|
+      all_non_blacklisted_statuses.each do |status|
         if status.status == :tmpfail
           tmpfail_packages << status.package
         end
@@ -58,7 +63,7 @@ module Debci
     end
 
     def slow_packages
-      all_statuses.select do |status|
+      all_non_blacklisted_statuses.select do |status|
         status.duration_seconds && status.duration_seconds > 60 * 60 # 1h
       end
     end
@@ -139,7 +144,7 @@ module Debci
 
     def platform_specific_issues
       result = {}
-      packages.each do |package|
+      non_blacklisted_packages.each do |package|
         statuses = status_for(package).flatten
         if statuses.map(&:status).reject { |s| [:no_test_data, :tmpfail].include?(s) }.uniq.size > 1
           result[package] = statuses
@@ -261,6 +266,10 @@ module Debci
           end
           r
         end
+    end
+
+    def all_non_blacklisted_statuses
+      @all_non_blacklisted_statuses ||= all_statuses.reject { |status| Debci.blacklist.packages.include? status.package.to_s }
     end
 
   end
