@@ -66,8 +66,11 @@
                 <td><span class='fa fa-trash' title='file has been removed due to data retention policy'></span></td>
                 <td><span class='fa fa-trash' title='file has been removed due to data retention policy'></span></td>
               <% else %>
-                <td><a href="/<%= @autopkgtest_dir %>/<%= @package_dir %>/<%= test.run_id %>/log.gz">test log</a></td>
-                <td><a href="/<%= @autopkgtest_dir %>/<%= @package_dir %>/<%= test.run_id %>/artifacts.tar.gz">artifacts</a></td>
+		<% dirname = File.join(@autopkgtest_dir,@package_dir,test.run_id.to_s) %>
+                <td><a href="/<%= @autopkgtest_dir %>/<%= @package_dir %>/<%= test.run_id %>/log.gz">test log</a>
+		<small><%= filesize(File.join(dirname,'log.gz'),"(%s)")%></small></td>
+                <td><a href="/<%= @autopkgtest_dir %>/<%= @package_dir %>/<%= test.run_id %>/artifacts.tar.gz">artifacts</a>
+		<small><%= filesize(File.join(dirname,'artifacts.tar.gz'),"(%s)")%></small></td>
               <% end %>
             <% end %>
           </tr>
