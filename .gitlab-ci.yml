@@ -20,3 +20,12 @@ testing:
 stable:
   <<: *test
   image: 'debian:stable-backports'
+
+ruby-style:
+  image: 'debian:unstable'
+  before_script:
+    - apt-get -q update
+    - apt-get -q -y dist-upgrade
+    - apt-get install -qy rubocop
+  script:
+    - rubocop -c .rubocop_todo.yml
