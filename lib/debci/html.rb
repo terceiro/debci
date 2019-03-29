@@ -9,6 +9,7 @@ module Debci
 
   class HTML
 
+    include ActiveSupport::NumberHelper
     attr_reader :root_directory
 
     def initialize(root_directory=Debci.config.html_dir)
@@ -78,6 +79,12 @@ module Debci
     # expand { SUITE } macro in URLs
     def expand_url(url, suite)
       url && url.gsub('{SUITE}', suite)
+    end
+
+    def filesize(filename,format)
+      if File.exist?(filename)
+	format % number_to_human_size(File.size(filename))
+      end
     end
 
     def history(package, suite, architecture, filename)
