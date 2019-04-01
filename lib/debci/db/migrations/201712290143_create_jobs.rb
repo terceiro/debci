@@ -2,13 +2,13 @@ class CreateJobs < Debci::DB::LegacyMigration
   def up
     create_table(:jobs, primary_key: 'run_id') do |t|
       t.timestamps(null: false)
-      t.string  :suite, :limit => 100
-      t.string  :arch, :limit => 100
-      t.string  :package, :limit => 100
-      t.string  :version, :limit => 100
+      t.string  :suite, limit: 100
+      t.string  :arch, limit: 100
+      t.string  :package, limit: 100
+      t.string  :version, limit: 100
       t.string  :trigger
-      t.string  :status, :limit => 25
-      t.string  :requestor, :limit => 256, index: true
+      t.string  :status, limit: 25
+      t.string  :requestor, limit: 256, index: true
       t.text    :pin_packages
       t.string  :worker
     end
@@ -20,4 +20,3 @@ class CreateJobs < Debci::DB::LegacyMigration
     drop_table :jobs
   end
 end
-
