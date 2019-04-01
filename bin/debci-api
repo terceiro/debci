@@ -5,24 +5,22 @@ require 'thor'
 
 module Debci
   class APICLI < Thor
-
-    desc 'setkey USERNAME [KEYNAME]', "Sets a API key for the given user"
-    def setkey(username, keyname='default')
+    desc 'setkey USERNAME [KEYNAME]', 'Sets a API key for the given user'
+    def setkey(username, _keyname = 'default')
       key = Debci::Key.create!(user: username)
       puts key.key
     end
 
-    desc 'auth KEY', "Checks authentication for the given KEY"
+    desc 'auth KEY', 'Checks authentication for the given KEY'
     def  auth(key)
       user = Debci::Key.authenticate(key)
       if user
         puts "I: Valid key for user `#{user}`"
       else
-        $stderr.puts "E: invalid key"
+        warn 'E: invalid key'
         exit(1)
       end
     end
-
   end
 end
 
