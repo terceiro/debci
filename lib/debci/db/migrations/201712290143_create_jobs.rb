@@ -1,4 +1,4 @@
-class CreateJobs < Debci::DB::LegacyMigration
+class CreateJobs < Debci::DB::LEGACY_MIGRATION
   def up
     create_table(:jobs, primary_key: 'run_id') do |t|
       t.timestamps(null: false)

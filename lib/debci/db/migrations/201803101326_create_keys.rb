@@ -1,4 +1,4 @@
-class CreateKeys < Debci::DB::LegacyMigration
+class CreateKeys < Debci::DB::LEGACY_MIGRATION
   def up
     create_table(:keys) do |t|
       t.timestamps(null: false)

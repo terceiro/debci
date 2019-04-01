@@ -1,4 +1,4 @@
-class CompleteJobFields < Debci::DB::LegacyMigration
+class CompleteJobFields < Debci::DB::LEGACY_MIGRATION
 
   def up
     add_column :jobs, :date, :datetime
