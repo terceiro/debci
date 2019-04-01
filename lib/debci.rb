@@ -3,9 +3,7 @@ require 'debci/config'
 require 'debci/blacklist'
 
 module Debci
-
   class << self
-
     def config
       @config ||= Debci::Config.new
     end
@@ -15,17 +13,15 @@ module Debci
     end
 
     def config!(data)
-      data.each do |k,v|
+      data.each do |k, v|
         ENV["debci_#{k}"] = v
       end
       @config = nil
       @blacklist = nil
     end
 
-    def log(*s)
-      puts(*s) unless config.quiet
+    def log(*str)
+      puts(*str) unless config.quiet
     end
-
   end
-
 end
