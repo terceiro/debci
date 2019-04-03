@@ -42,10 +42,17 @@ module Debci
       expand_template(:status_slow, filename)
     end
 
-    def status_pending_jobs(filename)
+    def status_pending_jobs(dirname)
       @status_nav = load_template(:status_nav)
-      @pending = Debci::Job.pending
-      expand_template(:status_pending_jobs, filename)
+      @status_per_page = Debci.config.pending_status_per_page.to_i
+      @pending_jobs = Debci::Job.pending.length
+
+      @suites_jobs = Hash[@repository.suites.map do |x|
+        [x, Debci::Job.pending.where(suite: x).count]
+      end
+      ]
+      generate_status_pending(dirname, nil) # For 'All suites'
+      @suites_jobs.each_key { |suite| generate_status_pending(dirname, suite) }
     end
 
     def platform_specific_issues(dirname)
@@ -190,6 +197,21 @@ module Debci
       expand_template(:platform_specific_issues, target.to_s + '/' + 'index.html')
     end
 
-  end
+    def generate_status_pending(dirname, suite)
+      if suite
+        @pending = Debci::Job.pending.where(suite: suite)
+        base = "#{dirname}/#{suite}"
+      else
+        @pending = Debci::Job.pending
+        base = dirname
+      end
 
+      @current_page = "#{base}/all"
+      expand_template(:status_pending_jobs, @current_page + '/' \
+                      'index.html')
+      @current_page = base
+      @pending = @pending.last(@status_per_page)
+      expand_template(:status_pending_jobs, @current_page + '/' + 'index.html')
+    end
+  end
 end

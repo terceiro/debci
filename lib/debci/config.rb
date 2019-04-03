@@ -26,6 +26,7 @@ module Debci
     :distro_name,
     :html_dir,
     :packages_dir,
+    :pending_status_per_page,
     :quiet,
     :secrets_dir,
     :sendmail_from,

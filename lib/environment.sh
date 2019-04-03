@@ -55,6 +55,7 @@ debci_sendmail_to="${debci_sendmail_to:-%s@localhost}"
 debci_url_base="${debci_url_base:-http://localhost:8080}"
 debci_artifacts_url_base="${debci_artifacts_url_base:-}"
 debci_database_url="${debci_database_url:-sqlite3://$debci_data_basedir/debci.sqlite3?timeout=5000}"
+debci_pending_status_per_page="${debci_pending_status_per_page:-50}"
 
 debci_secrets_dir=${debci_secrets_dir:-$(readlink -f "${debci_base_dir}/secrets")}
 
