@@ -1,0 +1,131 @@
+<div class='row'>
+  <div class='col-md-12'>
+    <h1 class='page-header'>Status <small>/ Failing</small></h1>
+    <%= @status_nav %>
+
+    <ol id='failing-nav' class='breadcrumb'>
+      <li class='<%= "#{'active' if @suite.nil?}" %>'>
+        <span class='dropdown'>
+          <a href='#' class='dropdown-toggle' data-toggle='dropdown'>All</a>
+          <ul class='dropdown-menu'>
+            <li><a href='/status/failing'>All</a></li>
+            <li><a href='/status/failing/always_failing/'>Always Failing</a></li>
+            <li><a href='/status/failing/had_success/'>Had Success</a></li>
+          </ul>
+        </span>
+      </li>
+
+      <% @repository.suites.each do |suite| %>
+        <li class='<%= "#{'active' if suite == @suite}" %>'>
+          <span class='dropdown'>
+            <a href='#' class='dropdown-toggle' data-toggle='dropdown'><%= suite %></a>
+            <ul class='dropdown-menu'>
+              <li><a href='/status/failing/<%= suite %>/'>All</a></li>
+              <li><a href='/status/failing/<%= suite %>/always_failing/'>Always Failing</a></li>
+              <li><a href='/status/failing/<%= suite %>/had_success/'>Had Success</a></li>
+            </ul>
+          </span>
+        </li>
+      <% end %>
+    </ol>
+
+    <h4>There are currently <b><%= @packages.length %></b> packages failing or temporarily failing</h4>
+    <% if @packages.empty? %>
+      <p>No packages satisfy conditions!</p>
+    <% else %>
+
+      <div class='form-group'>
+        <span>Enter Package Name: </span><input type='text' id='filter'>
+      </div>
+
+      <table id='failing-table' class='table table-striped'>
+        <thead>
+          <tr id='headline' class=''>
+            <th>Package</th>
+            <th>Suite</th>
+            <th>Architecture</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @packages.each do |package| %>
+            <% statuses = package.failures %>
+            <% statuses = statuses.select { |status| status.suite == @suite } if @suite %>
+            <% statuses.each do |s| %>
+              <tr>
+                <td>
+                  <a href="/packages/<%= package.prefix %>/<%= package.name %>" class='package'>
+                    <%= package.name %>
+                  </a>
+                </td>
+                  
+                <td>
+                  <%= s.suite %>
+                </td>
+
+                <td>
+                  <%= s.architecture %>
+                </td>
+
+                <td>
+                  <a href='/packages/<%= package.prefix %>/<%= package.name %>/<%= s.suite %>/<%= s.architecture %>/'>
+                    <%= s.version %> <%= s.status %>
+                  </a>
+                </td>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+
+      </table>
+    <% end %>
+  </div>
+</div>
+
+<script type="text/javascript">
+  document.getElementById('failing-table').addEventListener("load", pageLoaded());
+
+  function pageLoaded() {
+    var filterInput = document.getElementById('filter');
+
+    filterInput.focus();
+    filterInput.select();
+
+    filterInput.onkeyup = function() {
+      filterTable(filterInput.value);
+    }
+
+    function filterTable(value) {
+      var rows = document.getElementsByTagName('tr');
+
+      if (value == '') {
+        for (var i = 0; i < rows.length; ++i) {
+          rows[i].style.display = '';
+        }
+      } else {
+        for (var i = 0; i < rows.length; ++i) {
+          var tds = rows[i].getElementsByClassName('package');
+
+          for (var j = 0; j < tds.length; ++j) {
+            if (tds[j].innerText.indexOf(value) == -1) {
+              tds[j].parentNode.parentNode.style.display = 'none';
+            } else {
+                tds[j].parentNode.parentNode.style.display = '';
+            }
+          }
+        }
+      }
+    }
+  }
+</script>
+
+<style type='text/css'>
+  tr.#headline {
+    display: '' !important;
+  }
+
+  .active {
+    font-weight: bold;
+  }
+</style>

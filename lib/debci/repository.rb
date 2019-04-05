@@ -62,6 +62,20 @@ module Debci
       tmpfail_packages.sort.map { |p| Debci::Package.new(p, self) }
     end
 
+    # Returns a Set of packages known to this debci instance that are
+    # failing. If no packages are failing, nothing is returned
+    def failing_packages
+      failing_packages = Set.new
+      
+      all_non_blacklisted_statuses.each do |status|
+        if status.status == :fail
+          failing_packages << status.package
+        end
+      end
+
+      failing_packages.sort.map { |p| Debci::Package.new(p, self) }
+    end
+
     def slow_packages
       all_non_blacklisted_statuses.select do |status|
         status.duration_seconds && status.duration_seconds > 60 * 60 # 1h

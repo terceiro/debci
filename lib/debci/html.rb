@@ -55,6 +55,23 @@ module Debci
       @suites_jobs.each_key { |suite| generate_status_pending(dirname, suite) }
     end
 
+    def status_failing(dirname)
+      @status_nav = load_template(:status_nav)
+
+      packages = @repository.failing_packages
+      @packages_per_page = Debci.config.failing_packages_per_page.to_i
+
+      @filters = { 'had_success': 'Had Success',
+                   'always_failing': 'Always Failing' }
+
+      generate_status_failing(dirname, packages, @filters.each_key,
+                              @packages_per_page)
+      @repository.suites.map do |suite|
+        generate_status_failing(dirname, packages, @filters.each_key,
+                                @packages_per_page, suite)
+      end
+    end
+
     def platform_specific_issues(dirname)
       @status_nav = load_template(:status_nav)
 
@@ -212,6 +229,45 @@ module Debci
       @current_page = base
       @pending = @pending.last(@status_per_page)
       expand_template(:status_pending_jobs, @current_page + '/' + 'index.html')
+    end
+
+    # Sorts packages by last updated date, then names
+    def sort_packages_by_date(packages, suite = nil)
+      packages.sort do |x, y|
+        x_date = x.last_updated_at(suite)
+        y_date = y.last_updated_at(suite)
+        if x_date && y_date
+          y_date <=> x_date
+        elsif x_date || y_date
+          x_date ? -1 : 1
+        else
+          x.name <=> y.name
+        end
+      end
+    end
+
+    def generate_status_failing(dirname, packages, filters, packages_per_page,
+                                suite = nil)
+      base = "#{dirname}#{'/' + suite if suite}"
+      @suite = suite
+
+      sorted_packages = sort_packages_by_date(packages, suite)
+
+      @packages = sorted_packages
+      filename = base + '/' + 'all' + '/' + 'index.html'
+      expand_template(:status_failing, filename)
+
+      @packages = sorted_packages.first(packages_per_page)
+      filename = base + '/' + 'index.html'
+      expand_template(:status_failing, filename)
+
+      filters.each do |filter|
+        filename = base + '/' + filter.to_s + '/' + 'index.html'
+        @packages = sorted_packages.select do |p|
+          p.send(filter.to_s + '?', suite)
+        end
+        expand_template(:status_failing, filename)
+      end
     end
   end
 end
