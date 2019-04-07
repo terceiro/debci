@@ -8,7 +8,7 @@ module Debci
 
   class Status
 
-    attr_accessor :suite, :architecture, :run_id, :package, :version, :date, :trigger, :status, :previous_status, :duration_seconds, :message, :last_pass_version, :last_pass_date
+    attr_accessor :suite, :architecture, :run_id, :package, :version, :date, :trigger, :status, :previous_status, :duration_seconds, :message, :last_pass_version, :last_pass_date, :requestor
 
     # Returns `true` if this status object represents an important event, such
     # as a package that used to pass started failing, of vice versa.
@@ -161,6 +161,7 @@ module Debci
       status.run_id = data['run_id'] || data['date']
       status.package = data['package']
       status.version = data['version']
+      status.requestor = data['requestor']
       status.date =
         begin
           Time.parse((data['date'] || 'unknown') + ' UTC')
