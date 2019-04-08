@@ -74,7 +74,6 @@ Layout/EmptyLinesAroundModuleBody:
     - 'lib/debci/config.rb'
     - 'lib/debci/data.rb'
     - 'lib/debci/db.rb'
-    - 'lib/debci/graph.rb'
     - 'lib/debci/html.rb'
     - 'lib/debci/package.rb'
     - 'lib/debci/repository.rb'
@@ -183,7 +182,6 @@ Layout/SpaceAroundKeyword:
 Layout/SpaceAroundOperators:
   Exclude:
     - 'backends/fake/test-package'
-    - 'lib/debci/graph.rb'
     - 'lib/debci/job.rb'
     - 'lib/debci/status.rb'
     - 'spec/debci/graph_spec.rb'

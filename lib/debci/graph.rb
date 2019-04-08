@@ -3,11 +3,9 @@ require 'rubygems'
 require 'debci'
 
 module Debci
-
   # This class represents different data charts for a specific
   # suite and architecture.
   class Graph
-
     attr_accessor :suite, :architecture, :entries
 
     def initialize(repository, suite, architecture)
@@ -29,11 +27,9 @@ module Debci
       # simplify the data: pick 101 points in the history
       original_entries = @entries
       @entries = (0..100).map do |i|
-        j = (i * (original_entries.size-1).to_f / 100).round
+        j = (i * (original_entries.size - 1).to_f / 100).round
         @entries[j]
       end
     end
-
   end
-
 end
