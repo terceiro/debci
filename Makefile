@@ -45,7 +45,7 @@ deb:
 ruby-console:
 	irb -Ilib -rdebci
 
-check: all check-ui-and-docs spec functional-tests
+check: all check-ui-and-docs check-ruby-style spec functional-tests
 
 check-ui-and-docs: all
 	test -d public/doc
@@ -53,6 +53,9 @@ check-ui-and-docs: all
 	test -L public/doc/js/jquery.js -a -f public/doc/js/jquery.js
 	test -L public/jquery.js -a -f public/jquery.js
 	test -L public/bootstrap
+
+check-ruby-style:
+	if type rubocop; then rubocop -c .rubocop_todo.yml; fi
 
 test: check
 
