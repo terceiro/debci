@@ -252,7 +252,6 @@ Layout/TrailingBlankLines:
   Exclude:
     - 'lib/debci/data.rb'
     - 'lib/debci/db/migrations/201712290143_create_jobs.rb'
-    - 'lib/debci/db/migrations/201803101326_create_keys.rb'
     - 'lib/debci/job.rb'
 
 # Offense count: 1
