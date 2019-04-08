@@ -2,9 +2,9 @@
 # vi: set ft=ruby :
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
-VAGRANTFILE_API_VERSION = "2"
+VAGRANTFILE_API_VERSION = '2'.freeze
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = ENV['BOX'] || "debian/stretch64"
-  config.vm.network "forwarded_port", guest: 8080, host: 8080
+  config.vm.box = ENV['BOX'] || 'debian/stretch64'
+  config.vm.network 'forwarded_port', guest: 8080, host: 8080
 end

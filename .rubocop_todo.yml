@@ -576,7 +576,6 @@ Style/MultilineIfModifier:
 # Cop supports --auto-correct.
 Style/MutableConstant:
   Exclude:
-    - 'Vagrantfile'
     - 'config.ru'
     - 'lib/debci/html.rb'
 
