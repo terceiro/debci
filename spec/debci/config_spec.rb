@@ -7,7 +7,8 @@ describe Debci::Config do
 
   before(:each) do
     @io = StringIO.new(KEYS.map { |k| "#{k}=value-of-#{k}\n" }.join)
-    expect(IO).to receive(:popen).with(['debci', 'config', *KEYS.map(&:to_s)]).and_yield(@io)
+    cmd = ['debci', 'config', *KEYS.map(&:to_s)]
+    expect(IO).to receive(:popen).with(cmd).and_yield(@io)
   end
 
   KEYS.each do |key|
