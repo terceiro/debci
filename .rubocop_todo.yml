@@ -47,7 +47,6 @@ Layout/EmptyLinesAroundBlockBody:
     - 'lib/debci/config.rb'
     - 'lib/debci/data.rb'
     - 'spec/debci/api_spec.rb'
-    - 'spec/debci/config_spec.rb'
     - 'spec/debci/data_spec.rb'
     - 'spec/debci/graph_spec.rb'
     - 'spec/debci/job_spec.rb'
@@ -796,3 +795,4 @@ Style/ZeroLengthPredicate:
 # URISchemes: http, https
 Metrics/LineLength:
   Max: 209
+
