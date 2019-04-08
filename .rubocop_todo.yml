@@ -31,7 +31,6 @@ Layout/EmptyLineBetweenDefs:
 Layout/EmptyLines:
   Exclude:
     - 'bin/debci-job'
-    - 'config.ru'
     - 'lib/debci/api.rb'
     - 'lib/debci/data.rb'
     - 'spec/debci/job_spec.rb'
@@ -115,7 +114,6 @@ Layout/IndentHash:
 # SupportedStyles: auto_detection, squiggly, active_support, powerpack, unindent
 Layout/IndentHeredoc:
   Exclude:
-    - 'config.ru'
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -388,7 +386,6 @@ Naming/AccessorMethodName:
 # Blacklist: END, (?-mix:EO[A-Z]{1})
 Naming/HeredocDelimiterNaming:
   Exclude:
-    - 'config.ru'
     - 'lib/debci/api.rb'
 
 # Offense count: 1
@@ -534,7 +531,6 @@ Style/IfUnlessModifier:
     - 'backends/fake/test-package'
     - 'bin/debci-generate-feeds'
     - 'bin/debci-generate-html'
-    - 'config.ru'
     - 'lib/debci/api.rb'
     - 'lib/debci/config.rb'
     - 'lib/debci/data.rb'
