@@ -56,7 +56,6 @@ Layout/EmptyLinesAroundBlockBody:
     - 'spec/debci/package_spec.rb'
     - 'spec/debci/repository_spec.rb'
     - 'spec/debci/status_spec.rb'
-    - 'spec/debci_spec.rb'
 
 # Offense count: 30
 # Cop supports --auto-correct.
@@ -721,7 +720,6 @@ Style/Semicolon:
   Exclude:
     - 'backends/fake/debci-list-dependencies'
     - 'lib/debci/api.rb'
-    - 'spec/debci_spec.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
