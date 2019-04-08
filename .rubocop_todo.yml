@@ -235,13 +235,6 @@ Layout/SpaceInsideHashLiteralBraces:
     - 'spec/debci/graph_spec.rb'
     - 'spec/debci/repository_spec.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: IndentationWidth.
-Layout/Tab:
-  Exclude:
-    - 'lib/debci/html.rb'
-
 # Offense count: 4
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

@@ -92,7 +92,7 @@ module Debci
 
     def filesize(filename,format)
       if File.exist?(filename)
-	format % number_to_human_size(File.size(filename))
+        format % number_to_human_size(File.size(filename))
       end
     end
 
