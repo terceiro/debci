@@ -1,7 +1,6 @@
 require 'debci/blacklist'
 
 describe Debci::Blacklist do
-
   before(:each) do
     @tmpdir = Dir.mktmpdir
   end
@@ -32,5 +31,4 @@ describe Debci::Blacklist do
       f.puts(content)
     end
   end
-
 end

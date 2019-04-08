@@ -48,7 +48,6 @@ Layout/EmptyLinesAroundBlockBody:
     - 'lib/debci/config.rb'
     - 'lib/debci/data.rb'
     - 'spec/debci/api_spec.rb'
-    - 'spec/debci/blacklist_spec.rb'
     - 'spec/debci/config_spec.rb'
     - 'spec/debci/data_spec.rb'
     - 'spec/debci/graph_spec.rb'
