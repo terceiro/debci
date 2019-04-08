@@ -48,10 +48,17 @@ module Debci
       expand_template(:status_pending_jobs, filename)
     end
 
-    def platform_specific_issues(filename)
+    def platform_specific_issues(dirname)
       @status_nav = load_template(:status_nav)
-      @issues = @repository.platform_specific_issues
-      expand_template(:platform_specific_issues, filename)
+
+      @filters = {
+        "#{dirname}": ["All", -1],
+        "#{dirname}/last_thirty_days": ["Last 30 Days", 30],
+        "#{dirname}/last_one_eighty_days": ["Last 180 Days", 180],
+        "#{dirname}/last_year": ["Last Year", 365]
+      }
+
+      @filters.each{ |target, filter| generate_platform_specific_issues(target, filter) }
     end
 
     def blacklist(filename)
@@ -169,6 +176,15 @@ module Debci
       Array(ICONS[status.to_sym]).map do |i|
         "<i class='#{status} fa fa-#{i}'></i>"
       end.join(' ')
+    end
+
+    def generate_platform_specific_issues(target, filter)
+      days = filter[1]
+      @issues = @repository.platform_specific_issues.select do 
+        |package, statuses|
+        statuses.any?{ |status| status.newer? days }
+      end
+      expand_template(:platform_specific_issues, target.to_s + '/' + 'index.html')
     end
 
   end

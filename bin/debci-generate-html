@@ -18,7 +18,7 @@ writer.status_alerts('status/alerts/index.html')
 writer.status_slow('status/slow/index.html')
 writer.status_pending_jobs('status/pending/index.html')
 writer.blacklist('status/blacklist/index.html')
-writer.platform_specific_issues('status/platform-specific-issues/index.html')
+writer.platform_specific_issues('status/platform-specific-issues')
 Debci.log('status pages html updated')
 
 repository = Debci::Repository.new
