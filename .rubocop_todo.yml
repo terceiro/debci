@@ -690,7 +690,6 @@ Style/RedundantSelf:
     - 'lib/debci/config.rb'
     - 'lib/debci/db.rb'
     - 'lib/debci/job.rb'
-    - 'lib/debci/key.rb'
     - 'lib/debci/repository.rb'
     - 'lib/debci/status.rb'
 
@@ -710,7 +709,6 @@ Style/SafeNavigation:
   Exclude:
     - 'bin/debci-generate-feeds'
     - 'lib/debci/html.rb'
-    - 'lib/debci/key.rb'
 
 # Offense count: 6
 # Cop supports --auto-correct.
