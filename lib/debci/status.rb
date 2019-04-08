@@ -199,6 +199,11 @@ module Debci
       end
     end
 
+    def newer?(days)
+      return (Time.now - date) < days * (24*60*60) if days > 0
+      return true
+    end
+
     def inspect
       "<#{suite}/#{architecture} #{status}>"
     end

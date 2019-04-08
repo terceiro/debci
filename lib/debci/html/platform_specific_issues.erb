@@ -2,6 +2,13 @@
   <div class="col-md-12">
     <h1 class='page-header'>Status <small>/ Platform-Specific issues</small></h1>
     <%= @status_nav %>
+
+    <ol id='platform-specific-links' class='breadcrumb'>
+      <% @filters.each do |filter, data| %>
+        <li><a href='/<%= filter %>/'><%= data[0] %></a></li>
+      <% end %>
+    </ol>
+
     <table class='table table-striped'>
       <tr>
         <th>Package</th>
