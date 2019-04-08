@@ -1,5 +1,4 @@
 class CreateKeys < Debci::DB::LegacyMigration
-
   def up
     create_table(:keys) do |t|
       t.timestamps(null: false)
@@ -12,4 +11,3 @@ class CreateKeys < Debci::DB::LegacyMigration
     drop_table :keys
   end
 end
-
