@@ -200,8 +200,8 @@ module Debci
     end
 
     def newer?(days)
-      return (Time.now - date) < days * (24*60*60) if days > 0
-      return true
+      return true if days <= 0
+      (Time.now - date) < days * (24 * 60 * 60)
     end
 
     def inspect

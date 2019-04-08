@@ -58,7 +58,9 @@ module Debci
         "#{dirname}/last_year": ["Last Year", 365]
       }
 
-      @filters.each{ |target, filter| generate_platform_specific_issues(target, filter) }
+      @filters.each do |target, filter|
+        generate_platform_specific_issues(target, filter)
+      end
     end
 
     def blacklist(filename)
@@ -180,9 +182,10 @@ module Debci
 
     def generate_platform_specific_issues(target, filter)
       days = filter[1]
-      @issues = @repository.platform_specific_issues.select do 
-        |package, statuses|
-        statuses.any?{ |status| status.newer? days }
+      @issues = @repository.platform_specific_issues.select do |_, statuses|
+        statuses.any? do |status|
+          status.newer?(days)
+        end
       end
       expand_template(:platform_specific_issues, target.to_s + '/' + 'index.html')
     end
