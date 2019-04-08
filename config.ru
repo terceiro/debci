@@ -1,23 +1,22 @@
 require 'debci/api'
 
-LISTING = <<EOF
-<!DOCTYPE html>
-<html>
-  <body>
-  <h1>Index of <%= request.path %></h1>
-  <div><a href="..">..</a></div>
-  <% Dir.chdir(@dir) do %>
-    <% Dir.glob('*').each do |f| %>
-      <% h = File.directory?(f) ? f + '/': f %>
-      <div><a href="<%= h %>"><%= f %></a></div>
+LISTING = <<~HTMLBLOCK.freeze
+  <!DOCTYPE html>
+  <html>
+    <body>
+    <h1>Index of <%= request.path %></h1>
+    <div><a href="..">..</a></div>
+    <% Dir.chdir(@dir) do %>
+      <% Dir.glob('*').each do |f| %>
+        <% h = File.directory?(f) ? f + '/': f %>
+        <div><a href="<%= h %>"><%= f %></a></div>
+      <% end %>
     <% end %>
-  <% end %>
-  </body>
-</html>
-EOF
+    </body>
+  </html>
+HTMLBLOCK
 
 class ServeStatic < Sinatra::Base
-
   def static!(*args)
     # XXX static! is a private method, so this could break at some point
     if request.path =~ /log\.gz$/
@@ -27,11 +26,9 @@ class ServeStatic < Sinatra::Base
     super
   end
 
-
   get '/*' do
-    if request.path !~ %r{/$}
-      return redirect(request.path + '/')
-    end
+    return redirect(request.path + '/') if request.path !~ %r{/$}
+
     index = File.join(settings.public_folder, request.path, 'index.html')
     if File.exist?(index)
       send_file(index, type: 'text/html')
@@ -40,7 +37,7 @@ class ServeStatic < Sinatra::Base
       if File.directory?(@dir)
         erb LISTING
       else
-        halt(404, "<h1>404 Not Found</h1>")
+        halt(404, '<h1>404 Not Found</h1>')
       end
     end
   end
