@@ -1,7 +1,6 @@
 require 'debci'
 
 describe Debci do
-
   it 'resets config object after config!' do
     c1 = Debci.config
     Debci.config!(foo: 'bar')
@@ -20,8 +19,9 @@ describe Debci do
   end
 
   it 'resets blacklist object when configuration is changed' do
-    b1 = Debci.blacklist; Debci.config!(foo: 'bar'); b2 = Debci.blacklist
+    b1 = Debci.blacklist
+    Debci.config!(foo: 'bar')
+    b2 = Debci.blacklist
     expect(b2).to_not be(b1)
   end
-
 end
