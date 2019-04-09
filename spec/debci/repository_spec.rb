@@ -6,7 +6,6 @@ require 'fileutils'
 require 'json'
 
 describe Debci::Repository do
-
   before(:all) do
     @datadir = Dir.mktmpdir
     mkdir_p 'packages/unstable/amd64/r/rake'
@@ -17,16 +16,16 @@ describe Debci::Repository do
     mkdir_p 'packages/unstable/amd64.old'
 
     history 'packages/testing/amd64/r/rake', [
-        {'status' => 'fail', 'date' => '2014-08-01 11:11:12'},
-        {'status' => 'pass', 'date' => '2014-07-07 12:12:15'},
+      { 'status' => 'fail', 'date' => '2014-08-01 11:11:12' },
+      { 'status' => 'pass', 'date' => '2014-07-07 12:12:15' }
     ]
 
     history 'packages/unstable/amd64/r/rake', [
-        {'status' => 'fail', 'date' => '2014-08-01 11:11:12'},
-        {'status' => 'pass', 'date' => '2014-07-07 12:12:15'},
-        {'status' => 'tmpfail', 'date' => '2014-03-01 14:15:30'},
-        {'status' => 'fail', 'date' => '2015-03-01 14:15:30'},
-        {'status' => 'pass', 'date' => '2016-03-01 14:15:30'}
+      { 'status' => 'fail', 'date' => '2014-08-01 11:11:12' },
+      { 'status' => 'pass', 'date' => '2014-07-07 12:12:15' },
+      { 'status' => 'tmpfail', 'date' => '2014-03-01 14:15:30' },
+      { 'status' => 'fail', 'date' => '2015-03-01 14:15:30' },
+      { 'status' => 'pass', 'date' => '2016-03-01 14:15:30' }
     ]
 
     mkdir_p 'packages/unstable/amd64/r/rake-compiler'
@@ -41,8 +40,8 @@ describe Debci::Repository do
     mkdir_p 'packages/testing/amd64/r/ruby-ffi'
     mkdir_p 'packages/testing/i386/r/ruby-ffi'
 
-    latest_status 'packages/unstable/amd64/r/ruby-ffi', {'status' => 'tmpfail',
-                                                         'previous_status' => 'pass' }
+    latest_status 'packages/unstable/amd64/r/ruby-ffi', 'status' => 'tmpfail',
+                                                        'previous_status' => 'pass'
 
     mkdir_p 'packages/unstable/amd64/r/rubygems-integration'
     mkdir_p 'packages/unstable/i386/r/rubygems-integration'
@@ -50,38 +49,32 @@ describe Debci::Repository do
     mkdir_p 'packages/testing/i386/r/rubygems-integration'
 
     # platform specific issue
-    latest_status 'packages/unstable/amd64/r/rubygems-integration', {
-      'status' => 'pass',
-      'previous_status' => 'pass',
-    }
-    latest_status 'packages/unstable/i386/r/rubygems-integration', {
-      'status' => 'fail',
-      'previous_status' => 'fail',
-    }
+    latest_status 'packages/unstable/amd64/r/rubygems-integration',
+                  'status' => 'pass',
+                  'previous_status' => 'pass'
+    latest_status 'packages/unstable/i386/r/rubygems-integration',
+                  'status' => 'fail',
+                  'previous_status' => 'fail'
 
     # NOT a platform specific issue - tmpfail should be ignored
     mkdir_p 'packages/unstable/amd64/r/racc'
     mkdir_p 'packages/unstable/i386/r/racc'
-    latest_status 'packages/unstable/amd64/r/racc', {
-      'status' => 'pass',
-      'previous_status' => 'pass',
-    }
-    latest_status 'packages/unstable/i386/r/racc', {
-      'status' => 'tmpfail',
-      'previous_status' => 'pass',
-    }
+    latest_status 'packages/unstable/amd64/r/racc',
+                  'status' => 'pass',
+                  'previous_status' => 'pass'
+    latest_status 'packages/unstable/i386/r/racc',
+                  'status' => 'tmpfail',
+                  'previous_status' => 'pass'
 
     mkdir_p 'packages/unstable/amd64/s/slowpackage'
-    latest_status 'packages/unstable/amd64/s/slowpackage', {
-      'status' => 'pass',
-      'duration_seconds' => 5000,
-    }
+    latest_status 'packages/unstable/amd64/s/slowpackage',
+                  'status' => 'pass',
+                  'duration_seconds' => 5000
 
     mkdir_p 'packages/unstable/amd64/n/newsworthypacakge'
-    latest_status 'packages/unstable/amd64/n/newsworthypacakge', {
-      'status' => 'pass',
-      'previous_status' => 'fail',
-    }
+    latest_status 'packages/unstable/amd64/n/newsworthypacakge',
+                  'status' => 'pass',
+                  'previous_status' => 'fail'
   end
 
   after(:all) do
@@ -89,10 +82,10 @@ describe Debci::Repository do
   end
 
   def mkdir_p(path)
-    FileUtils.mkdir_p(File.join@datadir, path)
+    FileUtils.mkdir_p(File.join(@datadir, path))
   end
 
-  def get_run_id
+  def fetch_run_id
     @run_id ||= 0
     @run_id += 1
   end
@@ -100,7 +93,7 @@ describe Debci::Repository do
   def history(path, data)
     previous_status = nil
     data.each do |entry|
-      entry['run_id'] = get_run_id
+      entry['run_id'] = fetch_run_id
       entry['previous_status'] = previous_status if previous_status
       previous_status = entry['status']
     end
@@ -111,7 +104,7 @@ describe Debci::Repository do
 
   def latest_status(path, data)
     package = File.basename(path)
-    run_id = get_run_id
+    run_id = fetch_run_id
     File.open(File.join(@datadir, path, 'latest.json'), 'w') do |f|
       f.write(JSON.dump({ 'package' => package, 'run_id' => run_id }.merge(data)))
     end
@@ -120,11 +113,11 @@ describe Debci::Repository do
   let(:repository) { Debci::Repository.new(@datadir) }
 
   it 'knows about architectures' do
-    expect(repository.architectures).to eq(['amd64', 'i386'])
+    expect(repository.architectures).to eq(%w[amd64 i386])
   end
 
   it 'knows about suites' do
-    expect(repository.suites).to eq(['testing', 'unstable'])
+    expect(repository.suites).to eq(%w[testing unstable])
   end
 
   it 'knows about prefixes' do
@@ -148,7 +141,7 @@ describe Debci::Repository do
   end
 
   it 'raises an exception when package is not found' do
-    expect(lambda { repository.find_package('doesnotexist') }).to raise_error(Debci::Repository::PackageNotFound)
+    expect(-> { repository.find_package('doesnotexist') }).to raise_error(Debci::Repository::PackageNotFound)
   end
 
   it 'searches for packages with exact match' do
@@ -165,8 +158,8 @@ describe Debci::Repository do
     expect(statuses.first.length).to eq(2) # 2 architectures
     statuses.flatten.each do |s|
       expect(s).to be_a(Debci::Status)
-      expect(['unstable', 'testing']).to include(s.suite)
-      expect(['amd64', 'i386']).to include(s.architecture)
+      expect(%w[unstable testing]).to include(s.suite)
+      expect(%w[amd64 i386]).to include(s.architecture)
     end
   end
 
@@ -175,8 +168,8 @@ describe Debci::Repository do
     expect(statuses.length).to eq(3)
     statuses.each do |s|
       expect(s).to be_a(Debci::Status)
-      expect(['unstable', 'testing']).to include(s.suite)
-      expect(['amd64', 'i386']).to include(s.architecture)
+      expect(%w[unstable testing]).to include(s.suite)
+      expect(%w[amd64 i386]).to include(s.architecture)
     end
   end
 
@@ -258,8 +251,8 @@ describe Debci::Repository do
     expect(slow).to be_a(Array)
     expect(slow.length).to be >= 1
 
-    status = slow.find { |status| status.package == 'slowpackage' }
-    expect(status).to be_a(Debci::Status)
+    slow_status = slow.find { |status| status.package == 'slowpackage' }
+    expect(slow_status).to be_a(Debci::Status)
   end
 
   it 'knows about platform-specific issues' do
