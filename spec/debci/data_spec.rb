@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'debci/data'
 
-RSpec.shared_context "export/import" do
+RSpec.shared_context 'export/import' do
   let(:job_data) do
     {
       'run_id': '9999',
@@ -9,7 +9,7 @@ RSpec.shared_context "export/import" do
       'suite': 'unstable',
       'arch': 'amd64',
       'version': '12.3.1-1',
-      'status': 'pass',
+      'status': 'pass'
     }
   end
 
@@ -24,7 +24,7 @@ RSpec.shared_context "export/import" do
 
   let(:output_tarball) { File.join(@tmpdir, 'export.tar') }
   let(:exporter) { Debci::Data::Export.new(output_tarball) }
-  let(:exported_files) { contents = `tar taf #{output_tarball}`.split }
+  let(:exported_files) { `tar taf #{output_tarball}`.split }
 
   let(:input_tarball) { File.join(@tmpdir, 'import.tar') }
   let(:importer) { Debci::Data::Import.new(input_tarball) }
@@ -45,16 +45,16 @@ RSpec.shared_context "export/import" do
     exporter.add('rake')
     exporter.save
   end
+
   def cleanup!
     FileUtils.rm_rf(Dir[File.join(@tmpdir, '**/*')].reject { |f| f == output_tarball })
     FileUtils.mv(output_tarball, input_tarball)
     Debci::Job.delete_all
   end
-
 end
 
 describe Debci::Data::Export do
-  include_context "export/import"
+  include_context 'export/import'
 
   before(:each) do
     export!
@@ -79,8 +79,7 @@ describe Debci::Data::Export do
 end
 
 describe Debci::Data::Import do
-
-  include_context "export/import"
+  include_context 'export/import'
 
   before(:each) do
     export!
@@ -99,7 +98,7 @@ describe Debci::Data::Import do
   it 'creates job in database' do
     expect(Debci::Job.count).to eq(1)
     job = Debci::Job.first
-    job_data.reject { |k,v| k == :run_id }.each do |k,v|
+    job_data.reject { |k, _v| k == :run_id }.each do |k, v|
       expect(job.send(k)).to eq(v)
     end
   end
@@ -108,6 +107,6 @@ describe Debci::Data::Import do
     job = Debci::Job.first
     pkgdir = File.join(@tmpdir, 'packages/unstable/amd64/r/rake')
     logs = Dir.chdir(pkgdir) { Dir['*.log'] }
-    expect(logs).to include('%d.log' % job.run_id)
+    expect(logs).to include(format('%<id>d.log', id: job.run_id))
   end
 end
