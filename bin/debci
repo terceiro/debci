@@ -120,7 +120,7 @@ documentation (I<https://ci.debian.net/doc/>), B<autopkgtest(1)>.
 =head1 COPYRIGHT AND AUTHORS
 
 Copyright © the debci development team. For details on authorship, refer to the
-git repository at I<https://anonscm.debian.org/cgit/collab-maint/debci.git>
+git repository at I<https://salsa.debian.org/ci-team/debci/>
 
 debci is free software licensed under the GNU General Public License version 3
 or later.
