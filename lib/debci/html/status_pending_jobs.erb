@@ -3,7 +3,31 @@
     <h1 class='page-header'>Status <small>/ Pending Jobs</small></h1>
     <%= @status_nav %>
 
-    <h4>There are currently <b><%= @pending.length %></b> jobs with results pending.</h4>
+    <ol id='pending-nav' class='breadcrumb'>
+      <li class='<%= "#{'active' if @current_page == 'status/pending'}" %>'>
+        <a href='/status/pending/'>Latest <%= @status_per_page %> Jobs</a>
+      </li>
+      <li class='<%= "#{'active' if @current_page == 'status/pending/all'}" %>'>
+          <a href='/status/pending/all/'>
+            All  <span class='badge badge-pill'><%= @pending_jobs %></span>
+          </a></li>
+
+      <% @suites_jobs.each do |suite, jobs| %>
+        <li class='<%= "#{'active' if @current_page.include?(suite)}" %>'>
+          <span class='dropdown'>
+            <a href='#' class='dropdown-toggle' data-toggle='dropdown'>
+              <%= suite %>  <span class='badge badge-pill'><%= jobs %></span>
+              <b class='caret'></b>
+            </a>
+            <ul class='dropdown-menu'>
+              <li><a href='/<%= "status/pending/#{suite}/" %>'>Latest  <%= @status_per_page %> Jobs</a></li>
+              <li><a href='/<%= "status/pending/#{suite}/all/" %>'>All Jobs</a></li>
+            </ul>
+          </span>
+        </li> 
+      <% end %>
+
+    </ol>
 
     <% if not @pending.empty? %>
       <table class='table'>
@@ -39,3 +63,9 @@
 
   </div> <!-- class='col-md-12' -->
 </div> <!-- class='row' -->
+
+<style>
+.active {
+  font-weight: bold;
+}
+</style>
