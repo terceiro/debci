@@ -19,3 +19,4 @@ RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
+WantedBy=debci-worker.service
