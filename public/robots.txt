@@ -1,5 +1,5 @@
 User-Agent: *
-Disallow: /api/v1/test/
+Disallow: /api/v1/
 Disallow: /data/
 Disallow: /packages/
 Disallow: /status/
