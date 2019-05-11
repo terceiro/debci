@@ -1,3 +1,73 @@
+debci (2.1) experimental; urgency=medium
+
+  [ Antonio Terceiro ]
+  * gitlab-ci: upgrade before installing packages
+  * docs/HACKING.md: add explicit instruction for using backports
+  * debci-{api,job}: ensure scripts are run with /usr/bin/ruby
+  * debci-test: add support for a backend-specified duration
+  * backends/fake: generate fake test run durations
+  * Add explicit dependency on debian-archive-keyring
+  * tools: replace shell scripts with rerun
+  * Debci::API: doc: show absolute URL of endpoints
+  * debci-data: shell out to tar
+  * debci data import: rewrite run_ids in history files
+  * Vagrantfile: allow choosing a box with $BOX
+  * tools/server.sh: set FAKE_CERTIFICATE_USER
+  * test/runall.sh: explicitly list failed tests at the end
+  * manpage: fix typo in short option for --backend (Closes: #925287)
+  * debci-migrate: migrate database before working on data files
+  * Debci::Job: add missing fields from status files
+  * Debci::Job.import: read all fields from status file
+  * Move data from JSON files to database
+  * feeds: adapt to lack of json files for individual test runs
+  * tools/indexer.sh: migrate database at the beginning
+  * gitlab-ci: check Ruby code style with rubocop
+  * Makefile: add check-ruby-style target
+  * rubocop: ignore block length on RSpec files
+  * lib/debci/html.rb: remove tab indentation
+  * robots.txt: disallow /api/v1 as a whole
+  * debian/rules: run Ruby tests during build
+
+  [ Panto1212 ]
+  * correct some grammatical errors
+
+  [ Candy Tsai ]
+  * unify layout for home status and api page
+  * fill in neutral status data when not exist
+  * add more links to package and history page
+  * add requestor to results page
+
+  [ Victor Moura ]
+  * Debci::DB: add support to ActiveRecord 5.1
+
+  [ Sébastien Delafond ]
+  * Avoid categorizing Kali as pure Debian in qemu/customize.sh
+
+  [ bhavy singh ]
+  * UI: Add "Search Package" form to home page
+  * UI: Fix graph overlap
+  * UI:Sort status pages
+  * UI: Add retry button
+  * UI: Exclude blacklist packages
+  * UI: Add size field
+  * Fix code style on several Ruby source files
+
+  [ Jongmin Kim ]
+  * debian/control: Add netcat as debci Depends
+
+  [ Paul Gevers ]
+  * docs: needs-recommends is deprecated
+  * bin/debci: Update the location of our git archive
+  * debci-worker@.service: add WantedBy=debci-worker.service to support more
+    workers out-of-the-box
+  * robots.txt: initial version
+
+  [ Abhishek Kumar ]
+  * UI: Add filter by time for /status/platform-specific-issues/
+  * UI: Adds overview for suites and latest pending jobs in /status/pending/
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 11 May 2019 10:44:05 -0300
+
 debci (2.0) unstable; urgency=medium
 
   [ Paul Gevers ]
