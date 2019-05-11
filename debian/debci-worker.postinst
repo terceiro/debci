@@ -7,15 +7,11 @@ if [ "$1" = configure ] && [ -z "$2" ]; then
   echo "Building testbeds in background ..."
   debci update-worker --quiet &
 
-  # enable && start first instance
-  #
-  # FIXME manually creating symlink, deb-systemd-helper does not support
-  # template services yet.
-  mkdir -p /etc/systemd/system/debci-worker.service.wants
-  ln -sf /lib/systemd/system/debci-worker@.service \
-    /etc/systemd/system/debci-worker.service.wants/debci-worker@1.service
-  # tell systemd to reload
   if [ -d /run/systemd/system ]; then
+    # enable && start first instance
+    systemctl enable debci-worker@1.service
+
+    # tell systemd to reload
     systemctl --system daemon-reload >/dev/null || true
   fi
   deb-systemd-invoke start  debci-worker@1.service
