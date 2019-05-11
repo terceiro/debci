@@ -7,8 +7,10 @@
 	dh $@ --with systemd
 
 override_dh_auto_test:
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	# Run only Ruby tests during build
 	make spec
+endif
 
 override_dh_gencontrol:
 	debian/gen-deps >> debian/debci.substvars
