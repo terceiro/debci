@@ -4,6 +4,7 @@
 Description=debci-worker instance %i
 Documentation=https://ci.debian.net/doc/
 PartOf=debci-worker.service
+Before=debci-worker.service
 After=rabbitmq-server.service network-online.target
 ReloadPropagatedFrom=debci-worker.service
 
@@ -19,4 +20,3 @@ RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
-WantedBy=debci-worker.service
