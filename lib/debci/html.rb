@@ -191,7 +191,7 @@ module Debci
       days = filter[1]
       @issues = @repository.platform_specific_issues.select do |_, statuses|
         statuses.any? do |status|
-          status.newer?(days)
+          status.date && status.newer?(days)
         end
       end
       expand_template(:platform_specific_issues, target.to_s + '/' + 'index.html')
