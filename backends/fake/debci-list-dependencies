@@ -14,37 +14,36 @@ PROBABILITY = 0.2
 #
 #
 
-if ENV["DEBCI_FAKE_DEPS"]
-  ENV["DEBCI_FAKE_DEPS"].split('|').each do |line|
+if ENV['DEBCI_FAKE_DEPS']
+  ENV['DEBCI_FAKE_DEPS'].split('|').each do |line|
     puts line
   end
   exit
 end
 
-bin = File.dirname(__FILE__);
+bin = File.dirname(__FILE__)
 
 pkg = ARGV.first
 unless pkg
-  puts "usage: list-packages PACKAGE"
+  puts 'usage: list-packages PACKAGE'
   exit 1
 end
 
 pkgdir = pkg.gsub(/((lib)?.).*/, '\1/\&')
 
 suite = ENV['debci_suite'] || 'unstable'
-arch = ENV['debci_arch'] || 'amd64';
-dependencies_file = "#{bin}/../../data/packages/#{suite}/#{arch}/#{pkgdir}/dependencies.txt";
+arch = ENV['debci_arch'] || 'amd64'
+dependencies_dir = "#{bin}/../../data/packages/#{suite}/#{arch}/#{pkgdir}"
+dependencies_file = File.join(dependencies_dir, 'dependencies.txt')
 
-if (File.exists? dependencies_file)
+if File.exist? dependencies_file
   File.readlines(dependencies_file).each do |line|
     line.strip!
-    if (rand() <= PROBABILITY)
-      line += '+1';
-    end
+    line += '+1' if rand <= PROBABILITY
     puts line
   end
 else
-  %w/foo bar baz qux/.each do |fake_pkg|
+  %w[foo bar baz qux].each do |fake_pkg|
     printf("%s %d.%d-%d\n", fake_pkg, rand(4), rand(4), rand(4))
   end
 end

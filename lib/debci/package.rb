@@ -1,10 +1,8 @@
 module Debci
-
   # This class represents a single package. See Debci::Repository for how to
   # obtain one of these.
 
-  class Package < Struct.new(:name, :repository)
-
+  Package = Struct.new(:name, :repository) do
     # Returns the architectures in which this package is available
     def architectures
       repository.architectures_for(self)
@@ -48,7 +46,7 @@ module Debci
 
     # Returns an Array of statuses where this package is failing or neutral.
     def fail_or_neutral
-      status.flatten.select { |p| p.status == :fail or p.status == :neutral }
+      status.flatten.select { |p| (p.status == :fail) || (p.status == :neutral) }
     end
 
     # Returns an Array of statuses where this package is temporarily failing. If
@@ -68,13 +66,11 @@ module Debci
 
     def prefix
       name =~ /^((lib)?.)/
-      $1
+      Regexp.last_match(1)
     end
 
     def blacklisted?
       Debci.blacklist.include?(self)
     end
-
   end
-
 end

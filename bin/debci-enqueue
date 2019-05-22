@@ -9,15 +9,15 @@ require 'debci/job'
 trigger = nil
 pin_packages = []
 run_id = nil
-requestor = ENV["USER"] || 'nobody'
+requestor = ENV['USER'] || 'nobody'
 arch = Debci.config.arch
 suite = Debci.config.suite
 priority = 0
 
 # parse command line
 optparse = OptionParser.new do |opts|
-  opts.banner = "Usage: debci enqueue [OPTIONS] PKG [PKG ...]"
-  opts.separator "Options:"
+  opts.banner = 'Usage: debci enqueue [OPTIONS] PKG [PKG ...]'
+  opts.separator 'Options:'
 
   opts.on('-s', '--suite SUITE', 'sets the suite to test') do |s|
     suite = s
@@ -46,8 +46,8 @@ optparse = OptionParser.new do |opts|
 
   opts.on('-P', '--priority N', 'sets priority for the test (0-10)') do |p|
     priority = Integer(p)
-    if ! (0..10).include?(priority)
-      $stderr.puts "E: priority must be a number between 0 and 10"
+    unless (0..10).cover?(priority)
+      warn 'E: priority must be a number between 0 and 10'
       exit 1
     end
   end
@@ -55,7 +55,6 @@ optparse = OptionParser.new do |opts|
   opts.on('-i', '--run-id RUNID') do |id|
     run_id = id
   end
-
 end
 optparse.parse!
 
@@ -68,7 +67,7 @@ ARGV.each do |pkg|
     status: nil,
     trigger: trigger,
     pin_packages: pin_packages,
-    run_id: run_id,
+    run_id: run_id
   )
   job.save!
   job.enqueue(priority)
