@@ -164,7 +164,7 @@ module Debci
       status.requestor = data['requestor']
       status.date =
         begin
-          Time.parse((data['date'] || 'unknown') + ' UTC')
+          Time.parse((data['date'] || data['created_at'] || 'unknown') + ' UTC')
         rescue ArgumentError
           nil
         end
