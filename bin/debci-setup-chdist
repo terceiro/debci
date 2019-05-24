@@ -23,72 +23,72 @@ name="${debci_suite}-${debci_arch}"
 if [ ! -e "$root/$name" ]; then
   log "I: Creating new chdist $root/$name"
   call_chdist create >/dev/null
+fi
 
-  # figure out default mirror from debootstrap scripts
-  DEF_MIRROR="${debci_mirror}"
-  SUITE=$debci_suite
-  TARGET="$root/$name"
-  ARCH=$debci_arch
-  set +u
-  export DEBOOTSTRAP_DIR=/usr/share/debootstrap
-  . /usr/share/debootstrap/functions
-  exec 4>&1
-  # this updates $DEF_MIRROR (Ubuntu, ports, ..)
-  . /usr/share/debootstrap/scripts/$debci_suite
-  set -u
+# figure out default mirror from debootstrap scripts
+DEF_MIRROR="${debci_mirror}"
+SUITE=$debci_suite
+TARGET="$root/$name"
+ARCH=$debci_arch
+set +u
+export DEBOOTSTRAP_DIR=/usr/share/debootstrap
+. /usr/share/debootstrap/functions
+exec 4>&1
+# this updates $DEF_MIRROR (Ubuntu, ports, ..)
+. /usr/share/debootstrap/scripts/$debci_suite
+set -u
 
-  # enable all components
-  if [ "${DEF_MIRROR%ubuntu*}" = "$DEF_MIRROR" ]; then
-    COMPONENTS="main contrib non-free"  # Debian
-  else
-    COMPONENTS="main restricted universe multiverse"  # Ubuntu
-  fi
+# enable all components
+if [ "${DEF_MIRROR%ubuntu*}" = "$DEF_MIRROR" ]; then
+  COMPONENTS="main contrib non-free"  # Debian
+else
+  COMPONENTS="main restricted universe multiverse"  # Ubuntu
+fi
 
-  mirror=${debci_mirror:-$DEF_MIRROR}
+mirror=${debci_mirror:-$DEF_MIRROR}
 
-  # write apt sources.list
-  mkdir -p $TARGET/etc/apt/
-  echo "deb [arch=${debci_arch}] $mirror $SUITE $COMPONENTS
+# write apt sources.list
+mkdir -p $TARGET/etc/apt/
+echo "deb [arch=${debci_arch}] $mirror $SUITE $COMPONENTS
 deb-src $mirror $SUITE $COMPONENTS" > "$TARGET/etc/apt/sources.list"
 
-  # add buildd sources
-  # FIXME duplicates logic in backends/(schroot|lxc)/create-testbed
-  if grep -q debian "$TARGET/etc/apt/sources.list"; then
-    if [ "$SUITE" = unstable ]; then
-      buildd_suite=buildd-$SUITE
-    else
-      buildd_suite=buildd-$SUITE-proposed-updates
-    fi
-    cat >> "$TARGET/etc/apt/sources.list" <<EOF
+# add buildd sources
+# FIXME duplicates logic in backends/(schroot|lxc)/create-testbed
+if grep -q debian "$TARGET/etc/apt/sources.list"; then
+  if [ "$SUITE" = unstable ]; then
+    buildd_suite=buildd-$SUITE
+  else
+    buildd_suite=buildd-$SUITE-proposed-updates
+  fi
+  cat >> "$TARGET/etc/apt/sources.list" <<EOF
 deb [arch=${debci_arch}] http://incoming.debian.org/debian-buildd $buildd_suite $COMPONENTS
 deb-src http://incoming.debian.org/debian-buildd $buildd_suite $COMPONENTS
 EOF
-  fi
-
-  # use a local proxy if available
-  http_proxy="${http_proxy:-}"
-  if [ -z "$http_proxy" ]; then
-    # detect a local apt-cacher-ng cache running.  10.0.2.2 = default IP
-    # assigned to host system as seen from a kvm/virtualbox virtual machine
-    for ip in 127.0.0.1 10.0.2.2; do
-      if nc -z -w 1 $ip 3142; then
-        export http_proxy=http://$ip:3142
-      fi
-    done
-  fi
-  if [ -n "$http_proxy" ]; then
-    echo "Acquire::http::Proxy \"$http_proxy\";" > "$TARGET/etc/apt/apt.conf.d/01proxy"
-  fi
-
-  # disable multi-arch
-  echo "Apt::Architectures {\"$ARCH\";};" > "$TARGET/etc/apt/apt.conf.d/97_no_multiarch"
-
-  # disable unnecessary srcpkgcache
-  echo 'Dir::Cache::srcpkgcache "";' > "$TARGET/etc/apt/apt.conf.d/98disable_cache"
-
-  # do not download translations
-  echo 'Acquire::Languages "none";' > "$TARGET/etc/apt/apt.conf.d/99translations"
 fi
+
+# use a local proxy if available
+http_proxy="${http_proxy:-}"
+if [ -z "$http_proxy" ]; then
+  # detect a local apt-cacher-ng cache running.  10.0.2.2 = default IP
+  # assigned to host system as seen from a kvm/virtualbox virtual machine
+  for ip in 127.0.0.1 10.0.2.2; do
+    if nc -z -w 1 $ip 3142; then
+      export http_proxy=http://$ip:3142
+    fi
+  done
+fi
+if [ -n "$http_proxy" ]; then
+  echo "Acquire::http::Proxy \"$http_proxy\";" > "$TARGET/etc/apt/apt.conf.d/01proxy"
+fi
+
+# disable multi-arch
+echo "Apt::Architectures {\"$ARCH\";};" > "$TARGET/etc/apt/apt.conf.d/97_no_multiarch"
+
+# disable unnecessary srcpkgcache
+echo 'Dir::Cache::srcpkgcache "";' > "$TARGET/etc/apt/apt.conf.d/98disable_cache"
+
+# do not download translations
+echo 'Acquire::Languages "none";' > "$TARGET/etc/apt/apt.conf.d/99translations"
 
 update_chdist() {
   call_chdist apt-get update
