@@ -1,10 +1,27 @@
 #!/usr/bin/ruby
 
 require 'fileutils'
+require 'optparse'
 
 require 'debci'
 require 'debci/html'
 require 'debci/graph'
+
+$all_packages = false
+optparse = OptionParser.new do |opts|
+  opts.banner = 'Usage: debci status [OPTIONS] [PACKAGE]'
+  opts.separator 'Options:'
+
+  opts.on('-a', '--all', 'Regenerate HTML for all packages') do
+    $all_packages = true
+  end
+end
+optparse.parse!
+
+if $all_packages && !ARGV.empty?
+  warn "E: -a/--all is incompatible with passing a list of packages"
+  exit(1)
+end
 
 $DEBCI_HTML_FAST = (ENV['DEBCI_HTML_FAST'] != nil)
 
@@ -24,11 +41,13 @@ Debci.log('status pages html updated')
 repository = Debci::Repository.new
 
 packages = ARGV
-
 if packages.empty?
-  exit
+  if $all_packages
+    packages = repository.packages
+  else
+    exit
+  end
 end
-
 packages += Debci.blacklist.packages.keys
 
 prefixes = Set.new
