@@ -182,3 +182,16 @@ following:
 
 If your code passed the appropriate tests, you will see that there
 are no failures reported by rspec.
+
+## Contribution guidelines
+
+* If you are new to Free Software/Open Source, read [How to Contribute to Open Source](https://opensource.guide/how-to-contribute/) first.
+  * Some of the advice in there is specific to GitHub, but most of it is general enough to be useful.
+* Separate commits by logical change
+* Write meaningful commit messages. See:
+  * [A Note About Git Commit Messages](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
+  * [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)
+  * [Useful Tips for writing better Git commit messages](https://code.likeagirl.io/useful-tips-for-writing-better-git-commit-messages-808770609503)
+* _Read_ your commits before sending them out, i.e. put yourself at the position of others:
+  * Was I the one receiving these patches, without knowing what I know after writing them, do they make sense. Are they self-explanatory?
+  * Does the coding style (indentation, variable naming, etc) match the existing code?
