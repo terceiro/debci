@@ -21,4 +21,4 @@ esac
 echo "I: Web UI at http://localhost:$port/"
 echo "I: Hit Control+C to stop"
 echo ""
-exec rerun --no-notify --background --dir lib -p '**/*.rb' -- rackup --include lib --port="$port"
+exec rerun --no-notify --background --dir lib -p '**/*.rb' -- rackup --include lib --port="$port" --host=0.0.0.0

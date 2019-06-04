@@ -2,6 +2,44 @@
 
 ## Setting up a development environment
 
+There are two ways to setup the development environment:
+
+* Manual Setup
+* Vagrant
+
+## Vagrant
+
+### Prerequisites
+
+* Vagrant: 2.2.4 https://www.vagrantup.com/
+* VirtualBox: 6.0 https://www.virtualbox.org/
+
+### Install the virtual machine
+
+Run this at the same path where `VagrantFile` is
+
+```
+$ vagrant up
+```
+
+### Start debci
+
+SSH into vagrant environment
+
+```
+$ vagrant ssh
+```
+
+Once inside vagrant, you can start run debci with the following commands
+
+```
+vagrant@stretch $ cd /vagrant
+vagrant@stretch $ foreman start
+```
+
+Note: The other commands are the same as the ones mentioned in manual setup.
+
+## Manual Setup
 ### Grab the dependencies and required software
 
 Install the dependencies and build dependencies:
