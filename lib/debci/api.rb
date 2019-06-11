@@ -27,7 +27,8 @@ class SelfDocAPI < Sinatra::Base
       entry = {
         :method => method,
         :path => path,
-        :text => @last_doc
+        :text => @last_doc,
+        :anchor => [method, path].join('_'),
       }
       @last_doc = nil
       doc.push(entry)
