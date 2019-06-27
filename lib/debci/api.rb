@@ -10,6 +10,7 @@ require 'time'
 require 'debci'
 require 'debci/job'
 require 'debci/key'
+require 'debci/test_handler'
 
 
 class SelfDocAPI < Sinatra::Base
@@ -63,6 +64,7 @@ end
 module Debci
 
   class API < SelfDocAPI
+    include Debci::TestHandler
 
     register Sinatra::Namespace
     set :views, File.dirname(__FILE__) + '/api'
@@ -320,29 +322,7 @@ module Debci
       EOF
       post '/test/:suite/:arch' do
         tests = load_json(params[:tests])
-        tests.each do |test|
-          pkg = test['package']
-
-          enqueue = true
-          status = nil
-          if Debci.blacklist.include?(pkg) || !valid_package_name?(pkg)
-            enqueue = false
-            status = 'fail'
-          end
-
-          job = Debci::Job.create!(
-            package: pkg,
-            suite: suite,
-            arch: arch,
-            requestor: @user,
-            status: status,
-            trigger: test['trigger'],
-            pin_packages: test['pin-packages'],
-          )
-
-          self.enqueue(job) if enqueue
-        end
-
+        self.request_tests(tests, suite, arch, @user)
         201
       end
 
@@ -405,11 +385,6 @@ module Debci
       else
         halt(403, "Invalid key\n")
       end
-    end
-
-    def enqueue(job)
-      priority = 1
-      job.enqueue(priority)
     end
 
     def valid_package_name?(pkg)
