@@ -3,17 +3,17 @@ require 'fileutils'
 require 'json'
 require 'rdoc'
 require 'securerandom'
-require 'sinatra'
 require "sinatra/namespace"
 require 'time'
 
 require 'debci'
+require 'debci/app'
 require 'debci/job'
 require 'debci/key'
 require 'debci/test_handler'
 
 
-class SelfDocAPI < Sinatra::Base
+class SelfDocAPI < Debci::App
   get '/doc' do
     @doc = self.class.doc
     erb :doc
@@ -90,7 +90,7 @@ module Debci
       `Auth-User` header.
       EOF
       get '/auth' do
-        authenticate!
+        authenticate_key!
         200
       end
 
@@ -115,9 +115,8 @@ module Debci
       SSO](https://wiki.debian.org/DebianSingleSignOn))
       EOF
       post '/getkey' do
-        username = ENV['FAKE_CERTIFICATE_USER'] || env['SSL_CLIENT_S_DN_CN']
-        if username
-          key = Debci::Key.reset!(username)
+        if @user
+          key = Debci::Key.reset!(@user)
           headers['Content-Type'] = 'text/plain'
           [201, key.key]
         else
@@ -129,7 +128,6 @@ module Debci
       Presents a simple UI for retrying a test
       EOF
       get '/retry/:run_id' do
-        @user = ENV['FAKE_CERTIFICATE_USER'] || env['SSL_CLIENT_S_DN_CN']
         if @user
           erb :retry
         else
@@ -146,9 +144,8 @@ module Debci
       * `:run_id`: which Job ID to retry
       EOF
       post '/retry/:run_id' do
-        @user = ENV['FAKE_CERTIFICATE_USER'] || env['SSL_CLIENT_S_DN_CN']
         if not @user
-          authenticate!
+          authenticate_key!
         end
         run_id = params[:run_id]
         begin
@@ -232,7 +229,7 @@ module Debci
       ```
       EOF
       get '/test' do
-        authenticate!
+        authenticate_key!
         jobs = Debci::Job.where(requestor: @user)
         if params[:since]
           since = Time.strptime(params[:since], '%s')
@@ -247,7 +244,7 @@ module Debci
       end
 
       before '/test/:suite/:arch*'do
-        authenticate!
+        authenticate_key!
         @suite = params[:suite]
         @arch = params[:arch]
         if !Debci.config.arch_list.include?(arch)
@@ -378,7 +375,7 @@ module Debci
       end
     end
 
-    def authenticate!
+    def authenticate_key!
       key = env['HTTP_AUTH_KEY']
       if key && @user = Debci::Key.authenticate(key)
         response['Auth-User'] = @user
