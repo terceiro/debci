@@ -49,25 +49,29 @@ mirror=${debci_mirror:-$DEF_MIRROR}
 
 # write apt sources.list
 mkdir -p $TARGET/etc/apt/
-echo "deb [arch=${debci_arch}] $mirror $SUITE $COMPONENTS
-deb-src $mirror $SUITE $COMPONENTS" > "$TARGET/etc/apt/sources.list"
 
-# add buildd sources
-# FIXME duplicates logic in backends/(schroot|lxc)/create-testbed
-if grep -q debian "$TARGET/etc/apt/sources.list"; then
-  if [ "$SUITE" = unstable ]; then
-    buildd_suite=buildd-$SUITE
-  elif [ "$SUITE" = stable ]; then
-    # workaround https://bugs.debian.org/880105
-    buildd_suite=buildd-$(distro-info --stable)-proposed-updates
-  else
-    buildd_suite=buildd-$SUITE-proposed-updates
-  fi
-  cat >> "$TARGET/etc/apt/sources.list" <<EOF
-deb [arch=${debci_arch}] http://incoming.debian.org/debian-buildd $buildd_suite $COMPONENTS
-deb-src http://incoming.debian.org/debian-buildd $buildd_suite $COMPONENTS
-EOF
-fi
+case "$mirror" in
+  (*debian*)
+    debci-generate-apt-sources \
+      --mirror="$mirror" \
+      --suite="$SUITE" \
+      --components="$COMPONENTS" \
+      --source \
+      --buildd \
+      --dbgsym \
+      --arch="$debci_arch" \
+      > "$TARGET/etc/apt/sources.list"
+    ;;
+  (*)
+    debci-generate-apt-sources \
+      --mirror="$mirror" \
+      --suite="$SUITE" \
+      --components="$COMPONENTS" \
+      --source \
+      --arch="$debci_arch" \
+      > "$TARGET/etc/apt/sources.list"
+    ;;
+esac
 
 # use a local proxy if available
 http_proxy="${http_proxy:-}"

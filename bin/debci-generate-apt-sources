@@ -1,0 +1,196 @@
+#!/bin/sh
+
+set -eu
+
+usage() {
+  echo "Usage: debci-generate-apt-sources [OPTIONS] SUITE"
+  echo
+  echo "Generate the contents of /etc/apt/sources.list"
+  echo
+  echo "Options:"
+  echo
+  echo "  --buildd            Include apt sources for Debian buildds if available"
+  echo "  --components=\"x y\"  Use these components instead of a default"
+  echo "  --dbgsym            Include detached debug symbols if available"
+  echo "  --mirror=MIRROR     Use this mirror instead of a default"
+  echo "  --single-arch       Only download binary packages for one architecture"
+  echo "  --source            Include deb-src lines"
+  echo
+  echo "$@"
+}
+
+short_options=''
+long_options='buildd,components:,dbgsym,single-arch,source'
+
+debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
+cd $debci_base_dir
+. lib/environment.sh
+
+buildd=
+components=
+dbgsym=
+deb_src=
+single_arch=
+
+while true; do
+  opt="$1"
+  shift
+  case "$opt" in
+    --buildd)
+      buildd=yes
+      ;;
+    --components)
+      components="$1"
+      shift
+      ;;
+    --dbgsym)
+      dbgsym=yes
+      ;;
+    --single-arch)
+      single_arch=yes
+      ;;
+    --source)
+      deb_src=yes
+      ;;
+    --)
+      break
+      ;;
+  esac
+done
+
+if [ "$#" -ne 1 ]; then
+  usage
+  exit 1
+fi
+
+debci_suite="$1"
+
+echo_deb_and_maybe_src () {
+  if [ -n "$single_arch" ]; then
+    echo "deb [arch=$debci_arch] $*"
+  else
+    echo "deb $*"
+  fi
+
+  if [ -n "$deb_src" ]; then
+    echo "deb-src $*"
+  fi
+}
+
+case "$debci_suite" in
+  (oldstable|testing)
+    # Since buster was released, all of these have the -dbgsym archive
+    dbgsym_suite="${debci_suite}-debug"
+    is_debian=yes
+    is_ubuntu=
+    buildd_suite="buildd-${debci_suite}-proposed-updates"
+    ;;
+
+  (unstable|sid|experimental|*-backports)
+    # These don't have -proposed-updates
+    dbgsym_suite="${debci_suite}-debug"
+    is_debian=yes
+    is_ubuntu=
+    buildd_suite="buildd-${debci_suite}"
+    ;;
+
+  (stable)
+    # The buildd suite for stable-proposed-updates is just called
+    # buildd-proposed-updates, not buildd-stable-proposed-updates as one
+    # might expect from the pattern set by other older-than-unstable suites
+    dbgsym_suite="${debci_suite}-debug"
+    is_debian=yes
+    is_ubuntu=
+    buildd_suite="buildd-proposed-updates"
+    ;;
+
+  (*)
+    if echo "${debci_suite}" |
+      grep -F "$(debian-distro-info --all)" > /dev/null
+    then
+      is_debian=yes
+    else
+      is_debian=
+    fi
+
+    if echo "${debci_suite}" |
+      grep -F "$(ubuntu-distro-info --all)" > /dev/null
+    then
+      is_ubuntu=yes
+    else
+      is_ubuntu=
+    fi
+
+    if echo "${debci_suite}" |
+      grep -F "$(debian-distro-info --supported)" > /dev/null
+    then
+      # Since jessie mainstream support ended, all supported (non-LTS)
+      # Debian suites have the -dbgsym archive and -proposed-updates
+      buildd_suite="buildd-${debci_suite}-proposed-updates"
+      dbgsym_suite="${debci_suite}-debug"
+    elif [ -n "$is_debian" ]; then
+      # Unsupported or LTS Debian suites don't have incoming.debian.org
+      buildd_suite=
+      # Unsupported or LTS Debian suites won't have dbgsym until stretch
+      # becomes unsupported
+      if [ "$(debian-distro-info --days=release --series="$debci_suite" --date=2017-01-01)" -ge 0 ]; then
+        dbgsym_suite="${debci_suite}-debug"
+      else
+        dbgsym_suite=
+      fi
+    else
+      # Not Debian at all.
+      buildd_suite=
+      dbgsym_suite=
+    fi
+    ;;
+esac
+
+if [ -z "$components" ]; then
+  if [ -n "$is_ubuntu" ]; then
+    components="main universe restricted multiverse"
+  else
+    # we assume unknown distributions behave like Debian
+    components="main contrib non-free"
+  fi
+fi
+
+if [ -z "$debci_mirror" ]; then
+  if [ -n "$is_debian" ]; then
+    case "$(debian-distro-info --days=eol --series="$debci_suite")" in
+      (-*)
+        # release is already EOL
+        debci_mirror="http://archive.debian.org/debian"
+        ;;
+      (*)
+        # (unknown) or a positive number: not EOL yet
+        debci_mirror="http://deb.debian.org/debian"
+        ;;
+    esac
+  elif [ -n "$is_ubuntu" ]; then
+    case "$(ubuntu-distro-info --days=eol --series="$debci_suite")" in
+      (-*)
+        # release is already EOL
+        debci_mirror="http://old-releases.ubuntu.com/ubuntu"
+        ;;
+      (*)
+        # (unknown) or a positive number: not EOL yet
+        debci_mirror="http://archive.ubuntu.com/ubuntu"
+        ;;
+    esac
+  else
+    echo "$0: unknown release suite '$debci_suite'" >&2
+    echo "$0: please specify --mirror option" >&2
+    exit 1
+  fi
+fi
+
+echo_deb_and_maybe_src "${debci_mirror} ${debci_suite} ${components}"
+
+if [ -n "$dbgsym" ] && [ -n "$dbgsym_suite" ]; then
+  echo_deb_and_maybe_src "http://deb.debian.org/debian-debug ${dbgsym_suite} ${components}"
+fi
+
+if [ -n "$buildd" ] && [ -n "$buildd_suite" ]; then
+  echo_deb_and_maybe_src "http://incoming.debian.org/debian-buildd ${buildd_suite} ${components}"
+fi

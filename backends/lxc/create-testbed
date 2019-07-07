@@ -117,25 +117,15 @@ created=yes
 LXC_PATH=$(lxc-config lxc.lxcpath) || LXC_PATH=/var/lib/lxc
 
 rootfs=$LXC_PATH/$container/rootfs
-# FIXME duplicates logic in bin/debci-setup-chdist && backends/schroot/create-testbed
+
 if [ "$distro" = debian ]; then
-  if [ "$debci_suite" = unstable ]; then
-    buildd_suite="buildd-$debci_suite"
-  elif [ "$debci_suite" = stable ]; then
-    # workaround for bug #880105
-    stable=$(curl -Ls http://deb.debian.org/debian/dists/stable/Release | grep-dctrl -n -s Codename '')
-    buildd_suite="buildd-$stable-proposed-updates"
-  else
-    buildd_suite="buildd-$debci_suite-proposed-updates"
-  fi
-  cat > "${rootfs}/etc/apt/sources.list.d/buildd.list" <<EOF
-deb http://incoming.debian.org/debian-buildd $buildd_suite main contrib main
-deb-src http://incoming.debian.org/debian-buildd $buildd_suite main contrib main
-EOF
-  cat > "${rootfs}/etc/apt/sources.list.d/debug.list" <<EOF
-deb http://deb.debian.org/debian-debug ${debci_suite}-debug main contrib main
-deb-src http://deb.debian.org/debian-debug ${debci_suite}-debug main contrib main
-EOF
+  debci-generate-apt-sources \
+    --source \
+    --buildd \
+    --dbgsym \
+    -- \
+    "$debci_suite" \
+    > "$rootfs/etc/apt/sources.list"
   while ! chroot "$rootfs" apt-get update; do
     echo "I: apt-get update failed, let's wait some time and try again "
     sleep 10

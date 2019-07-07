@@ -24,19 +24,12 @@ else
 fi
 
 if [ "$distro" = debian ]; then
-  if [ "$debci_suite" = unstable ]; then
-    buildd_suite="buildd-$debci_suite"
-  elif [ "$debci_suite" = stable ]; then
-    # workaround for bug #880105
-    stable=$(curl -Ls http://deb.debian.org/debian/dists/stable/Release | grep-dctrl -n -s Codename '')
-    buildd_suite="buildd-$stable-proposed-updates"
-  else
-    buildd_suite="buildd-$debci_suite-proposed-updates"
-  fi
-  cat > "${rootfs}/etc/apt/sources.list.d/buildd.list" <<EOF
-deb http://incoming.debian.org/debian-buildd $buildd_suite main
-deb-src http://incoming.debian.org/debian-buildd $buildd_suite main
-EOF
+  debci-generate-apt-sources \
+    --source \
+    --buildd \
+    -- \
+    "$debci_suite" \
+    > "$rootfs/etc/apt/sources.list"
   while ! chroot "$rootfs" apt-get update; do
     echo "I: apt-get update failed, let's wait some time and try again "
     sleep 10
