@@ -1,0 +1,87 @@
+<ol class="breadcrumb">
+  <li><a href="/selfservice">Welcome <%= @user %>!</a></li>
+  <li class="active">Request Test</li>
+</ol>
+<% unless @error_msg.nil? %>
+<div class="panel panel-danger">
+  <div class="panel-heading">
+    <h3 class="panel-title">Form error</h3>
+  </div>
+  <div class="panel-body"><%= @error_msg %></div>
+</div>
+<% end %>
+<header class="well">
+  <h1>Request Test</h1>
+  <p>You can choose to request a by filling the form.</p>
+</header>
+<div class="col-xs-12">
+  <div class="page-header">
+    <h3>Test Request Form</h3>
+  </div>
+  <form action="/selfservice/test/submit" method="post">
+    <div class="row">
+      <div class="col-xs-12 col-sm-6">
+        <div class="form-group">
+          <label for="package">Package Name</label>
+          <input class="form-control" id="package" name="package">
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-6">
+        <div class="form-group">
+          <label for="suite">Suite</label>
+          <select class="form-control" id="suite" name="suite">
+            <% settings.suites.each do |suite| %>
+            <option><%= suite %></option>
+            <% end %>
+          </select>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-6">
+        <label>Architecture</label>
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="form-group">
+              <% settings.archs.each do |arch| %>
+              <label class="checkbox-inline">
+                <input name="arch[]" type="checkbox" value="<%= arch %>"><%= arch %>
+              </label>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-6">
+        <div class="form-group">
+          <label for="trigger">Trigger (optional)</label>
+          <input class="form-control" id="trigger" name="trigger">
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="pin-packages">Pin Packages (optional)</label>
+      <textarea id="pin-packages" name="pin_packages" class="form-control" rows="5" style="resize: vertical"
+        placeholder="src:bar, experimental"></textarea>
+      <p class="help-block">
+        Pin packages are packages that need to be obtained from a different suite than the main suite that you
+        selected.<br>
+        This is used e.g. to run tests on testing with a few packages from unstable, or on unstable with a few packages
+        from experimental.
+      </p>
+      <p class="help-block">
+        Format should be <code>package, ..., package, suite</code><br>
+        Examples:<br>
+        <ul>
+          <li><code>src:bar, unstable</code>: get all binaries built from bar from unstable</li>
+          <li><code>foo, src:bar, experimental</code>: get foo and all binaries built from bar from experimental</li>
+        </ul>
+        <strong>Note: each suite can be only present once. please separate by line.</strong>
+      </p>
+    </div>
+    <button type="submit" name="submit" class="btn btn-default" autocomplete="off">
+      Submit
+    </button>
+    <button type="submit" name="export" class="btn btn-default" autocomplete="off">
+      Export to JSON
+    </button>
+  </form>
+</div>

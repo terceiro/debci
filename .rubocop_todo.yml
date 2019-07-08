@@ -709,3 +709,6 @@ Style/ZeroLengthPredicate:
 # URISchemes: http, https
 Metrics/LineLength:
   Max: 209
+
+Metrics/ParameterLists:
+  Enabled: false
