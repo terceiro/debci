@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'debci/api'
 require 'rack/test'
+require 'spec_mock_server'
 
 describe Debci::API do
   include Rack::Test::Methods
@@ -10,14 +11,8 @@ describe Debci::API do
     set :show_exceptions, false
   end
 
-  App = Rack::Builder.new do
-    map '/api' do
-      run API
-    end
-  end
-
   def app
-    App
+    mock_server('/api', API)
   end
 
   let(:suite) { Debci.config.suite }
