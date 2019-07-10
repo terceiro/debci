@@ -75,5 +75,44 @@ module Debci
       raise 'Please select a suite' if suite == ''
       raise 'Please select an architecture' if archs.empty?
     end
+
+    post '/test/upload' do
+      begin
+        test_requests = JSON.parse(File.read(params[:tests][:tempfile]))
+        validate_json_submission(test_requests)
+
+        # request tests
+        test_requests.each do |request|
+          request['arch'].each do |arch|
+            request_tests(request['tests'], request['suite'], arch, @user)
+          end
+        end
+      rescue JSON::ParserError => error
+        halt(400, "Invalid JSON: #{error}")
+      rescue StandardError => error
+        @error_msg = error
+        halt(400, erb(:self_service_test))
+      else
+        201
+      end
+    end
+
+    def validate_json_submission(test_requests)
+      raise "Not an array" unless test_requests.is_a?(Array)
+      errors = []
+      test_requests.each_with_index do |request, index|
+        request_suite = request['suite']
+        errors.push("No suite at request index #{index}") if request_suite == ''
+        errors.push("Wrong suite (#{request_suite}) at request index #{index}, available suites: #{settings.suites.join(', ')}") unless settings.suites.include?(request_suite)
+
+        archs = request['arch'].reject(&:empty?)
+        errors.push("No archs are specified at request index #{index}") if archs.empty?
+        errors.push("Wrong archs (#{archs.join(', ')}) at request index #{index}, available archs: #{settings.archs.join(', ')}") if (settings.archs & archs).length != archs.length
+        request['tests'].each_with_index do |t, i|
+          errors.push("Invalid package name at request index #{index} and test index #{i}") unless valid_package_name?(t['package'])
+        end
+      end
+      raise errors.join('<br>') unless errors.empty?
+    end
   end
 end

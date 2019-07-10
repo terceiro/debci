@@ -15,6 +15,13 @@ describe Debci::SelfService do
     mock_server('/selfservice', SelfService)
   end
 
+  def create_json_file(obj)
+    temp_test_file = Tempfile.new
+    temp_test_file.write(JSON.dump(obj))
+    temp_test_file.rewind
+    temp_test_file
+  end
+
   let(:suite) { Debci.config.suite }
   let(:arch) { Debci.config.arch }
 
@@ -73,6 +80,74 @@ describe Debci::SelfService do
       post '/selfservice/test/submit', { pin_packages: '', trigger: '', package: 'test-package', suite: suite, arch: [] }, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
       expect(Debci::Job.count).to eq(job_count)
       expect(last_response.status).to eq(400)
+    end
+  end
+
+  context 'upload json file' do
+    it 'submits a task succesfully on a valid json file upload' do
+      test_json = [
+        {
+          "suite": suite,
+          "arch": [arch],
+          "tests": [
+            {
+              "trigger": "testing",
+              "package": "autodep8",
+              "pin-packages": [["src:bar", "unstable"], ["foo", "src:bar", "stable"]]
+            }
+          ]
+        }
+      ]
+      test_file = create_json_file(test_json)
+      post '/selfservice/test/upload', { tests: Rack::Test::UploadedFile.new(test_file) }, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+      expect(last_response.status).to eq(201)
+      job = Debci::Job.last
+      expect(job.package).to eq('autodep8')
+      expect(job.suite).to eq(suite)
+    end
+
+    it 'should return error with an invalid suite' do
+      test_json = [
+        {
+          # invalid suite
+          "suite": "xyz",
+          "arch": ["arm64", "amd64"],
+          "tests": [
+            {
+              "trigger": "testing",
+              "package": "autodep8",
+              "pin-packages": [["src:bar", "unstable"], ["foo", "src:bar", "stable"]]
+            }
+          ]
+        }
+      ]
+      test_file = create_json_file(test_json)
+      job_count = Debci::Job.count
+      post '/selfservice/test/upload', { tests: Rack::Test::UploadedFile.new(test_file) }, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+      expect(last_response.status).to eq(400)
+      expect(Debci::Job.count).to eq(job_count)
+    end
+
+    it 'should return error with an invalid arch' do
+      test_json = [
+        {
+          "suite": "unstable",
+          # invalid arch
+          "arch": ["xyz", "amd64"],
+          "tests": [
+            {
+              "trigger": "testing",
+              "package": "autodep8",
+              "pin-packages": [["src:bar", "unstable"], ["foo", "src:bar", "stable"]]
+            }
+          ]
+        }
+      ]
+      test_file = create_json_file(test_json)
+      job_count = Debci::Job.count
+      post '/selfservice/test/upload', { tests: Rack::Test::UploadedFile.new(test_file) }, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+      expect(last_response.status).to eq(400)
+      expect(Debci::Job.count).to eq(job_count)
     end
   end
 end

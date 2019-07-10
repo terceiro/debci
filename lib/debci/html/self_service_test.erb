@@ -12,9 +12,23 @@
 <% end %>
 <header class="well">
   <h1>Request Test</h1>
-  <p>You can choose to request a by filling the form.</p>
+  <p>You can choose to request a test by either uploading a JSON file or by filling the form.</p>
 </header>
 <div class="col-xs-12">
+  <div class="page-header">
+    <h3>Upload JSON file</h3>
+  </div>
+  <form action="/selfservice/test/upload" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+      <input name="tests" type="file" id="submit-json">
+      <p class="help-block">You can get an example JSON through exporting the filled-out form below.</p>
+    </div>
+    <div class="form-group">
+      <button type="submit" name="submit" class="btn btn-default" autocomplete="off">
+        Upload JSON File
+      </button>
+    </div>
+  </form>
   <div class="page-header">
     <h3>Test Request Form</h3>
   </div>
