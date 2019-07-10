@@ -144,3 +144,26 @@
 
 #api-doc h2 a { display: none; }
 #api-doc h2:hover a { display: inline; }
+
+/* -----------------------------------------------------------------
+ * Self service
+ * ----------------------------------------------------------------- */
+ 
+ .self-service-card:link {
+  display: block;
+  text-decoration: none;
+ }
+
+ .self-service-card:hover {
+  background: #efefef;
+ }
+
+ .self-service-card:active {
+  background: #dcdcdc;
+ }
+
+ .self-service-card-icon {
+  display: inline-block;
+  font-size: 2em;
+  margin-bottom: 1em;
+ }

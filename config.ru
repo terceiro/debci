@@ -1,4 +1,5 @@
 require 'debci/api'
+require 'debci/self_service'
 
 LISTING = <<~HTMLBLOCK.freeze
   <!DOCTYPE html>
@@ -47,6 +48,9 @@ app = Rack::Builder.new do
   run ServeStatic
   map '/api' do
     run Debci::API
+  end
+  map '/selfservice' do
+    run Debci::SelfService
   end
 end
 

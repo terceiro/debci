@@ -1,10 +1,12 @@
 require 'spec_helper'
 require 'debci/api'
+require 'debci/test_handler'
 require 'rack/test'
 require 'spec_mock_server'
 
 describe Debci::API do
   include Rack::Test::Methods
+  include Debci::TestHandler
 
   class API < Debci::API
     set :raise_errors, true
@@ -223,7 +225,7 @@ describe Debci::API do
       libfoo++
     ].each do |pkg|
       it "accepts #{pkg}" do
-        expect(Debci::API.valid_package_name?(pkg)).to be_truthy
+        expect(valid_package_name?(pkg)).to be_truthy
       end
     end
 
@@ -235,7 +237,7 @@ describe Debci::API do
       --foo
     ].each do |pkg|
       it "rejects #{pkg}" do
-        expect(Debci::API.valid_package_name?(pkg)).to be_falsy
+        expect(valid_package_name?(pkg)).to be_falsy
       end
     end
   end
