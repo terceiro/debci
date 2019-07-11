@@ -1,0 +1,72 @@
+<ol class="breadcrumb">
+  <li><a href="/selfservice">Welcome <%= @user %>!</a></li>
+  <li class="active">Request Test History</li>
+</ol>
+<header class="well">
+  <h1>Request Test History</h1>
+</header>
+<form action="/selfservice/history">
+  <div class="row">
+    <div class="col-xs-12 col-sm-6">
+      <div class="form-group">
+        <label for="package">Package</label>
+        <input class="form-control" id="package" name="package" value="<%= package_filter %>">
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-6">
+      <div class="form-group">
+        <label for="trigger">Trigger</label>
+        <input class="form-control" id="trigger" name="trigger" value="<%= trigger_filter %>">
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="form-group">
+        <label for="suite">Suite</label>
+        <% settings.suites.each do |suite| %>
+        <label class="checkbox-inline">
+          <input name="suite[]" type="checkbox" value="<%= suite %>" <%= suite_filter.is_a?(Array) && suite_filter.include?(suite) ? "checked" : nil %>><%= suite %>
+        </label>
+        <% end %>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="form-group">
+        <label for="arch">Architecture</label>
+        <% settings.archs.each do |arch| %>
+        <label class="checkbox-inline">
+          <input name="arch[]" type="checkbox" value="<%= arch %>"<%= arch_filter.is_a?(Array) && arch_filter.include?(arch) ? "checked" : nil %>><%= arch %>
+        </label>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <button type="submit" class="btn btn-default" autocomplete="off">
+      Apply Filters
+    </button>
+  </div>
+</form>
+<table class="table">
+  <tr>
+    <td>Date</td>
+    <td>Package</td>
+    <td>Suite</td>
+    <td>Architecture</td>
+    <td>Trigger</td>
+    <td>Pin-Packages</td>
+    <td>Actions</td>
+  </tr>
+  <% Array(@history).each do |test| %>
+  <tr>
+    <td><%= test[:date] %></td>
+    <td><%= test[:package] %></td>
+    <td><%= test[:suite] %></td>
+    <td><%= test[:arch] %></td>
+    <td><%= test[:trigger] %></td>
+    <td><%= test[:pin_packages] %></td>
+    <td><a
+        href="/packages/<%= test[:package].match(/^((lib)?.)/) %>/<%= test[:package] %>/<%= test[:suite] %>/<%= test[:arch] %>">Details</a>
+    </td>
+  </tr>
+  <% end %>
+</table>

@@ -2,6 +2,7 @@ require 'spec_mock_server'
 require 'debci'
 require 'debci/self_service'
 require 'rack/test'
+require 'json'
 
 describe Debci::SelfService do
   include Rack::Test::Methods
@@ -155,6 +156,71 @@ describe Debci::SelfService do
       post '/selfservice/test/upload', { tests: Rack::Test::UploadedFile.new(test_file) }, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
       expect(last_response.status).to eq(400)
       expect(Debci::Job.count).to eq(job_count)
+    end
+  end
+
+  context 'history' do
+    before do
+      history_jobs = [
+        {
+          suite: "unstable",
+          arch: "amd64",
+          trigger: "mypackage/0.0.1",
+          package: "mypackage",
+          pin_packages: ["src:mypackage", "unstable"],
+          requestor: "foo@bar.com"
+        },
+        {
+          suite: "unstable",
+          arch: "amd64",
+          trigger: "testpackage/0.0.1",
+          package: "testpackage",
+          pin_packages: ["src:mypackage", "unstable"],
+          requestor: "foo@bar.com"
+        },
+        {
+          suite: "unstable",
+          arch: "arm64",
+          trigger: "testpackage/0.0.2",
+          package: "testpackage",
+          pin_packages: ["src:mypackage", "unstable"],
+          requestor: "foo@bar.com"
+        }
+      ]
+
+      history_jobs.each do |job|
+        Debci::Job.create(job)
+      end
+    end
+
+    it 'displays correct results with package filter' do
+      get '/selfservice/history', { package: 'package', trigger: '' }, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to match('mypackage/0.0.1')
+      expect(last_response.body).to match('testpackage/0.0.1')
+      expect(last_response.body).to match('testpackage/0.0.2')
+    end
+
+    it 'displays correct results with trigger and arch filters' do
+      get '/selfservice/history', { package: '', trigger: 'mypackage/0.0.1', arch: [arch] }, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to match('mypackage/0.0.1')
+    end
+
+    it 'displays correct results with arch filter' do
+      get '/selfservice/history', { package: '', trigger: '', arch: [arch] }, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to match('mypackage/0.0.1')
+      expect(last_response.body).to match('testpackage/0.0.1')
+      expect(last_response.body).to_not match('testpackage/0.0.2')
+    end
+
+    it 'displays correct results with all filters' do
+      get '/selfservice/history', { package: 'package', trigger: 'package/0.0.1', arch: [arch], suite: [suite] }, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to match('mypackage/0.0.1')
+      expect(last_response.body).to match('testpackage/0.0.1')
+      expect(last_response.body).to_not match('testpackage/0.0.2')
     end
   end
 end

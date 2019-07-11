@@ -115,5 +115,28 @@ module Debci
       end
       raise errors.join('<br>') unless errors.empty?
     end
+
+    get '/history' do
+      arch_filter = params[:arch]
+      suite_filter = params[:suite]
+      package_filter = params[:package] || ''
+      trigger_filter = params[:trigger] || ''
+      query = {
+        requestor: @user
+      }
+      query[:arch] = arch_filter if arch_filter
+      query[:suite] = suite_filter if suite_filter
+      @history = Debci::Job.where(query)
+
+      unless package_filter.empty?
+        @history = @history.where("package LIKE :query", query: "%#{package_filter}%") unless package_filter.nil?
+      end
+
+      unless trigger_filter.empty?
+        @history = @history.where("trigger LIKE :query", query: "%#{trigger_filter}%") unless trigger_filter.nil?
+      end
+
+      erb :self_service_history, locals: { arch_filter: arch_filter, suite_filter: suite_filter, package_filter: package_filter, trigger_filter: trigger_filter }
+    end
   end
 end
