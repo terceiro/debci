@@ -12,5 +12,5 @@ EOF
 
 container_name=$(date +ci-%s)
 
-debci-autopkgtest --user debci --apt-upgrade "$@" \
+debci-autopkgtest --user debci "$@" \
   -- lxc --sudo --name "${container_name}" "autopkgtest-${debci_suite}-${debci_arch}"
