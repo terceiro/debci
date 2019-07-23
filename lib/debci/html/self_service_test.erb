@@ -2,13 +2,16 @@
   <li><a href="/selfservice">Welcome <%= @user %>!</a></li>
   <li class="active">Request Test</li>
 </ol>
-<% unless @error_msg.nil? %>
+<% if @error_msg %>
 <div class="panel panel-danger">
   <div class="panel-heading">
     <h3 class="panel-title">Form error</h3>
   </div>
   <div class="panel-body"><%= @error_msg %></div>
 </div>
+<% end %>
+<% if @success %>
+<div class="alert alert-success" role="alert">Test submitted successfully!</div>
 <% end %>
 <header class="well">
   <h1>Request Test</h1>
