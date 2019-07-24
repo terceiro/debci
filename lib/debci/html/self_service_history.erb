@@ -70,3 +70,26 @@
   </tr>
   <% end %>
 </table>
+<nav class="text-center" aria-label="History pagination">
+  <ul class="pagination">
+    <% if @total_pages > 3 && @current_page.to_i != 1 %>
+    <li>
+      <a href="?<%= URI.encode_www_form(query_params.update(page: @current_page.to_i - 1)) %>" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <% end %>
+    <% for n in 1..@total_pages %>
+    <li class="<%= "active" if @current_page.to_i == n %>">
+      <a href="?<%= URI.encode_www_form(query_params.update(page: n)) %>"><%= n %></a>
+    </li>
+    <% end %>
+    <% if @total_pages > 3 && @current_page.to_i != @total_pages %>
+    <li>
+      <a href="?<%= URI.encode_www_form(query_params.update(page: @current_page.to_i + 1)) %>" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+    <% end %>
+  </ul>
+</nav>
