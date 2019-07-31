@@ -78,6 +78,7 @@ module Debci
 
     post '/test/upload' do
       begin
+        raise "Please select a JSON file to upload" if params[:tests].nil?
         test_requests = JSON.parse(File.read(params[:tests][:tempfile]))
         validate_json_submission(test_requests)
 
