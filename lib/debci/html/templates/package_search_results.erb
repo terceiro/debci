@@ -1,0 +1,10 @@
+<h1>Search Results: <%= @query %></h1>
+<ul class='list-group' style='max-width: 400px'>
+  <% @results.each do |package| %>
+  <li class='list-group-item'>
+  <a href='/packages/<%= package.prefix %>/<%= package.name %>'>
+      <%= package.name %>
+    </a></li>
+  <% end %>
+</ul>
+<%== erb(:pagination, locals: { query: params }) %>

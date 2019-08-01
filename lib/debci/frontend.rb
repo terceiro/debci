@@ -20,6 +20,17 @@ module Debci
       end
     end
 
+    # Package search
+    get '/-/search' do
+      @query = params[:query]
+      @current_page = params[:page] || "1"
+      results = Debci::Package.where("name LIKE :query", query: "%#{@query}%").order(:name)
+      @results = results.page(@current_page).per(10)
+      @total_pages = @results.total_pages
+      @pages = get_page_range(Integer(@current_page), @total_pages)
+      erb :package_search_results
+    end
+
     # Package listing pages
     get "/:prefix/" do
       @package_prefixes = Debci::Package.prefixes

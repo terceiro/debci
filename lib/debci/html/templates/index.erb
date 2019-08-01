@@ -15,20 +15,12 @@
   </div> <!-- class='col-md-6' -->
   <div class="col-md-6">
     <h3>Search Package</h3>
-    <form action='javascript:redirect();' name="searchform" id="searchform" method="post" style="display: inline;">
-      <input autofocus="" id="package" name="package" size="20" type="text" value="">
-      <input type="submit" value="Go">
+    <form action='/packages/-/search' class="form-inline">
+      <div class="form-group">
+        <input type="text" class="form-control" id="query" name="query" placeholder="Package to search...">
+      </div>
+      <button type="submit" class="btn btn-default">Search</button>
     </form>
-    </div>
-  <script>
-    function redirect() {
-      var package = document.getElementById("package").value
-      var m = package.match(/((lib)?.)/)
-      prefix = m[0]
-      location.href = '/packages/' + prefix + '/' + package
-    }
-  </script>
-    
   </div> <!-- class='col-md-6' -->
 
 </div> <!-- class='row' -->
