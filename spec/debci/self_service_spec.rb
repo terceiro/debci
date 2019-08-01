@@ -106,6 +106,13 @@ describe Debci::SelfService do
       expect(job.suite).to eq(suite)
     end
 
+    it 'should return error with no file selected for uplaod' do
+      job_count = Debci::Job.count
+      post '/selfservice/test/upload', {}, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+      expect(last_response.status).to eq(400)
+      expect(Debci::Job.count).to eq(job_count)
+    end
+
     it 'should return error with an invalid suite' do
       test_json = [
         {
