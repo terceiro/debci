@@ -1,11 +1,13 @@
+<% if @user == params[:user] %>
 <ol class="breadcrumb">
-  <li><a href="/selfservice">Welcome <%= @user %>!</a></li>
-  <li class="active">Request Test History</li>
+  <li><a href="/user">Welcome <%= @user %>!</a></li>
+  <li class="active">Job History</li>
 </ol>
+<% end %>
 <header class="well">
-  <h1>Request Test History</h1>
+  <h1><%= params[:user] %>'s Job History</h1>
 </header>
-<form action="/selfservice/history">
+<form action="/user/<%= params[:user] %>/jobs">
   <div class="row">
     <div class="col-xs-12 col-sm-6">
       <div class="form-group">
