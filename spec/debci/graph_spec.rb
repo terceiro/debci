@@ -3,14 +3,19 @@ require 'debci/graph'
 require 'fileutils'
 require 'json'
 
-describe Debci::Graph do
+def generate_data_element(date, pass, fail, tmpfail, total)
+  { 'date' => date, 'pass' => pass, 'fail' => fail, 'tmpfail' => tmpfail, 'total' => total }
+end
 
+describe Debci::Graph do
   before(:all) do
     @datadir = Dir.mktmpdir
-
+    initial_date = Time.parse('2014-08-10 12:12:30 UTC')
+    final_date = Time.parse('2014-08-15 01:30:15 UTC')
+    data_element1 = generate_data_element(initial_date, 100, 200, 20, 320)
+    data_element2 = generate_data_element(final_date, 200, 150, 20, 370)
     mkdir_p 'status/unstable/amd64'
-    history 'status/unstable/amd64', [{'date' => '2014-08-10 12:12:30 UTC', 'pass' => 100, 'fail' => 200, 'tmpfail' => 20, 'total' => 320},
-                                      {'date' => '2014-08-15 01:30:15 UTC', 'pass' => 200, 'fail' => 150, 'tmpfail' => 20, 'total' => 370}]
+    history 'status/unstable/amd64', [data_element1, data_element2]
   end
 
   after(:all) do
@@ -18,7 +23,7 @@ describe Debci::Graph do
   end
 
   def mkdir_p(path)
-    FileUtils.mkdir_p(File.join@datadir, path)
+    FileUtils.mkdir_p(File.join(@datadir, path))
   end
 
   def history(path, data)
@@ -37,12 +42,13 @@ describe Debci::Graph do
   it 'reduces history do 101 entries' do
     initial_date = Time.parse('2014-08-10 12:12:30 UTC')
     data = (0..150).map do |i|
-      { 'date' => initial_date + 3600*24*i, 'pass' => 100, 'fail' => 200, 'tmpfail' => 20, 'total' => 320 }
+      generate_data_element(initial_date + 3600 * 24 * i, 100, 200, 20, 320)
     end
     history 'status/unstable/amd64', data
 
     expect(graph.entries.size).to eq(101)
     expect(Time.parse(graph.entries.first['date'])).to eq(initial_date)
-    expect(Time.parse(graph.entries.last['date'])).to eq(initial_date + 150*24*3600)
+    days = 150 * 24 * 3600
+    expect(Time.parse(graph.entries.last['date'])).to eq(initial_date + days)
   end
 end

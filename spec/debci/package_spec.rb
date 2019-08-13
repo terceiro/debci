@@ -2,7 +2,6 @@ require 'debci/package'
 require 'debci/status'
 
 describe Debci::Package do
-
   let(:repository) { double }
 
   let(:package) do
@@ -10,13 +9,13 @@ describe Debci::Package do
   end
 
   it 'queries repository for architectures' do
-    expect(repository).to receive(:architectures_for).with(package).and_return(['amd64', 'i386'])
-    expect(package.architectures).to eq(['amd64', 'i386'])
+    expect(repository).to receive(:architectures_for).with(package).and_return(%w[amd64 i386])
+    expect(package.architectures).to eq(%w[amd64 i386])
   end
 
   it 'queries repository for suites' do
-    expect(repository).to receive(:suites_for).with(package).and_return(['unstable', 'experimental'])
-    expect(package.suites).to eq(['unstable', 'experimental'])
+    expect(repository).to receive(:suites_for).with(package).and_return(%w[unstable experimental])
+    expect(package.suites).to eq(%w[unstable experimental])
   end
 
   it 'queries repository for status' do
@@ -83,5 +82,4 @@ describe Debci::Package do
     allow(Debci.blacklist).to receive(:include?).with(pkg).and_return(true)
     expect(pkg).to be_blacklisted
   end
-
 end
