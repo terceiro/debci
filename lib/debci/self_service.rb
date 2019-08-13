@@ -66,7 +66,8 @@ module Debci
         [200, [test_request].to_json]
       # user submits test
       else
-        201
+        @success = true
+        [201, erb(:self_service_test)]
       end
     end
 
@@ -94,7 +95,8 @@ module Debci
         @error_msg = error
         halt(400, erb(:self_service_test))
       else
-        201
+        @success = true
+        [201, erb(:self_service_test)]
       end
     end
 
