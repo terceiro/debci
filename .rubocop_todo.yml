@@ -596,21 +596,7 @@ Style/SpecialGlobalVars:
 # Configuration parameters: EnforcedStyle, ConsistentQuotesInMultiline.
 # SupportedStyles: single_quotes, double_quotes
 Style/StringLiterals:
-  Exclude:
-    - 'backends/fake/test-package'
-    - 'bin/debci-generate-feeds'
-    - 'bin/debci-generate-html'
-    - 'bin/debci-status'
-    - 'lib/debci/api.rb'
-    - 'lib/debci/config.rb'
-    - 'lib/debci/data.rb'
-    - 'lib/debci/html.rb'
-    - 'lib/debci/job.rb'
-    - 'lib/debci/repository.rb'
-    - 'lib/debci/status.rb'
-    - 'spec/debci/status_spec.rb'
-    - 'spec/spec_helper.rb'
-    - 'tools/analysis/Rakefile'
+  Enabled: false
 
 # Offense count: 10
 # Cop supports --auto-correct.
@@ -652,6 +638,9 @@ Style/TrailingCommaInLiteral:
 Style/UnneededInterpolation:
   Exclude:
     - 'lib/debci/repository.rb'
+
+Style/WordArray:
+  Enabled: false
 
 # Offense count: 1
 # Cop supports --auto-correct.
