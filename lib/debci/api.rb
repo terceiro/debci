@@ -255,6 +255,20 @@ module Debci
       end
 
       doc <<-EOF
+      ```
+      EOF
+      post '/test/batch' do
+        test_requests = load_json(params[:tests])
+        errors = validate_batch_test(test_requests)
+        if errors.empty?
+          request_batch_tests(test_requests, @user)
+          201
+        else
+          halt(400, "Error: #{errors.join("\n")}")
+        end
+      end
+
+      doc <<-EOF
       URL parameters:
 
       * `:suite`: which suite to test
@@ -368,10 +382,13 @@ module Debci
 
     def load_json(param)
       begin
+        raise "No tests" if param.nil?
         str = param.is_a?(Hash) && File.read(param[:tempfile]) || param
         JSON.load(str)
       rescue JSON::ParserError => error
         halt(400, "Invalid JSON: #{error}")
+      rescue StandardError => error
+        halt(400, "Error: #{error}")
       end
     end
 
