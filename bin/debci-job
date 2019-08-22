@@ -32,6 +32,18 @@ module Debci
       puts JSON.pretty_generate(data)
     end
 
+    desc 'latest-json PACKAGE', 'Generate JSON for the most recent test job that has no pin-packages'
+    def latest_json(pkg)
+      latest = Debci::Job.where(
+        package: pkg,
+        suite: suite,
+        arch: arch,
+        pin_packages: nil
+      ).order('date DESC').first
+      data = JSON.parse(latest.to_json)
+      puts JSON.pretty_generate(data)
+    end
+
     desc 'declare-queue', 'Initializes job queue'
     def declare_queue
       Debci::Job.get_queue(Debci.config.arch)
