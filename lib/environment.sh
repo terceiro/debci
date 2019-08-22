@@ -157,6 +157,9 @@ debci_group=$(stat -c %G "${debci_data_basedir}")
 
 debci_amqp_queue=${debci_amqp_queue:-"debci-tests-${debci_arch}-${debci_backend}"}
 
+# hide password when displaying AMPQ server
+debci_amqp_server_display="$(echo "$debci_amqp_server" | sed -e 's#:[^/]*@#:*********@#')"
+
 debci_lock_dir=${debci_lock_dir:-/var/lock}
 
 # per-suite/architecture lock/timestamp files

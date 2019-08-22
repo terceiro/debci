@@ -38,7 +38,7 @@ if [ "$1" = '--write-results' ]; then
   exit 0
 fi
 
-log "I: Connecting to AMQP queue ${debci_amqp_results_queue} on ${debci_amqp_server}"
+log "I: Connecting to AMQP queue ${debci_amqp_results_queue} on ${debci_amqp_server_display}"
 amqp-declare-queue --url="$debci_amqp_server" --durable --queue="$debci_amqp_results_queue" >/dev/null
 
 ensure_lockfile "$debci_generate_index_lock"
