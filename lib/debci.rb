@@ -9,7 +9,7 @@ module Debci
     end
 
     def blacklist
-      @blacklist ||= Debci::Blacklist.new(config.config_dir)
+      @blacklist ||= Debci::Blacklist.new
     end
 
     def config!(data)

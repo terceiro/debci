@@ -99,7 +99,8 @@ describe Debci::API do
       end
 
       it 'rejects blacklisted package' do
-        allow_any_instance_of(Debci::Blacklist).to receive(:include?).with('mypackage').and_return(true)
+        allow_any_instance_of(Debci::Blacklist).to receive(:include?)
+          .with('mypackage', suite: suite, arch: arch).and_return(true)
         post format('/api/v1/test/%<suite>s/%<arch>s/mypackage', suite: suite, arch: arch)
         expect(last_response.status).to eq(400)
       end

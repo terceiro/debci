@@ -211,6 +211,12 @@ module Debci
       "<#{suite}/#{architecture} #{status}>"
     end
 
+    def blacklisted?
+      Debci.blacklist.include?(
+        package, suite: suite, arch: architecture, version: version
+      )
+    end
+
     private
 
     def self.read_trigger(t)

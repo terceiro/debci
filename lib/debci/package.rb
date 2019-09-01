@@ -22,8 +22,37 @@ module Debci
     #     ]
     #
     # Each cell of the matrix contains a Debci::Status object.
+    # Note: Contains statuses which are not blacklisted
     def status
       repository.status_for(self)
+    end
+
+    # Returns a matrix of Debci::Status objects, where rows represent
+    # architectures and columns represent suites:
+    #
+    #     [
+    #       [ amd64_unstable , amd64_testing ],
+    #       [ i386_unstable, i386_testing ],
+    #     ]
+    #
+    # Each cell of the matrix contains a Debci::Status object.
+    # Note: Contains all statuses
+    def all_status
+      repository.all_status_for(self)
+    end
+
+    # Returns a matrix of Debci::Status objects, where rows represent
+    # architectures and columns represent suites:
+    #
+    #     [
+    #       [ amd64_unstable , amd64_testing ],
+    #       [ i386_unstable, i386_testing ],
+    #     ]
+    #
+    # Each cell of the matrix contains a Debci::Status object.
+    # Note: Contains blacklisted statuses
+    def blacklisted_status
+      repository.blacklisted_status_for(self)
     end
 
     # Returns an array of Debci::Status objects that represent the test
@@ -69,8 +98,12 @@ module Debci
       Regexp.last_match(1)
     end
 
-    def blacklisted?
-      Debci.blacklist.include?(self)
+    def blacklisted?(params = {})
+      Debci.blacklist.include?(name, params)
+    end
+
+    def blacklist_comment(params = {})
+      Debci.blacklist.comment(name, params)
     end
   end
 end

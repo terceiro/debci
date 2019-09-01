@@ -182,6 +182,14 @@ describe Debci::Status do
     end
   end
 
+  it 'might be blacklisted' do
+    allow(Debci.blacklist).to receive('include?').with(
+      'pkg', suite: 'testing', arch: nil, version: nil
+    ).and_return(true)
+    status = status_with(package: 'pkg', suite: 'testing')
+    expect(status.blacklisted?).to be true
+  end
+
   def status_with(data)
     s = Debci::Status.new
     data.each do |k,v|
