@@ -28,8 +28,7 @@ module Debci
         suite: suite,
         arch: arch
       ).where.not(status: nil).order('run_id')
-      data = JSON.parse(history.to_json)
-      puts JSON.pretty_generate(data)
+      puts JSON.pretty_generate(history.as_json)
     end
 
     desc 'latest-json PACKAGE', 'Generate JSON for the most recent test job that has no pin-packages'
@@ -40,8 +39,7 @@ module Debci
         arch: arch,
         pin_packages: nil
       ).order('date DESC').first
-      data = JSON.parse(latest.to_json)
-      puts JSON.pretty_generate(data)
+      puts JSON.pretty_generate(latest.as_json)
     end
 
     desc 'declare-queue', 'Initializes job queue'
