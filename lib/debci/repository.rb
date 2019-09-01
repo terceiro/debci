@@ -34,12 +34,12 @@ module Debci
 
     # Returns a Set of packages known to this debci instance
     def packages
-      @packages ||= (@data_dirs.map { |d| Dir.glob(File.join(d, '*/*')) }.flatten.map { |d| File.basename(d) } + Debci.blacklist.packages.keys).to_set.sort
+      @packages ||= (@data_dirs.map { |d| Dir.glob(File.join(d, '*/*')) }.flatten.map { |d| File.basename(d) } + Debci.blacklist.packages).to_set.sort
     end
 
     # Returns a Set of packages known to this debci instance which are not blacklisted 
     def non_blacklisted_packages
-      @non_blacklisted_packages ||= packages.reject { |package| Debci.blacklist.packages.include? package.to_s }
+      @non_blacklisted_packages ||= packages - Debci.blacklist.packages
     end
 
     # Returns an Array of package prefixes known to this debci instance
@@ -132,14 +132,24 @@ module Debci
       match.sort.map { |p| Debci::Package.new(p, self) }
     end
 
-    # Backend implementation for Debci::Package#status
-    def status_for(package)
+    # Backend implementation for Debci::Package#all_status
+    def all_status_for(package)
       architectures.map do |arch|
         suites.map do |suite|
           status_file = File.join(data_dir(suite, arch, package), 'latest.json')
           load_status(status_file, suite, arch)
         end
       end
+    end
+
+    # Backend implementation for Debci::Package#status
+    def status_for(package)
+      all_status_for(package).map { |r| r.reject(&:blacklisted?) }
+    end
+
+    # Backend implementation for Debci::Package#blacklisted_status
+    def blacklisted_status_for(package)
+      all_status_for(package).map { |r| r.select(&:blacklisted?) }
     end
 
     def platform_specific_issues
@@ -269,7 +279,7 @@ module Debci
     end
 
     def all_non_blacklisted_statuses
-      @all_non_blacklisted_statuses ||= all_statuses.reject { |status| Debci.blacklist.packages.include? status.package.to_s }
+      @all_non_blacklisted_statuses ||= all_statuses.reject(&:blacklisted?)
     end
 
   end

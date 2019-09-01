@@ -18,7 +18,7 @@
 
     <table class="table" style='width: auto'>
 
-      <% if @package.status.first %>
+      <% if @package.all_status.first %>
         <tr>
           <td></td>
           <% @package.status.first.each do |status| %>
@@ -31,7 +31,7 @@
         </tr>
       <% end %>
 
-      <% @package.status.each do |row| %>
+      <% @package.all_status.each do |row| %>
         <tr>
           <td><b><%= row.first.architecture %></b></td>
 

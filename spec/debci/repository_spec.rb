@@ -163,6 +163,24 @@ describe Debci::Repository do
     end
   end
 
+  it 'fetches blacklisted status for packages' do
+    statuses = repository.all_status_for('rake')
+    # Blacklisting testing_amd64, unstable_i386
+    testing_amd64 = statuses.first.first
+    unstable_i386 = statuses.second.second
+
+    allow(testing_amd64).to receive(:blacklisted?).and_return(true)
+    allow(unstable_i386).to receive(:blacklisted?).and_return(true)
+
+    statuses = repository.blacklisted_status_for('rake')
+
+    expect(statuses.length).to eq(2) # 2 suite
+    statuses.flatten.each do |s|
+      expect(s).to be_a(Debci::Status)
+      expect([testing_amd64, unstable_i386]).to include(s)
+    end
+  end
+
   it 'fetches news for packages' do
     statuses = repository.news_for('rake')
     expect(statuses.length).to eq(3)

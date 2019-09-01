@@ -79,7 +79,7 @@ describe Debci::Package do
 
   it 'may be blacklisted' do
     pkg = Debci::Package.new('mypkg')
-    allow(Debci.blacklist).to receive(:include?).with(pkg).and_return(true)
+    allow(Debci.blacklist).to receive(:include?).with('mypkg', {}).and_return(true)
     expect(pkg).to be_blacklisted
   end
 end

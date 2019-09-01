@@ -3,18 +3,45 @@
     <h1 class='page-header'>Status <small>/ Blacklist</small></h1>
     <%= @status_nav %>
     <table class='table table-striped'>
-      <% Debci.blacklist.packages.each do |package, reason| %>
+      <thead>
         <tr>
-          <td><a href="/packages/<%= Debci::Package.new(package).prefix %>/<%= package %>/"><%= package %></a></td>
-          <td>
-            <% if reason && !reason.empty? %>
-              <%= reason %>
-            <% else %>
-              <em>No reason provided</em>
-            <% end %>
-          </td>
+          <th>Package</th>
+          <th>Suite</th>
+          <th>Architecture</th>
+          <th>Version</th>
+          <th>Reason</th>
         </tr>
-      <% end %>
+      </thead>
+      <tbody>
+        <% data = Debci.blacklist.data %>
+        <% data.keys.each do |package| %>
+          <% data[package].keys.each do |suite| %>
+            <% data[package][suite].keys.each do |arch| %>
+              <% data[package][suite][arch].keys.each do |version| %>
+                <tr>
+                  <td><a href="/packages/<%= Debci::Package.new(package).prefix %>/<%= package %>/"><%= package %></a></td>
+                  <td>
+                    <% if suite == '*'%>
+                      <%= "All" %>
+                    <% else %>
+                      <%= suite %>
+                    <% end %>
+                  </td>
+                  <td>
+                    <% if arch == '*' %>
+                      <%= "All" %>
+                    <% else %>
+                      <%= arch %>
+                    <% end %>
+                  </td>
+                  <td><%= version %></td>
+                  <td><%= Debci.blacklist.comment(package, suite: suite, arch: arch, version: version) %></td>
+                </tr>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </tbody>
     </table>
   </div>
 </div>

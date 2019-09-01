@@ -354,10 +354,9 @@ module Debci
       EOF
       post '/test/:suite/:arch/:package' do
         pkg = params[:package]
-        if Debci.blacklist.include?(pkg)
+        if Debci.blacklist.include?(pkg, suite: suite, arch: arch)
           halt(400, "Blacklisted package: #{pkg}\n")
-        end
-        if ! valid_package_name?(pkg)
+        elsif ! valid_package_name?(pkg)
           halt(400, "Invalid package name: #{pkg}\n")
         end
 
