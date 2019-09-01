@@ -102,7 +102,7 @@ generate_package_run() {
 
   # update "latest" links
   ln -sf "${run_id}.log" "${status_dir}/latest.log"
-  mv "${status_file}" "${status_dir}/latest.json"
+  debci job latest-json "${pkg}" > "${status_dir}/latest.json"
   rm -f "${status_dir}/latest-autopkgtest"
 
   # generate relative symlinks for relocatability
