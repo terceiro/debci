@@ -48,7 +48,7 @@ if packages.empty?
     exit
   end
 end
-packages += Debci.blacklist.packages.keys
+packages += Debci.blacklist.packages
 
 prefixes = Set.new
 
