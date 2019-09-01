@@ -7,10 +7,15 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
+opts=''
+if [ "$debci_backend" != null ]; then
+  opts='--apt-upgrade'
+fi
+
 rc=0
 autopkgtest \
   --no-built-binaries \
-  --apt-upgrade \
+  $opts \
   ${debci_autopkgtest_args:-} \
   "$@" || rc=$?
 
