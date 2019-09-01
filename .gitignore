@@ -4,6 +4,7 @@
 /public/jquery*.js
 /public/font-awesome
 /public/bootstrap
+/config/blacklist
 /config/whitelist*
 /config/debci
 /config/*.html
