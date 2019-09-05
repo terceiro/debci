@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'tempfile'
 
 require 'debci/job'
 
@@ -78,5 +79,10 @@ describe Debci::Job do
     expect(job.last_pass_version).to eq('0.9-1')
     expect(job.message).to eq('bla bla bla')
     expect(job.previous_status).to eq('fail')
+  end
+
+  it 'takes ridiculously large version numbers' do
+    v = '1.' * 100 + '0'
+    Debci::Job.create!(package: 'foo', version: v)
   end
 end
