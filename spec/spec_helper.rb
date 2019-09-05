@@ -1,5 +1,5 @@
 require 'yaml'
-ENV['DATABASE_URL'] = 'sqlite3::memory:'
+ENV['DATABASE_URL'] ||= 'sqlite3::memory:'
 require 'debci/db'
 
 Debci.config.quiet = true
