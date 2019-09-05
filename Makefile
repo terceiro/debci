@@ -18,6 +18,11 @@ spec:
 	@./test/banner 'Ruby unit tests'
 	rspec --color
 
+spec-postgresql:
+	@./test/banner 'Ruby unit tests (PostgreSQL)'
+	pg_virtualenv sh -c 'DATABASE_URL=postgresql:///$$PGDATABASE rspec --color'
+
+
 functional-tests:
 	@./test/banner 'Functional tests'
 	test/runall.sh
@@ -45,7 +50,7 @@ deb:
 ruby-console:
 	irb -Ilib -rdebci
 
-check: all check-ui-and-docs check-ruby-style spec functional-tests
+check: all check-ui-and-docs check-ruby-style spec spec-postgresql functional-tests
 
 check-ui-and-docs: all
 	test -d public/doc
