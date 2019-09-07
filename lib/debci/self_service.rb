@@ -1,5 +1,7 @@
 require 'sinatra'
 require 'json'
+require 'kaminari/core'
+require 'kaminari/activerecord'
 
 require 'debci/app'
 require 'debci/test_handler'
@@ -7,6 +9,7 @@ require 'debci/test_handler'
 module Debci
   class SelfService < Debci::App
     include Debci::TestHandler
+
     set :views, File.dirname(__FILE__) + '/html'
 
     configure do
@@ -95,7 +98,7 @@ module Debci
       end
     end
 
-    get '/history' do
+    get '/history/?' do
       arch_filter = params[:arch]
       suite_filter = params[:suite]
       package_filter = params[:package] || ''
@@ -108,14 +111,28 @@ module Debci
       @history = Debci::Job.where(query)
 
       unless package_filter.empty?
-        @history = @history.where("package LIKE :query", query: "%#{package_filter}%") unless package_filter.nil?
+        @history = @history.where('package LIKE :query', query: "%#{package_filter}%") unless package_filter.nil?
       end
 
       unless trigger_filter.empty?
-        @history = @history.where("trigger LIKE :query", query: "%#{trigger_filter}%") unless trigger_filter.nil?
+        @history = @history.where('trigger LIKE :query', query: "%#{trigger_filter}%") unless trigger_filter.nil?
       end
 
-      erb :self_service_history, locals: { arch_filter: arch_filter, suite_filter: suite_filter, package_filter: package_filter, trigger_filter: trigger_filter }
+      # pagination
+      @current_page = params[:page] || 1
+      @history = @history.page(@current_page).per(10)
+      @total_pages = @history.total_pages
+
+      # generate query params
+      query_params = {}
+      params.each do |key, val|
+        case val
+        when Array then query_params["#{key}[]"] = val
+        else
+          query_params[key] = val
+        end
+      end
+      erb :self_service_history, locals: { query_params: query_params, arch_filter: arch_filter, suite_filter: suite_filter, package_filter: package_filter, trigger_filter: trigger_filter }
     end
   end
 end
