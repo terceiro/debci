@@ -24,6 +24,7 @@ module Debci
     :data_retention_days,
     :database_url,
     :distro_name,
+    :failing_packages_per_page,
     :html_dir,
     :packages_dir,
     :pending_status_per_page,

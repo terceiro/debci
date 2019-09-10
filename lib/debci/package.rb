@@ -105,5 +105,24 @@ module Debci
     def blacklist_comment(params = {})
       Debci.blacklist.comment(name, params)
     end
+
+    def had_success?(suite = nil)
+      return status.flatten.any? { |p| p.status == :pass } unless suite
+
+      status.flatten.any? { |p| (p.status == :pass) && (p.suite == suite) }
+    end
+
+    def always_failing?(suite = nil)
+      !had_success?(suite)
+    end
+
+    def last_updated_at(suite = nil)
+      statuses = if suite
+                   status.flatten.select { |s| s.suite == suite }
+                 else
+                   status.flatten
+                 end
+      statuses.map(&:date).compact.max
+    end
   end
 end

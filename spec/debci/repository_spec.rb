@@ -264,6 +264,20 @@ describe Debci::Repository do
     end
   end
 
+  it 'knows which packages are failing' do
+    failing_packages = repository.failing_packages
+
+    expect(failing_packages).to be_a(Array)
+    expect(failing_packages.length).to be >= 1
+
+    package = failing_packages.find { |pkg| pkg.name == 'rubygems-integration' }
+    expect(package). to be_a(Debci::Package)
+    expect(package.name). to eq('rubygems-integration')
+
+    statuses = package.status.flatten.map(&:status)
+    expect(statuses).to include(:fail)
+  end
+
   it 'knows about slow-running tests' do
     slow = repository.slow_packages
     expect(slow).to be_a(Array)

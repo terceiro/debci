@@ -82,4 +82,51 @@ describe Debci::Package do
     allow(Debci.blacklist).to receive(:include?).with('mypkg', {}).and_return(true)
     expect(pkg).to be_blacklisted
   end
+
+  it 'might succeed or fail' do
+    bundle = Debci::Package.new('bundle')
+    git = Debci::Package.new('git')
+
+    pass_status = Debci::Status.new
+    pass_status.suite = 'unstable'
+    pass_status.architecture = 'amd64'
+    pass_status.status = :pass
+
+    fail_status = Debci::Status.new
+    fail_status.suite = 'testing'
+    fail_status.architecture = 'amd64'
+    fail_status.status = :fail
+
+    bundle.repository = repository
+    git.repository = repository
+
+    allow(repository).to receive(:status_for).with(bundle)
+                                             .and_return([pass_status, fail_status])
+
+    allow(repository).to receive(:status_for).with(git)
+                                             .and_return([fail_status])
+
+    expect(bundle.had_success?).to be true
+    expect(git.always_failing?).to be true
+  end
+
+  it 'has a last updated date' do
+    pkg = Debci::Package.new('pkg')
+    status = Set.new
+
+    testing_status = Debci::Status.new
+    testing_status.suite = 'testing'
+    testing_status.date = Time.now
+
+    unstable_status = Debci::Status.new
+    unstable_status.suite = 'unstable'
+    unstable_status.date = Time.now
+
+    status << testing_status << unstable_status
+    pkg.repository = repository
+
+    allow(repository).to receive(:status_for).with(pkg).and_return(status)
+
+    expect(pkg.last_updated_at).to be_a(Time)
+  end
 end
