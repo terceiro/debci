@@ -17,19 +17,22 @@ module Debci
       set :archs, Debci.config.arch_list
     end
 
-    before '/*' do
+    get '/' do
       halt(403, "Unauthenticated!\n") unless @user
+      redirect("/user/#{@user}")
     end
 
-    get '/' do
+    get '/:user' do
+      redirect("/user/#{params[:user]}/jobs") unless @user == params[:user]
       erb :self_service
     end
 
-    get '/test' do
+    get '/:user/test' do
+      redirect("/user/#{params[:user]}/jobs") unless @user == params[:user]
       erb :self_service_test
     end
 
-    post '/test/submit' do
+    post '/:user/test/submit' do
       trigger = params[:trigger] || ''
       package = params[:package] || ''
       suite = params[:suite] || ''
@@ -80,7 +83,7 @@ module Debci
       raise 'Please select an architecture' if archs.empty?
     end
 
-    post '/test/upload' do
+    post '/:user/test/upload' do
       begin
         raise "Please select a JSON file to upload" if params[:tests].nil?
         test_requests = JSON.parse(File.read(params[:tests][:tempfile]))
@@ -98,13 +101,14 @@ module Debci
       end
     end
 
-    get '/history/?' do
+    get '/:user/jobs/?' do
+      user = params[:user]
       arch_filter = params[:arch]
       suite_filter = params[:suite]
       package_filter = params[:package] || ''
       trigger_filter = params[:trigger] || ''
       query = {
-        requestor: @user
+        requestor: user
       }
       query[:arch] = arch_filter if arch_filter
       query[:suite] = suite_filter if suite_filter

@@ -49,7 +49,7 @@ app = Rack::Builder.new do
   map '/api' do
     run Debci::API
   end
-  map '/selfservice' do
+  map '/user' do
     run Debci::SelfService
   end
 end
