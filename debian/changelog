@@ -1,3 +1,81 @@
+debci (2.2) experimental; urgency=medium
+
+  [ Antonio Terceiro ]
+  * Debci::HTML.platform_specific_issues: don't crash on date-less statuses
+  * Update .rubocop_todo.yml
+  * Debci::Status: read date from `created_at` as fallback
+  * debci-generate-html: add option to regenerate all packages
+  * Debci::Status: fix Ruby code style warnings
+  * debci-setup-chdist: always updates APT configuration
+  * debci-setup-chdist: workaround absence of buildd-stable-proposed-updates
+  * UI: link to bug reports for source package
+  * docs/HACKING.md: add some contribution guidelines
+  * API doc: drop unused stylesheet inside <noscript>
+  * API doc: display links to each API endpoint
+  * lxc, schroot: drop explicit --apt-upgrade
+  * Update .rubocop_todo.yml
+  * rubocop: add proper exclusions
+  * debci-worker@.service: make main service depend on individual workers
+  * Don't log AMPQ password when there is one
+  * .gitignore: add /config/blacklist
+  * debci-generate-html: fix access to blacklisted packages
+  * debci-autopkgtest: skip --apt-upgrade on null backend
+  * test_helper: set additional environment variables for rabbitmq
+  * debci job: avoid unnecessary parse/dump roundtrip
+  * spec_helper: accept database url from environment
+  * Also run Ruby tests against PostgreSQL
+  * Debci::Job: increase version field to 256 characters
+  * Bump Standards-Version to 4.4.0; no changes needed
+  * debian/control: depend on ruby-sqlite3
+
+  [ BhavySingh ]
+  * backends/fake/debci-list-dependencies: fix Ruby code style
+  * bin/debci-api: fix Ruby code style
+  * bin/debci-enqueue: fix Ruby code style
+  * bin/debci-job: fix Ruby code style
+  * lib/debci/blacklist.rb: fix Ruby code style
+  * lib/debci/db/migrations/201712290143_create_jobs.rb: fix Ruby code style
+  * lib/debci/db.rb: fix Ruby code style
+  * lib/debci/package.rb: fix Ruby code style
+  * lib/debci.rb: fix Ruby code style
+  * bin/debci-generate-history: fix Ruby code style issues
+  * spec/debci/api_spec.rb: fix Ruby code style issues
+  * spec/debci/data_spec.rb: fix Ruby code style issues
+  * spec/debci/graph_spec.rb: fix Ruby code style
+  * spec/debci/job_spec.rb: fix Ruby code style issues
+  * spec/debci/package_spec.rb: fix Ruby code style issues
+  * spec/debci/repository_spec.rb: fix Ruby code style issues
+
+  [ Candy Tsai ]
+  * edit Vagrantfile to setup development environment
+  * api: extract test job creation
+  * api: refactor authentication code
+  * api: add spec mock server
+  * self_service: add self service section
+  * self_service: run tests from form submission
+  * self_service: submit test from JSON upload
+  * self_service: check empty file when test by upload
+  * self_service: add docs for JSON file upload
+  * self_service: add success submission UI
+  * self_service: add user history page with filters
+  * api: refactor batch test
+  * generate latest.json from database
+  * self_service: add history pagination
+  * self_service: change route to user
+  * history: link to job requests by each user
+
+  [ Simon McVittie ]
+  * debci-generate-apt-sources: Add and use a script to generate sources.list
+
+  [ Raphaël Hertzog ]
+  * debci-autopkgtest: always pass --apt-upgrade
+
+  [ Abhishek Kumar ]
+  * Enable suite, arch and version specific blacklisting
+  * UI: Add overview, text-based filter for failing packages
+
+ -- Antonio Terceiro <terceiro@debian.org>  Wed, 18 Sep 2019 09:49:30 -0300
+
 debci (2.1) experimental; urgency=medium
 
   [ Antonio Terceiro ]
