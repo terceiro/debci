@@ -39,7 +39,7 @@ Build-Depends: debhelper (>= 9.20160709),
                shellcheck <!pkg.debci.runtime>,
                shunit2 <!pkg.debci.runtime>,
                yard <!pkg.debci.runtime>,
-Standards-Version: 4.3.0
+Standards-Version: 4.4.0
 Homepage: http://ci.debian.net/
 Vcs-Git: https://salsa.debian.org/ci-team/debci.git
 Vcs-Browser: https://salsa.debian.org/ci-team/debci
