@@ -15,5 +15,5 @@ backend="$(dirname "$0")"
 
 session_id="${debci_chroot_name}-$(basename "$debci_test_package")"
 
-debci-autopkgtest --user debci "$@" \
+debci-autopkgtest --user debci --apt-upgrade "$@" \
   -- schroot --session-id="${session_id}" "${debci_chroot_name}"
