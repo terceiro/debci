@@ -13,5 +13,5 @@ EOF
 backend=$(readlink -f $(dirname "$0"))
 . "$backend/environment.sh"
 
-debci-autopkgtest --user debci "$@" \
+debci-autopkgtest --user debci --apt-upgrade "$@" \
   -- qemu "$image"
