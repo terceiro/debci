@@ -10,7 +10,6 @@ fi
 rc=0
 autopkgtest \
   --no-built-binaries \
-  --apt-upgrade \
   ${debci_autopkgtest_args:-} \
   "$@" || rc=$?
 
