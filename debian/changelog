@@ -1,3 +1,13 @@
+debci (2.2.1) unstable; urgency=medium
+
+  * debci-autopkgtest: fix a regression when reading an undefined variable
+    - Revert "debci-autopkgtest: skip --apt-upgrade on null backend"
+    - Revert "lxc, schroot: drop explicit --apt-upgrade"
+    - Revert "debci-autopkgtest: always pass --apt-upgrade"
+    - qemu: pass --apt-upgrade to autopkgtest
+
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 24 Sep 2019 13:53:33 -0700
+
 debci (2.2) experimental; urgency=medium
 
   [ Antonio Terceiro ]
