@@ -101,6 +101,7 @@ else
   results = packages.map do |p|
     read_status_file(p)
   end
+  results.reject! { |pkg| pkg.nil? }
   if !$all && results.size == 1
     puts format_field(results.first[$field])
   else
