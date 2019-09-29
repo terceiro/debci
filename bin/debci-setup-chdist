@@ -54,21 +54,21 @@ case "$mirror" in
   (*debian*)
     debci-generate-apt-sources \
       --mirror="$mirror" \
-      --suite="$SUITE" \
       --components="$COMPONENTS" \
       --source \
       --buildd \
       --dbgsym \
-      --arch="$debci_arch" \
+      --single-arch \
+      "$SUITE" \
       > "$TARGET/etc/apt/sources.list"
     ;;
   (*)
     debci-generate-apt-sources \
       --mirror="$mirror" \
-      --suite="$SUITE" \
       --components="$COMPONENTS" \
       --source \
-      --arch="$debci_arch" \
+      --single-arch \
+      "$SUITE" \
       > "$TARGET/etc/apt/sources.list"
     ;;
 esac
