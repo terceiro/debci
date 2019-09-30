@@ -64,7 +64,7 @@
     <td><%= test[:package] %></td>
     <td><%= test[:suite] %></td>
     <td><%= test[:arch] %></td>
-    <td><%= test[:trigger] %></td>
+    <td><%= h test[:trigger] %></td>
     <td><%= test[:pin_packages] %></td>
     <td><a
         href="/packages/<%= test[:package].match(/^((lib)?.)/) %>/<%= test[:package] %>/<%= test[:suite] %>/<%= test[:arch] %>">Details</a>

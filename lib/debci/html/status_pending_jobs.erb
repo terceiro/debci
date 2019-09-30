@@ -51,7 +51,7 @@
               <a class='pending' href='/packages/<%= job.prefix %>/<%= job.package %>/<%= job.suite %>/<%= job.arch%>/'><%= job.arch %></a>
             </td>
             <td>
-              <%= job.trigger %></a>
+              <%= h job.trigger %></a>
             </td>
             <td>
               <%= job.created_at %> | <%= job.time %></a>
