@@ -45,7 +45,7 @@
           <tr>
             <td><%= test.version %></td>
             <td><%= test.date %></td>
-            <td><%= escape(test.trigger) || '&mdash;' %></td>
+            <td><%= h test.trigger %></td>
             <td><%= test.duration_human %></td>
             <td>
               <%= icon(test.status) %>

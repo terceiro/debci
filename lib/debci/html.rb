@@ -9,6 +9,7 @@ module Debci
 
   class HTML
 
+    include ERB::Util
     include ActiveSupport::NumberHelper
     attr_reader :root_directory
 
@@ -179,10 +180,6 @@ module Debci
       if File.exist?(file_path)
         File.read(file_path)
       end
-    end
-
-    def escape(text)
-      text && CGI.escapeHTML(text)
     end
 
     ICONS = {
