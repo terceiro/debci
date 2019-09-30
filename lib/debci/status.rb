@@ -171,7 +171,7 @@ module Debci
         rescue ArgumentError
           nil
         end
-      status.trigger = read_trigger(data['trigger'])
+      status.trigger = data['trigger']
       status.status = (data['status'] || :unknown).to_sym
       status.previous_status = (data['previous_status'] || :unknown).to_sym
       status.duration_seconds =
@@ -215,12 +215,6 @@ module Debci
       Debci.blacklist.include?(
         package, suite: suite, arch: architecture, version: version
       )
-    end
-
-    private
-
-    def self.read_trigger(t)
-      t && CGI.unescape(t)
     end
 
   end
