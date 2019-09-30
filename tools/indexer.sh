@@ -10,6 +10,7 @@ mkdir -p "$incoming"
 
 exec rerun \
   --no-notify \
+  --background \
   --exit \
   --dir "$incoming" \
   --pattern '**/exitcode' \
