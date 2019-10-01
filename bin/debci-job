@@ -38,6 +38,8 @@ module Debci
         suite: suite,
         arch: arch,
         pin_packages: nil
+      ).where.not(
+        status: nil,
       ).order('date DESC').first
       puts JSON.pretty_generate(latest.as_json)
     end
