@@ -1,3 +1,19 @@
+debci (2.2.2) unstable; urgency=medium
+
+  [ Paul Gevers ]
+  * Fix debci-setup-chdist to use the right interface of
+    debci-generate-apt-sources
+  * debci-status: make robust for empty result entries
+
+  [ Antonio Terceiro ]
+  * Debci::HTML: use ERB builtin HTML escaping
+  * Debci::Status: skip unescaping trigger
+  * ui: always escape triggers
+  * debci-status: skip empty entries
+  * debci job latest-json: ignore pending jobs
+
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 01 Oct 2019 12:00:25 -0300
+
 debci (2.2.1) unstable; urgency=medium
 
   * debci-autopkgtest: fix a regression when reading an undefined variable
