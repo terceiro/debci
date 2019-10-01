@@ -48,7 +48,7 @@ deb:
 	@echo "Debian packages available in tmp/deb/!"
 
 ruby-console:
-	irb -Ilib -rdebci -rdebci/job
+	./bin/debci shell
 
 check: all check-ui-and-docs check-ruby-style spec spec-postgresql functional-tests
 
