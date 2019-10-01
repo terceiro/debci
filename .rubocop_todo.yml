@@ -18,6 +18,12 @@ Style/FrozenStringLiteralComment:
 Style/SymbolProc:
   Enabled: false
 
+Style/TrailingCommaInArguments:
+  Enabled: false
+
+Style/TrailingCommaInLiteral:
+  Enabled: false
+
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*.rb'
@@ -607,26 +613,6 @@ Style/StringLiterals:
 # SupportedStyles: percent, brackets
 Style/SymbolArray:
   EnforcedStyle: brackets
-
-# Offense count: 4
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, no_comma
-Style/TrailingCommaInArguments:
-  Exclude:
-    - 'lib/debci/api.rb'
-    - 'lib/debci/config.rb'
-
-# Offense count: 6
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, no_comma
-Style/TrailingCommaInLiteral:
-  Exclude:
-    - 'lib/debci/api.rb'
-    - 'lib/debci/html.rb'
-    - 'lib/debci/job.rb'
-    - 'lib/debci/status.rb'
 
 # Offense count: 4
 # Cop supports --auto-correct.

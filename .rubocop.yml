@@ -13,6 +13,12 @@ Style/StringLiterals:
 Style/SymbolProc:
   Enabled: false
 
+Style/TrailingCommaInArguments:
+  Enabled: false
+
+Style/TrailingCommaInLiteral:
+  Enabled: false
+
 Style/WordArray:
   Enabled: false
 
