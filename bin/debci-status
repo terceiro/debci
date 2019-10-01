@@ -74,29 +74,27 @@ def format_field(v)
 end
 
 if $json
-  case packages.size
-  when 1
+  if packages.size == 1
     if $status_file
       puts File.read(get_status_file(packages.first))
     else
       data = read_status_file(packages.first)
       puts data[$field].to_json
     end
-  else
-    puts "["
-    sep = ''
-    packages.each do |p|
-      status_file = get_status_file(p)
-      if File.exist?(status_file)
-        puts sep
-        File.readlines(status_file).each do |line|
-          puts '  ' + line
-        end
-        sep = '  ,'
-      end
-    end
-    puts "]"
+    exit
   end
+
+  puts "["
+  sep = nil
+  packages.each do |p|
+    entry = read_status_file(p)
+    if entry && entry['status']
+      puts sep if sep
+      puts JSON.pretty_generate(entry, indent: '  ')
+      sep = '  ,'
+    end
+  end
+  puts "]"
 else
   results = packages.map do |p|
     read_status_file(p)
