@@ -34,13 +34,15 @@ module Debci
     end
 
     def status_alerts(filename)
-      @tmpfail = @repository.tmpfail_packages
+      # Packages with atleast one visible tmpfail status
+      @tmpfail = @repository.tmpfail_packages.select { |package| package.tmpfail.any?(&:visible?) }
+
       @alert_number = @tmpfail.length
       expand_template(:status_alerts, filename)
     end
 
     def status_slow(filename)
-      @slow = @repository.slow_packages
+      @slow = @repository.slow_statuses.select(&:visible?)
       expand_template(:status_slow, filename)
     end
 

@@ -6,7 +6,7 @@ module Debci
       @arch_list = Debci.config.arch_list
     end
 
-    def include_params(params)
+    def unpack_params(params)
       suite = params[:suite] || '*'
       arch = params[:arch] || '*'
       version = params[:version] || '*'
@@ -14,39 +14,59 @@ module Debci
     end
 
     def include?(name, params = {})
-      suite, arch, version = include_params(params)
+      suite, arch, version = unpack_params(params)
 
-      unless data.keys.include?(name)
-        data.keys.select { |k| File.fnmatch(k, name) }.each do |wildcard|
-          return true if include?(wildcard, suite: suite, arch: arch, version: version)
-        end
+      return find_expanding_package_name(name, params) unless data.key?(name)
+
+      if data[name].key?(suite)
+        nil
+      elsif data[name].key?('*')
+        suite = '*'
+      else
+        return find_expanding_wildcards(name, params)
       end
 
-      # Find a direct match
-      return true if data.dig(name, suite, arch, version)
+      if data[name][suite].key?(arch)
+        nil
+      elsif data[name][suite].key?('*')
+        arch = '*'
+      else
+        return find_expanding_wildcards(name, params)
+      end
 
-      # Contract wildcards
-      return true if data.dig(name, '*', '*', version)
-      return true if data.dig(name, '*', arch, version)
-      return true if data.dig(name, suite, '*', version)
+      return true if [version, '*'].include?(data[name][suite][arch].keys.first)
 
-      # Expand wildcards
+      find_expanding_wildcards(name, params)
+    end
+
+    def find_expanding_package_name(name, params)
+      suite, arch, version = unpack_params(params)
+      # Expand package name
+      data.keys.select { |k| File.fnmatch(k, name) }.each do |wildcard|
+        return true if include?(wildcard, suite: suite, arch: arch, version: version)
+      end
+      # None of the package name wildcards match
+      false
+    end
+
+    def find_expanding_wildcards(name, params)
+      suite, arch, version = unpack_params(params)
+
       if suite == '*'
         return @suite_list.all? do |s|
           include?(name, suite: s, arch: arch, version: version)
         end
       end
 
-      if arch == '*'
-        return @arch_list.all? do |a|
-          include?(name, suite: suite, arch: a, version: version)
-        end
+      return unless arch == '*'
+
+      @arch_list.all? do |a|
+        include?(name, suite: suite, arch: a, version: version)
       end
-      false
     end
 
     def comment(name, params = {})
-      suite, arch, version = include_params(params)
+      suite, arch, version = unpack_params(params)
       data.dig(name, suite, arch, version)
     end
 

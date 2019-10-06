@@ -25,6 +25,7 @@ describe Debci::Blacklist do
         "baz testing amd64\n",
         "fox * * 1.0.1\n",
         "xyz-*\n",
+        "pinpoint * * *\n"
       ]
       write_blacklist(content)
     end
@@ -40,6 +41,8 @@ describe Debci::Blacklist do
 
     it 'blacklists a package when direct match if found' do
       expect(blacklist.include?('foo')).to be true
+      expect(blacklist.include?('pinpoint', suite: 'testing', arch: 'arm64', version: '1:0.1.8-2'))
+        .to be true
     end
 
     it 'blacklists by contracting wildcard' do

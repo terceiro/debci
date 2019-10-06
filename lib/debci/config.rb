@@ -29,6 +29,7 @@ module Debci
     :html_dir,
     :packages_dir,
     :pending_status_per_page,
+    :status_visible_days,
     :quiet,
     :secrets_dir,
     :sendmail_from,
