@@ -62,14 +62,10 @@ module Debci
       packages = @repository.failing_packages
       @packages_per_page = Debci.config.failing_packages_per_page.to_i
 
-      @filters = { 'had_success': 'Had Success',
-                   'always_failing': 'Always Failing' }
+      generate_status_failing(dirname, packages)
 
-      generate_status_failing(dirname, packages, @filters.each_key,
-                              @packages_per_page)
       @repository.suites.map do |suite|
-        generate_status_failing(dirname, packages, @filters.each_key,
-                                @packages_per_page, suite)
+        generate_status_failing(dirname, packages, suite)
       end
     end
 
@@ -243,28 +239,52 @@ module Debci
       end
     end
 
-    def generate_status_failing(dirname, packages, filters, packages_per_page,
-                                suite = nil)
+    def generate_status_failing(dirname, packages, suite = nil)
       base = "#{dirname}#{'/' + suite if suite}"
       @suite = suite
 
+      packages = packages.select do |package|
+        package.failures.any? { |failure| (failure.suite == suite) || !suite }
+      end
+
       sorted_packages = sort_packages_by_date(packages, suite)
 
-      @packages = sorted_packages
-      filename = base + '/' + 'all' + '/' + 'index.html'
-      expand_template(:status_failing, filename)
+      generate_status_failing_all(sorted_packages, base)
+      generate_status_failing_index(sorted_packages, base)
+      generate_status_failing_always_failing(sorted_packages, base)
+      generate_status_failing_had_success(sorted_packages, base)
+    end
 
-      @packages = sorted_packages.first(packages_per_page)
-      filename = base + '/' + 'index.html'
-      expand_template(:status_failing, filename)
+    def generate_status_failing_all(packages, base)
+      @packages = packages
+      @packages_length = @packages.length
 
-      filters.each do |filter|
-        filename = base + '/' + filter.to_s + '/' + 'index.html'
-        @packages = sorted_packages.select do |p|
-          p.send(filter.to_s + '?', suite)
-        end
-        expand_template(:status_failing, filename)
-      end
+      filename = "#{base}/all/index.html"
+      expand_template(:status_failing, filename)
+    end
+
+    def generate_status_failing_index(packages, base)
+      @packages = packages.first(@packages_per_page)
+      @packages_length = @packages.length
+
+      filename = "#{base}/index.html"
+      expand_template(:status_failing, filename)
+    end
+
+    def generate_status_failing_always_failing(packages, base)
+      @packages = packages.select { |p| p.always_failing?(@suite) }
+      @packages_length = @packages.length
+
+      filename = "#{base}/always_failing/index.html"
+      expand_template(:status_failing, filename)
+    end
+
+    def generate_status_failing_had_success(packages, base)
+      @packages = packages.select { |p| p.had_success?(@suite) }
+      @packages_length = @packages.length
+
+      filename = "#{base}/had_success/index.html"
+      expand_template(:status_failing, filename)
     end
   end
 end

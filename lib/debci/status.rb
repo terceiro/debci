@@ -217,6 +217,15 @@ module Debci
       )
     end
 
+    def had_success?
+      return true if status == :pass || status == :neutral
+      ['unknown', 'never', ''].include?(last_pass_version)
+    end
+
+    def always_failing?
+      !had_success
+    end
+
   end
 
 end
