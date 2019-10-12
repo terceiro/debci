@@ -85,4 +85,42 @@ describe Debci::Job do
     v = '1.' * 100 + '0'
     Debci::Job.create!(package: 'foo', version: v)
   end
+
+  context "history" do
+    before(:each) do
+      # latest job created first on purpose, to check ordering by date
+      @job2 = Debci::Job.create(
+        package: 'foo',
+        suite: 'testing',
+        arch: 'amd64',
+        status: 'pass',
+        date: '2019-02-02 11:00'
+      )
+      @job1 = Debci::Job.create(
+        package: 'foo',
+        suite: 'testing',
+        arch: 'amd64',
+        status: 'pass',
+        date: '2019-02-01 11:00'
+      )
+      # pending/unfinished job
+      @job3 = Debci::Job.create(
+        package: 'foo',
+        suite: 'testing',
+        arch: 'amd64',
+      )
+
+      @history = Debci::Job.history('foo', 'testing', 'amd64')
+    end
+
+    it 'orders by date' do
+      i1 = @history.index(@job1)
+      i2 = @history.index(@job2)
+      expect(i1).to be < i2
+    end
+
+    it 'does not include unfinished job' do
+      expect(@history).to_not include(@job3)
+    end
+  end
 end

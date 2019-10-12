@@ -23,11 +23,7 @@ module Debci
 
     desc 'history-json PACKAGE', 'Generate package history in JSON'
     def history_json(pkg)
-      history = Debci::Job.where(
-        package: pkg,
-        suite: suite,
-        arch: arch
-      ).where.not(status: nil).order('run_id')
+      history = Debci::Job.history(pkg, suite, arch)
       puts JSON.pretty_generate(history.as_json)
     end
 

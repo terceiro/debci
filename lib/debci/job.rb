@@ -30,6 +30,14 @@ module Debci
       jobs = Debci::Job.where(status: nil).order(:created_at)
     end
 
+    def self.history(package, suite, arch)
+      Debci::Job.where(
+        package: package,
+        suite: suite,
+        arch: arch
+      ).where.not(status: nil).order('date')
+    end
+
     def prefix
       name = self.package
       name =~ /^((lib)?.)/
