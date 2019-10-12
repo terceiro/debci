@@ -35,7 +35,7 @@ module Debci
         package: package,
         suite: suite,
         arch: arch
-      ).where.not(status: nil).order('date')
+      ).where.not(status: nil).where(pin_packages: nil).order('date')
     end
 
     def prefix

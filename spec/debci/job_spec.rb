@@ -109,6 +109,16 @@ describe Debci::Job do
         suite: 'testing',
         arch: 'amd64',
       )
+      # migration test
+      @job4 = Debci::Job.create(
+        package: 'foo',
+        suite: 'testing',
+        arch: 'amd64',
+        status: 'fail',
+        date: '2019-02-03 11:00',
+        trigger: 'bar/1.1-1',
+        pin_packages: [['src:bar', 'unstable']]
+      )
 
       @history = Debci::Job.history('foo', 'testing', 'amd64')
     end
@@ -120,6 +130,10 @@ describe Debci::Job do
     end
 
     it 'does not include unfinished job' do
+      expect(@history).to_not include(@job3)
+    end
+
+    it 'does not include jobs with pinned packages' do
       expect(@history).to_not include(@job3)
     end
   end
