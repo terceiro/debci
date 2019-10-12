@@ -29,14 +29,7 @@ module Debci
 
     desc 'latest-json PACKAGE', 'Generate JSON for the most recent test job that has no pin-packages'
     def latest_json(pkg)
-      latest = Debci::Job.where(
-        package: pkg,
-        suite: suite,
-        arch: arch,
-        pin_packages: nil
-      ).where.not(
-        status: nil,
-      ).order('date DESC').first
+      latest = Debci::Job.history(pkg, suite, arch).last
       puts JSON.pretty_generate(latest.as_json)
     end
 
