@@ -45,7 +45,7 @@ class ServeStatic < Sinatra::Base
 end
 
 app = Rack::Builder.new do
-  run ServeStatic
+  run ServeStatic if ENV['RACK_ENV'] == 'development'
   map '/api' do
     run Debci::API
   end
