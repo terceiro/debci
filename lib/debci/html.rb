@@ -3,6 +3,7 @@ require 'erb'
 
 require 'debci'
 require 'debci/job'
+require 'debci/html_helpers'
 require 'fileutils'
 
 module Debci
@@ -11,6 +12,7 @@ module Debci
 
     include ERB::Util
     include ActiveSupport::NumberHelper
+    include Debci::HTMLHelpers
     attr_reader :root_directory
 
     def initialize(root_directory=Debci.config.html_dir)
@@ -179,25 +181,6 @@ module Debci
       if File.exist?(file_path)
         File.read(file_path)
       end
-    end
-
-    ICONS = {
-      pass: 'thumbs-up',
-      neutral: 'minus-circle',
-      fail: 'thumbs-down',
-      fail_passed_never: ['thumbs-down', 'ban'],
-      fail_passed_current: ['thumbs-down', 'bolt'],
-      fail_passed_old: ['thumbs-down', 'arrow-down'],
-      tmpfail_pass: 'thumbs-up',
-      tmpfail_fail: 'thumbs-down',
-      tmpfail: 'question-circle',
-      no_test_data: 'question',
-    }
-    def icon(status)
-      status ||= :no_test_data
-      Array(ICONS[status.to_sym]).map do |i|
-        "<i class='#{status} fa fa-#{i}'></i>"
-      end.join(' ')
     end
 
     def generate_platform_specific_issues(target, filter)
