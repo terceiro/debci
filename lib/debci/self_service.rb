@@ -5,10 +5,12 @@ require 'kaminari/activerecord'
 
 require 'debci/app'
 require 'debci/test_handler'
+require 'debci/html_helpers'
 
 module Debci
   class SelfService < Debci::App
     include Debci::TestHandler
+    include Debci::HTMLHelpers
 
     set :views, File.dirname(__FILE__) + '/html'
 

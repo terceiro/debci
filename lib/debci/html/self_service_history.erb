@@ -54,6 +54,7 @@
     <td>Package</td>
     <td>Suite</td>
     <td>Architecture</td>
+    <td>Status</td>
     <td>Trigger</td>
     <td>Pin-Packages</td>
     <td>Actions</td>
@@ -64,6 +65,10 @@
     <td><%= test[:package] %></td>
     <td><%= test[:suite] %></td>
     <td><%= test[:arch] %></td>
+    <td>
+      <%= icon(test.status) %>
+      <%= test[:status] %>
+    </td>
     <td><%= h test[:trigger] %></td>
     <td><%= test[:pin_packages] %></td>
     <td><a
