@@ -54,7 +54,7 @@
                 <a href="/api/v1/retry/<%= test.run_id %>"><i class='fa fa-recycle'></i></a>
               <% end %>
             </td>
-            <td><a href="/user/<%= test.requestor %>/jobs"><%= test.requestor %></a></td>
+            <td><a href="/user/<%= test.requestor %>/jobs?package=<%= @package.name %>&suite[]=<%= @suite %>&arch[]=<%= @architecture %>"><%= test.requestor %></a></td>
             <% if test.expired? %>
               <td><span class='fa fa-trash' title='file has been removed due to data retention policy'></span></td>
             <% else %>
