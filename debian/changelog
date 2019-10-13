@@ -1,3 +1,17 @@
+debci (2.3) unstable; urgency=medium
+
+  * Debci::Job: extract method to produce package history
+  * Debci::Job.history: omit migration tests
+  * debci job latest-json: reuse Debci::Job.history
+  * debci.install: install config.ru
+  * config.ru: only serve static files in development mode
+  * ui: history: fix reading log and artifacts size
+  * ui: history: when linking to requestor, filter to match current page
+  * Debci::HTML: extract method for status icons into a helper
+  * ui: user job history: display test status
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 13 Oct 2019 13:14:59 -0300
+
 debci (2.2.2) unstable; urgency=medium
 
   [ Paul Gevers ]
