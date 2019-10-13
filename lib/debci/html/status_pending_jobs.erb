@@ -35,6 +35,7 @@
           <th>Package</th>
           <th>Suite</th>
           <th>Architecture</th>
+          <th>Requestor</th>
           <th>Trigger</th>
           <th>Requested</th>
         </tr>
@@ -49,6 +50,9 @@
             </td>
             <td>
               <a class='pending' href='/packages/<%= job.prefix %>/<%= job.package %>/<%= job.suite %>/<%= job.arch%>/'><%= job.arch %></a>
+            </td>
+            <td>
+              <a href="/user/<%= job.requestor %>/jobs?package=<%= job.package %>&suite[]=<%= job.suite %>&arch[]=<%= job.arch %>"><%= job.requestor %></a>
             </td>
             <td>
               <%= h job.trigger %></a>
