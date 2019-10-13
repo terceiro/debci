@@ -1,5 +1,6 @@
 backends      usr/share/debci
 bin           usr/share/debci
+config.ru     usr/share/debci
 debian/sudoers.d/debci      etc/sudoers.d
 etc           /
 lib/*.sh      usr/share/debci/lib
