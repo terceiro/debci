@@ -79,7 +79,7 @@ module Debci
     def slow_packages
       all_non_blacklisted_statuses.select do |status|
         status.duration_seconds && status.duration_seconds > 60 * 60 # 1h
-      end
+      end.sort_by(&:duration_seconds)
     end
 
     # Returns an Array of suites for which there is data for +package+.
