@@ -134,6 +134,7 @@ module Debci
       # generate query params
       query_params = {}
       params.each do |key, val|
+        next if [:user, :page].include?(key.to_sym)
         case val
         when Array then query_params["#{key}[]"] = val
         else
