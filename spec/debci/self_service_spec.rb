@@ -1,3 +1,4 @@
+require "spec_helper"
 require 'spec_mock_server'
 require 'debci'
 require 'debci/self_service'
