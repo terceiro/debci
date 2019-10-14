@@ -128,7 +128,7 @@ module Debci
 
       # pagination
       @current_page = params[:page] || 1
-      @history = @history.page(@current_page).per(10)
+      @history = @history.page(@current_page).per(20)
       @total_pages = @history.total_pages
 
       # generate query params
