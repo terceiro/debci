@@ -124,6 +124,8 @@ module Debci
         @history = @history.where('trigger LIKE :query', query: "%#{trigger_filter}%") unless trigger_filter.nil?
       end
 
+      @history = @history.order('date DESC')
+
       # pagination
       @current_page = params[:page] || 1
       @history = @history.page(@current_page).per(10)

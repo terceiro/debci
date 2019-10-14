@@ -174,6 +174,7 @@ describe Debci::SelfService do
           trigger: "mypackage/0.0.1",
           package: "mypackage",
           pin_packages: ["src:mypackage", "unstable"],
+          date: '2019-02-03',
           requestor: "foo@bar.com"
         },
         {
@@ -181,7 +182,8 @@ describe Debci::SelfService do
           arch: "amd64",
           trigger: "testpackage/0.0.1",
           package: "testpackage",
-          pin_packages: ["src:mypackage", "unstable"],
+          pin_packages: ["src:testpackage", "unstable"],
+          date: '2019-02-05',
           requestor: "foo@bar.com"
         },
         {
@@ -189,7 +191,8 @@ describe Debci::SelfService do
           arch: "arm64",
           trigger: "testpackage/0.0.2",
           package: "testpackage",
-          pin_packages: ["src:mypackage", "unstable"],
+          pin_packages: ["src:testpackage", "unstable"],
+          date: '2019-02-04',
           requestor: "foo@bar.com"
         }
       ]
@@ -227,6 +230,12 @@ describe Debci::SelfService do
       expect(last_response.body).to match('mypackage/0.0.1')
       expect(last_response.body).to match('testpackage/0.0.1')
       expect(last_response.body).to_not match('testpackage/0.0.2')
+    end
+
+    it 'sorts by date with newest first' do
+      get '/user/foo@bar.com/jobs', { }, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+      File.open('/tmp/output', 'w') { |f| f.write(last_response.body) }
+      expect(last_response.body).to match(/testpackage.*mypackage/m)
     end
   end
 end
