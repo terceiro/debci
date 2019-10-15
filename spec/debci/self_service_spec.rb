@@ -233,8 +233,7 @@ describe Debci::SelfService do
     end
 
     it 'sorts by date with newest first' do
-      get '/user/foo@bar.com/jobs', { }, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
-      File.open('/tmp/output', 'w') { |f| f.write(last_response.body) }
+      get '/user/foo@bar.com/jobs', {}, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
       expect(last_response.body).to match(/testpackage.*mypackage/m)
     end
   end
