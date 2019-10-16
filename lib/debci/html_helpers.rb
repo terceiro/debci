@@ -1,5 +1,7 @@
 module Debci
   module HTMLHelpers
+    include ActiveSupport::NumberHelper
+
     ICONS = {
       pass: 'thumbs-up',
       neutral: 'minus-circle',
@@ -18,6 +20,12 @@ module Debci
       Array(ICONS[status.to_sym]).map do |i|
         "<i class='#{status} fa fa-#{i}'></i>"
       end.join(' ')
+    end
+
+    def filesize(filename, format)
+      if File.exist?(filename)
+        format % number_to_human_size(File.size(filename))
+      end
     end
   end
 end

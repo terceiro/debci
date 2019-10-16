@@ -11,7 +11,6 @@ module Debci
   class HTML
 
     include ERB::Util
-    include ActiveSupport::NumberHelper
     include Debci::HTMLHelpers
     attr_reader :root_directory
 
@@ -115,12 +114,6 @@ module Debci
     # expand { SUITE } macro in URLs
     def expand_url(url, suite)
       url && url.gsub('{SUITE}', suite)
-    end
-
-    def filesize(filename,format)
-      if File.exist?(filename)
-        format % number_to_human_size(File.size(filename))
-      end
     end
 
     def history(package, suite, architecture, filename)
