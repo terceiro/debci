@@ -1,3 +1,16 @@
+debci (2.4) unstable; urgency=medium
+
+  * ui: pending jobs: display requestor
+  * Debci::Repository: sort "slow packages" by duration
+  * ui: job history: sort by date with newest first
+  * ui: job history: avoid extra params in pagination links
+  * ui: job history: increase num of items per page
+  * Debci::Status: extract #expired? into a module
+  * Debci::HTML: extract #filesize into Debci::HTMLHelpers
+  * ui: job history: link to test results
+
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 15 Oct 2019 23:21:46 -0300
+
 debci (2.3) unstable; urgency=medium
 
   * Debci::Job: extract method to produce package history
