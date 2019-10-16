@@ -23,9 +23,8 @@ module Debci
     end
 
     def filesize(filename, format)
-      if File.exist?(filename)
-        format % number_to_human_size(File.size(filename))
-      end
+      return nil unless File.exist?(filename)
+      format % number_to_human_size(File.size(filename))
     end
   end
 end
