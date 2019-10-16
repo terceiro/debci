@@ -2,11 +2,15 @@ require 'cgi'
 require 'json'
 require 'time'
 
+require 'debci/test/expired'
+
 module Debci
 
   # This class represents one test execution.
 
   class Status
+
+    include Debci::Test::Expired
 
     attr_accessor :suite, :architecture, :run_id, :package, :version, :date, :trigger, :status, :previous_status, :duration_seconds, :message, :last_pass_version, :last_pass_date, :requestor
 
@@ -190,16 +194,6 @@ module Debci
         end
 
       status
-    end
-
-    def expired?
-      days = Debci.config.data_retention_days.to_i
-      if days > 0
-        retention_window = days * (24*60*60)
-        Time.now > self.date + retention_window
-      else
-        false
-      end
     end
 
     def newer?(days)

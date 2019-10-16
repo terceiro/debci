@@ -15,6 +15,12 @@ Style/Documentation:
 Style/FrozenStringLiteralComment:
   Enabled: false
 
+Style/NumericPredicate:
+  Enabled: false
+
+Style/RedundantSelf:
+  Enabled: false
+
 Style/SymbolProc:
   Enabled: false
 
@@ -519,16 +525,6 @@ Style/Not:
 Style/NumericLiterals:
   MinDigits: 6
 
-# Offense count: 4
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect, EnforcedStyle.
-# SupportedStyles: predicate, comparison
-Style/NumericPredicate:
-  Exclude:
-    - 'spec/**/*'
-    - 'bin/debci-status'
-    - 'lib/debci/status.rb'
-
 # Offense count: 1
 # Cop supports --auto-correct.
 Style/PerlBackrefs:
@@ -553,16 +549,6 @@ Style/RandomWithOffset:
 Style/RedundantBegin:
   Exclude:
     - 'lib/debci/api.rb'
-
-# Offense count: 10
-# Cop supports --auto-correct.
-Style/RedundantSelf:
-  Exclude:
-    - 'lib/debci/api.rb'
-    - 'lib/debci/config.rb'
-    - 'lib/debci/job.rb'
-    - 'lib/debci/repository.rb'
-    - 'lib/debci/status.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
