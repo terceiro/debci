@@ -1,5 +1,6 @@
 require 'debci'
 require 'debci/db'
+require 'debci/test/expired'
 require 'cgi'
 require 'time'
 
@@ -7,6 +8,8 @@ require 'bunny'
 
 module Debci
   class Job < ActiveRecord::Base
+
+    include Debci::Test::Expired
 
     serialize :pin_packages, Array
 
