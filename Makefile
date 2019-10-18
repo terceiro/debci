@@ -9,7 +9,7 @@ MANPAGES = $(patsubst bin/%, man/%.1, $(shell grep -rl =head1 bin/*))
 
 all: $(LINKS) $(MANPAGES)
 
-.PHONY: spec check test
+.PHONY: spec check test quick-check
 
 checkdeps:
 	@if which dpkg-checkbuilddeps >/dev/null && which grep-dctrl >/dev/null; then dpkg-checkbuilddeps -d "$$(grep-dctrl -n -s Depends . debian/control | grep -v '\$$')"; fi
@@ -63,6 +63,8 @@ check-ruby-style:
 	if type rubocop; then rubocop -c .rubocop_todo.yml; fi
 
 test: check
+
+quick-check: check-ruby-style spec
 
 doc: public/doc/index.html public/doc/architecture.svg
 
