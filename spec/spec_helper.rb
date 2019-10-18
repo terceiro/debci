@@ -1,6 +1,7 @@
 require 'yaml'
 ENV['DATABASE_URL'] ||= 'sqlite3::memory:'
 require 'debci/db'
+require 'debci/job'
 
 Debci.config.quiet = true
 Debci::DB.migrate
