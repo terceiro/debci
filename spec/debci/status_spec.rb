@@ -165,6 +165,10 @@ describe Debci::Status do
       s = Debci::Status.new.tap { |_s| _s.date = Time.now - (365*24*60*60) }
       expect(s).to_not be_expired
     end
+    it 'should not be expired without having a date' do
+      s = Debci::Status.new
+      expect(s).to_not be_expired
+    end
   end
 
   context 'calculating human-friendly duration' do
