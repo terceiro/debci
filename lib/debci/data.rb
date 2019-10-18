@@ -84,7 +84,7 @@ module Debci
               jobs.each do |data|
                 # load job to database
                 orig_run_id = data.delete('run_id')
-                job = Debci::Job.create!(data)
+                job = load_job(data)
 
                 pkgs.add(job.package)
 
@@ -134,6 +134,15 @@ module Debci
           system(*cmd)
         end
         update_html(pkgs.to_a)
+      end
+
+      def load_job(data)
+        job = Debci::Job.new
+        data.each do |attr, value|
+          job[attr] = value if job.attributes.key?(attr)
+        end
+        job.save!
+        job
       end
 
       def update_html(pkgs)
