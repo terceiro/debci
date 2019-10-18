@@ -137,4 +137,11 @@ describe Debci::Job do
       expect(@history).to_not include(@job3)
     end
   end
+
+  context 'generating JSON' do
+    it 'provides duration_human' do
+      job = Debci::Job.new(duration_seconds: 65)
+      expect(job.as_json["duration_human"]).to be_a(String)
+    end
+  end
 end

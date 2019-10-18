@@ -1,5 +1,6 @@
 require 'debci'
 require 'debci/db'
+require 'debci/test/duration'
 require 'debci/test/expired'
 require 'cgi'
 require 'time'
@@ -9,6 +10,7 @@ require 'bunny'
 module Debci
   class Job < ActiveRecord::Base
 
+    include Debci::Test::Duration
     include Debci::Test::Expired
 
     serialize :pin_packages, Array
@@ -56,6 +58,10 @@ module Debci
       else
         "#{Time.at(Time.now - self.created_at).gmtime.strftime('%H')} hour(s) ago"
       end
+    end
+
+    def as_json(options = nil)
+      super(options).update("duration_human" => self.duration_human)
     end
 
     def get_enqueue_parameters
