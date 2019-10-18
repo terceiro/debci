@@ -2,6 +2,7 @@ require 'cgi'
 require 'json'
 require 'time'
 
+require 'debci/test/duration'
 require 'debci/test/expired'
 
 module Debci
@@ -10,6 +11,7 @@ module Debci
 
   class Status
 
+    include Debci::Test::Duration
     include Debci::Test::Expired
 
     attr_accessor :suite, :architecture, :run_id, :package, :version, :date, :trigger, :status, :previous_status, :duration_seconds, :message, :last_pass_version, :last_pass_date, :requestor
@@ -75,16 +77,6 @@ module Debci
       else
         status
       end
-    end
-
-    def duration_human
-      s = duration_seconds.to_i
-      return '0s' if s == 0
-      {
-        h: s / 3600,
-        m: (s % 3600) / 60,
-        s: s % 60,
-      }.select { |k,v| v > 0 }.map { |k,v| v.to_s + k.to_s }.join(' ')
     end
 
     def failmsg
