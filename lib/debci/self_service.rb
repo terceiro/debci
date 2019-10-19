@@ -19,9 +19,37 @@ module Debci
       set :archs, Debci.config.arch_list
     end
 
+    enable :sessions
+
+    before do
+      authenticate! unless request.path =~ %r{/user/[^/]+/jobs/?$} || request.path == '/user/login'
+    end
+
+    def authenticate!
+      if session[:user].nil?
+        redirect('/user/login')
+      else
+        @user = session[:user]
+      end
+    end
+
     get '/' do
-      halt(403, "Unauthenticated!\n") unless @user
       redirect("/user/#{@user}")
+    end
+
+    get '/login' do
+      user = read_request_user
+      if user
+        session[:user] = user
+        redirect("/user/#{user}")
+      else
+        halt(403, "Unauthenticated!\n")
+      end
+    end
+
+    get '/logout' do
+      session[:user] = nil
+      redirect '/'
     end
 
     get '/:user' do

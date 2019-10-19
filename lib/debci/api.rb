@@ -71,6 +71,10 @@ module Debci
 
     attr_reader :suite, :arch, :user
 
+    before do
+      @user = read_request_user
+    end
+
     get '/' do
       redirect request.script_name + '/doc'
     end
