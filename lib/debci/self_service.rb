@@ -2,6 +2,7 @@ require 'sinatra'
 require 'json'
 require 'kaminari/core'
 require 'kaminari/activerecord'
+require 'securerandom'
 
 require 'debci/app'
 require 'debci/test_handler'
@@ -20,6 +21,7 @@ module Debci
     end
 
     enable :sessions
+    set :session_secret, Debci.config.session_secret || SecureRandom.hex(64)
 
     before do
       authenticate! unless request.path =~ %r{/user/[^/]+/jobs/?$} || request.path == '/user/login'

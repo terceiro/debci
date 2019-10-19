@@ -178,6 +178,8 @@ debci_data_retention_days=${debci_data_retention_days:-180}
 # extra arguments for autopkgtest
 debci_autopkgtest_args="${debci_autopkgtest_args:-}"
 
+# session secret for the web interface
+debci_session_secret="${debci_session_secret:-}"
 
 for dir in \
   "${debci_base_dir}/backends/${debci_backend}" \

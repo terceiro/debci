@@ -5,6 +5,7 @@ set -e
 # Note the line below: this script is for development only. DO NOT EVER use
 # this script for a production deployment.
 export FAKE_CERTIFICATE_USER=$USER
+export debci_session_secret=$(echo "debci:$(cat /etc/machine-id)" | awk '{print($1)}')
 
 case $# in
   0)

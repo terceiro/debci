@@ -32,6 +32,7 @@ module Debci
     :secrets_dir,
     :sendmail_from,
     :sendmail_to,
+    :session_secret,
     :suite,
     :suite_list,
     :url_base,
