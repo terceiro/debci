@@ -45,7 +45,9 @@ module Debci
         session[:user] = user
         redirect("/user/#{user}")
       else
-        halt(403, "Unauthenticated!\n")
+        content = "Unauthenticated!\n"
+        content = File.read(Debci.config.auth_fail_page) if Debci.config.auth_fail_page
+        halt(403, content)
       end
     end
 

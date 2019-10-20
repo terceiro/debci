@@ -18,6 +18,7 @@ module Debci
     :arch,
     :arch_list,
     :artifacts_url_base,
+    :auth_fail_page,
     :backend,
     :config_dir,
     :data_basedir,

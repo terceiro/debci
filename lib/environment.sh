@@ -181,6 +181,9 @@ debci_autopkgtest_args="${debci_autopkgtest_args:-}"
 # session secret for the web interface
 debci_session_secret="${debci_session_secret:-}"
 
+# page to display when authentication fails
+debci_auth_fail_page="${debci_auth_fail_page:-}"
+
 for dir in \
   "${debci_base_dir}/backends/${debci_backend}" \
   "${debci_bin_dir}"
