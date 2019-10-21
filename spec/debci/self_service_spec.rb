@@ -223,6 +223,14 @@ describe Debci::SelfService do
       expect(last_response.body).to match('testpackage/0.0.2')
     end
 
+    it 'accepts * as wildcard' do
+      get '/user/foo@bar.com/jobs', package: '*package', trigger: ''
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to match('mypackage/0.0.1')
+      expect(last_response.body).to match('testpackage/0.0.1')
+      expect(last_response.body).to match('testpackage/0.0.2')
+    end
+
     it 'displays correct results with trigger and arch filters' do
       get '/user/foo@bar.com/jobs', package: '', trigger: 'mypackage/0.0.1', arch: [arch]
       expect(last_response.status).to eq(200)

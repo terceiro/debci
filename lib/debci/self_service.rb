@@ -151,7 +151,7 @@ module Debci
       unless package_filter.empty?
         @history = @history.where(
           'package LIKE :query',
-          query: package_filter,
+          query: package_filter.tr('*', '%'),
         )
       end
 
