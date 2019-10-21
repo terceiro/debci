@@ -149,7 +149,7 @@ module Debci
       @history = Debci::Job.where(query)
 
       unless package_filter.empty?
-        @history = @history.where('package LIKE :query', query: "%#{package_filter}%") unless package_filter.nil?
+        @history = @history.where('package LIKE :query', query: package_filter) unless package_filter.nil?
       end
 
       unless trigger_filter.empty?

@@ -217,9 +217,8 @@ describe Debci::SelfService do
     end
 
     it 'displays correct results with package filter' do
-      get '/user/foo@bar.com/jobs', package: 'package', trigger: ''
+      get '/user/foo@bar.com/jobs', package: 'testpackage', trigger: ''
       expect(last_response.status).to eq(200)
-      expect(last_response.body).to match('mypackage/0.0.1')
       expect(last_response.body).to match('testpackage/0.0.1')
       expect(last_response.body).to match('testpackage/0.0.2')
     end
@@ -239,7 +238,7 @@ describe Debci::SelfService do
     end
 
     it 'displays correct results with all filters' do
-      get '/user/foo@bar.com/jobs', package: 'package', trigger: 'package/0.0.1', arch: [arch], suite: [suite]
+      get '/user/foo@bar.com/jobs', package: '%package', trigger: 'package/0.0.1', arch: [arch], suite: [suite]
       expect(last_response.status).to eq(200)
       expect(last_response.body).to match('mypackage/0.0.1')
       expect(last_response.body).to match('testpackage/0.0.1')
