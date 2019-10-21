@@ -2,8 +2,7 @@ require 'debci/job'
 
 module Debci
   module TestHandler
-    def enqueue(job)
-      priority = 1
+    def enqueue(job, priority = 1)
       job.enqueue(priority)
     end
 
