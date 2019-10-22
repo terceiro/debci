@@ -72,7 +72,3 @@ prefixes.each do |p|
   writer.prefix(p, "packages/#{p}/index.html")
   Debci.log('%s prefix html updated' % p)
 end
-
-# remove files that are not used anymore
-FileUtils.rm_f(File.join(Debci.config.html_dir, 'status/platforms.json'))
-FileUtils.rm_f(File.join(Debci.config.html_dir, 'packages/packages.json'))
