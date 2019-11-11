@@ -1,3 +1,23 @@
+debci (2.5) unstable; urgency=medium
+
+  * Debci::Status: extract duration_human to a module
+  * Debci::Data::Import: ignore unknown fields
+  * Makefile: add quick-check target to run robocop and rspec
+  * Debci::Job: include readable duration in JSON output
+  * spec_helper: add missing require
+  * Debci::Test::Expired: short circuit to false
+  * ui: job history: don't link to results of unfinished tests
+  * self_service: redesign authentication
+  * ui: self_service: use a configured session secret key
+  * ui: self_service: display custom "auth failed" page
+  * Debci::TestHandler.enqueue: make priority an argument
+  * ui: job history: do only exact match on package names
+  * Debci::SelfService: remove pointless check
+  * ui: job history: accept * as wildcard for package names
+  * Revert "Debci::Repository: sort "slow packages" by duration"
+
+ -- Antonio Terceiro <terceiro@debian.org>  Mon, 11 Nov 2019 11:06:23 -0300
+
 debci (2.4) unstable; urgency=medium
 
   * ui: pending jobs: display requestor
