@@ -10,7 +10,7 @@ $@
 EOF
 }
 
-container_name=$(date +ci-%s)
+container_name=ci-$(openssl rand -hex 6)
 
 debci-autopkgtest --user debci --apt-upgrade "$@" \
   -- lxc --sudo --name "${container_name}" "autopkgtest-${debci_suite}-${debci_arch}"
