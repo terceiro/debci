@@ -18,3 +18,7 @@ override_dh_gencontrol:
 
 override_dh_installinit:
 	@true
+
+override_dh_install:
+	dh_install
+	debian/sanity-check

@@ -2,7 +2,13 @@
 
 set -e
 
+migrate_data() {
+    su --login --command '/usr/bin/debci migrate' debci
+}
+
 if [ "$1" = configure ]; then
+  migrate_data
+
   if [ -z "$2" ]; then
     ###################################################################
     # new installs

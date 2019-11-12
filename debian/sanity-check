@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -eu
+
+# check that every program under bin/ is installed to one of the binary packages
+for prog in $(find bin/ -type f); do
+  ls -1 debian/*/usr/share/debci/bin/${prog#bin/} > /dev/null
+done

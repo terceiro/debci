@@ -96,6 +96,8 @@ Architecture: all
 Depends: debci (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
+Breaks: debci (<< 2.6)
+Replaces: debci (<< 2.6)
 Recommends: rabbitmq-server,
 Description: continuous integration system for Debian (collector daemon)
  debci will scan the Debian archive for packages that contain DEP-8 compliant
