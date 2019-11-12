@@ -15,10 +15,20 @@ module Debci
 
     serialize :pin_packages, Array
 
+    class InvalidStatusFile < RuntimeError; end
+
     def self.import(status_file, suite, arch)
       status = Debci::Status.from_file(status_file, suite, arch)
       status.run_id = status.run_id.to_i
       job = Debci::Job.find(status.run_id)
+      if status.package != job.package
+        raise InvalidStatusFile.new("Data in %{file} is for package %{pkg}, while database says that job %{id} is for package %{origpkg}" % {
+          file: status_file,
+          pkg: status.package,
+          id: status.run_id,
+          origpkg: job.package,
+        })
+      end
       job.duration_seconds = status.duration_seconds
       job.date = status.date
       job.last_pass_date = status.last_pass_date

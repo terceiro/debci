@@ -81,6 +81,30 @@ describe Debci::Job do
     expect(job.previous_status).to eq('fail')
   end
 
+  it 'refuses to import incorrect jobs' do
+    job = Debci::Job.create(package: "foo", suite: suite, arch: arch)
+    file = Tempfile.new('foo')
+    file.write(
+      {
+        'package': 'bar',
+        'run_id': job.run_id,
+        'status': 'pass',
+        'version': '1.0-1',
+        'duration_seconds': 11,
+        'date': '2018-09-09 20:40:00',
+        'last_pass_date': '2018-01-09 20:40:00',
+        'last_pass_version': '0.9-1',
+        'message': 'bla bla bla',
+        'previous_status': 'fail'
+      }.to_json
+    )
+    file.close
+
+    expect(-> { Debci::Job.import(file.path, suite, arch) }).to raise_error(Debci::Job::InvalidStatusFile)
+    job.reload
+    expect(job.status).to be_nil
+  end
+
   it 'takes ridiculously large version numbers' do
     v = '1.' * 100 + '0'
     Debci::Job.create!(package: 'foo', version: v)
