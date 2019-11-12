@@ -1,11 +1,10 @@
 require 'debci'
+require 'debci/amqp'
 require 'debci/db'
 require 'debci/test/duration'
 require 'debci/test/expired'
 require 'cgi'
 require 'time'
-
-require 'bunny'
 
 module Debci
   class Job < ActiveRecord::Base
@@ -87,31 +86,9 @@ module Debci
     end
 
     def enqueue(priority = 0)
-      queue = self.class.get_queue(arch)
+      queue = Debci::AMQP.get_queue(arch)
       parameters = get_enqueue_parameters()
       queue.publish("%s %s %s" % [package, suite, parameters.join(' ')], priority: priority)
-    end
-
-    def self.get_queue(arch)
-      @queues ||= {}
-      @queues[arch] ||=
-        begin
-          opts = {
-            durable: true,
-            arguments: {
-              'x-max-priority': 10,
-            }
-          }
-          q = ENV['debci_amqp_queue'] || "debci-tests-#{arch}-#{Debci.config.backend}"
-          self.amqp_channel.queue(q, opts)
-        end
-    end
-
-    def self.amqp_channel
-      @conn ||= Bunny.new(Debci.config.amqp_server).tap do |conn|
-        conn.start
-      end
-      @channel ||= @conn.create_channel
     end
 
   end

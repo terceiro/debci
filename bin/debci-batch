@@ -68,7 +68,7 @@ process_all_packages() {
 
   # TODO: we need something more flexible than $debci_backend here -- look at
   # tests' isolation restrictions
-  debci job declare-queue
+  debci amqp declare-queue
 
   # determine packages which need to be tested and request tests
   for pkg in $(all_packages_with_fastest_first); do

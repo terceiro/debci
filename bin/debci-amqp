@@ -1,0 +1,17 @@
+#!/usr/bin/ruby
+
+require 'thor'
+
+require 'debci'
+require 'debci/amqp'
+
+module Debci
+  class AMQPCLI < Thor
+    desc 'declare-queue', 'Initializes job queue'
+    def declare_queue
+      Debci::AMQP.get_queue(Debci.config.arch)
+    end
+  end
+end
+
+Debci::AMQPCLI.start

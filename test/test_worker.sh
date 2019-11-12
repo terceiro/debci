@@ -23,7 +23,7 @@ settle_processes() {
 
 run_mypkg() {
   start_worker
-  debci job declare-queue
+  debci amqp declare-queue
   start_collector
   request mypkg
   # give it some time to process requests; make it large for slow systems
@@ -97,7 +97,7 @@ test_smoke() {
   unset DEBCI_FAKE_KILLPARENT
 
   start_rabbitmq_server
-  debci job declare-queue
+  debci amqp declare-queue
 
   local WORKERS=''
   for i in `seq $NUM_WORKERS`; do

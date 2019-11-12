@@ -145,5 +145,5 @@ amqp-declare-queue \
 # amqp-consume calls ourselves with the (hidden) --do-request option
 amqp_queue="${debci_amqp_queue}${tags}"
 log "I: Connecting to AMQP queue $amqp_queue on ${debci_amqp_server_display}"
-debci job declare-queue
+debci amqp declare-queue
 exec amqp-consume --url ${debci_amqp_server} -q $amqp_queue --prefetch-count 1 -- $0 --do-request

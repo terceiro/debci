@@ -6,12 +6,13 @@ lib/*.sh      usr/share/debci/lib
 lib/debci*    usr/lib/ruby/vendor_ruby
 public        usr/share/debci
 
-bin/debci                  usr/share/debci/bin
-bin/debci-localtest        usr/share/debci/bin
-bin/debci-autopkgtest      usr/share/debci/bin
-bin/debci-test             usr/share/debci/bin
-bin/debci-worker           usr/share/debci/bin
-bin/debci-update-worker    usr/share/debci/bin
-bin/debci-setup            usr/share/debci/bin
-bin/debci-config           usr/share/debci/bin
+bin/debci                       usr/share/debci/bin
+bin/debci-localtest             usr/share/debci/bin
+bin/debci-autopkgtest           usr/share/debci/bin
+bin/debci-test                  usr/share/debci/bin
+bin/debci-worker                usr/share/debci/bin
+bin/debci-update-worker         usr/share/debci/bin
+bin/debci-setup                 usr/share/debci/bin
+bin/debci-config                usr/share/debci/bin
 bin/debci-generate-apt-sources  usr/share/debci/bin
+bin/debci-amqp                  usr/share/debci/bin
