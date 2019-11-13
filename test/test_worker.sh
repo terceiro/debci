@@ -10,10 +10,12 @@ request() {
   debci enqueue $1
 }
 
+existing_processes=$(ps hx -o pid,comm|egrep "(debci|test-package|autopkgtest|amqp-consume)"| ruby -e 'puts STDIN.readlines.map{ |l| l.split.first }.to_a.join("|")')
+
 settle_processes() {
   local timeout=600
   while [ $timeout -gt 0 ]; do
-    PS=$(ps hx -o pid,comm|egrep "(debci|test-package|autopkgtest|amqp-consume)"|sort -u)
+    PS=$(ps hx -o pid,comm| egrep -v "^\s*($existing_processes)\b" | egrep "(debci|test-package|autopkgtest|amqp-consume)"|sort -u)
     [ -n "$PS" ] || break
     timeout=$((timeout - 1))
     sleep 0.1
