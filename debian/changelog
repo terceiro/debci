@@ -1,3 +1,12 @@
+debci (2.6) UNRELEASED; urgency=medium
+
+  * lxc: generate random container names
+  * Debci::Job.import: validate package name
+  * Move collector-only programs to debci-collector
+  * Debci::AMQP: consolidate AMQP connection logic
+
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 12 Nov 2019 21:46:07 -0300
+
 debci (2.5) unstable; urgency=medium
 
   * Debci::Status: extract duration_human to a module
