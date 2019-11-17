@@ -1,11 +1,15 @@
-debci (2.6) UNRELEASED; urgency=medium
+debci (2.6) unstable; urgency=medium
 
   * lxc: generate random container names
   * Debci::Job.import: validate package name
   * Move collector-only programs to debci-collector
   * Debci::AMQP: consolidate AMQP connection logic
+  * test_worker: exclude existing processes from check for leftover processes
+  * ui: user job list: show a reasonable number of pagination links
+  * debci-collector: override "no ruby dep" from lintian
+  * Bump Standards-Version to 4.4.1; no changes needed
 
- -- Antonio Terceiro <terceiro@debian.org>  Tue, 12 Nov 2019 21:46:07 -0300
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 17 Nov 2019 19:28:29 -0300
 
 debci (2.5) unstable; urgency=medium
 
