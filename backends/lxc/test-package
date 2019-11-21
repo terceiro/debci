@@ -10,7 +10,9 @@ $@
 EOF
 }
 
-container_name=ci-$(openssl rand -hex 6)
+# container name has to be 15 characters or less. see
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=898875
+container_name=ci-$(date +%j)-$(openssl rand -hex 4)
 
 debci-autopkgtest --user debci --apt-upgrade "$@" \
   -- lxc --sudo --name "${container_name}" "autopkgtest-${debci_suite}-${debci_arch}"
