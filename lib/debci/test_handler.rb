@@ -40,9 +40,11 @@ module Debci
         pkg = test['package']
         enqueue = true
         status = nil
+        date = nil
         if Debci.blacklist.include?(pkg, suite: suite, arch: arch) || !valid_package_name?(pkg)
           enqueue = false
           status = 'fail'
+          date = Time.now
         end
 
         job = Debci::Job.create!(
@@ -51,6 +53,7 @@ module Debci
           arch: arch,
           requestor: requestor,
           status: status,
+          date: date,
           trigger: test['trigger'],
           pin_packages: test['pin-packages']
         )

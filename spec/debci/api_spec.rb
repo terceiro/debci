@@ -162,9 +162,11 @@ describe Debci::API do
 
         job1 = Debci::Job.find_by(package: 'package1', suite: suite, arch: arch)
         expect(job1.status).to eq('fail')
+        expect(job1.date).to_not be_nil
 
         job2 = Debci::Job.find_by(package: 'package2', suite: suite, arch: arch)
         expect(job2.status).to be_nil
+        expect(job2.date).to be_nil
       end
 
       it 'marks invalid package names as failed right away' do
