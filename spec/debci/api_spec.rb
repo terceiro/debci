@@ -123,7 +123,7 @@ describe Debci::API do
       end
     end
 
-    context 'for test a batch' do
+    context 'for a test batch' do
       it 'accepts a valid request' do
         allow_any_instance_of(Debci::Job).to receive(:enqueue)
 
@@ -152,8 +152,8 @@ describe Debci::API do
       end
 
       it 'marks blacklisted packages as failed right away' do
-        allow_any_instance_of(Debci::Blacklist).to receive(:include?).with('package1').and_return(true)
-        allow_any_instance_of(Debci::Blacklist).to receive(:include?).with('package2').and_return(false)
+        allow_any_instance_of(Debci::Blacklist).to receive(:include?).with('package1', suite: suite, arch: arch).and_return(true)
+        allow_any_instance_of(Debci::Blacklist).to receive(:include?).with('package2', suite: suite, arch: arch).and_return(false)
 
         expect_any_instance_of(Debci::Job).to receive(:enqueue).once
 

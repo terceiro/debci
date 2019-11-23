@@ -40,7 +40,7 @@ module Debci
         pkg = test['package']
         enqueue = true
         status = nil
-        if Debci.blacklist.include?(pkg) || !valid_package_name?(pkg)
+        if Debci.blacklist.include?(pkg, suite: suite, arch: arch) || !valid_package_name?(pkg)
           enqueue = false
           status = 'fail'
         end
