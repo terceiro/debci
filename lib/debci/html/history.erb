@@ -59,9 +59,9 @@
             <% if test.expired? %>
               <td><span class='fa fa-trash' title='file has been removed due to data retention policy'></span></td>
             <% else %>
-              <td>debci log</a></td>
+	      <td>
 		<%= filesize(File.join(Debci.config.data_basedir, 'packages', package_dir, "#{test.run_id}.log"), "<a href=\"/data/packages/#{package_dir}/#{test.run_id}.log\">debci log</a>") %>
-		</td>
+	      </td>
             <% end %>
             <% if @artifacts_url_base %>
               <td><a href="<%= @artifacts_url_base %>/<%= @package_dir %>/<%= test.run_id %>/log.gz">test log</a></td>
