@@ -55,10 +55,13 @@
               <% end %>
             </td>
             <td><a href="/user/<%= test.requestor %>/jobs?package=<%= @package.name %>&suite[]=<%= @suite %>&arch[]=<%= @architecture %>"><%= test.requestor %></a></td>
+	    <% package_dir = [test.suite, test.architecture, test.prefix, test.package].join('/') %>
             <% if test.expired? %>
               <td><span class='fa fa-trash' title='file has been removed due to data retention policy'></span></td>
             <% else %>
-              <td><a href="/<%= @packages_dir %>/<%= @package_dir %>/<%= test.run_id %>.log">debci log</a></td>
+              <td>debci log</a></td>
+		<%= filesize(File.join(Debci.config.data_basedir, 'packages', package_dir, "#{test.run_id}.log"), "<a href=\"/data/packages/#{package_dir}/#{test.run_id}.log\">debci log</a>") %>
+		</td>
             <% end %>
             <% if @artifacts_url_base %>
               <td><a href="<%= @artifacts_url_base %>/<%= @package_dir %>/<%= test.run_id %>/log.gz">test log</a></td>
@@ -69,10 +72,13 @@
                 <td><span class='fa fa-trash' title='file has been removed due to data retention policy'></span></td>
               <% else %>
 		<% dirname = File.join(Debci.config.data_basedir, 'autopkgtest', @package_dir, test.run_id.to_s) %>
-                <td><a href="/data/autopkgtest/<%= @package_dir %>/<%= test.run_id %>/log.gz">test log</a>
-		<small><%= filesize(File.join(dirname,'log.gz'),"(%s)")%></small></td>
-                <td><a href="/data/autopkgtest/<%= @package_dir %>/<%= test.run_id %>/artifacts.tar.gz">artifacts</a>
-		<small><%= filesize(File.join(dirname,'artifacts.tar.gz'),"(%s)")%></small></td>
+		<td>
+		  <%= filesize(File.join(dirname,'log.gz'),"<a href=\"/data/autopkgtest/#{package_dir}/#{test.run_id}/log.gz\">test log</a> <small>(%s)</small>")%>
+		</td>
+		<td>
+		  <%= filesize(File.join(dirname,'artifacts.tar.gz'),"<a href=\"/data/autopkgtest/#{package_dir}/#{test.run_id}/artifacts.tar.gz\">artifacts</a> <small>(%s)</small>")%>
+		</td>
+
               <% end %>
             <% end %>
           </tr>
