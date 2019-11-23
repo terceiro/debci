@@ -4,6 +4,7 @@ require 'time'
 
 require 'debci/test/duration'
 require 'debci/test/expired'
+require 'debci/test/prefix'
 
 module Debci
 
@@ -13,6 +14,7 @@ module Debci
 
     include Debci::Test::Duration
     include Debci::Test::Expired
+    include Debci::Test::Prefix
 
     attr_accessor :suite, :architecture, :run_id, :package, :version, :date, :trigger, :status, :previous_status, :duration_seconds, :message, :last_pass_version, :last_pass_date, :requestor
 

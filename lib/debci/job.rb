@@ -3,6 +3,7 @@ require 'debci/amqp'
 require 'debci/db'
 require 'debci/test/duration'
 require 'debci/test/expired'
+require 'debci/test/prefix'
 require 'cgi'
 require 'time'
 
@@ -11,6 +12,7 @@ module Debci
 
     include Debci::Test::Duration
     include Debci::Test::Expired
+    include Debci::Test::Prefix
 
     serialize :pin_packages, Array
 
@@ -50,12 +52,6 @@ module Debci
         suite: suite,
         arch: arch
       ).where.not(status: nil).where(pin_packages: nil).order('date')
-    end
-
-    def prefix
-      name = self.package
-      name =~ /^((lib)?.)/
-      $1
     end
 
     # Returns the amount of time since the date for this status object
