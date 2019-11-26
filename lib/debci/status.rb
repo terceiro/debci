@@ -131,6 +131,7 @@ module Debci
       status.architecture = architecture
 
       unless File.exists?(file)
+        status.package = File.basename(File.dirname(file))
         status.status = :no_test_data
         return status
       end

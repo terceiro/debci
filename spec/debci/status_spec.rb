@@ -62,9 +62,10 @@ describe Debci::Status do
 
   context 'no status file' do
     before(:each) do
-      @status = from_file('does-not-exist.json')
+      @status = from_file('path/to/mypackage/does-not-exist.json')
     end
     it('Sets a status') { expect(@status.status).to eq(:no_test_data) }
+    it('Sets a package name') { expect(@status.package).to eq('mypackage') }
   end
 
   context 'news' do
