@@ -185,6 +185,11 @@ describe Debci::Status do
       status = status_with(duration_seconds: 3600 + 60 + 2)
       expect(status.duration_human).to eq('1h 1m 2s')
     end
+
+    it 'handle nil' do
+      status = status_with(duration_seconds: nil)
+      expect(status.duration_human).to eq('(n/a)')
+    end
   end
 
   it 'might be blacklisted' do

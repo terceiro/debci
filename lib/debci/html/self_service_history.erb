@@ -56,6 +56,7 @@
     <td>Suite</td>
     <td>Architecture</td>
     <td>Status</td>
+    <td>Duration</td>
     <td>Trigger</td>
     <td>Pin-Packages</td>
     <td>Results</td>
@@ -71,6 +72,9 @@
     <td>
       <%= icon(test.status) %>
       <%= test[:status] %>
+    </td>
+    <td>
+      <%= test.duration_human %>
     </td>
     <td><%= h test[:trigger] %></td>
     <td><%= test[:pin_packages] %></td>
