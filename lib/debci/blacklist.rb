@@ -19,7 +19,7 @@ module Debci
       return false unless data.keys.include?(name)
 
       # Find a direct match
-      return true  if data.dig(name, suite, arch, version)
+      return true if data.dig(name, suite, arch, version)
 
       # Contract wildcards
       return true if data.dig(name, '*', '*', version)
