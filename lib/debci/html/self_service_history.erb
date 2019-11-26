@@ -65,19 +65,19 @@
   </tr>
   <% Array(@history).each do |test| %>
   <tr>
-    <td><%= test[:date] %></td>
-    <td><%= test[:package] %></td>
-    <td><%= test[:suite] %></td>
-    <td><%= test[:arch] %></td>
+    <td><%= test.date %></td>
+    <td><%= test.package %></td>
+    <td><%= test.suite %></td>
+    <td><%= test.arch %></td>
     <td>
       <%= icon(test.status) %>
-      <%= test[:status] %>
+      <%= test.status %>
     </td>
     <td>
       <%= test.duration_human %>
     </td>
-    <td><%= h test[:trigger] %></td>
-    <td><%= test[:pin_packages] %></td>
+    <td><%= h test.trigger %></td>
+    <td><%= test.pin_packages %></td>
     <% package_dir = [test.suite, test.arch, test.prefix, test.package].join('/') %>
     <% if !test.status %>
       <td><span class='fa fa-clock-o' title='Results are not in yet'></span></td>
