@@ -22,6 +22,7 @@ module Debci
       return true  if data.dig(name, suite, arch, version)
 
       # Contract wildcards
+      return true if data.dig(name, '*', '*', version)
       return true if data.dig(name, '*', arch, version)
       return true if data.dig(name, suite, '*', version)
 

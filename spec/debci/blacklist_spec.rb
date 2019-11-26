@@ -33,6 +33,10 @@ describe Debci::Blacklist do
       expect(blacklist.packages.include?('uno')).to be false
     end
 
+    it 'expands blacklists in the context to the narrow context' do
+      expect(blacklist.include?('foo', suite: 'testing', arch: 'amd64')).to be true
+    end
+
     it 'blacklists a package when direct match if found' do
       expect(blacklist.include?('foo')).to be true
     end
