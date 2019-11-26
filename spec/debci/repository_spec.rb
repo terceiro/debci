@@ -92,8 +92,10 @@ describe Debci::Repository do
   end
 
   def history(path, data)
+    package = File.basename(path)
     previous_status = nil
     data.each do |entry|
+      entry['package'] = package
       entry['run_id'] = fetch_run_id
       entry['previous_status'] = previous_status if previous_status
       previous_status = entry['status']
