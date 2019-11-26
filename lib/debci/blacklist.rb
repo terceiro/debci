@@ -16,7 +16,11 @@ module Debci
     def include?(name, params = {})
       suite, arch, version = include_params(params)
 
-      return false unless data.keys.include?(name)
+      unless data.keys.include?(name)
+        data.keys.select { |k| File.fnmatch(k, name) }.each do |wildcard|
+          return true if include?(wildcard, suite: suite, arch: arch, version: version)
+        end
+      end
 
       # Find a direct match
       return true if data.dig(name, suite, arch, version)
@@ -49,7 +53,7 @@ module Debci
     def packages
       # A package is blacklisted only if it is blacklisted for all suites,
       # architectures and versions.
-      @packages ||= data.keys.select { |key| include?(key) }
+      @packages ||= data.keys.select { |key| !key.include?("*") && include?(key) }
     end
 
     def data

@@ -23,7 +23,8 @@ describe Debci::Blacklist do
         "bar unstable\n",
         "baz unstable\n",
         "baz testing amd64\n",
-        "fox * * 1.0.1\n"
+        "fox * * 1.0.1\n",
+        "xyz-*\n",
       ]
       write_blacklist(content)
     end
@@ -58,6 +59,10 @@ describe Debci::Blacklist do
 
     it 'records comments as reasons for a given package' do
       expect(blacklist.comment('foo')).to eq("bug #999\n")
+    end
+
+    it 'applies wildcards to package name' do
+      expect(blacklist.include?('xyz-abc')).to be true
     end
   end
 
