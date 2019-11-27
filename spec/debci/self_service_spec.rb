@@ -49,6 +49,11 @@ describe Debci::SelfService do
       expect(last_response.status).to eq(302)
       expect(last_response.location).to match(%r{/user/login$})
     end
+    it 'makes current user available even on public page' do
+      login('foo@bar.com')
+      get '/user/foo@bar.com/jobs'
+      expect(last_response.body).to match('Welcome foo@bar.com')
+    end
   end
 
   context 'request test form' do

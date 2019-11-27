@@ -25,14 +25,14 @@ module Debci
 
     before do
       authenticate! unless request.path =~ %r{/user/[^/]+/jobs/?$} || request.path == '/user/login'
+      @user = session[:user]
     end
 
     def authenticate!
-      if session[:user].nil?
-        redirect('/user/login')
-      else
-        @user = session[:user]
-      end
+      return unless session[:user].nil?
+
+      redirect('/user/login')
+      halt
     end
 
     get '/' do
