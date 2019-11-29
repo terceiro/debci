@@ -14,6 +14,8 @@ module Debci
     end
 
     def include?(name, params = {})
+      name = String(name)
+
       suite, arch, version = include_params(params)
 
       unless data.keys.include?(name)

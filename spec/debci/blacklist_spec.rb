@@ -64,6 +64,10 @@ describe Debci::Blacklist do
     it 'applies wildcards to package name' do
       expect(blacklist.include?('xyz-abc')).to be true
     end
+
+    it 'does not crash on nil input' do
+      expect(blacklist.include?(nil)).to be false
+    end
   end
 
   def write_blacklist(content)
