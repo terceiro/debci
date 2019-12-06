@@ -10,6 +10,7 @@ fi
 rc=0
 autopkgtest \
   --no-built-binaries \
+  --setup-commands="echo '${debci_test_package} ${debci_suite}/${debci_arch}' > /var/tmp/debci.pkg" \
   ${debci_autopkgtest_args:-} \
   "$@" || rc=$?
 
