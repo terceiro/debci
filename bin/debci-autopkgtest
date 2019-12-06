@@ -7,11 +7,9 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
-args="$(echo $@)"
 rc=0
 autopkgtest \
   --no-built-binaries \
-  --setup-commands="echo --no-built-binaries ${debci_autopkgtest_args} ${args} > /var/tmp/debci-autopkgtest.args" \
   ${debci_autopkgtest_args:-} \
   "$@" || rc=$?
 
