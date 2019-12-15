@@ -73,82 +73,34 @@ fi
 
 container=autopkgtest-${debci_suite}-${debci_arch}
 
-completed=no
-
-container_exists() {
-  lxc-ls -f | awk "BEGIN { rc = 1 } { if (\$1 == \"$1\") { rc = 0 } } END { exit rc }"
-}
-
-container_running() {
-  lxc-ls -f | awk "BEGIN { rc = 1 } { if (\$1 == \"$1\" && \$2 == \"RUNNING\") { rc = 0 } } END { exit rc }"
-}
-
-cleanup_container() {
-  local c
-  c="$1"
-  if container_exists "$c"; then
-    # is container $c running?
-    if container_running "$c"; then
-      lxc-stop --name="$c"
-    fi
-    lxc-destroy --name="$c"
-  fi
-}
-
-cleanup() {
-  if [ "$completed" = yes ]; then return; fi
-
-  # autopkgtest-build-lxc can leave this behind in some cases
-  cleanup_container "${container}.new"
-
-  if [ "$created" = yes ]; then
-    # autopkgtest-build-lxc succeeded, but our customization didn't. we can't
-    # use the container in such state
-    cleanup_container "$container"
-  fi
-}
-
-trap cleanup EXIT
-
-created=no
-autopkgtest-build-lxc $distro $debci_suite $debci_arch
-created=yes
-
-LXC_PATH=$(lxc-config lxc.lxcpath) || LXC_PATH=/var/lib/lxc
-
-rootfs=$LXC_PATH/$container/rootfs
-
+script=$(mktemp --tmpdir debci-lxc-customize.XXXXXXXXXXX.sh)
 if [ "$distro" = debian ]; then
+  echo "cat > /etc/apt/sources.list <<EOF" >> "$script"
   debci-generate-apt-sources \
     --source \
     --buildd \
     --dbgsym \
     -- \
     "$debci_suite" \
-    > "$rootfs/etc/apt/sources.list"
-  while ! chroot "$rootfs" apt-get update; do
-    echo "I: apt-get update failed, let's wait some time and try again "
-    sleep 10
-  done
+    >> "$script"
+  echo "EOF" >> "$script"
+  echo "while ! apt-get update; do sleep 10; done" >> "$script"
 fi
-
 # configure guest proxy
 if [ -n "$GUEST_PROXY" ]; then
-  echo "Acquire::http::Proxy \"$GUEST_PROXY\" ;" > "$rootfs/etc/apt/apt.conf.d/70proxy"
+  echo "echo \"Acquire::http::Proxy \\\"$GUEST_PROXY\\\" ;\" > /etc/apt/apt.conf.d/70proxy" >> "$script"
 fi
-
+cat >> "$script" <<EOF
 DEBIAN_FRONTEND=noninteractive \
-  chroot "$rootfs"  \
   apt-get install dpkg-dev -q -y --no-install-recommends
 
 DEBIAN_FRONTEND=noninteractive \
-  chroot "$rootfs"  \
   apt-get clean
 
-chroot "$rootfs"  \
-  useradd \
-    --home-dir /home/debci \
-    --create-home \
-    debci
+useradd \
+  --home-dir /home/debci \
+  --create-home \
+  debci
+EOF
 
-completed=yes
+autopkgtest-build-lxc $distro $debci_suite $debci_arch $script
