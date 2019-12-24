@@ -65,12 +65,10 @@ process_package() {
   export debci_test_outputdir="$adt_out_dir"
 
   if [ "$debci_quiet" = 'true' ]; then
-    run_with_shared_lock "$debci_testbed_lock" \
-      test-package $options --output-dir "$adt_out_dir" "$pkg" \
+    test-package $options --output-dir "$adt_out_dir" "$pkg" \
       >/dev/null 2>&1 || true
   else
-    run_with_shared_lock "$debci_testbed_lock" \
-      test-package $options --output-dir "$adt_out_dir" "$pkg" || true
+    test-package $options --output-dir "$adt_out_dir" "$pkg" || true
   fi
 
   finish_timestamp=$(date +%s)

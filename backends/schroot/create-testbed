@@ -16,6 +16,8 @@ fi
 
 create_chroot() {
   echo "I: creating $debci_suite chroot (may take a while)"
+  local chroot_path
+  chroot_path="$1"
 
   http_proxy="${http_proxy:-}"
   if [ -z "$http_proxy" ]; then
@@ -38,17 +40,17 @@ create_chroot() {
 
   # FIXME automate chroot creation for foreign architectures where a
   # qemu-user-static binary is needed
-  debootstrap --include=dpkg-dev --arch="$debci_arch" "$debci_suite" "$debci_chroot_path" ${debci_mirror}
+  debootstrap --include=dpkg-dev --arch="$debci_arch" "$debci_suite" "$chroot_path" ${debci_mirror}
 
   # use proxy
   if [ -n "$http_proxy" ]; then
-    echo "Acquire::http::Proxy \"$http_proxy\";" > "${debci_chroot_path}/etc/apt/apt.conf.d/01proxy"
+    echo "Acquire::http::Proxy \"$http_proxy\";" > "${chroot_path}/etc/apt/apt.conf.d/01proxy"
   fi
 
   # do not download translations
-  echo 'Acquire::Languages "none";' > "${debci_chroot_path}/etc/apt/apt.conf.d/99translations"
+  echo 'Acquire::Languages "none";' > "${chroot_path}/etc/apt/apt.conf.d/99translations"
 
-  if grep -q debian "${debci_chroot_path}/etc/apt/sources.list"; then
+  if grep -q debian "${chroot_path}/etc/apt/sources.list"; then
     debci-generate-apt-sources \
       --mirror="$debci_mirror" \
       --source \
@@ -56,30 +58,33 @@ create_chroot() {
       --dbgsym \
       -- \
       "$debci_suite" \
-      > "$debci_chroot_path/etc/apt/sources.list"
+      > "$chroot_path/etc/apt/sources.list"
   else
-    sed -e 's/^deb\s/deb-src /' "${debci_chroot_path}/etc/apt/sources.list" > "${debci_chroot_path}/etc/apt/sources.list.d/sources.list"
+    sed -e 's/^deb\s/deb-src /' "${chroot_path}/etc/apt/sources.list" > "${chroot_path}/etc/apt/sources.list.d/sources.list"
   fi
 
   # never ask for input
-  echo 'debconf debconf/frontend select noninteractive' | chroot "$debci_chroot_path" debconf-set-selections
+  echo 'debconf debconf/frontend select noninteractive' | chroot "$chroot_path" debconf-set-selections
 
   # use unsafe I/O in dpkg to speed up the installation of packages
-  echo 'force-unsafe-io' > "${debci_chroot_path}/etc/dpkg/dpkg.cfg.d/debci"
+  echo 'force-unsafe-io' > "${chroot_path}/etc/dpkg/dpkg.cfg.d/debci"
 
   # create debci user inside the chroot, with the same UID as the debci user on
   # the host system
-  chroot "$debci_chroot_path" \
+  chroot "$chroot_path" \
     useradd \
       --home-dir /home/debci \
       --create-home \
       --uid "$debci_uid" \
       debci
 
-  chroot "$debci_chroot_path" apt-get update
+  chroot "$chroot_path" apt-get update
 }
 
 setup_schroot() {
+  local chroot_path
+  chroot_path="$1"
+
   local data_dir=$(readlink -f ${debci_data_basedir})
   local user=$(stat -c %U "${data_dir}")
   if [ -z "$user" ]; then
@@ -103,7 +108,7 @@ setup_schroot() {
 type=directory
 profile=debci
 description=debci $debci_suite/$debci_arch chroot
-directory=${debci_chroot_path}
+directory=${chroot_path}
 users=$user
 groups=$user
 root-users=$user
@@ -123,20 +128,15 @@ setup_suite() {
     mkdir "${debci_chroots_dir}"
   fi
 
-  if schroot --list --all | grep -q "^source:${debci_chroot_name}\$"; then
-    echo "I: schroot setup for ${debci_suite} already done, skipping"
-  else
-    setup_schroot
-  fi
+  local existing
+  existing=$(schroot --config --chroot "$debci_chroot_name" | grep '^directory=' | cut -d = -f 2)
 
-  local actual_chroot_path=$(schroot --config --chroot "$debci_chroot_name" | grep '^directory=' | cut -d = -f 2)
+  path="$(mktemp --directory --tmpdir=${debci_chroots_dir} ${debci_chroot_name}.XXXXXXXXXX)"
+  create_chroot "$path"
+  setup_schroot "$path"
 
-  if [ -d "${actual_chroot_path}" ]; then
-    echo "I: chroot $debci_chroot_name already created, updating"
-    update-testbed
-  else
-    debci_chroot_path="$actual_chroot_path"
-    create_chroot
+  if [ -n "$existing" ]; then
+    rm -rf "$existing"
   fi
 }
 
