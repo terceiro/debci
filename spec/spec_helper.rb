@@ -3,6 +3,7 @@ ENV['DATABASE_URL'] ||= 'sqlite3::memory:'
 require 'debci/db'
 require 'debci/job'
 
+Debci.config.backend = 'fake'
 Debci.config.quiet = true
 Debci::DB.migrate
 
