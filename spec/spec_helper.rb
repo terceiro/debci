@@ -1,4 +1,11 @@
 require 'yaml'
+
+if Kernel.const_defined?('SimpleCov')
+  SimpleCov.start do
+    minimum_coverage 93.5
+  end
+end
+
 ENV['DATABASE_URL'] ||= 'sqlite3::memory:'
 require 'debci/db'
 require 'debci/job'

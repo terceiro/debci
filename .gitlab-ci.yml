@@ -21,6 +21,12 @@ stable:
   <<: *test
   image: 'debian:stable-backports'
 
+coverage:
+  image: 'debian:unstable'
+  script:
+    - apt-get install -q -y ruby-simplecov
+    - rspec -rsimplecov
+
 ruby-style:
   image: 'debian:unstable'
   before_script:

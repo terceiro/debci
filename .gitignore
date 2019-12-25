@@ -11,6 +11,7 @@
 /config/debci.conf
 /config/conf.d/*.conf
 /chroots/*
+/coverage/
 /gnupg/*
 /tags
 /.yardoc/
