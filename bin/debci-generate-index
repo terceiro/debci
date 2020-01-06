@@ -67,7 +67,7 @@ generate_package_run() {
   status_dir="$2"
   run_id=$(basename "$adtresult")
   pkg=$(basename "$status_dir")
-  last_status=$($debci_bin_dir/debci-status "$pkg")
+  previous_status=$($debci_bin_dir/debci-status "$pkg")
   status_file="${status_dir}/${run_id}.json"
   log_file="${status_dir}/${run_id}.log"
   tmp_dir="${base_tmp_dir}/${debci_suite}/${debci_arch}/${pkg}/${run_id}"
@@ -275,7 +275,6 @@ generate_package_json() {
       version=$(cut -f2 -d' ' "$adtresult/testpkg-version")
   fi
 
-  local previous_status="${last_status}"
   if [ "${previous_status}" = 'tmpfail' ]; then
     previous_status=$(debci-status --field previous_status "$pkg")
   fi
