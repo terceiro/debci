@@ -1,4 +1,5 @@
 --ignore-dir=chroots
+--ignore-dir=coverage
 --ignore-dir=data
 --ignore-dir=log
 --ignore-dir=public/doc
