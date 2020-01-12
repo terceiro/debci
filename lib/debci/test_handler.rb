@@ -36,6 +36,7 @@ module Debci
     end
 
     def request_tests(tests, suite, arch, requestor)
+      jobs = []
       tests.each do |test|
         pkg = test['package']
         enqueue = true
@@ -57,7 +58,10 @@ module Debci
           trigger: test['trigger'],
           pin_packages: test['pin-packages']
         )
-        self.enqueue(job) if enqueue
+        jobs << job if enqueue
+      end
+      jobs.each do |job|
+        self.enqueue(job)
       end
     end
   end

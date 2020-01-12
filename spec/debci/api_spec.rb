@@ -208,6 +208,17 @@ describe Debci::API do
         expect(job.trigger).to eq('foo/1.0')
         expect(job.pin_packages).to eq([['src:foo', 'unstable']])
       end
+
+      batch_test_file = File.join(File.dirname(__FILE__), 'api_test_multi.json')
+
+      it 'saves everything, and only then enqueue' do
+        job = Object.new
+        expect(Debci::Job).to receive(:create!).with(anything).twice.and_return(job)
+        expect(job).to receive(:enqueue).and_raise(Exception)
+        expect do
+          post format('/api/v1/test/%<suite>s/%<arch>s', suite: suite, arch: arch), tests: Rack::Test::UploadedFile.new(batch_test_file, 'application/json')
+        end.to raise_error(Exception)
+      end
     end
   end
 
