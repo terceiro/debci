@@ -1,3 +1,32 @@
+debci (2.7) unstable; urgency=medium
+
+  * lxc: allow for some sorting of container names
+  * api: fix call to check for blacklisted packages
+  * api: set date of test requests for blacklisted packages
+  * job history: don't link to missing files
+  * Add migration to set date of jobs for blacklisted packages
+  * Debci::Job: extract prefix method into shared module
+  * Debci::HTML: history: don't link to missing files
+  * html: history: fix HTML
+  * Debci::Blacklist: fix test for blacklist on suite/arch
+  * ui: job history: display duration
+  * self_service_history.erb: get fields directly as method calls
+  * Debci::Status.from_file: always set a package name
+  * Debci::Blacklist: add support for wildcards in package names
+  * self-service: job history: improve nagivation links
+  * Debci::SelfService: make sure @user is set when available
+  * Debci::Blacklist: avoid crashes when passed nil
+  * debci-autopkgtest: record package/suite/arch inside testbed
+  * lxc: make testbed creation atomic
+  * schroot: make test bed creation atomic
+  * debci-setup: drop test bed locking (Closes: #931206)
+  * debci-test: drop testbed locking
+  * tests: ensure backend is 'fake'
+  * debci-generate-index: rename variable
+  * api: avoid data loss when enqueue fails
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 12 Jan 2020 13:46:51 -0300
+
 debci (2.6) unstable; urgency=medium
 
   * lxc: generate random container names
