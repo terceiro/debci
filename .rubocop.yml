@@ -29,8 +29,7 @@ Style/WordArray:
   Enabled: false
 
 Metrics/BlockLength:
-  Exclude:
-    - 'spec/**/*.rb'
+  Enabled: false
 
 Metrics/ParameterLists:
   Enabled: false

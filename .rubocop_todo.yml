@@ -31,8 +31,7 @@ Style/TrailingCommaInLiteral:
   Enabled: false
 
 Metrics/BlockLength:
-  Exclude:
-    - 'spec/**/*.rb'
+  Enabled: false
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -305,11 +304,6 @@ Lint/UselessAssignment:
 # Offense count: 11
 Metrics/AbcSize:
   Max: 66
-
-# Offense count: 6
-# Configuration parameters: CountComments, ExcludedMethods.
-Metrics/BlockLength:
-  Max: 260
 
 # Offense count: 4
 # Configuration parameters: CountComments.
