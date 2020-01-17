@@ -88,7 +88,7 @@ module Debci
     end
 
     def to_s
-      "%s %s/%s (%s)" % [package, suite, arch, status]
+      "%s %s/%s (%s)" % [package, suite, arch, status || 'pending']
     end
 
   end

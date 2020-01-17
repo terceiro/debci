@@ -168,4 +168,15 @@ describe Debci::Job do
       expect(job.as_json["duration_human"]).to be_a(String)
     end
   end
+
+  context 'converting to string' do
+    let(:job) { Debci::Job.new(package: 'pkg', suite: 'testing', arch: 'amd64') }
+    it 'uses status' do
+      job.status = 'pass'
+      expect(job.to_s).to eq('pkg testing/amd64 (pass)')
+    end
+    it 'uses pending as status when status is nil' do
+      expect(job.to_s).to eq('pkg testing/amd64 (pending)')
+    end
+  end
 end
