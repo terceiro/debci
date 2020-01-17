@@ -87,6 +87,10 @@ module Debci
       queue.publish("%s %s %s" % [package, suite, parameters.join(' ')], priority: priority)
     end
 
+    def to_s
+      "%s %s/%s (%s)" % [package, suite, arch, status]
+    end
+
   end
 end
 
