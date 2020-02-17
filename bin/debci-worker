@@ -113,6 +113,7 @@ do_request() {
 
   ( cd $tmp_dir && tar czf - "$result_dir" ) | amqp-publish \
     --url="${debci_amqp_server}" \
+    $debci_amqp_tools_options \
     --persistent \
     --routing-key="${debci_amqp_results_queue}"
 
@@ -138,6 +139,7 @@ done
 
 amqp-declare-queue \
   --url="$debci_amqp_server" \
+  $debci_amqp_tools_options \
   --durable \
   --queue="$debci_amqp_results_queue" > /dev/null
 
@@ -146,4 +148,10 @@ amqp-declare-queue \
 amqp_queue="${debci_amqp_queue}${tags}"
 log "I: Connecting to AMQP queue $amqp_queue on ${debci_amqp_server_display}"
 debci amqp declare-queue
-exec amqp-consume --url ${debci_amqp_server} -q $amqp_queue --prefetch-count 1 -- $0 --do-request
+exec amqp-consume \
+  --url ${debci_amqp_server} \
+  $debci_amqp_tools_options \
+  --queue=$amqp_queue \
+  --prefetch-count 1 \
+  -- \
+  $0 --do-request
