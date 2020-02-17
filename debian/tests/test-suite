@@ -6,6 +6,6 @@ exec 2>&1
 
 tree=$(pwd)
 
-cd $ADTTMP
+cd $AUTOPKGTEST_TMP
 
 sh $tree/test/runall.sh

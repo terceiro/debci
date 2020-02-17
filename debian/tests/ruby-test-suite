@@ -2,7 +2,7 @@
 
 set -ex
 
-tmpdir=${ADTTMP:-${TMPDIR:-/tmp}}
+tmpdir=${AUTOPKGTEST_TMP:-${TMPDIR:-/tmp}}
 cp -r spec $tmpdir
 cd $tmpdir
 rspec

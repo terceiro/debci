@@ -3,6 +3,7 @@ debci (2.8) unstable; urgency=medium
   * Debci::Job#to_s: use "pending" when when status is nil
   * debci-localtest: ignore failure to record package (Closes: #950305)
   * Add configuration variable for amqp-tools options
+  * debian/tests: replace deprecated $ADTTMP with $AUTOPKGTEST_TMP
 
  -- Antonio Terceiro <terceiro@debian.org>  Mon, 17 Feb 2020 19:06:21 -0300
 
