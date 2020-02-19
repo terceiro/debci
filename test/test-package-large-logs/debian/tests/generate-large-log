@@ -1,0 +1,16 @@
+#!/usr/bin/perl
+
+use strict;
+
+my @char = ("@", "*", "/", "#", ".", "~");
+
+my $size = 25; # MB
+
+my $i = 0;
+while ($i < $size) {
+  for my $x (1..1024) {
+    print($char[$x % 6] x 1023);
+    print("\n");
+  }
+  $i++;
+}

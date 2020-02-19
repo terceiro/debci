@@ -1,0 +1,2 @@
+Tests: generate-large-log
+Depends: perl

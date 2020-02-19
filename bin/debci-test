@@ -33,8 +33,24 @@ debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
 . $debci_base_dir/lib/functions.sh
 
 process_package() {
+  local pkgname
+  case "$pkg" in
+    .*|*/*)
+      # a local pathname
+      if [ -d "$pkg" ]; then
+        pkgname="$(basename $(readlink -f "$pkg"))"
+      else
+        echo "E: $pkg is not a valid package"
+        exit 1
+      fi
+      ;;
+    *)
+      pkgname="$pkg"
+      ;;
+  esac
+
   # output directory for test-package/autopkgtest
-  local base_dir="$(autopkgtest_incoming_dir_for_package "$pkg")"
+  local base_dir="$(autopkgtest_incoming_dir_for_package "$pkgname")"
 
   if [ -n "${run_id:-}" ]; then
     adt_out_dir="${base_dir}/${run_id}"
@@ -61,7 +77,7 @@ process_package() {
   export debci_suite
   export debci_arch
   export debci_autopkgtest_args
-  export debci_test_package="$pkg"
+  export debci_test_package="$pkgname"
   export debci_test_outputdir="$adt_out_dir"
 
   if [ "$debci_quiet" = 'true' ]; then
@@ -69,6 +85,10 @@ process_package() {
       >/dev/null 2>&1 || true
   else
     test-package $options --output-dir "$adt_out_dir" "$pkg" || true
+  fi
+
+  if [ ! -d "$adt_out_dir" ]; then
+    return
   fi
 
   finish_timestamp=$(date +%s)
