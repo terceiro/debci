@@ -94,8 +94,6 @@ process_package() {
       echo "${logtail}"
     ) >> "${log}"
   fi
-
-  # compress remainder of main log
   gzip "${log}"
 
   if [ -f "${adt_out_dir}/duration".in ]; then
