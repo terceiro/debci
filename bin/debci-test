@@ -73,10 +73,30 @@ process_package() {
 
   finish_timestamp=$(date +%s)
 
-  find "$adt_out_dir" '(' \
-    -name log -or \
-    -name '*-stdout' -or \
-    -name '*-stderr' ')' -exec gzip '{}' ';'
+  # remove redundant logs
+  rm -f "${adt_out_dir}"/*-stdout
+  rm -f "${adt_out_dir}"/*-stderr
+
+  # cap main log
+  limit=20 # in MB
+  limit_bytes=$((limit*1024*1024)) # 5MB
+  log=${adt_out_dir}/log
+  if [ "$(stat --format=%s "${log}")" -gt "$limit_bytes" ]; then
+    logtail="$(sed -e '/^autopkgtest .* summary$/,$ !d' "$log")"
+    truncate --size "$limit_bytes" "${log}"
+    (
+      echo
+      echo "----------------8<----------------8<----------------8<-----------------"
+      echo ""
+      echo "WARNING: log file truncated at ${limit} MB (before compression)"
+      echo ""
+      echo "----------------8<----------------8<----------------8<-----------------"
+      echo "${logtail}"
+    ) >> "${log}"
+  fi
+
+  # compress remainder of main log
+  gzip "${log}"
 
   if [ -f "${adt_out_dir}/duration".in ]; then
     cp "${adt_out_dir}/duration".in "${adt_out_dir}/duration"
