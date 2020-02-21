@@ -121,6 +121,14 @@ describe Debci::API do
         post format('/api/v1/test/%<suite>s/%<arch>s/mypackage', suite: 'nonexistingsuite', arch: arch)
         expect(last_response.status).to eq(400)
       end
+
+      it 'rejects invalid priorities' do
+        post format('/api/v1/test/%<suite>s/%<arch>s/mypackage', suite: 'suite', arch: arch, priority: 0)
+        expect(last_response.status).to eq(400)
+
+        post format('/api/v1/test/%<suite>s/%<arch>s/mypackage', suite: 'suite', arch: arch, priority: 11)
+        expect(last_response.status).to eq(400)
+      end
     end
 
     context 'for a test batch' do
