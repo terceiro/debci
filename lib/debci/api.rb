@@ -247,14 +247,17 @@ module Debci
         data.to_json
       end
 
-      before '/test/:suite/:arch*'do
+      before '/test/:suite/:arch*' do
         authenticate_key!
         @suite = params[:suite]
         @arch = params[:arch]
+        @priority = params.fetch("priority", 1).to_i
         if !Debci.config.arch_list.include?(arch)
           halt(400, "Invalid architecture: #{arch}\n")
         elsif !Debci.config.suite_list.include?(suite)
           halt(400, "Invalid suite: #{suite}\n")
+        elsif !validate_priority(@priority)
+          halt(400, "Invalid priority: #{@priority}\n")
         end
       end
 
@@ -265,7 +268,7 @@ module Debci
         test_requests = load_json(params[:tests])
         errors = validate_batch_test(test_requests)
         if errors.empty?
-          request_batch_tests(test_requests, @user)
+          request_batch_tests(test_requests, @user, @priority)
           201
         else
           halt(400, "Error: #{errors.join("\n")}")
@@ -282,6 +285,8 @@ module Debci
 
       * `tests`: a JSON object decribing the tests to be executed. This parameter can
         be either a file upload or a regular POST parameter.
+      * `priority`: an integer between 1 and 10 describing the priority to assign the
+        requested tests
 
       The `tests` JSON object must be an *Array* of objects. Each object represents a
       single test request, and can contain the following keys:
@@ -330,14 +335,14 @@ module Debci
       $ curl --header "Auth-Key: $KEY" --form tests=@tests.json \
           https://host/api/v1/test/testing/amd64
 
-      # tests as a regular POST parameter
-      $ curl --header "Auth-Key: $KEY" --data="$(cat tests.json)" \
+      # tests as a regular POST parameter, with specific priority
+      $ curl --header "Auth-Key: $KEY" --data tests="$(cat tests.json)" --data priority=8 \
           https://host/api/v1/test/testing/amd64
       ```
       EOF
       post '/test/:suite/:arch' do
         tests = load_json(params[:tests])
-        self.request_tests(tests, suite, arch, @user)
+        self.request_tests(tests, suite, arch, @user, @priority)
         201
       end
 
@@ -349,6 +354,8 @@ module Debci
       * `:suite`: which suite to test
       * `:arch`: which architecture to test
       * `:package`: which (source!) package to test
+      * `priority`: an integer between 1 and 10 describing the priority to assign the
+        requested tests
 
       Example:
 
@@ -370,7 +377,7 @@ module Debci
             arch: params[:arch],
             requestor: @user,
         )
-        self.enqueue(job)
+        self.enqueue(job, @priority)
 
         201
       end

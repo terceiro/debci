@@ -95,7 +95,7 @@ describe Debci::API do
 
       it 'enqueues with priority' do
         expect_any_instance_of(Debci::Job).to receive(:enqueue).with(Integer)
-        post format('/api/v1/test/%<suite>s/%<arch>s/mypackage', suite: suite, arch: arch)
+        post format('/api/v1/test/%<suite>s/%<arch>s/mypackage', suite: suite, arch: arch, priority: 8)
       end
 
       it 'rejects blacklisted package' do

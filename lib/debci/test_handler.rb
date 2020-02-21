@@ -10,10 +10,14 @@ module Debci
       pkg =~ /^[a-z0-9][a-z0-9+.-]+$/
     end
 
-    def request_batch_tests(test_requests, requestor)
+    def validate_priority(priority)
+      priority >= 1 && priority <= 10
+    end
+
+    def request_batch_tests(test_requests, requestor, priority = 1)
       test_requests.each do |request|
         request['arch'].each do |arch|
-          request_tests(request['tests'], request['suite'], arch, requestor)
+          request_tests(request['tests'], request['suite'], arch, requestor, priority)
         end
       end
     end
@@ -35,7 +39,7 @@ module Debci
       errors
     end
 
-    def request_tests(tests, suite, arch, requestor)
+    def request_tests(tests, suite, arch, requestor, priority = 1)
       jobs = []
       tests.each do |test|
         pkg = test['package']
@@ -61,7 +65,7 @@ module Debci
         jobs << job if enqueue
       end
       jobs.each do |job|
-        self.enqueue(job)
+        self.enqueue(job, priority)
       end
     end
   end
