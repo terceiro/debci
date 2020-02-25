@@ -15,6 +15,10 @@ module Debci
   #
   Config = Struct.new(
     :amqp_server,
+    :amqp_ssl,
+    :amqp_cacert,
+    :amqp_cert,
+    :amqp_key,
     :arch,
     :arch_list,
     :artifacts_url_base,
@@ -51,6 +55,7 @@ module Debci
       @types ||= {
         /_list$/ => lambda { |x| x.split}, # Array
         'quiet' => lambda { |x| x == 'true' }, # boolean
+        'amqp_ssl' => lambda { |x| x == 'true' }, # boolean
       }
     end
 

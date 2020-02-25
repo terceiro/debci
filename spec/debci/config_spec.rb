@@ -17,7 +17,7 @@ describe Debci::Config do
       it "knows about #{key}" do
         expect(config.send(key)).to be_a(Array)
       end
-    elsif key == :quiet
+    elsif [:quiet, :amqp_ssl].include?(key)
       it "knows about #{key}" do
         expect(config.send(key)).to_not be_a(String)
       end

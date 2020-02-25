@@ -18,10 +18,20 @@ module Debci
     end
 
     def self.amqp_channel
-      @conn ||= Bunny.new(Debci.config.amqp_server).tap do |conn|
+      @conn ||= Bunny.new(Debci.config.amqp_server, amqp_options).tap do |conn|
         conn.start
       end
       @channel ||= @conn.create_channel
+    end
+
+    def self.amqp_options
+      {
+        tls:                  Debci.config.amqp_ssl,
+        tls_cert:             Debci.config.amqp_cert,
+        tls_ca_certificates:  Debci.config.amqp_cacert,
+        tls_key:              Debci.config.amqp_key,
+        verify_peer:          true,
+      }
     end
   end
 end
