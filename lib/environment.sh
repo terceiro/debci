@@ -48,7 +48,10 @@ debci_backend=${debci_backend:-lxc}
 debci_data_basedir=${debci_data_basedir:-$(readlink -f "${debci_base_dir}/data")}
 debci_quiet="${debci_quiet:-false}"
 debci_amqp_server=${debci_amqp_server:-"amqp://localhost"}
-debci_amqp_tools_options="${debci_amqp_tools_options:-}"
+debci_amqp_ssl=${debci_amqp_ssl:-false}
+debci_amqp_cacert=${debci_amqp_cacert:-}
+debci_amqp_cert=${debci_amqp_cert:-}
+debci_amqp_key=${debci_amqp_key:-}
 debci_amqp_results_queue=${debci_amqp_results_queue:-"debci_results"}
 debci_swift_url=${debci_swift_url:-}
 debci_sendmail_from="${debci_sendmail_from:-$debci_distro_name Continuous Integration <owner@localhost>}"
@@ -161,6 +164,17 @@ debci_amqp_queue=${debci_amqp_queue:-"debci-tests-${debci_arch}-${debci_backend}
 
 # hide password when displaying AMPQ server
 debci_amqp_server_display="$(echo "$debci_amqp_server" | sed -e 's#:[^/]*@#:*********@#')"
+
+debci_amqp_tools_options=
+if [ $debci_amqp_ssl = true ]; then
+  debci_amqp_tools_options="--ssl"
+fi
+for var in cacert cert key; do
+  value="$(eval "echo \$debci_amqp_${var}")"
+  if [ -n "$value" ]; then
+    debci_amqp_tools_options="${debci_amqp_tools_options} --${var}=${value}"
+  fi
+done
 
 debci_lock_dir=${debci_lock_dir:-/var/lock}
 
