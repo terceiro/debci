@@ -1,3 +1,20 @@
+debci (2.9) unstable; urgency=medium
+
+  [ Sébastien Delafond ]
+  * Detect Kali in backends/lxc/create-testbed
+  * api: allow passing an extra, optional priority parameter to enqueue jobs
+    with
+
+  [ Antonio Terceiro ]
+  * debci-test: optimize storage of logs
+  * Add some tests for debci-test
+  * lib/environment.sh: accept amqp SSL options separately
+  * Debci::AMQP: add TLS support
+  * Remove all remaining mentions of $ADTTMP in favor of $AUTOPKGTEST_TMP
+  * debci-autopkgtest: avoid trying to write to unexisting directory
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 01 Mar 2020 11:06:40 -0300
+
 debci (2.8) unstable; urgency=medium
 
   * Debci::Job#to_s: use "pending" when when status is nil
