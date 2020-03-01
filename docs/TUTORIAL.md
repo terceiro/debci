@@ -250,14 +250,14 @@ exec 2>&1
 set -e
 
 test_pdf_output() {
-  pdf=$ADTTMP/introduction.pdf
+  pdf=$AUTOPKGTEST_TMP/introduction.pdf
   pinpoint -o $pdf introduction.pin
   assertEquals "application/pdf" "$(file --mime-type --brief $pdf)"
 }
 
 test_pdf_output_with_empty_background() {
-  pdf=$ADTTMP/global-background.pdf
-  pin=$ADTTMP/global-background.pin
+  pdf=$AUTOPKGTEST_TMP/global-background.pdf
+  pin=$AUTOPKGTEST_TMP/global-background.pin
   cat > $pin <<EOF
 []
 --
