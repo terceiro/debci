@@ -9,8 +9,9 @@ test_fails_gracefully_on_uneexisting_directory() {
 }
 
 test_fails_gracefully_on_existing_directory_that_is_not_a_package() {
-  output=$(debci test --run-id 1 --backend null test/)
-  assertEquals "$output" ""
+  mkdir -p $__tmpdir/test
+  output=$(cd $__tmpdir && debci test --run-id 1 --backend null test/)
+  assertEquals "" "$output"
 }
 
 test_package="${0%/*}/test-package-large-logs"
