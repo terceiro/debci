@@ -14,7 +14,7 @@ autopkgtest \
   ${debci_autopkgtest_args:-} \
   "$@" || rc=$?
 
-if [ -n "${debci_test_outputdir:-}" ]; then
+if [ -n "${debci_test_outputdir:-}" ] && [ -d "${debci_test_outputdir}" ]; then
   echo $rc > "$debci_test_outputdir/exitcode"
 fi
 exit $rc
