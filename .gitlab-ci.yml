@@ -34,4 +34,4 @@ ruby-style:
     - apt-get -q -y dist-upgrade
     - apt-get install -qy rubocop
   script:
-    - rubocop -c .rubocop_todo.yml
+    - rubocop

@@ -1,5 +1,7 @@
+inherit_from: .rubocop_todo.yml
+
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.5
 
 Style/Documentation:
   Enabled: false
@@ -22,7 +24,10 @@ Style/SymbolProc:
 Style/TrailingCommaInArguments:
   Enabled: false
 
-Style/TrailingCommaInLiteral:
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
   Enabled: false
 
 Style/WordArray:
@@ -33,3 +38,12 @@ Metrics/BlockLength:
 
 Metrics/ParameterLists:
   Enabled: false
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true

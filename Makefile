@@ -60,7 +60,7 @@ check-ui-and-docs: all
 	test -L public/bootstrap
 
 check-ruby-style:
-	if type rubocop; then rubocop -c .rubocop_todo.yml; fi
+	if type rubocop; then rubocop; fi
 
 test: check
 
