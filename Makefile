@@ -14,6 +14,8 @@ all: $(LINKS) $(MANPAGES)
 checkdeps:
 	@if which dpkg-checkbuilddeps >/dev/null && which grep-dctrl >/dev/null; then dpkg-checkbuilddeps -d "$$(grep-dctrl -n -s Depends . debian/control | grep -v '\$$')"; fi
 
+export COVERAGE = no
+
 spec:
 	@./test/banner 'Ruby unit tests'
 	rspec --color

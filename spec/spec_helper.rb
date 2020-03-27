@@ -1,11 +1,12 @@
-require 'yaml'
-
-if Kernel.const_defined?('SimpleCov')
+if ENV["COVERAGE"] != "no"
+  require 'simplecov'
   SimpleCov.start do
     minimum_coverage 93.5
+    add_filter /migrations/
   end
 end
 
+require 'yaml'
 ENV['DATABASE_URL'] ||= 'sqlite3::memory:'
 require 'debci/db'
 require 'debci/job'
