@@ -47,3 +47,6 @@ Style/HashTransformKeys:
 
 Style/HashTransformValues:
   Enabled: true
+
+Lint/AmbiguousRegexpLiteral:
+  Enabled: false
