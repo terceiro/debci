@@ -14,9 +14,11 @@ module Debci
     def self.migrate
       migrations_path = File.join(File.dirname(__FILE__), 'db', 'migrations')
       ActiveRecord::Migration.verbose = !Debci.config.quiet
-      if ActiveRecord.version.release < Gem::Version.new('5.2.0')
-        ActiveRecord::Migrator.migrate(migrations_path, nil)
+      if ActiveRecord.version.release >= Gem::Version.new('6.0')
+        # ActiveRecord 6+
+        ActiveRecord::MigrationContext.new(migrations_path, ActiveRecord::SchemaMigration).migrate
       else
+        # ActiveRecord 5.2
         ActiveRecord::MigrationContext.new(migrations_path).migrate
       end
     end
