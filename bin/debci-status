@@ -11,7 +11,6 @@ $status_file = false
 $field = 'status'
 
 optparse = OptionParser.new do |opts|
-
   opts.banner = 'Usage: debci status [OPTIONS] [PACKAGE]'
   opts.separator 'Options:'
 
@@ -39,7 +38,6 @@ optparse = OptionParser.new do |opts|
   opts.on('-f FIELD', '--field FIELD', 'displays FIELD from the status file (default: status)') do |f|
     $field = f
   end
-
 end
 optparse.parse!
 

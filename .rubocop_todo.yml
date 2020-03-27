@@ -53,18 +53,6 @@ Layout/EmptyLines:
     - 'lib/debci/api.rb'
     - 'lib/debci/data.rb'
 
-# Offense count: 9
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: empty_lines, no_empty_lines
-Layout/EmptyLinesAroundBlockBody:
-  Exclude:
-    - 'bin/debci-status'
-    - 'lib/debci/api.rb'
-    - 'lib/debci/config.rb'
-    - 'lib/debci/data.rb'
-    - 'spec/debci/status_spec.rb'
-
 # Offense count: 13
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

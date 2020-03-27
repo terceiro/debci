@@ -80,7 +80,6 @@ module Debci
     end
 
     namespace '/v1' do
-
       doc <<-EOF
       * bli
       * bli
@@ -381,7 +380,6 @@ module Debci
 
         201
       end
-
     end
 
     protected

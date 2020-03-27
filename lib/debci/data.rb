@@ -126,7 +126,6 @@ module Debci
               end
               puts "# rewrite #{history}"
             end
-
           end
           puts('# copying data files ...')
           cmd = ['rsync', '-apq', '--exclude=/export', tmpdir + '/', repo.path + '/']

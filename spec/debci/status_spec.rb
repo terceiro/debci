@@ -5,7 +5,6 @@ require 'json'
 require 'stringio'
 
 describe Debci::Status do
-
   def from_file(file)
     status = Debci::Status.from_file(file, 'unstable', 'amd64')
   end
@@ -222,5 +221,4 @@ describe Debci::Status do
     expect(File).to receive(:exists?).with(filename).and_return(true)
     expect(File).to receive(:open).with(filename, 'r').and_yield(io)
   end
-
 end

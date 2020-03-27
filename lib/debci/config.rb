@@ -42,7 +42,6 @@ module Debci
     :suite_list,
     :url_base,
   ) do
-
     # for development usage
     if !ENV['AUTOPKGTEST_TMP']
       bin = File.dirname(__FILE__) + '/../../bin'
@@ -79,7 +78,6 @@ module Debci
         end
       end
     end
-
   end
 
 end
