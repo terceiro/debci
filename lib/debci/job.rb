@@ -69,7 +69,7 @@ module Debci
       super(options).update("duration_human" => self.duration_human)
     end
 
-    def get_enqueue_parameters
+    def enqueue_parameters
       parameters = ['run-id:%s' % id]
       if self.trigger
         parameters << "trigger:#{CGI.escape(trigger)}"
@@ -83,7 +83,7 @@ module Debci
 
     def enqueue(priority = 0)
       queue = Debci::AMQP.get_queue(arch)
-      parameters = get_enqueue_parameters()
+      parameters = enqueue_parameters
       queue.publish("%s %s %s" % [package, suite, parameters.join(' ')], priority: priority)
     end
 

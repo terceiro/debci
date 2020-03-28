@@ -30,8 +30,8 @@ describe Debci::Job do
 
   it 'escapes trigger' do
     job = Debci::Job.new(trigger: 'foo bar')
-    expect(job.get_enqueue_parameters).to_not include('trigger:foo bar')
-    expect(job.get_enqueue_parameters).to include('trigger:foo+bar')
+    expect(job.enqueue_parameters).to_not include('trigger:foo bar')
+    expect(job.enqueue_parameters).to include('trigger:foo+bar')
   end
 
   [
@@ -42,7 +42,7 @@ describe Debci::Job do
   ].each do |invalid|
     it(format('escapes \"%<invalid>s" in trigger', invalid: invalid)) do
       job = Debci::Job.new(trigger: invalid)
-      expect(job.get_enqueue_parameters).to_not include(invalid)
+      expect(job.enqueue_parameters).to_not include(invalid)
     end
   end
 
