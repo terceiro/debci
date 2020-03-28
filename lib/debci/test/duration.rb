@@ -3,6 +3,7 @@ module Debci
     module Duration
       def duration_human
         return '(n/a)' if duration_seconds.nil?
+        return '0s' if duration_seconds == 0
         s = duration_seconds.to_i
         {
           h: s / 3600,

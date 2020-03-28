@@ -239,9 +239,14 @@ describe Debci::Status do
       expect(status.duration_human).to eq('1h 1m 2s')
     end
 
-    it 'handle nil' do
+    it 'handles nil' do
       status = status_with(duration_seconds: nil)
       expect(status.duration_human).to eq('(n/a)')
+    end
+
+    it 'handles zero' do
+      status = status_with(duration_seconds: 0)
+      expect(status.duration_human).to eq('0s')
     end
   end
 
