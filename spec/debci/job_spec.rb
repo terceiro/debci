@@ -20,10 +20,9 @@ describe Debci::Job do
   end
 
   it 'sorts pending jobs with older first' do
-    job1 = Debci::Job.create
     yesterday = Time.now - 1.day
-    expect(Time).to receive(:now).and_return(yesterday)
-    job0 = Debci::Job.create
+    job1 = Debci::Job.create(created_at: Time.now)
+    job0 = Debci::Job.create(created_at: yesterday)
 
     expect(Debci::Job.pending).to eq([job0, job1])
   end
