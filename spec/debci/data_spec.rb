@@ -2,6 +2,8 @@ require 'spec_helper'
 require 'debci/data'
 
 RSpec.shared_context 'export/import' do
+  include_context 'tmpdir'
+
   let(:job_data) do
     {
       'run_id': '9999',
@@ -14,23 +16,18 @@ RSpec.shared_context 'export/import' do
   end
 
   before(:each) do
-    @tmpdir = Dir.mktmpdir
-    allow_any_instance_of(Debci::Config).to receive(:data_basedir).and_return(@tmpdir)
+    allow_any_instance_of(Debci::Config).to receive(:data_basedir).and_return(tmpdir)
   end
 
-  after(:each) do
-    FileUtils.rm_rf(@tmpdir)
-  end
-
-  let(:output_tarball) { File.join(@tmpdir, 'export.tar') }
+  let(:output_tarball) { File.join(tmpdir, 'export.tar') }
   let(:exporter) { Debci::Data::Export.new(output_tarball) }
   let(:exported_files) { `tar taf #{output_tarball}`.split }
 
-  let(:input_tarball) { File.join(@tmpdir, 'import.tar') }
+  let(:input_tarball) { File.join(tmpdir, 'import.tar') }
   let(:importer) { Debci::Data::Import.new(input_tarball) }
 
   def export!
-    Dir.chdir(@tmpdir) do
+    Dir.chdir(tmpdir) do
       FileUtils.mkdir_p 'autopkgtest/unstable/amd64/r/rake/9999'
       FileUtils.touch 'autopkgtest/unstable/amd64/r/rake/9999/log.gz'
       FileUtils.touch 'autopkgtest/unstable/amd64/r/rake/9999/exitcode'
@@ -47,7 +44,7 @@ RSpec.shared_context 'export/import' do
   end
 
   def cleanup!
-    FileUtils.rm_rf(Dir[File.join(@tmpdir, '**/*')].reject { |f| f == output_tarball })
+    FileUtils.rm_rf(Dir[File.join(tmpdir, '**/*')].reject { |f| f == output_tarball })
     FileUtils.mv(output_tarball, input_tarball)
     Debci::Job.delete_all
   end
@@ -105,7 +102,7 @@ describe Debci::Data::Import do
 
   it 'renames files to match job run_id in database' do
     job = Debci::Job.first
-    pkgdir = File.join(@tmpdir, 'packages/unstable/amd64/r/rake')
+    pkgdir = File.join(tmpdir, 'packages/unstable/amd64/r/rake')
     logs = Dir.chdir(pkgdir) { Dir['*.log'] }
     expect(logs).to include(format('%<id>d.log', id: job.run_id))
   end

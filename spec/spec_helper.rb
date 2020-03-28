@@ -6,6 +6,8 @@ if ENV["COVERAGE"] != "no"
   end
 end
 
+require 'fileutils'
+require 'tmpdir'
 require 'yaml'
 ENV['DATABASE_URL'] ||= 'sqlite3::memory:'
 require 'debci/db'
@@ -14,6 +16,11 @@ require 'debci/job'
 Debci.config.backend = 'fake'
 Debci.config.quiet = true
 Debci::DB.migrate
+
+RSpec.shared_context 'tmpdir' do
+  let(:tmpdir) { Dir.mktmpdir }
+  after(:each) { FileUtils.rm_rf(tmpdir) }
+end
 
 RSpec.configure do |config|
   config.before(:each) do

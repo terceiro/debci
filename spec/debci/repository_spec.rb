@@ -7,8 +7,10 @@ require 'fileutils'
 require 'json'
 
 describe Debci::Repository do
-  before(:all) do
-    @datadir = Dir.mktmpdir
+  include_context 'tmpdir'
+
+  before(:each) do
+    @datadir = tmpdir
     mkdir_p 'packages/unstable/amd64/r/rake'
     mkdir_p 'packages/unstable/i386/r/rake'
     mkdir_p 'packages/testing/amd64/r/rake'
@@ -76,10 +78,6 @@ describe Debci::Repository do
     latest_status 'packages/unstable/amd64/n/newsworthypacakge',
                   'status' => 'pass',
                   'previous_status' => 'fail'
-  end
-
-  after(:all) do
-    FileUtils.rm_rf @datadir
   end
 
   def mkdir_p(path)

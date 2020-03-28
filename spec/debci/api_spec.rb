@@ -8,6 +8,8 @@ describe Debci::API do
   include Rack::Test::Methods
   include Debci::TestHandler
 
+  include_context 'tmpdir'
+
   class API < Debci::API
     set :raise_errors, true
     set :show_exceptions, false
@@ -21,12 +23,7 @@ describe Debci::API do
   let(:arch) { Debci.config.arch }
 
   before do
-    @tmpdir = Dir.mktmpdir
-    allow(Debci.config).to receive(:secrets_dir).and_return(@tmpdir)
-  end
-
-  after do
-    FileUtils.rm_rf(@tmpdir)
+    allow(Debci.config).to receive(:secrets_dir).and_return(tmpdir)
   end
 
   context 'authentication' do

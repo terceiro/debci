@@ -9,8 +9,9 @@ def generate_data_element(date, pass, fail, tmpfail, total)
 end
 
 describe Debci::Graph do
-  before(:all) do
-    @datadir = Dir.mktmpdir
+  include_context 'tmpdir'
+
+  before(:each) do
     initial_date = Time.parse('2014-08-10 12:12:30 UTC')
     final_date = Time.parse('2014-08-15 01:30:15 UTC')
     data_element1 = generate_data_element(initial_date, 100, 200, 20, 320)
@@ -19,21 +20,17 @@ describe Debci::Graph do
     history 'status/unstable/amd64', [data_element1, data_element2]
   end
 
-  after(:all) do
-    FileUtils.rm_rf @datadir
-  end
-
   def mkdir_p(path)
-    FileUtils.mkdir_p(File.join(@datadir, path))
+    FileUtils.mkdir_p(File.join(tmpdir, path))
   end
 
   def history(path, data)
-    File.open(File.join(@datadir, path, 'history.json'), 'w') do |f|
+    File.open(File.join(tmpdir, path, 'history.json'), 'w') do |f|
       f.write(JSON.pretty_generate(data))
     end
   end
 
-  let(:repository) { Debci::Repository.new(@datadir) }
+  let(:repository) { Debci::Repository.new(tmpdir) }
   let(:graph) { Debci::Graph.new(repository, 'unstable', 'amd64') }
 
   it 'gets history snapshots as entries' do
