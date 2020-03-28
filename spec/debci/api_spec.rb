@@ -79,7 +79,7 @@ describe Debci::API do
       it 'accepts a valid request' do
         expect_any_instance_of(Debci::Job).to receive(:enqueue)
 
-        post format('/api/v1/test/%<suite>s/%<arch>s/mypackage', suite: suite, arch: arch)
+        post '/api/v1/test/%<suite>s/%<arch>s/mypackage' % { suite: suite, arch: arch }
 
         job = Debci::Job.last
         expect(job.package).to eq('mypackage')
@@ -92,38 +92,38 @@ describe Debci::API do
 
       it 'enqueues with priority' do
         expect_any_instance_of(Debci::Job).to receive(:enqueue).with(Integer)
-        post format('/api/v1/test/%<suite>s/%<arch>s/mypackage', suite: suite, arch: arch, priority: 8)
+        post '/api/v1/test/%<suite>s/%<arch>s/mypackage' % { suite: suite, arch: arch, priority: 8 }
       end
 
       it 'rejects blacklisted package' do
         allow_any_instance_of(Debci::Blacklist).to receive(:include?)
           .with('mypackage', suite: suite, arch: arch).and_return(true)
-        post format('/api/v1/test/%<suite>s/%<arch>s/mypackage', suite: suite, arch: arch)
+        post '/api/v1/test/%<suite>s/%<arch>s/mypackage' % { suite: suite, arch: arch }
         expect(last_response.status).to eq(400)
       end
 
       it 'rejects invalid package names' do
         jobs = Debci::Job.count
-        post format('/api/v1/test/%<suite>s/%<arch>s/foo=bar', suite: suite, arch: arch)
+        post '/api/v1/test/%<suite>s/%<arch>s/foo=bar' % { suite: suite, arch: arch }
         expect(last_response.status).to eq(400)
         expect(Debci::Job.count).to eq(jobs)
       end
 
       it 'rejects unknown arch' do
-        post format('/api/v1/test/%<suite>s/%<arch>s/mypackage', suite: suite, arch: 'xyz')
+        post '/api/v1/test/%<suite>s/%<arch>s/mypackage' % { suite: suite, arch: 'xyz' }
         expect(last_response.status).to eq(400)
       end
 
       it 'rejects unknown suite' do
-        post format('/api/v1/test/%<suite>s/%<arch>s/mypackage', suite: 'nonexistingsuite', arch: arch)
+        post '/api/v1/test/%<suite>s/%<arch>s/mypackage' % { suite: 'nonexistingsuite', arch: arch }
         expect(last_response.status).to eq(400)
       end
 
       it 'rejects invalid priorities' do
-        post format('/api/v1/test/%<suite>s/%<arch>s/mypackage', suite: 'suite', arch: arch, priority: 0)
+        post '/api/v1/test/%<suite>s/%<arch>s/mypackage' % { suite: 'suite', arch: arch, priority: 0 }
         expect(last_response.status).to eq(400)
 
-        post format('/api/v1/test/%<suite>s/%<arch>s/mypackage', suite: 'suite', arch: arch, priority: 11)
+        post '/api/v1/test/%<suite>s/%<arch>s/mypackage' % { suite: 'suite', arch: arch, priority: 11 }
         expect(last_response.status).to eq(400)
       end
     end
@@ -132,7 +132,7 @@ describe Debci::API do
       it 'accepts a valid request' do
         allow_any_instance_of(Debci::Job).to receive(:enqueue)
 
-        post format('/api/v1/test/%<suite>s/%<arch>s', suite: suite, arch: arch), tests: '[{"package": "package1"}, {"package": "package2"}]'
+        post '/api/v1/test/%<suite>s/%<arch>s' % { suite: suite, arch: arch }, tests: '[{"package": "package1"}, {"package": "package2"}]'
 
         %w[package1 package2].each do |pkg|
           job = Debci::Job.where(package: pkg).last
@@ -146,13 +146,13 @@ describe Debci::API do
 
       it 'rejects unknown arch' do
         expect_any_instance_of(Debci::Job).to_not receive(:enqueue)
-        post format('/api/v1/test/%<suite>s/%<arch>s', suite: suite, arch: 'xyz'), tests: '[{"package": "package1"}, {"package": "package2"}]'
+        post '/api/v1/test/%<suite>s/%<arch>s' % { suite: suite, arch: 'xyz' }, tests: '[{"package": "package1"}, {"package": "package2"}]'
         expect(last_response.status).to eq(400)
       end
 
       it 'rejects unknown suite' do
         expect_any_instance_of(Debci::Job).to_not receive(:enqueue)
-        post format('/api/v1/test/%<suite>s/%<arch>s', suite: 'nonexistingsuite', arch: arch), tests: '[{"package": "package1"}, {"package": "package2"}]'
+        post '/api/v1/test/%<suite>s/%<arch>s' % { suite: 'nonexistingsuite', arch: arch }, tests: '[{"package": "package1"}, {"package": "package2"}]'
         expect(last_response.status).to eq(400)
       end
 
@@ -162,7 +162,7 @@ describe Debci::API do
 
         expect_any_instance_of(Debci::Job).to receive(:enqueue).once
 
-        post format('/api/v1/test/%<suite>s/%<arch>s', suite: suite, arch: arch), tests: '[{"package": "package1"}, {"package": "package2"}]'
+        post '/api/v1/test/%<suite>s/%<arch>s' % { suite: suite, arch: arch }, tests: '[{"package": "package1"}, {"package": "package2"}]'
         expect(last_response.status).to eq(201)
 
         job1 = Debci::Job.find_by(package: 'package1', suite: suite, arch: arch)
@@ -175,7 +175,7 @@ describe Debci::API do
       end
 
       it 'marks invalid package names as failed right away' do
-        post format('/api/v1/test/%<suite>s/%<arch>s', suite: suite, arch: arch), tests: '[{"package": "package1"}, {"package": "foo=package2"}]'
+        post '/api/v1/test/%<suite>s/%<arch>s' % { suite: suite, arch: arch }, tests: '[{"package": "package1"}, {"package": "foo=package2"}]'
         expect(last_response.status).to eq(201)
 
         job1 = Debci::Job.find_by(package: 'package1', suite: suite, arch: arch)
@@ -187,7 +187,7 @@ describe Debci::API do
 
       it 'handles invalid JSON gracefully' do
         expect_any_instance_of(Debci::Job).to_not receive(:enqueue)
-        post format('/api/v1/test/%<suite>s/%<arch>s', suite: suite, arch: arch), tests: 'invalid json'
+        post '/api/v1/test/%<suite>s/%<arch>s' % { suite: suite, arch: arch }, tests: 'invalid json'
         expect(last_response.status).to eq(400)
       end
 
@@ -196,7 +196,7 @@ describe Debci::API do
       it 'handles trigger and pin' do
         expect_any_instance_of(Debci::Job).to receive(:enqueue)
 
-        post format('/api/v1/test/%<suite>s/%<arch>s', suite: suite, arch: arch), tests: File.read(test_file)
+        post '/api/v1/test/%<suite>s/%<arch>s' % { suite: suite, arch: arch }, tests: File.read(test_file)
         expect(last_response.status).to eq(201)
 
         job = Debci::Job.find_by(suite: suite, arch: arch, package: 'package1')
@@ -206,7 +206,7 @@ describe Debci::API do
 
       it 'handles trigger and pin as a file upload' do
         expect_any_instance_of(Debci::Job).to receive(:enqueue)
-        post format('/api/v1/test/%<suite>s/%<arch>s', suite: suite, arch: arch), tests: Rack::Test::UploadedFile.new(test_file, 'application/json')
+        post '/api/v1/test/%<suite>s/%<arch>s' % { suite: suite, arch: arch }, tests: Rack::Test::UploadedFile.new(test_file, 'application/json')
         expect(last_response.status).to eq(201)
 
         job = Debci::Job.find_by(suite: suite, arch: arch, package: 'package1')
@@ -221,7 +221,7 @@ describe Debci::API do
         expect(Debci::Job).to receive(:create!).with(anything).twice.and_return(job)
         expect(job).to receive(:enqueue).and_raise(Exception)
         expect do
-          post format('/api/v1/test/%<suite>s/%<arch>s', suite: suite, arch: arch), tests: Rack::Test::UploadedFile.new(batch_test_file, 'application/json')
+          post '/api/v1/test/%<suite>s/%<arch>s' % { suite: suite, arch: arch }, tests: Rack::Test::UploadedFile.new(batch_test_file, 'application/json')
         end.to raise_error(Exception)
       end
     end

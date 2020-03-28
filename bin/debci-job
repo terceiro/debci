@@ -14,10 +14,10 @@ module Debci
       status_files.each do |status_file|
         begin
           Debci::Job.import(status_file, suite, arch)
-          puts(format('I: imported %<status_file>s', status_file: status_file)) if options { :verbose }
+          puts('I: imported %<status_file>s' % { status_file: status_file }) if options { :verbose }
           if options[:remove]
             File.unlink(status_file)
-            puts(format('I: removed %<status_file>s', status_file: status_file)) if options { :verbose }
+            puts('I: removed %<status_file>s' % { status_file: status_file }) if options { :verbose }
           end
         rescue Debci::Job::InvalidStatusFile => exc
           puts("E: " + exc.to_s)

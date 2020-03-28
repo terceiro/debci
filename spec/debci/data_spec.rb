@@ -104,6 +104,6 @@ describe Debci::Data::Import do
     job = Debci::Job.first
     pkgdir = File.join(tmpdir, 'packages/unstable/amd64/r/rake')
     logs = Dir.chdir(pkgdir) { Dir['*.log'] }
-    expect(logs).to include(format('%<id>d.log', id: job.run_id))
+    expect(logs).to include('%<id>d.log' % { id: job.run_id })
   end
 end

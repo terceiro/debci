@@ -40,7 +40,7 @@ describe Debci::Job do
     '$(cat /etc/passwd)',
     "a\nb"
   ].each do |invalid|
-    it(format('escapes \"%<invalid>s" in trigger', invalid: invalid)) do
+    it('escapes \"%<invalid>s" in trigger' % { invalid: invalid }) do
       job = Debci::Job.new(trigger: invalid)
       expect(job.enqueue_parameters).to_not include(invalid)
     end

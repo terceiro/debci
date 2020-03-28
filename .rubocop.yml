@@ -39,6 +39,9 @@ Metrics/BlockLength:
 Metrics/ParameterLists:
   Enabled: false
 
+Style/FormatString:
+  EnforcedStyle: percent
+
 Style/HashEachMethods:
   Enabled: true
 
