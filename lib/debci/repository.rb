@@ -76,7 +76,7 @@ module Debci
       failing_packages.sort.map { |p| Debci::Package.new(p, self) }
     end
 
-    def slow_packages
+    def slow_statuses
       all_non_blacklisted_statuses.select do |status|
         status.duration_seconds && status.duration_seconds > 60 * 60 # 1h
       end

@@ -280,7 +280,7 @@ describe Debci::Repository do
   end
 
   it 'knows about slow-running tests' do
-    slow = repository.slow_packages
+    slow = repository.slow_statuses
     expect(slow).to be_a(Array)
     expect(slow.length).to be >= 1
 

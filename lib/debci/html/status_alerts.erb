@@ -15,7 +15,7 @@
         </tr>
 
       <% @tmpfail.each do |package| %>
-        <% package.tmpfail.each do |s| %>
+        <% package.tmpfail.select(&:visible?).each do |s| %>
           <tr>
             <td>
               <a href="/packages/<%= package.prefix %>/<%= package.name %>"><%= package.name %></a>

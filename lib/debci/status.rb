@@ -191,6 +191,22 @@ module Debci
       status
     end
 
+    def visible?
+      (Time.now - date)/(24*60*60) < Debci.config.status_visible_days.to_i
+    end
+
+    def expired?
+      return false unless self.date
+
+      days = Debci.config.data_retention_days.to_i
+      if days > 0
+        retention_window = days * (24*60*60)
+        Time.now > self.date + retention_window
+      else
+        false
+      end
+    end
+
     def newer?(days)
       return true if days <= 0
       (Time.now - date) < days * (24 * 60 * 60)
