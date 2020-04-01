@@ -8,9 +8,10 @@
         <span class='dropdown'>
           <a href='#' class='dropdown-toggle' data-toggle='dropdown'>All</a>
           <ul class='dropdown-menu'>
-            <li><a href='/status/failing'>All</a></li>
+            <li><a href='/status/failing'>Last <%= @packages_per_page %> Packages</a></li>
             <li><a href='/status/failing/always_failing/'>Always Failing</a></li>
             <li><a href='/status/failing/had_success/'>Had Success</a></li>
+            <li><a href='/status/failing/all/'>All Packages</a></li>
           </ul>
         </span>
       </li>
@@ -20,20 +21,24 @@
           <span class='dropdown'>
             <a href='#' class='dropdown-toggle' data-toggle='dropdown'><%= suite %></a>
             <ul class='dropdown-menu'>
-              <li><a href='/status/failing/<%= suite %>/'>All</a></li>
+              <li><a href='/status/failing/<%= suite %>/'>Last <%= @packages_per_page %> Packages</a></li>
               <li><a href='/status/failing/<%= suite %>/always_failing/'>Always Failing</a></li>
               <li><a href='/status/failing/<%= suite %>/had_success/'>Had Success</a></li>
+              <li><a href='/status/failing/<%= suite %>/all/'>All Packages</a></li>
             </ul>
           </span>
         </li>
       <% end %>
     </ol>
 
-    <h4>There are currently <b><%= @packages.length %></b> packages failing or temporarily failing</h4>
-    <% if @packages.empty? %>
+    <h4>
+      There are currently <b><%= @packages_length %></b> packages failing for <b><%= @suite || 'All' %></b>.
+    </h4>
+    <% if @packages_length > @packages.length %>
+      <p>Last 50 such packages are shown.</p>
+    <% elsif @packages.empty? %>
       <p>No packages satisfy conditions!</p>
     <% else %>
-
       <div class='form-group'>
         <span>Enter Package Name: </span><input type='text' id='filter'>
       </div>
@@ -50,8 +55,7 @@
 
         <tbody>
           <% @packages.each do |package| %>
-            <% statuses = package.failures %>
-            <% statuses = statuses.select { |status| status.suite == @suite } if @suite %>
+            <% statuses = package.failures.select { |p| p.suite == @suite || !@suite } %>
             <% statuses.each do |s| %>
               <tr>
                 <td>
