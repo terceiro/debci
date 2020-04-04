@@ -5,4 +5,5 @@ set -ex
 tmpdir=${AUTOPKGTEST_TMP:-${TMPDIR:-/tmp}}
 cp -r spec $tmpdir
 cd $tmpdir
+export COVERAGE=no
 rspec
