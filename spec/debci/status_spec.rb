@@ -171,6 +171,59 @@ describe Debci::Status do
     end
   end
 
+  context 'handling files' do
+    let(:new_status) do
+      Debci::Status.new.tap do |s|
+        s.package = 'foo'
+        s.suite = 'unstable'
+        s.architecture = 'amd64'
+        s.run_id = '999'
+      end
+    end
+
+    let(:status) do
+      new_status.tap do |s|
+        s.autopkgtest_dir.mkpath
+
+        s.debci_log.parent.mkpath
+        FileUtils.touch(s.debci_log)
+
+        FileUtils.touch(s.result_json)
+      end
+    end
+
+    it 'points to autopkgtest directory' do
+      expect(status.autopkgtest_dir.basename.to_s).to eq(status.run_id)
+    end
+
+    it 'points to debci log file' do
+      expect(status.debci_log.basename.to_s).to eq(status.run_id + '.log')
+    end
+
+    it 'points to results json' do
+      expect(status.result_json.basename.to_s).to eq(status.run_id + '.json')
+    end
+
+    it 'removes autopkgtest dir on cleanup' do
+      status.cleanup
+      expect(status.autopkgtest_dir).to_not exist
+    end
+
+    it 'removes debci log on cleanup' do
+      status.cleanup
+      expect(status.debci_log).to_not exist
+    end
+
+    it 'removes result json on cleanup' do
+      status.cleanup
+      expect(status.result_json).to_not exist
+    end
+
+    it 'does not delete unexisting files' do
+      new_status.cleanup
+    end
+  end
+
   context 'calculating human-friendly duration' do
     it 'handles duration within seconds' do
       status = status_with(duration_seconds: 5)

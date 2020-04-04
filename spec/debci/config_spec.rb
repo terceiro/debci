@@ -21,6 +21,10 @@ describe Debci::Config do
       it "knows about #{key}" do
         expect(config.send(key)).to_not be_a(String)
       end
+    elsif [:data_retention_days].include?(key)
+      it "knows about #{key}" do
+        expect(config.send(key)).to be_a(Integer)
+      end
     else
       it "knows about #{key}" do
         expect(config.send(key)).to be_a(String)

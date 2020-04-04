@@ -43,6 +43,8 @@ module Debci
     :suite_list,
     :url_base,
   ) do
+    alias_method :data_retention, :data_retention_days
+
     # for development usage
     if !ENV['AUTOPKGTEST_TMP']
       bin = File.dirname(__FILE__) + '/../../bin'
@@ -56,6 +58,7 @@ module Debci
         /_list$/ => lambda { |x| x.split}, # Array
         'quiet' => lambda { |x| x == 'true' }, # boolean
         'amqp_ssl' => lambda { |x| x == 'true' }, # boolean
+        'data_retention_days' => lambda { |x| x.to_i }
       }
     end
 

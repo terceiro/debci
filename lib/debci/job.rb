@@ -3,6 +3,7 @@ require 'debci/amqp'
 require 'debci/db'
 require 'debci/test/duration'
 require 'debci/test/expired'
+require 'debci/test/paths'
 require 'debci/test/prefix'
 require 'cgi'
 require 'time'
@@ -12,6 +13,7 @@ module Debci
 
     include Debci::Test::Duration
     include Debci::Test::Expired
+    include Debci::Test::Paths
     include Debci::Test::Prefix
 
     serialize :pin_packages, Array

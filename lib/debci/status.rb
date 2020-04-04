@@ -4,6 +4,7 @@ require 'time'
 
 require 'debci/test/duration'
 require 'debci/test/expired'
+require 'debci/test/paths'
 require 'debci/test/prefix'
 
 module Debci
@@ -14,9 +15,12 @@ module Debci
 
     include Debci::Test::Duration
     include Debci::Test::Expired
+    include Debci::Test::Paths
     include Debci::Test::Prefix
 
     attr_accessor :suite, :architecture, :run_id, :package, :version, :date, :trigger, :status, :previous_status, :duration_seconds, :message, :last_pass_version, :last_pass_date, :requestor
+
+    alias arch architecture
 
     # Returns `true` if this status object represents an important event, such
     # as a package that used to pass started failing, of vice versa.

@@ -1,43 +1,5 @@
-#!/bin/sh
+#!/usr/bin/ruby
 
-set -eu
+require 'debci/expiration'
 
-usage() {
-  cat <<EOF
-usage: debci expire
-
-$@
-EOF
-}
-
-debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
-. $debci_base_dir/lib/environment.sh
-. $debci_base_dir/lib/functions.sh
-
-prepare_args
-
-########################################################################
-# cleanup data/autopkgtest/
-########################################################################
-mkdir -p "$debci_data_basedir/autopkgtest/"
-# remove old artifacts and logs
-find "$debci_data_basedir/autopkgtest/" -mtime +"$debci_data_retention_days" \
-  -and '(' -name artifacts.tar.gz -or -name 'log.gz' ')' \
-  -delete
-#remove remaining empty directories
-find "$debci_data_basedir/autopkgtest" -mtime +"$debci_data_retention_days" \
-  -type d -empty \
-  -delete
-
-########################################################################
-# cleanup data/packages/
-########################################################################
-mkdir -p "$debci_data_basedir/packages/"
-# remove old logs
-find "$debci_data_basedir/packages/" -mtime +"$debci_data_retention_days" \
-  -name '*.log' \
-  -delete
-# remove broken symlinks (to removed autopkgtest logs)
-find "$debci_data_basedir/packages/" -mtime +"$debci_data_retention_days" \
-  -xtype l -name '*.autopkgtest.log.gz' \
-  -delete
+Debci::Expiration::CLI.start
