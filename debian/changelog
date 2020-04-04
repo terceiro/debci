@@ -1,3 +1,17 @@
+debci (2.10) unstable; urgency=medium
+
+  [ Abhishek Kumar ]
+  * [Status]: Fix inconsistent results produced
+  * [Status]: Filter blacklisted and old statuses
+
+  [ Antonio Terceiro ]
+  * Debci::DB: support ActiveRecord 6 and drop support for < 5.2
+  * Add more indexes to the jobs table
+  * debci-expire: use database and look only for expired jobs
+  * Debci::Status: remove duplicate implementation of expired?
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 04 Apr 2020 17:53:25 -0300
+
 debci (2.9) unstable; urgency=medium
 
   [ Sébastien Delafond ]
