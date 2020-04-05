@@ -1,30 +1,23 @@
-before_script:
-  - apt-get -q update
-  - apt-get -q -y dist-upgrade
-  - apt-get -q -y install --no-install-recommends aspcud apt-cudf
-  - apt-get -q -y --solver aspcud -o APT::Solver::Strict-Pinning=0 -o Debug::pkgProblemResolver=yes build-dep .
-  - make all
+---
+include:
+  - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/salsa-ci.yml
+  - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/pipeline-jobs.yml
 
-.test_template: &test
-  script:
-    - COVERAGE=no make test
+variables:
+  SALSA_CI_DISABLE_BLHC: 1
+  SALSA_CI_DISABLE_BUILD_PACKAGE_ANY: 1
 
-unstable:
-  <<: *test
-  image: 'debian:unstable'
-
-testing:
-  <<: *test
-  image: 'debian:testing'
-
-stable:
-  <<: *test
-  image: 'debian:stable-backports'
+autopkgtest-stable:
+  extends: .test-autopkgtest
+  variables:
+    RELEASE: 'stable'
 
 coverage:
   image: 'debian:unstable'
   script:
-    - apt-get install -q -y ruby-simplecov
+    - apt-get -q update
+    - apt-get build-dep --quiet --assume-yes .
+    - apt-get install --quiet --assume-yes ruby-simplecov
     - COVERAGE=yes rspec
 
 ruby-style:
