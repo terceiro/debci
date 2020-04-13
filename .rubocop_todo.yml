@@ -325,18 +325,6 @@ Naming/RescuedExceptionsVariableName:
     - 'lib/debci/api.rb'
     - 'lib/debci/self_service.rb'
 
-# Offense count: 8
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect.
-Security/JSONLoad:
-  Exclude:
-    - 'bin/debci-status'
-    - 'lib/debci/api.rb'
-    - 'lib/debci/data.rb'
-    - 'lib/debci/repository.rb'
-    - 'lib/debci/status.rb'
-    - 'tools/analysis/Rakefile'
-
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

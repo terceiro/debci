@@ -392,7 +392,7 @@ module Debci
       begin
         raise "No tests" if param.nil?
         str = param.is_a?(Hash) && File.read(param[:tempfile]) || param
-        JSON.load(str)
+        JSON.parse(str)
       rescue JSON::ParserError => error
         halt(400, "Invalid JSON: #{error}")
       rescue StandardError => error

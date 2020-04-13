@@ -55,7 +55,7 @@ end
 def read_status_file(pkg)
   status_file = get_status_file(pkg)
   if File.exist?(status_file)
-    JSON.load(File.open(status_file))
+    JSON.parse(File.read(status_file))
   else
     { 'package' => pkg, $field => nil }
   end

@@ -113,7 +113,7 @@ module Debci
             end
 
             Dir['packages/*/*/*/*/history.json'].each do |history|
-              data = JSON.load(File.read(history))
+              data = JSON.parse(File.read(history))
               data.each do |entry|
                 old_id = entry['run_id'].to_i
                 new_id = mapping[old_id]

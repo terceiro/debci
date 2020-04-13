@@ -182,7 +182,7 @@ module Debci
       file = File.join(data_dir(suite, architecture, package), 'history.json')
       return [] unless File.exists?(file)
 
-      entries = JSON.load(File.read(file))
+      entries = JSON.parse(File.read(file))
       entries
         .map { |test| Debci::Status.from_data(test, suite, architecture) }
         .sort_by(&:date)
@@ -245,7 +245,7 @@ module Debci
 
       begin
         File.open(file, 'r') do |f|
-          data = JSON.load(f)
+          data = JSON.parse(f.read)
         end
       rescue JSON::ParserError
         true

@@ -144,7 +144,7 @@ module Debci
 
       begin
         File.open(file, 'r') do |f|
-          data = JSON.load(f)
+          data = JSON.parse(f.read)
         end
       rescue JSON::ParserError
         true # nothing really
