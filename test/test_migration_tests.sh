@@ -21,8 +21,8 @@ test_pin_packages() {
   wait_for_results bar
 
   log=$(find $debci_data_basedir -name log.gz)
-  assertTrue "zgrep '.--add-apt-release unstable' $log"
-  assertTrue "zgrep '.--pin-packages unstable=debci' $log"
+  assertTrue "zgrep '.--add-apt-release=unstable' $log"
+  assertTrue "zgrep '.--pin-packages=unstable=debci' $log"
 }
 
 . shunit2

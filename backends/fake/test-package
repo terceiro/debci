@@ -25,9 +25,14 @@ optparse = OptionParser.new do |opts|
   end
 
   # options with arguments
-  ['--user', '--trigger', '--add-apt-release', '--pin-packages'].each do |ign|
+  %w[
+    --user
+    --trigger
+    --add-apt-release
+    --pin-packages
+  ].each do |ign|
     opts.on("#{ign} IGNORED") do |arg|
-      log.puts "Ignored option/argument: #{ign} #{arg}"
+      log.puts "Ignored option/argument: #{ign}=#{arg}"
     end
   end
 
