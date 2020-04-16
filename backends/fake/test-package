@@ -28,6 +28,7 @@ optparse = OptionParser.new do |opts|
   %w[
     --user
     --trigger
+    --add-apt-source
     --add-apt-release
     --pin-packages
   ].each do |ign|

@@ -80,11 +80,27 @@ process_package() {
   export debci_test_package="$pkgname"
   export debci_test_outputdir="$adt_out_dir"
 
+
+  ########################################################################
+  # XXX This is a hack to handle the fact that the --add-apt-source option
+  # has spaces in it. $options is separated by | with a bogus first item
+  # (to avoid an empty first argument; it is split on | into "$@", then
+  # the first item is dicarded. "$@" is then used when calling the backend
+  # test-package command
+  ########################################################################
+  old_IFS="$IFS"
+  IFS='|'
+  set -- $options
+  shift
+  IFS="$old_IFS"
+  ########################################################################
+
+
   if [ "$debci_quiet" = 'true' ]; then
-    test-package $options --output-dir "$adt_out_dir" "$pkg" \
+    test-package "$@" --output-dir "$adt_out_dir" "$pkg" \
       >/dev/null 2>&1 || true
   else
-    test-package $options --output-dir "$adt_out_dir" "$pkg" || true
+    test-package "$@" --output-dir "$adt_out_dir" "$pkg" || true
   fi
 
   if [ ! -d "$adt_out_dir" ]; then
@@ -133,11 +149,16 @@ process_package() {
   fi
 }
 
+get_buildd_suite() {
+  (debci-generate-apt-sources --buildd "$1" | grep buildd) || true
+}
+
+
 # defaults
 index=''
 print_output=''
 trigger=''
-options=''
+options=':'
 
 while true; do
   opt="$1"
@@ -154,7 +175,11 @@ while true; do
       pin="$1"
       shift
       release=$(echo "$pin" | cut -d = -f 1)
-      options="$options --add-apt-release=$release --pin-packages=$pin"
+      apt_source=$(get_buildd_suite "$release")
+      if [ -n "$apt_source" ]; then
+        options="$options|--add-apt-source=$apt_source"
+      fi
+      options="$options|--add-apt-release=$release|--pin-packages=$pin"
       ;;
     -i|--run-id)
       run_id="$1"
