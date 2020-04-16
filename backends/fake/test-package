@@ -7,7 +7,7 @@ require 'stringio'
 log = StringIO.new
 
 log.puts "autopkgtest [%s]: started \n" % Time.now.strftime('%Y-%m-%d %H:%M:%S')
-log.puts 'command line arguments: ' + ARGV.join(' ')
+log.puts 'command line arguments: ' + ARGV.inspect
 
 pkg = nil
 outdir = nil
