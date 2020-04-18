@@ -4,8 +4,3 @@ set -eu
 
 # FIXME remove after bullseye
 echo "W: debci-generate-html is deprecated. use \`debci html\` instead"
-
-for pkg in "$@"; do
-  debci html update-package "$pkg"
-done
-debci html update
