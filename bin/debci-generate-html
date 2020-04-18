@@ -1,74 +1,11 @@
-#!/usr/bin/ruby
+#!/bin/sh
 
-require 'fileutils'
-require 'optparse'
+set -eu
 
-require 'debci'
-require 'debci/html'
-require 'debci/graph'
+# FIXME remove after bullseye
+echo "W: debci-generate-html is deprecated. use \`debci html\` instead"
 
-$all_packages = false
-optparse = OptionParser.new do |opts|
-  opts.banner = 'Usage: debci status [OPTIONS] [PACKAGE]'
-  opts.separator 'Options:'
-
-  opts.on('-a', '--all', 'Regenerate HTML for all packages') do
-    $all_packages = true
-  end
-end
-optparse.parse!
-
-if $all_packages && !ARGV.empty?
-  warn "E: -a/--all is incompatible with passing a list of packages"
-  exit(1)
-end
-
-$DEBCI_HTML_FAST = (ENV['DEBCI_HTML_FAST'] != nil)
-
-Debci.log('debci generate-html started')
-writer = Debci::HTML.new
-Debci.log('html writer initialized')
-
-writer.index('index.html')
-writer.status('status/index.html')
-writer.status_alerts('status/alerts/index.html')
-writer.status_slow('status/slow/index.html')
-writer.status_pending_jobs('status/pending')
-writer.status_failing('status/failing')
-writer.blacklist('status/blacklist/index.html')
-writer.platform_specific_issues('status/platform-specific-issues')
-Debci.log('status pages html updated')
-
-repository = Debci::Repository.new
-
-packages = ARGV
-if packages.empty?
-  if $all_packages
-    packages = repository.packages
-  else
-    exit
-  end
-end
-packages += Debci.blacklist.packages
-
-prefixes = Set.new
-
-packages.each do |pkg|
-  package = repository.find_package(pkg)
-
-  writer.package(package, "packages/#{package.prefix}/#{package.name}/index.html")
-  package.suites.each do |suite|
-    package.architectures.each do |arch|
-      writer.history(package, suite, arch, "packages/#{package.prefix}/#{package.name}/#{suite}/#{arch}/index.html")
-    end
-  end
-  prefixes << package.prefix
-  Debci.log('%s html updated' % package.name)
-end unless $DEBCI_HTML_FAST
-
-writer.obsolete_packages_page("packages/index.html")
-
-prefixes.each do |p|
-  writer.prefix(p, "packages/#{p}/index.html")
-  Debci.log('%s prefix html updated' % p)
-end
+for pkg in "$@"; do
+  debci html update-package "$pkg"
+done
+debci html update

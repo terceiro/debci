@@ -7,6 +7,7 @@ require 'debci/test/paths'
 require 'debci/test/prefix'
 require 'cgi'
 require 'time'
+require 'pathname'
 
 module Debci
   class Job < ActiveRecord::Base
@@ -44,6 +45,62 @@ module Debci
       job
     end
 
+    def self.receive(directory)
+      src = Pathname(directory)
+      id = src.basename.to_s
+      Debci::Job.find(id).tap do |job|
+        job.status, job.message = status((src / 'exitcode').read.to_i)
+        duration = (src / 'duration')
+        job.duration_seconds = duration.read.to_i
+        job.date = duration.stat.mtime
+        job.version = (src / 'testpkg-version').read.split.last
+
+        if job.previous
+          job.previous_status = job.previous.status
+        end
+        if job.last_pass
+          job.last_pass_date = job.last_pass.date
+          job.last_pass_version = job.last_pass.version
+        end
+
+        base = Pathname(Debci.config.autopkgtest_basedir)
+        dest = base / job.suite / job.arch / job.prefix / job.package / id
+        dest.parent.mkpath
+        FileUtils.cp_r src, dest
+        Dir.chdir dest do
+          artifacts = Dir['*'] - ['log.gz']
+          cmd = ['tar', '-caf', 'artifacts.tar.gz', '--remove-files', *artifacts]
+          system(*cmd) || raise('Command failed: %<cmd>s' % { cmd: cmd.join(' ') })
+        end
+
+        job.save!
+
+        # only remove original directory after everything went well
+        src.rmtree
+      end
+    end
+
+    def self.status(exit_code)
+      case exit_code
+      when 0
+        ['pass', 'All tests passed']
+      when 2
+        ['pass', 'Tests passed, but at least one test skipped']
+      when 4
+        ['fail', 'Tests failed']
+      when 6
+        ['fail', 'Tests failed, and at least one test skipped']
+      when 12, 14
+        ['fail', 'Erroneous package']
+      when 8
+        ['neutral', 'No tests in this package or all skipped']
+      when 16
+        ['tmpfail', 'Could not run tests due to a temporary testbed failure']
+      else
+        ['tmpfail', "Unexpected autopkgtest exit code #{exit_code}"]
+      end
+    end
+
     def self.pending
       jobs = Debci::Job.where(status: nil).order(:created_at)
     end
@@ -54,6 +111,22 @@ module Debci
         suite: suite,
         arch: arch
       ).where.not(status: nil).where(pin_packages: nil).order('date')
+    end
+
+    def history
+      @history ||= self.class.history(package, suite, arch)
+    end
+
+    def past
+      @past ||= history.where(["date < ?", date])
+    end
+
+    def previous
+      @previous ||= past.last
+    end
+
+    def last_pass
+      @last_pass ||= past.where(status: 'pass').last
     end
 
     # Returns the amount of time since the date for this status object

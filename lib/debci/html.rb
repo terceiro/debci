@@ -1,14 +1,230 @@
 require 'cgi'
 require 'erb'
+require 'json'
+require 'pathname'
 
 require 'debci'
+require 'debci/feed'
 require 'debci/job'
+require 'debci/graph'
 require 'debci/html_helpers'
+require 'debci/repository'
 require 'fileutils'
 
 module Debci
 
   class HTML
+
+    class << self
+
+      def update
+        html = Debci::HTML.new
+        feed = Debci::HTML::Feed.new
+
+        Debci.config.suite_list.each do |suite|
+          Debci.config.arch_list.each do |arch|
+            json = Debci::HTML::JSON.new(suite, arch)
+            json.status
+            json.history
+            json.packages
+          end
+        end
+
+        feed.global
+
+        html.index('index.html')
+        html.obsolete_packages_page('packages/index.html')
+        html.status('status/index.html')
+        html.status_alerts('status/alerts/index.html')
+        html.status_slow('status/slow/index.html')
+        html.status_pending_jobs('status/pending')
+        html.status_failing('status/failing')
+        html.blacklist('status/blacklist/index.html')
+        html.platform_specific_issues('status/platform-specific-issues')
+      end
+
+      def update_package(pkg, suite = nil, arch = nil)
+        html = new
+        pkgjson = Debci::HTML::PackageJSON.new
+        autopkgtest = Debci::HTML::Autopkgtest.new
+        feed = Debci::HTML::Feed.new
+        repository = Debci::Repository.new
+        package = Debci::Package.new(pkg, repository)
+
+        suites = suite && [suite] || Debci.config.suite_list
+        archs = arch && [arch] || Debci.config.arch_list
+        suites.each do |s|
+          archs.each do |a|
+            pkgjson.history(package, s, a)
+            pkgjson.latest(package, s, a)
+            autopkgtest.link_latest(package, s, a)
+            html.history(package, s, a)
+          end
+        end
+
+        feed.package(package)
+
+        html.package(package)
+        html.prefix(package.prefix)
+      end
+    end
+
+    class Rooted
+      attr_reader :root
+
+      def datadir
+        'packages'
+      end
+
+      def initialize
+        data_basedir = Debci.config.data_basedir
+        @root = Pathname(data_basedir) / datadir
+      end
+
+      def repository
+        @repository ||= Debci::Repository.new
+      end
+
+    end
+
+    class JSON < Rooted
+      attr_accessor :suite
+      attr_accessor :arch
+
+      def datadir
+        'status'
+      end
+
+      def initialize(suite, arch)
+        super()
+        self.suite = suite
+        self.arch = arch
+      end
+
+      def status_packages_data
+        @status_packages_data ||= repository.status_packages_data(suite, arch)
+      end
+
+      def status
+        data = {
+          pass: 0,
+          fail: 0,
+          neutral: 0,
+          tmpfail: 0,
+          total: 0,
+        }
+        status_packages_data.each do |pkg|
+          data[pkg["status"].to_sym] += 1
+          data[:total] += 1
+        end
+        data[:date] = Time.now.strftime('%Y-%m-%dT%H:%M:%S')
+
+        output = ::JSON.pretty_generate(data)
+
+        today = root / suite / arch / Time.now.strftime('%Y/%m/%d.json')
+        today.parent.mkpath
+        today.write(output)
+
+        current = root / suite / arch / 'status.json'
+        current.write(output)
+      end
+
+      def history
+        h = root / suite / arch / 'history.json'
+        h.write(::JSON.pretty_generate(repository.status_history_data(suite, arch)))
+      end
+
+      def packages
+        p = root / suite / arch / 'packages.json'
+        p.write(::JSON.pretty_generate(status_packages_data))
+      end
+    end
+
+    class PackageJSON < Rooted
+      def history(package, suite, arch)
+        write_json(
+          Debci::Job.history(package.name, suite, arch),
+          [suite, arch, package.prefix, package.name, 'history.json']
+        )
+      end
+
+      def latest(package, suite, arch)
+        write_json(
+          Debci::Job.history(package.name, suite, arch).last,
+          [suite, arch, package.prefix, package.name, 'latest.json']
+        )
+      end
+
+      private
+
+      def write_json(data, path)
+        file = root
+        path.each do |p|
+          file /= p
+        end
+        file.parent.mkpath
+        file.open('w') do |f|
+          f.write(::JSON.pretty_generate(data.as_json))
+        end
+      end
+    end
+
+    class Autopkgtest < Rooted
+      def link_latest(package, suite, arch)
+        job = Debci::Job.history(package.name, suite, arch).last
+        return unless job
+
+        link = root / suite / arch / package.prefix / package.name / 'latest-autopkgtest'
+        autopkgtest = Pathname('../../../../../autopkgtest')
+        target = autopkgtest / suite / arch / package.prefix / package.name / job.id.to_s
+
+        # not atomic, but also not a big deal
+        link.unlink if link.exist?
+        link.make_symlink(target)
+      end
+    end
+
+    class Feed < Rooted
+      def datadir
+        'feeds'
+      end
+
+      def global
+        global_news = repository.global_news(50)
+        write_feed(global_news, root / 'all-packages.xml') do |feed|
+          feed.channel.title = "#{Debci.config.distro_name} CI news"
+          feed.channel.about = Debci.config.url_base
+          feed.channel.description = [
+            'News about all packages.',
+            'Includes only state transitions (pass-fail, fail-pass).',
+            'Full history is available in each individual package page and in their published data files.',
+          ].join(' ')
+        end
+      end
+
+      def package(pkg)
+        news = repository.news_for(pkg)
+        write_feed(news, root / pkg.prefix / "#{pkg.name}.xml") do |feed|
+          feed.channel.title = "#{pkg.name} CI news feed"
+          feed.channel.about = Debci.config.url_base + "/packages/#{pkg.prefix}/#{pkg.name}/"
+          feed.channel.description = [
+            "News for #{pkg.name}.",
+            'Includes only state transitions (pass-fail, and fail-pass).',
+            'Full history is available in the package page and in the published data files.',
+          ].join(' ')
+        end
+      end
+
+      private
+
+      def write_feed(news, feedfile)
+        feed = Debci::Feed.new(news) do |f|
+          yield(f)
+        end
+        feedfile.parent.mkpath
+        feed.write(feedfile)
+      end
+    end
 
     include ERB::Util
     include Debci::HTMLHelpers
@@ -92,16 +308,19 @@ module Debci
       expand_template(:blacklist, filename)
     end
 
-    def package(package, filename)
+    def package(package)
       @package = package
       @moretitle = package.name
       @package_links = load_template(:package_links)
+
+      filename = "packages/#{package.prefix}/#{package.name}/index.html"
       expand_template(:package, filename)
     end
 
-    def prefix(prefix, filename)
+    def prefix(prefix)
       @prefix = prefix
       @moretitle = prefix
+      filename = "packages/#{prefix}/index.html"
       expand_template(:packagelist, filename)
     end
 
@@ -114,7 +333,7 @@ module Debci
       url && url.gsub('{SUITE}', suite)
     end
 
-    def history(package, suite, architecture, filename)
+    def history(package, suite, architecture)
       @package = package
       @suite = suite
       @architecture = architecture
@@ -128,6 +347,8 @@ module Debci
       @history = package.history(@suite, @architecture)
       @latest = @history && @history.first
       @package_links = load_template(:package_links)
+
+      filename = "packages/#{package.prefix}/#{package.name}/#{suite}/#{architecture}/index.html"
       expand_template(:history, filename)
     end
 

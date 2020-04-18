@@ -130,14 +130,6 @@ Layout/IndentationConsistency:
 
 # Offense count: 3
 # Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: symmetrical, new_line, same_line
-Layout/MultilineArrayBraceLayout:
-  Exclude:
-    - 'bin/debci-generate-feeds'
-
-# Offense count: 3
-# Cop supports --auto-correct.
 Layout/SpaceAfterComma:
   Exclude:
     - 'lib/debci/config.rb'
@@ -242,11 +234,6 @@ Lint/DeprecatedClassMethods:
 Lint/InheritException:
   Exclude:
     - 'lib/debci/repository.rb'
-
-# Offense count: 1
-Lint/ShadowingOuterLocalVariable:
-  Exclude:
-    - 'bin/debci-generate-feeds'
 
 # Offense count: 3
 # Configuration parameters: AllowKeywordBlockArguments.
@@ -362,7 +349,6 @@ Style/FormatStringToken:
   Exclude:
     - 'backends/fake/debci-list-dependencies'
     - 'backends/fake/test-package'
-    - 'bin/debci-generate-html'
     - 'lib/debci/job.rb'
     - 'tools/analysis/Rakefile'
 
@@ -370,8 +356,6 @@ Style/FormatStringToken:
 # Configuration parameters: AllowedVariables.
 Style/GlobalVars:
   Exclude:
-    - 'bin/debci-generate-feeds'
-    - 'bin/debci-generate-html'
     - 'bin/debci-status'
 
 # Offense count: 2
@@ -396,7 +380,6 @@ Style/HashSyntax:
 Style/IfUnlessModifier:
   Exclude:
     - 'backends/fake/test-package'
-    - 'bin/debci-generate-feeds'
     - 'lib/debci/api.rb'
     - 'lib/debci/config.rb'
     - 'lib/debci/data.rb'
@@ -425,7 +408,6 @@ Style/MethodCallWithoutArgsParentheses:
 # Cop supports --auto-correct.
 Style/MultilineIfModifier:
   Exclude:
-    - 'bin/debci-generate-html'
 
 # Offense count: 4
 # Cop supports --auto-correct.
@@ -458,7 +440,6 @@ Style/Next:
 # Configuration parameters: IncludeSemanticChanges.
 Style/NonNilCheck:
   Exclude:
-    - 'bin/debci-generate-html'
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -505,7 +486,6 @@ Style/RedundantInterpolation:
 # AllowedMethods: present?, blank?, presence, try, try!
 Style/SafeNavigation:
   Exclude:
-    - 'bin/debci-generate-feeds'
     - 'lib/debci/html.rb'
 
 # Offense count: 1

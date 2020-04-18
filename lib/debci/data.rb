@@ -5,6 +5,7 @@ require 'tmpdir'
 require 'thor'
 
 require 'debci'
+require 'debci/html'
 require 'debci/job'
 require 'debci/package'
 
@@ -145,12 +146,10 @@ module Debci
       end
 
       def update_html(pkgs)
-        if !pkgs.empty?
-          puts '# updating HTML pages ...'
-          cmd = ['debci-generate-html'] + pkgs
-          puts cmd.join(' ')
-          system(*cmd)
+        pkgs.each do |p|
+          Debci::HTML.update_package(p)
         end
+        Debci::HTML.update unless pkgs.empty?
       end
     end
 

@@ -144,7 +144,8 @@ export MIRROR="${debci_mirror}"
 
 alias prepare_args='while [ "$1" != "--" ]; do shift; done; shift'
 
-debci_autopkgtest_dir="${debci_data_basedir}/autopkgtest/${debci_suite}/${debci_arch}"
+debci_autopkgtest_basedir="${debci_data_basedir}/autopkgtest"
+debci_autopkgtest_dir="${debci_autopkgtest_basedir}/${debci_suite}/${debci_arch}"
 debci_autopkgtest_incoming_basedir="${debci_data_basedir}/autopkgtest-incoming"
 debci_autopkgtest_incoming_dir="${debci_autopkgtest_incoming_basedir}/${debci_suite}/${debci_arch}"
 debci_packages_dir="${debci_data_basedir}/packages/${debci_suite}/${debci_arch}"

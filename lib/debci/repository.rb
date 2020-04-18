@@ -156,6 +156,11 @@ module Debci
       end
     end
 
+    def status_packages_data(suite, arch)
+      pattern = File.join(data_dir(suite, arch, '*'), 'latest.json')
+      Dir[pattern].map { |f| JSON.parse(File.read(f)) }.compact
+    end
+
     # Backend implementation for Debci::Package#status
     def status_for(package)
       all_status_for(package).map { |r| r.reject(&:blacklisted?) }
@@ -235,6 +240,12 @@ module Debci
       end
 
       news
+    end
+
+    # calculates the status history for this debci instance
+    def status_history_data(suite, arch)
+      pattern = File.join(status_dir(suite, arch), '[0-9]*/[0-9]*/[0-9]*.json')
+      Dir[pattern].sort.map { |f| ::JSON.parse(File.read(f)) }
     end
 
     # Returns the status history for this debci instance

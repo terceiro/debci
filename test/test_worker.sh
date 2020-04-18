@@ -38,7 +38,7 @@ run_mypkg() {
   stop_worker
   stop_collector
   settle_processes
-  RESULT_DIR=$(autopkgtest_incoming_dir_for_package mypkg)
+  RESULT_DIR=$(autopkgtest_dir_for_package mypkg)
 }
 
 test_no_crash_success() {
@@ -47,7 +47,6 @@ test_no_crash_success() {
   assertEquals "has leftover requests" "0" $(clean_queue)
   # we should have one log
   assertEquals 1 "$(ls $RESULT_DIR/*/log.gz | wc -l)"
-  assertEquals 1 "$(ls $RESULT_DIR/*/exitcode | wc -l)"
 }
 
 test_no_crash_fail() {
@@ -56,7 +55,6 @@ test_no_crash_fail() {
   assertEquals "has leftover requests" "0" "$(clean_queue)"
   # we should have one log
   assertEquals 1 "$(ls $RESULT_DIR/*/log.gz | wc -l)"
-  assertEquals 1 "$(ls $RESULT_DIR/*/exitcode | wc -l)"
 }
 
 test_no_crash_tmpfail() {
@@ -65,15 +63,14 @@ test_no_crash_tmpfail() {
   assertEquals "has leftover requests" "0" "$(clean_queue)"
   # we should have one log
   assertEquals 1 "$(ls $RESULT_DIR/*/log.gz | wc -l)"
-  assertEquals 1 "$(ls $RESULT_DIR/*/exitcode | wc -l)"
 }
 
 test_crash_test_package() {
   export DEBCI_FAKE_KILLPARENT="test-package"
   result_pass run_mypkg
   assertEquals "aborted request got lost" "1" "$(clean_queue)"
-  # there might be an incomplete logd dir, but not an exit code
-  assertEquals 0 "$(ls $RESULT_DIR/*/exitcode 2>/dev/null| wc -l)"
+  # no result was ever received
+  assertEquals 0 "$(ls $RESULT_DIR/*/log.gz 2>/dev/null| wc -l)"
 }
 
 test_crash_debci_test() {
@@ -130,7 +127,7 @@ test_smoke() {
   while [ $completed -lt $NUM_REQUESTS ] && [ $timeout -gt 0 ]; do
     sleep 0.1
     timeout=$((timeout - 1))
-    while [ $(find $debci_data_basedir/autopkgtest-incoming/unstable/$debci_arch/p/pkg$(($completed + 1)) -name duration 2>/dev/null | wc -l) -gt 0 ]; do
+    while [ $(find $debci_data_basedir/autopkgtest/unstable/$debci_arch/p/pkg$(($completed + 1)) -name log.gz 2>/dev/null | wc -l) -gt 0 ]; do
       completed=$(($completed + 1))
     done
   done
@@ -148,11 +145,9 @@ test_smoke() {
 
   # some tests get restarted, so we expect one or two logs
   for i in `seq $NUM_REQUESTS`; do
-    local d=$(autopkgtest_incoming_dir_for_package pkg$i)
+    local d=$(autopkgtest_dir_for_package pkg$i)
     nlogs=$(ls $d/*/log.gz | wc -l)
-    nexit=$(ls $d/*/exitcode | wc -l)
     assertTrue "one or two logs for pkg$i" "[ $nlogs -eq 1 -o $nlogs -eq 2 ]"
-    assertTrue "one or two complete result dirs for pkg$i" "[ $nexit -eq 1 -o $nexit -eq 2 ]"
   done
 }
 

@@ -1,5 +1,7 @@
 require 'bunny'
 
+require 'debci'
+
 module Debci
   module AMQP
     def self.get_queue(arch)
@@ -15,6 +17,11 @@ module Debci
           q = ENV['debci_amqp_queue'] || "debci-tests-#{arch}-#{Debci.config.backend}"
           self.amqp_channel.queue(q, opts)
         end
+    end
+
+    def self.results_queue
+      q = Debci.config.amqp_results_queue
+      self.amqp_channel.queue(q, durable: true)
     end
 
     def self.amqp_channel

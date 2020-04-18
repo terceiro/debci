@@ -4,6 +4,8 @@ require 'tempfile'
 require 'debci/job'
 
 describe Debci::Job do
+  include_context 'tmpdir'
+
   it 'sets created_at' do
     job = Debci::Job.create
     expect(job.created_at).to_not be_nil
@@ -176,6 +178,89 @@ describe Debci::Job do
     end
     it 'uses pending as status when status is nil' do
       expect(job.to_s).to eq('pkg testing/amd64 (pending)')
+    end
+  end
+
+  context 'mapping exit code to job status' do
+    it('maps 0 to pass') { expect(Debci::Job.status(0)[0]).to eq('pass') }
+    it('maps 2 to pass') { expect(Debci::Job.status(2)[0]).to eq('pass') }
+    it('maps 4 to fail') { expect(Debci::Job.status(4)[0]).to eq('fail') }
+    it('maps 6 to fail') { expect(Debci::Job.status(6)[0]).to eq('fail') }
+    it('maps 8 to neutral') { expect(Debci::Job.status(8)[0]).to eq('neutral') }
+    it('maps 12 to fail') { expect(Debci::Job.status(12)[0]).to eq('fail') }
+    it('maps 14 to fail') { expect(Debci::Job.status(14)[0]).to eq('fail') }
+    it('maps 16 to tmpfail') { expect(Debci::Job.status(16)[0]).to eq('tmpfail') }
+    it('maps anything else to tmpfail') { expect(Debci::Job.status(99)[0]).to eq('tmpfail') }
+  end
+
+  context 'receiving autopkgtest results' do
+    let(:original_job) do
+      Debci::Job.create!(
+        package: 'foobar',
+        suite: 'unstable',
+        arch: 'amd64',
+        requestor: 'user'
+      )
+    end
+
+    let(:incoming) do
+      File.join(tmpdir, 'autopkgtest-incoming', original_job.id.to_s)
+    end
+
+    before(:each) do
+      FileUtils.mkdir_p File.dirname(incoming)
+      FileUtils.cp_r 'spec/debci/job_spec/autopkgtest-incoming', incoming
+      allow_any_instance_of(Debci::Config).to receive(:autopkgtest_basedir).and_return(File.join(tmpdir, 'autopkgtest'))
+    end
+    let(:job) { Debci::Job.receive(incoming) }
+
+    it('returns job instance') { expect(job.id).to eq(original_job.id) }
+    it('gets status') { expect(job.status).to eq('pass') }
+    it('gets message') { expect(job.message).to eq('All tests passed') }
+    it('gets duration') { expect(job.duration_seconds).to eq(9) }
+    it('gets date') { expect(job.date).to_not be_nil }
+    it('gets version') { expect(job.version).to eq('1.0-1') }
+    it 'moves directory into autopkgtest dir' do
+      id = job.id.to_s
+      received = Pathname(Debci.config.autopkgtest_basedir) / "unstable/amd64/f/foobar" / id
+      expect(received).to exist
+      expect(Pathname(incoming)).to_not exist
+    end
+
+    it 'compresses artifacts' do
+      id = job.id.to_s
+      received = Pathname(Debci.config.autopkgtest_basedir) / "unstable/amd64/f/foobar" / id
+      contents = received.children.map { |f| f.basename.to_s }
+      expect(contents).to eq(["artifacts.tar.gz", "log.gz"])
+    end
+
+    let(:second_original_job) do
+      Debci::Job.create!(
+        package: 'foobar',
+        suite: 'unstable',
+        arch: 'amd64',
+        requestor: 'user'
+      )
+    end
+
+    let(:second_job) do
+      second_incoming = File.join(tmpdir, 'autopkgtest-incoming', second_original_job.id.to_s)
+      FileUtils.cp_r 'spec/debci/job_spec/autopkgtest-incoming', second_incoming
+      File.open(File.join(second_incoming, 'exitcode'), 'w') { |f| f.write('4') }
+      File.open(File.join(second_incoming, 'testpkg-version'), 'w') { |f| f.write('foobar 99-1') }
+      Debci::Job.receive(second_incoming)
+    end
+
+    it 'records previous_status' do
+      first_job = job
+      expect(second_job.status).to eq('fail')
+      expect(second_job.previous_status).to eq(first_job.status)
+    end
+
+    it 'records last pass date and version' do
+      first_job = job
+      expect(second_job.last_pass_date).to be_within(0.0001).of(first_job.date)
+      expect(second_job.last_pass_version).to eq(first_job.version)
     end
   end
 end

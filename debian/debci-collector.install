@@ -7,11 +7,14 @@ bin/debci-status                usr/share/debci/bin
 bin/debci-migrate.d             usr/share/debci/bin
 bin/debci-job                   usr/share/debci/bin
 bin/debci-migrate               usr/share/debci/bin
-bin/debci-generate-html         usr/share/debci/bin
+bin/debci-html                  usr/share/debci/bin
+# FIXME remove after bullseye
+bin/debci-generate-history      usr/share/debci/bin
 bin/debci-batch                 usr/share/debci/bin
 bin/debci-data                  usr/share/debci/bin
 bin/debci-list-packages         usr/share/debci/bin
 bin/debci-generate-feeds        usr/share/debci/bin
+# FIXME remove after bullseye
 bin/debci-generate-index        usr/share/debci/bin
 bin/debci-collect-swift         usr/share/debci/bin
 bin/debci-collector             usr/share/debci/bin

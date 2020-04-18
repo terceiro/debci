@@ -63,16 +63,16 @@ test_batch_skip_after_result() {
   result_pass start_worker
   debci batch
   wait_for_results
-  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
-  assertEquals 1 $num_logs
+  num_runs=$(grep -c '"package":' $(status_dir_for_package mypkg)/history.json)
+  assertEquals 1 $num_runs
 
   debci batch
   start_worker
   # XXX it's unfortunate that we need to wait a bit here, but for now there is
   # no way to tap in the enqueueing process to make sure nothing is scheduled.
   timeout 3s "$testbin"/wait_for_results
-  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
-  assertEquals 1 $num_logs
+  num_runs=$(grep -c '"package":' $(status_dir_for_package mypkg)/history.json)
+  assertEquals 1 $num_runs
 }
 
 # batch re-runs a package after it previously tmpfailed
@@ -82,18 +82,14 @@ test_batch_rerun_after_tmpfail() {
   result_tmpfail start_worker
   debci batch
   wait_for_results
-  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
-  assertEquals 1 $num_logs
+  num_runs=$(grep -c '"package":' $(status_dir_for_package mypkg)/history.json)
+  assertEquals 1 $num_runs
 
   result_pass start_worker
   debci batch
   wait_for_results
-  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
-  assertEquals 2 $num_logs
-
-  log=$(cat $(status_dir_for_package mypkg)/latest.log)
-  echo "$log" | grep -iq 'retrying' || fail "log does not show retrying:\n$log"
-  echo "$log" | grep -q 'changes.*dependenc' && fail "log claims dep change:\n$log"
+  num_runs=$(grep -c '"package":' $(status_dir_for_package mypkg)/history.json)
+  assertEquals 2 $num_runs
 }
 
 # batch re-runs a package on changed dependencies
@@ -103,20 +99,15 @@ test_batch_rerun_dep_change() {
   result_pass start_worker
   debci batch
   wait_for_results
-  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
-  assertEquals 1 $num_logs
+  num_runs=$(grep -c '"package":' $(status_dir_for_package mypkg)/history.json)
+  assertEquals 1 $num_runs
 
   export DEBCI_FAKE_DEPS="foo 1.2.4"
   result_pass start_worker
   debci batch
   wait_for_results
-  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
-  assertEquals 2 $num_logs
-
-  log=$(cat $(status_dir_for_package mypkg)/latest.log)
-  echo "$log" | grep -q 'changes.*dependenc' || fail "log does not show dep change:\n$log"
-  echo "$log" | grep -q '^-foo 1.2.3' || fail "log does not show old dep:\n$log"
-  echo "$log" | grep -q '^+foo 1.2.4' || fail "log does not show new dep:\n$log"
+  num_runs=$(grep -c '"package":' $(status_dir_for_package mypkg)/history.json)
+  assertEquals 2 $num_runs
 }
 
 # batch runs a package without changes with --force
@@ -126,18 +117,14 @@ test_batch_force() {
   result_pass start_worker
   debci batch
   wait_for_results
-  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
-  assertEquals 1 $num_logs
+  num_runs=$(grep -c '"package":' $(status_dir_for_package mypkg)/history.json)
+  assertEquals 1 $num_runs
 
   result_pass start_worker
   debci batch --force
   wait_for_results
-  num_logs=$(find $(status_dir_for_package mypkg)/ -name '*.log' -and -not -name latest.log | wc -l)
-  assertEquals 2 $num_logs
-
-  log=$(cat $(status_dir_for_package mypkg)/latest.log)
-  echo "$log" | grep -iq 'forced.*for mypkg' || fail "log does not show 'forced' reason:\n$log"
-  echo "$log" | grep -q 'changes.*dependenc' && fail "log claims dep change:\n$log"
+  num_runs=$(grep -c '"package":' $(status_dir_for_package mypkg)/history.json)
+  assertEquals 2 $num_runs
 }
 
 test_batch_wont_enqueue_twice() {

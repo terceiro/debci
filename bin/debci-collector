@@ -1,54 +1,5 @@
-#!/bin/sh
+#!/usr/bin/ruby
 
-# Receives test results published to the AMQP queue by debci-worker instances
+require 'debci/collector'
 
-set -eu
-
-short_options='w'
-long_options='write-results'
-
-usage() {
-  cat <<EOF
-usage: debci-collector [OPTIONS]
-
-$@
-EOF
-}
-
-debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/..)
-. $debci_base_dir/lib/environment.sh
-. $debci_base_dir/lib/functions.sh
-
-write_results() {
-  local exitcode_file=$(tar xzfv - -C "$debci_data_basedir" | grep '^autopkgtest-incoming/[^/]\+/[^/]\+/[^/]\+/[^/]\+/[^/]\+/exitcode$')
-  local duration_file=${exitcode_file%%/exitcode}/duration
-  local package=$(basename $(dirname $(dirname $exitcode_file)))
-  local arch=$(basename $(dirname $(dirname $(dirname $(dirname $exitcode_file)))))
-  local suite=$(basename $(dirname $(dirname $(dirname $(dirname $(dirname $exitcode_file))))))
-
-  local exitcode="$(cat $debci_data_basedir/$exitcode_file)"
-  local duration="$(cat $debci_data_basedir/$duration_file)"
-  local duration_human="$(seconds_to_human_time "$duration")"
-
-  log "$package $suite/$arch results received (exit code: $exitcode, duration: $duration_human)"
-}
-
-if [ "$1" = '--write-results' ]; then
-  write_results
-  exit 0
-fi
-
-log "I: Connecting to AMQP queue ${debci_amqp_results_queue} on ${debci_amqp_server_display}"
-amqp-declare-queue \
-  --url="$debci_amqp_server" \
-  ${debci_amqp_tools_options} \
-  --durable \
-  --queue="$debci_amqp_results_queue" >/dev/null
-
-ensure_lockfile "$debci_generate_index_lock"
-exec amqp-consume \
-  --url="$debci_amqp_server" \
-  $debci_amqp_tools_options \
-  --queue="$debci_amqp_results_queue" \
-  -- \
-  flock --exclusive "$debci_generate_index_lock" $0 --write-results
+Debci::Collector::CLI.start

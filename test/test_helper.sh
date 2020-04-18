@@ -45,10 +45,10 @@ status_dir_for_package() {
   echo "${debci_data_basedir}/packages/unstable/${debci_arch}/${pkg_dir}"
 }
 
-autopkgtest_incoming_dir_for_package() {
+autopkgtest_dir_for_package() {
   local pkg="$1"
   pkg_dir=$(echo "$pkg" | sed -e 's/\(\(lib\)\?.\).*/\1\/&/')
-  echo "${debci_data_basedir}/autopkgtest-incoming/unstable/${debci_arch}/${pkg_dir}"
+  echo "${debci_data_basedir}/autopkgtest/unstable/${debci_arch}/${pkg_dir}"
 }
 
 tearDown() {

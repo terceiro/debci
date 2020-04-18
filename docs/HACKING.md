@@ -168,9 +168,9 @@ $ ./bin/debci enqueue $PACKAGE
 If you are interested in working on the web UI, first make sure that you have
 a development environment setup and some test data.
 
-The web UI is generated using Ruby and ERB templates. A {Debci::HTML} object
-in `bin/debci-generate-html` generates all of the pages for the web UI by
-using the templates.
+The web UI is generated using Ruby and ERB templates. The {Debci::HTML} class
+in `lib/debci/html.rb` is responsible for generating all of the pages for the
+web UI by using the templates.
 
 The templates contain HTML and debci Ruby API calls to display information
 in the interface.
@@ -179,10 +179,12 @@ The templates are contained in the `lib/debci/html/` directory while
 the debci Ruby API is contained a directory lower in
 `lib/debci/`.
 
-Once you make changes to the templates or other code for the web UI,
-run the following to regenerate the HTML for the interface:
+Once you make changes to the templates or other code related to HTML
+generation, you can run the following commands to regenerate the HTML for the
+interface:
 
-    $ ./bin/debci generate-html
+    $ ./bin/debci html update             # update non package-related pages
+    $ ./bin/debci html update-package PKG # update all pages for PKG
 
 If you make changes to the documentation (HACKING.md, RUBYAPI.md, etc.),
 run the following to regenerate it:

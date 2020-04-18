@@ -24,24 +24,17 @@ fi
 
 shopt -s nullglob
 for pkg in $requested_packages; do
-  found=no
   while true; do
-    # wait for a test result that is more recent than the start time of the
-    # current running worker
-    results=$(echo $(autopkgtest_incoming_dir_for_package $pkg)/[0-9]*/exitcode)
-    for res in $results; do
-      # cut out stamp from complete path
-      stamp=$(stat --format=%Y "$res")
+    # wait for package history file to be more recent than the start time of
+    # the current running worker
+    history_file=$(echo $(status_dir_for_package $pkg)/history.json)
+    if [ -f "$history_file" ]; then
+      stamp=$(stat --format=%Y "$history_file")
       if [ $stamp -ge "${WORKER_START_TIMESTAMP}" ]; then
-        found=yes
         break
       fi
-    done
-    if [ $found = yes ]; then
-      break
-    else
-      sleep ${debci_batch_poll_interval:-1}
     fi
+    sleep ${debci_batch_poll_interval:-1}
   done
 done
 

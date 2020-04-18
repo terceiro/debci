@@ -2,9 +2,9 @@
 
 set -eu
 
-incoming=`$(dirname $0)/../bin/debci config --values-only autopkgtest_incoming_basedir`
+dir=`$(dirname $0)/../bin/debci config --values-only autopkgtest_basedir`
 
-mkdir -p "$incoming"
+mkdir -p "$dir"
 
 ./bin/debci migrate
 
@@ -12,6 +12,6 @@ exec rerun \
   --no-notify \
   --background \
   --exit \
-  --dir "$incoming" \
-  --pattern '**/exitcode' \
+  --dir "$dir" \
+  --pattern '**/log.gz' \
   -- ./bin/debci update
