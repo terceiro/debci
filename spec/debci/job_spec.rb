@@ -230,7 +230,7 @@ describe Debci::Job do
     it 'compresses artifacts' do
       id = job.id.to_s
       received = Pathname(Debci.config.autopkgtest_basedir) / "unstable/amd64/f/foobar" / id
-      contents = received.children.map { |f| f.basename.to_s }
+      contents = received.children.map { |f| f.basename.to_s }.sort
       expect(contents).to eq(["artifacts.tar.gz", "log.gz"])
     end
 
