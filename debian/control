@@ -44,6 +44,7 @@ Standards-Version: 4.4.1
 Homepage: http://ci.debian.net/
 Vcs-Git: https://salsa.debian.org/ci-team/debci.git
 Vcs-Browser: https://salsa.debian.org/ci-team/debci
+Rules-Requires-Root: no
 
 Package: debci
 Architecture: all
