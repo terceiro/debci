@@ -3,7 +3,7 @@ Section: devel
 Priority: optional
 Maintainer: Debian CI team <team+ci@tracker.debian.org>
 Uploaders: Antonio Terceiro <terceiro@debian.org>, Paul Gevers <elbrus@debian.org>,
-Build-Depends: debhelper (>= 9.20160709),
+Build-Depends: debhelper-compat (= 12),
                amqp-tools,
                autopkgtest (>= 5.5~) <!pkg.debci.runtime>,
                bsdmainutils,
