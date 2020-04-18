@@ -54,7 +54,6 @@ Depends: adduser,
          sudo,
          ${debci:Depends},
          ${misc:Depends},
-         ${shlibs:Depends}
 Recommends: ntp | time-daemon
 Suggests: apt-cacher-ng,
 Description: continuous integration system for Debian
@@ -77,7 +76,6 @@ Depends: debci (= ${binary:Version}),
          autopkgtest (>= 5.5~),
          lxc | schroot,
          ${misc:Depends},
-         ${shlibs:Depends}
 Description: continuous integration system for Debian (worker daemon)
  debci will scan the Debian archive for packages that contain DEP-8 compliant
  test suites, and run those test suites whenever a new version of the package,
@@ -96,7 +94,6 @@ Package: debci-collector
 Architecture: all
 Depends: debci (= ${binary:Version}),
          ${misc:Depends},
-         ${shlibs:Depends}
 Breaks: debci (<< 2.6~)
 Replaces: debci (<< 2.6~)
 Recommends: rabbitmq-server,
