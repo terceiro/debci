@@ -75,8 +75,11 @@ public/doc/index.html public/doc/jq/jquery.js: README.md $(sort $(wildcard docs/
 	yardoc --markup markdown --output-dir public/doc --main README.md lib - $^
 	ln -sf ../../jquery.js public/doc/js/jquery.js
 
-public/doc/architecture.svg: docs/architecture.svg
+public/doc/architecture.svg: docs/architecture.svg public/doc
 	cp docs/architecture.svg public/doc/
+
+public/doc:
+	mkdir -p $@
 
 $(MANPAGES): man/%.1: bin/% man
 	pod2man --center "" --release "" --section=1 --utf8 $< $@
