@@ -84,8 +84,16 @@ describe Debci::HTML do
 
     let(:pkgdata) { data / 'packages/unstable/amd64/f/foobar' }
 
+    it 'produces package list page' do
+      pkglist = html / 'packages/f/index.html'
+      expect(pkglist).to exist
+      expect(pkglist.read).to include('foobar')
+    end
+
     it 'produces package page' do
-      expect(html / 'packages/f/foobar/index.html').to exist
+      pkgpage = html / 'packages/f/foobar/index.html'
+      expect(pkgpage).to exist
+      expect(pkgpage.read).to include('1.0-1')
     end
 
     it 'produces package history page for suite/arch' do

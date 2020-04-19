@@ -64,6 +64,14 @@ module Debci
 
         feed.package(package)
 
+        # reload data from disk
+        # #
+        # FIXME this should not be necessary but it fixes a design flaw:
+        # Repository reads from disk, but HTML writes new data based on it.
+        html = new
+        repository = Debci::Repository.new
+        package = Debci::Package.new(pkg, repository)
+
         html.package(package)
         html.prefix(package.prefix)
       end
