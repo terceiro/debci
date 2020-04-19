@@ -60,15 +60,6 @@ done
 
 sudo systemctl start debci-update.service
 sleep 5s
-# wait until autopkgtest-incoming is empty
-pending_test_results() {
-  find /var/lib/debci/data/autopkgtest-incoming -name exitcode | wc -l
-}
-waited=0
-while [ "$(pending_test_results)" -ne 0 ] && [ $waited -le $max_wait ]; do
-  sleep 1s
-  waited=$(($waited + 1))
-done
 
 set +ex
 
