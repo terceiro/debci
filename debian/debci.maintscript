@@ -1,0 +1,2 @@
+dir_to_symlink /usr/share/debci/public/font-awesome /usr/share/fonts-font-awesome 1.10 debci
+

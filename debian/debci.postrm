@@ -7,8 +7,4 @@ if [ "$1" = 'purge' ]; then
   rm -rf /var/log/debci
 fi
 
-dpkg-maintscript-helper dir_to_symlink \
-    /usr/share/debci/public/font-awesome /usr/share/fonts-font-awesome \
-    1.10 debci -- "$@"
-
 ##DEBHELPER##

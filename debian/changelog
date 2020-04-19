@@ -27,6 +27,8 @@ debci (2.11) unstable; urgency=medium
   * Bump debhelper compatibility level to 12
     - Drop `--with systemd`, now handled by dh_installsystemd
   * Add Rules-Requires-Root: no
+  * Replace dpkg-maintscript-helper calls in maintainer scripts with
+    debian/debci.maintscript
 
  -- Antonio Terceiro <terceiro@debian.org>  Sun, 19 Apr 2020 16:24:52 -0300
 
