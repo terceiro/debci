@@ -1,3 +1,35 @@
+debci (2.11) unstable; urgency=medium
+
+  * Debci::Test::Duration.duration_human: handle zero
+  * Drop links to "debci log" files
+  * debci-test: add buildd suite for migration tests
+  * Reformulate generation of static content
+  - Debci::Job: receive autopkgtest results
+      - Reformulate HTML generation
+      - Add new CLI `debci html`; deprecate `debci generate-html`
+      - Deprecate debci-generate-index; individual package pages are now
+        updated right away when results for that package arrive;
+        debci-update now only updates global pages (home page, status etc)
+      - move all the real logic inside Debci::HTML
+      - individual .json result files and "debci log" files are not longer
+        produced.
+      - debci-collector has been rewritten in Ruby, and will now receive
+        results from the AMQP queue and directly import them instead of saving
+        them to autopkgtest-incoming for later processing.
+        - Legacy jobs in autopkgtest-incoming/ are processed o upgrade.
+      - The data/status/ files are now simplified. For history, we keep a single
+        status file per day. Existing data is migrated on upgrade.
+    This set of changes provides a good performance enhancement. For
+    example, running the full integration test suite on my machine now takes
+    240 seconds instead of > 300
+  * Drop pointless ${shlibs:Depends} from package dependencies
+  * Makefile: fix parallel builds
+  * Bump debhelper compatibility level to 12
+    - Drop `--with systemd`, now handled by dh_installsystemd
+  * Add Rules-Requires-Root: no
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 19 Apr 2020 16:24:52 -0300
+
 debci (2.10) unstable; urgency=medium
 
   [ Abhishek Kumar ]
