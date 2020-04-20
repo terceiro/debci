@@ -19,7 +19,6 @@ module Debci
 
       def update
         html = Debci::HTML.new
-        feed = Debci::HTML::Feed.new
 
         Debci.config.suite_list.each do |suite|
           Debci.config.arch_list.each do |arch|
@@ -29,8 +28,6 @@ module Debci
             json.packages
           end
         end
-
-        feed.global
 
         html.index('index.html')
         html.obsolete_packages_page('packages/index.html')
@@ -197,19 +194,6 @@ module Debci
         'feeds'
       end
 
-      def global
-        global_news = repository.global_news(50)
-        write_feed(global_news, root / 'all-packages.xml') do |feed|
-          feed.channel.title = "#{Debci.config.distro_name} CI news"
-          feed.channel.about = Debci.config.url_base
-          feed.channel.description = [
-            'News about all packages.',
-            'Includes only state transitions (pass-fail, fail-pass).',
-            'Full history is available in each individual package page and in their published data files.',
-          ].join(' ')
-        end
-      end
-
       def package(pkg)
         news = repository.news_for(pkg)
         write_feed(news, root / pkg.prefix / "#{pkg.name}.xml") do |feed|
@@ -248,7 +232,6 @@ module Debci
     end
 
     def index(filename)
-      @news = @repository.global_news
       expand_template(:index, filename)
     end
 

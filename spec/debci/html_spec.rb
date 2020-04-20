@@ -18,11 +18,6 @@ describe Debci::HTML do
     before(:each) { Debci::HTML.update }
     it('produces home page') { expect(html / 'index.html').to exist }
     it('produces status page') { expect(html / 'status/index.html').to exist }
-    it('produces global feed') do
-      feed = data / 'feeds' / 'all-packages.xml'
-      expect(feed).to exist
-      RSS::Parser.parse(feed.open)
-    end
   end
 
   let(:job) do

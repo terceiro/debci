@@ -1,25 +1,6 @@
 <div class="row">
-  <div class="col-md-4">
-    <div class="panel panel-default">
-      <div class="panel-heading">News
-        <a class='pull-right'
-            href="data/feeds/all-packages.xml"
-            title='Atom feed for events in all packages'><i class='fa fa-rss'></i></a>
-      </div>
-      <div class="list-group">
-      <% if @news.empty? %>
-        <div class='list-group-item'><em>(no news yet)</em></div>
-      <% else %>
-        <% @news.each do |item| %>
-          <a href="/packages/<%= @repository.find_package(item.package).prefix %>/<%= item.package %>/<%= item.suite %>/<%= item.architecture %>" class="list-group-item"><%= icon(item.extended_status) %> <%= item.headline %><div><small class="text-muted"><%= item.date %> | <strong><%= item.time %></strong></small></div></a>
-        <% end %>
-      <% end %>
 
-      </div> <!-- class='list-group' -->
-    </div> <!-- class='panel panel-default' -->
-  </div> <!-- class='col-md-4' -->
-
-  <div class="col-md-4">
+  <div class="col-md-6">
 
     <h3>Packages</h3>
     <ul class="list-inline">
@@ -31,8 +12,8 @@
       <% end %>
     </ul>
 
-  </div> <!-- class='col-md-4' -->
-  <div class="col-md-4">
+  </div> <!-- class='col-md-6' -->
+  <div class="col-md-6">
     <h3>Search Package</h3>
     <form action='javascript:redirect();' name="searchform" id="searchform" method="post" style="display: inline;">
       <input autofocus="" id="package" name="package" size="20" type="text" value="">
@@ -48,6 +29,6 @@
     }
   </script>
     
-  </div> <!-- class='col-md-4' -->
+  </div> <!-- class='col-md-6' -->
 
 </div> <!-- class='row' -->
