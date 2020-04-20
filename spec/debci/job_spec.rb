@@ -262,5 +262,11 @@ describe Debci::Job do
       expect(second_job.last_pass_date).to be_within(0.0001).of(first_job.date)
       expect(second_job.last_pass_version).to eq(first_job.version)
     end
+
+    it 'records version as n/a if missing' do
+      testpkg_version = Pathname(incoming) / 'testpkg-version'
+      testpkg_version.unlink
+      expect(job.version).to eq('n/a')
+    end
   end
 end

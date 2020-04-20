@@ -53,7 +53,13 @@ module Debci
         duration = (src / 'duration')
         job.duration_seconds = duration.read.to_i
         job.date = duration.stat.mtime
-        job.version = (src / 'testpkg-version').read.split.last
+
+        testpkg_version = src / 'testpkg-version'
+        if testpkg_version.exist?
+          job.version = testpkg_version.read.split.last if testpkg_version
+        else
+          job.version = 'n/a'
+        end
 
         if job.previous
           job.previous_status = job.previous.status
