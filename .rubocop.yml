@@ -1,9 +1,15 @@
 inherit_from: .rubocop_todo.yml
 
+inherit_mode:
+  merge:
+    - Exclude
+
 AllCops:
   TargetRubyVersion: 2.5
   Exclude:
     - data/**/*
+    - debian/**/*
+    - public/**/*
 
 Style/StderrPuts:
   Enabled: false
