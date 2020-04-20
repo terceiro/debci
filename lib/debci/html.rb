@@ -187,7 +187,7 @@ module Debci
         target = autopkgtest / suite / arch / package.prefix / package.name / job.id.to_s
 
         # not atomic, but also not a big deal
-        link.unlink if link.exist?
+        link.unlink if link.symlink?
         link.make_symlink(target)
       end
     end
