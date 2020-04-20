@@ -1,8 +1,13 @@
+require 'shellwords'
+
 require 'debci/repository'
 require 'debci/config'
 require 'debci/blacklist'
 
 module Debci
+  class CommandFailed < Exception
+  end
+
   class << self
     def config
       @config ||= Debci::Config.new
@@ -22,6 +27,14 @@ module Debci
 
     def log(*str)
       puts(*str) unless config.quiet
+    end
+
+    def run(*argv)
+      system(*argv)
+      if $?.exitstatus != 0
+        cmdline = argv.map { |s| Shellwords.shellescape(s) }.join(' ')
+        raise Debci::CommandFailed, cmdline
+      end
     end
   end
 end
