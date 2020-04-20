@@ -5,9 +5,11 @@ require 'debci'
 
 # Keep only a single entry per day
 def migrate(dir)
-  pattern = '[0-9]*/[0-9]*/[0-9]*/'
+  pattern = '[0-9]*/[0-9]*/[0-9]*'
   newest = nil
   dir.glob(pattern).sort.each do |day|
+    next unless day.directory?
+
     last = day.glob('*.json').max
     next unless last
 
