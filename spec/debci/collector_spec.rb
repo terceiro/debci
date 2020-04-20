@@ -15,7 +15,7 @@ describe Debci::Collector do
 
   let(:payload) do
     Dir.chdir('spec/debci/job_spec/autopkgtest-incoming') do
-      IO.popen(['tar','-czf', '-', '.', "--transform=s/^./#{job.run_id}/"]).read
+      IO.popen(['tar', '-czf', '-', '.', "--transform=s/^./#{job.run_id}/"]).read
     end
   end
 
@@ -47,5 +47,4 @@ describe Debci::Collector do
     expect(Debci).to receive(:run).with('tar', 'xaf', 'results.tar.gz').and_raise(Debci::CommandFailed)
     collector.receive_payload(tmpdir, 'BLABLA')
   end
-
 end

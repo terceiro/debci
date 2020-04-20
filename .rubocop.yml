@@ -5,6 +5,9 @@ AllCops:
   Exclude:
     - data/**/*
 
+Style/StderrPuts:
+  Enabled: false
+
 Style/Documentation:
   Enabled: false
 

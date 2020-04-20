@@ -5,7 +5,7 @@ require 'debci/config'
 require 'debci/blacklist'
 
 module Debci
-  class CommandFailed < Exception
+  class CommandFailed < RuntimeError
   end
 
   class << self
@@ -29,12 +29,16 @@ module Debci
       puts(*str) unless config.quiet
     end
 
+    def warn(*str)
+      $stderr.puts(*str)
+    end
+
     def run(*argv)
       system(*argv)
-      if $?.exitstatus != 0
-        cmdline = argv.map { |s| Shellwords.shellescape(s) }.join(' ')
-        raise Debci::CommandFailed, cmdline
-      end
+      return if $?.exitstatus == 0
+
+      cmdline = argv.map { |s| Shellwords.shellescape(s) }.join(' ')
+      raise Debci::CommandFailed.new(cmdline)
     end
   end
 end

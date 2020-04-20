@@ -37,7 +37,7 @@ module Debci
         begin
           Debci.run('tar', 'xaf', results.to_s)
         rescue Debci::CommandFailed
-          # nothing
+          Debci.warn("W: received invalid tarball data")
         end
         results.unlink
       end
