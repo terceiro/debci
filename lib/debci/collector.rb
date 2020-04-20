@@ -13,19 +13,9 @@ module Debci
       queue = Debci::AMQP.results_queue
       queue.subscribe(manual_ack: true) do |delivery_info, _properties, payload|
         Dir.mktmpdir do |dir|
-          Dir.chdir(dir) do
-            results = Pathname('results.tar.gz')
-            results.open('wb') do |f|
-              f.write(payload)
-            end
-            system("tar xaf #{results}")
-            results.unlink
-          end
-
-          results_dir = Pathname(dir).glob('**/exitcode').first.parent
-          receive(results_dir)
-          channel.acknowledge(delivery_info.delivery_tag, false)
+          receive_payload(dir, payload)
         end
+        channel.acknowledge(delivery_info.delivery_tag, false)
       end
       begin
         loop { sleep 1 }
@@ -33,6 +23,29 @@ module Debci
         puts
         puts "debci collector stopped"
       end
+    end
+
+    def receive_payload(dir, payload)
+      return if payload.nil? || payload.empty?
+      return unless File.directory?(dir)
+
+      Dir.chdir(dir) do
+        results = Pathname('results.tar.gz')
+        results.open('wb') do |f|
+          f.write(payload)
+        end
+        begin
+          Debci.run('tar', 'xaf', results.to_s)
+        rescue Debci::CommandFailed
+          # nothing
+        end
+        results.unlink
+      end
+
+      exitcodes = Pathname(dir).glob('**/exitcode')
+      return if exitcodes.empty?
+
+      receive(exitcodes.first.parent)
     end
 
     def receive(directory)
