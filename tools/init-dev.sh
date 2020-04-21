@@ -13,6 +13,8 @@ vim-addon-manager'
 
 if [ ! -f $configdir/whitelist ]; then
   echo "$WHITELIST" > "$configdir/whitelist"
+  tail -n 1000 config/whitelist config/conf.d/*.conf
+  echo
 fi
 
 if [ ! -f $configdir/conf.d/dev.conf ]; then
@@ -20,8 +22,5 @@ if [ ! -f $configdir/conf.d/dev.conf ]; then
   echo "debci_suite_list='unstable testing'" >> $configdir/conf.d/dev.conf
   echo "debci_backend=fake" >> $configdir/conf.d/dev.conf
 fi
-
-tail -n 1000 config/whitelist config/conf.d/*.conf
-echo
 
 ./bin/debci migrate
