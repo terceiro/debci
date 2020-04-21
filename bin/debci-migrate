@@ -17,7 +17,7 @@ cd $debci_base_dir
 
 
 # migrate relational DB
-ruby -r debci/db -e 'Debci::DB.migrate'
+ruby -r debci/db -e 'Debci::DB.migrate(ENV["DEBCI_MIGRATE_DB_VERSION"]&.to_i)'
 
 current_version=0
 if [ -f "$debci_data_basedir/schema_version" ]; then
