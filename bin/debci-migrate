@@ -15,6 +15,8 @@ cd $debci_base_dir
 . lib/environment.sh
 . lib/functions.sh
 
+# fix migration numbering error
+ruby -r debci/db -e "ActiveRecord::Base.connection.execute(\"UPDATE schema_migrations SET version = '20200326000000' WHERE version = '202010326000000'\") if ActiveRecord::Base.connection.tables.include?('schema_migrations')"
 
 # migrate relational DB
 ruby -r debci/db -e 'Debci::DB.migrate(ENV["DEBCI_MIGRATE_DB_VERSION"]&.to_i)'
