@@ -3,3 +3,4 @@
 --ignore-dir=data
 --ignore-dir=log
 --ignore-dir=public/doc
+--ignore-dir=.yardoc
