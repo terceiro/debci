@@ -1,5 +1,5 @@
 Tests: ruby-test-suite test-suite
-Depends: debci-collector, shunit2, ruby-rspec (>= 2.14), ruby-rack-test, rabbitmq-server, autopkgtest
+Depends: debci-collector, shunit2, ruby-database-cleaner, ruby-rspec (>= 2.14), ruby-rack-test, rabbitmq-server, autopkgtest
 Restrictions: allow-stderr
 
 Tests: integration-test
