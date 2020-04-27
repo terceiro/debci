@@ -1,1 +1,4 @@
 --recurse
+--exclude=public/*
+--exclude=data/*
+--exclude=coverage/*
