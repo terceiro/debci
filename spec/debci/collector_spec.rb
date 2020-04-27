@@ -45,6 +45,7 @@ describe Debci::Collector do
 
   it 'handles invalid data' do
     expect(Debci).to receive(:run).with('tar', 'xaf', 'results.tar.gz').and_raise(Debci::CommandFailed)
+    expect(Debci).to receive(:warn)
     collector.receive_payload(tmpdir, 'BLABLA')
   end
 end

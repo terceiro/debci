@@ -33,6 +33,9 @@ RSpec.configure do |config|
     allow_any_instance_of(Debci::Job).to receive(:enqueue)
   end
   config.before(:each) do
+    allow(Debci).to receive(:warn)
+  end
+  config.before(:each) do
     DatabaseCleaner.start
   end
   config.after(:each) do
