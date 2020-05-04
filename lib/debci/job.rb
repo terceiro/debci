@@ -1,10 +1,11 @@
 require 'debci'
 require 'debci/amqp'
 require 'debci/db'
+require 'debci/package'
+require 'debci/package_status'
 require 'debci/test/duration'
 require 'debci/test/expired'
 require 'debci/test/paths'
-require 'debci/test/prefix'
 require 'cgi'
 require 'time'
 require 'pathname'
@@ -12,35 +13,87 @@ require 'pathname'
 module Debci
   class Job < ActiveRecord::Base
 
+    belongs_to :package, class_name: 'Debci::Package'
+    has_many :package_status, class_name: 'Debci::PackageStatus'
+
+    scope :newsworthy, -> { where(['status in (?) AND previous_status in (?) and status != previous_status', ['pass', 'fail', 'neutral'], ['pass', 'fail', 'neutral']]) }
+
+    scope :finished, -> { where('status is NOT NULL') }
+
+    scope :not_pinned, -> { where('pin_packages is NULL') }
+
+    scope :status_on, lambda { |suite, arch|
+      joins(:package_status).where(['package_statuses.suite IN (?) AND package_statuses.arch IN (?)', suite, arch])
+    }
+
+    scope :all_status, lambda {
+      status_on(
+        Debci.config.suite_list,
+        Debci.config.arch_list
+      )
+    }
+
+    scope :tmpfail, -> { all_status.where(status: 'tmpfail') }
+
+    scope :fail, -> { all_status.where(status: 'fail') }
+
+    scope :visible, lambda {
+      last_visible_time = Time.now - Debci.config.status_visible_days.days
+      where('date > :time', time: last_visible_time)
+    }
+
+    scope :slow, lambda {
+      all_status.where('duration_seconds > :time', time: 1.hour)
+    }
+
+    after_save do |job|
+      next unless job.status
+      next unless job.date
+      next unless job.pin_packages.empty?
+      next if job.history.where(['date > ?', date]).exists?
+
+      job.transaction do
+        status = Debci::PackageStatus.find_or_initialize_by(
+          package: self.package,
+          suite: self.suite,
+          arch: self.arch,
+        )
+        status.job = job
+        status.save!
+      end
+    end
+
+    def self.platform_specific_issues
+      all_status.includes(:package).group_by(&:package).select do |_, statuses|
+        statuses.map(&:status).uniq.size > 1
+      end
+    end
+
     include Debci::Test::Duration
     include Debci::Test::Expired
     include Debci::Test::Paths
-    include Debci::Test::Prefix
 
     serialize :pin_packages, Array
 
     class InvalidStatusFile < RuntimeError; end
 
-    def self.import(status_file, suite, arch)
-      status = Debci::Status.from_file(status_file, suite, arch)
-      status.run_id = status.run_id.to_i
-      job = Debci::Job.find(status.run_id)
-      if status.package != job.package
+    def self.import(status_file)
+      status = JSON.parse(File.read(status_file))
+      run_id = status.delete('run_id').to_i
+      package = status.delete('package')
+      job = Debci::Job.find(run_id)
+      if package != job.package.name
         raise InvalidStatusFile.new("Data in %{file} is for package %{pkg}, while database says that job %{id} is for package %{origpkg}" % {
           file: status_file,
-          pkg: status.package,
-          id: status.run_id,
+          pkg: package,
+          id: run_id,
           origpkg: job.package,
         })
       end
-      job.duration_seconds = status.duration_seconds
-      job.date = status.date
-      job.last_pass_date = status.last_pass_date
-      job.last_pass_version = status.last_pass_version
-      job.message = status.message
-      job.previous_status = status.previous_status
-      job.version = status.version
-      job.status = status.status
+      status.each do |k, v|
+        job.send("#{k}=", v)
+      end
+
       job.save!
       job
     end
@@ -70,7 +123,7 @@ module Debci
         end
 
         base = Pathname(Debci.config.autopkgtest_basedir)
-        dest = base / job.suite / job.arch / job.prefix / job.package / id
+        dest = base / job.suite / job.arch / job.package.prefix / job.package.name / id
         dest.parent.mkpath
         FileUtils.cp_r src, dest
         Dir.chdir dest do
@@ -147,7 +200,10 @@ module Debci
     end
 
     def as_json(options = nil)
-      super(options).update("duration_human" => self.duration_human)
+      super(options).update(
+        "duration_human" => self.duration_human,
+        "package" => package.name,
+      )
     end
 
     def enqueue_parameters
@@ -165,11 +221,27 @@ module Debci
     def enqueue(priority = 0)
       queue = Debci::AMQP.get_queue(arch)
       parameters = enqueue_parameters
-      queue.publish("%s %s %s" % [package, suite, parameters.join(' ')], priority: priority)
+      queue.publish("%s %s %s" % [package.name, suite, parameters.join(' ')], priority: priority)
     end
 
     def to_s
-      "%s %s/%s (%s)" % [package, suite, arch, status || 'pending']
+      "%s %s/%s (%s)" % [package.name, suite, arch, status || 'pending']
+    end
+
+    def title
+      '%s %s' % [version, status]
+    end
+
+    def headline
+      "#{package.name} #{version} #{status.upcase} on #{suite}/#{arch}"
+    end
+
+    def always_failing?
+      last_pass_version.nil? || last_pass_version == 'n/a'
+    end
+
+    def had_success?
+      !always_failing?
     end
 
   end

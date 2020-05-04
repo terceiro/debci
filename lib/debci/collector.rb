@@ -52,8 +52,13 @@ module Debci
       job = Debci::Job.receive(directory)
       Debci::HTML.update_package(job.package)
 
-      data = job.attributes.symbolize_keys
-      data[:duration_human] = job.duration_human
+      data = {
+        package: job.package.name,
+        suite: job.suite,
+        arch: job.arch,
+        status: job.status,
+        duration_human: job.duration_human,
+      }
       Debci.log('%<package>s %<suite>s/%<arch>s %<status>s %<duration_human>s' % data)
     end
 

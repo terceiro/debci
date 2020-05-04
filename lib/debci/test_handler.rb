@@ -39,6 +39,14 @@ module Debci
       errors
     end
 
+    def validate_tests(tests)
+      errors = []
+      tests.each do |test|
+        errors << "Invalid package name: #{test['package']}" unless valid_package_name?(test['package'])
+      end
+      errors
+    end
+
     def request_tests(tests, suite, arch, requestor, priority = 1)
       jobs = []
       tests.each do |test|
@@ -52,8 +60,9 @@ module Debci
           date = Time.now
         end
 
+        package = Debci::Package.find_or_create_by!(name: test['package'])
         job = Debci::Job.create!(
-          package: test['package'],
+          package: package,
           suite: suite,
           arch: arch,
           requestor: requestor,

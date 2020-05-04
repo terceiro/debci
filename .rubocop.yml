@@ -47,6 +47,9 @@ Style/WordArray:
 Metrics/BlockLength:
   Enabled: false
 
+Metrics/ClassLength:
+  Enabled: false
+
 Metrics/ParameterLists:
   Enabled: false
 

@@ -60,7 +60,9 @@ module Debci
         /_list$/ => lambda { |x| x.split}, # Array
         'quiet' => lambda { |x| x == 'true' }, # boolean
         'amqp_ssl' => lambda { |x| x == 'true' }, # boolean
-        'data_retention_days' => lambda { |x| x.to_i }
+        'data_retention_days' => lambda { |x| x.to_i },
+        'status_visible_days' => lambda { |x| x.to_i },
+        'failing_packages_per_page' => lambda { |x| x.to_i },
       }
     end
 

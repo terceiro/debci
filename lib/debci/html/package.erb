@@ -18,36 +18,26 @@
 
     <table class="table" style='width: auto'>
 
-      <% if @package.all_status.first %>
-        <tr>
-          <td></td>
-          <% @package.status.first.each do |status| %>
-            <td><b><%= status.suite %></b></td>
-          <% end %>
-        </tr>
-      <% else %>
-        <tr>
-          <td><em>(no data yet)</em></td>
-        </tr>
-      <% end %>
+      <tr>
+        <td></td>
+        <% Debci.config.suite_list.each do |suite| %>
+          <td><b><%= suite %></b></td>
+        <% end %>
+      </tr>
 
-      <% @package.all_status.each do |row| %>
+      <% Debci.config.arch_list.each_with_index do |arch, i| %>
         <tr>
-          <td><b><%= row.first.architecture %></b></td>
-
-          <% row.each do |status| %>
-            <% if status.status.eql?(:no_test_data) %>
-                <td><%= icon(status.extended_status)%> <%= status.title %></td>
-            <% else %>
-                <% package_dir = "/packages/#{@package.prefix}" +
-                                  "/#{@package.name}/#{status.suite}" +
-                                  "/#{row.first.architecture}"
-                %>
-                <td>
-                  <%= icon(status.status) %>
-                  <a href=<%= package_dir %>><%= status.version %>  <%= status.title %></a>
-                </td>
-            <% end %>
+          <td><b><%= arch %></b></td>
+          <% @package.status[i].each do |status| %>
+            <td>
+              <% if status %>
+                <%= icon(status.status) %>
+                <a href="<%= history_url(status) %>"><%= status.title %></a>
+              <% else %>
+                <%= icon(:no_test_data) %>
+                No test data
+              <% end %>
+            </td>
           <% end %>
         </tr>
       <% end %>

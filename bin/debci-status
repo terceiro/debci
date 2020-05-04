@@ -4,6 +4,7 @@ require 'json'
 require 'optparse'
 
 require 'debci'
+require 'debci/package_status'
 
 $all = false
 $json = false
@@ -71,40 +72,30 @@ def format_field(v)
   v || 'unknown'
 end
 
-if $json
-  if packages.size == 1
-    if $status_file
-      puts File.read(get_status_file(packages.first))
-    else
-      data = read_status_file(packages.first)
-      puts data[$field].to_json
-    end
-    exit
-  end
+results = Debci::PackageStatus.includes(:package, :job).where(
+  'packages.name': packages,
+  suite: Debci.config.suite,
+  arch: Debci.config.arch,
+).group_by { |status| status.package.name }
 
-  puts "["
-  sep = nil
-  packages.each do |p|
-    entry = read_status_file(p)
-    if entry && entry['status']
-      puts sep if sep
-      puts JSON.pretty_generate(entry, indent: '  ')
-      sep = '  ,'
+if !$all && packages.size == 1
+  status = results[packages.first]&.first
+  if $json
+    if $status_file
+      puts JSON.pretty_generate(status.job.as_json)
+    else
+      puts((status && status.job[$field]).to_json)
     end
-  end
-  puts "]"
-else
-  results = packages.map do |p|
-    read_status_file(p)
-  end
-  results.reject! { |pkg| pkg.nil? }
-  if !$all && results.size == 1
-    puts format_field(results.first[$field])
   else
-    max_length = results.map { |pkg| pkg['package'].length }.max
-    fmt = "%-#{max_length}s %s"
-    results.each do |pkg|
-      puts fmt % [pkg['package'], format_field(pkg[$field])]
-    end
+    puts(format_field(status && status.job[$field]))
+  end
+elsif $json
+  puts JSON.pretty_generate(results.values.flatten.map(&:job).as_json)
+else
+  max_length = packages.map(&:length).max
+  fmt = "%-#{max_length}s %s"
+  packages.each do |pkg|
+    status = results[pkg]&.first
+    puts fmt % [pkg, format_field(status && status.job[$field])]
   end
 end

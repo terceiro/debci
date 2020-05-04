@@ -1,6 +1,6 @@
 <div class='row'>
   <div class='col-md-12'>
-    <h1 class='page-header'>Status <small>/ Failing</small></h1>
+    <h1 class='page-header'>Status <small> / Failing / <%= @title %></small></h1>
     <%= @status_nav %>
 
     <ol id='failing-nav' class='breadcrumb'>
@@ -16,7 +16,7 @@
         </span>
       </li>
 
-      <% @repository.suites.each do |suite| %>
+      <% Debci.config.suite_list.each do |suite| %>
         <li class='<%= "#{'active' if suite == @suite}" %>'>
           <span class='dropdown'>
             <a href='#' class='dropdown-toggle' data-toggle='dropdown'><%= suite %></a>
@@ -32,58 +32,47 @@
     </ol>
 
     <h4>
-      There are currently <b><%= @packages_length %></b> packages failing for <b><%= @suite || 'All' %></b>.
+      <%= @jobs.length %> failures
     </h4>
-    <% if @packages_length > @packages.length %>
-      <p>Last 50 such packages are shown.</p>
-    <% elsif @packages.empty? %>
-      <p>No packages satisfy conditions!</p>
-    <% else %>
-      <div class='form-group'>
-        <span>Enter Package Name: </span><input type='text' id='filter'>
-      </div>
+    <div class='form-group'>
+      <span>Enter Package Name: </span><input type='text' id='filter'>
+    </div>
 
-      <table id='failing-table' class='table table-striped'>
-        <thead>
-          <tr id='headline' class=''>
-            <th>Package</th>
-            <th>Suite</th>
-            <th>Architecture</th>
-            <th>Status</th>
+    <table id='failing-table' class='table table-striped'>
+      <thead>
+        <tr id='headline' class=''>
+          <th>Package</th>
+          <th>Suite</th>
+          <th>Architecture</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @jobs.each do |job| %>
+          <tr>
+            <td>
+              <a href="<%= package_url(job.package) %>" class='package'>
+                <%= job.package.name %>
+              </a>
+            </td>
+            <td>
+              <%= job.suite %>
+            </td>
+
+            <td>
+              <%= job.arch %>
+            </td>
+
+            <td>
+              <a href='<%= history_url(job) %>'>
+                <%= icon(job.status) %>
+                <%= job.title %>
+              </a>
+            </td>
           </tr>
-        </thead>
-
-        <tbody>
-          <% @packages.each do |package| %>
-            <% statuses = package.failures.select { |p| p.suite == @suite || !@suite } %>
-            <% statuses.each do |s| %>
-              <tr>
-                <td>
-                  <a href="/packages/<%= package.prefix %>/<%= package.name %>" class='package'>
-                    <%= package.name %>
-                  </a>
-                </td>
-                  
-                <td>
-                  <%= s.suite %>
-                </td>
-
-                <td>
-                  <%= s.architecture %>
-                </td>
-
-                <td>
-                  <a href='/packages/<%= package.prefix %>/<%= package.name %>/<%= s.suite %>/<%= s.architecture %>/'>
-                    <%= s.version %> <%= s.status %>
-                  </a>
-                </td>
-              </tr>
-            <% end %>
-          <% end %>
-        </tbody>
-
-      </table>
-    <% end %>
+        <% end %>
+      </tbody>
+    </table>
   </div>
 </div>
 

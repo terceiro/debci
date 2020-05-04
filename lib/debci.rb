@@ -1,6 +1,5 @@
 require 'shellwords'
 
-require 'debci/repository'
 require 'debci/config'
 require 'debci/blacklist'
 

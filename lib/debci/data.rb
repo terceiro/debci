@@ -17,24 +17,22 @@ module Debci
 
       attr_reader :tarball
       attr_reader :root
-      attr_reader :repo
       attr_reader :entries
 
       def initialize(tarball)
         @tarball = tarball
         @root = Debci.config.data_basedir
-        @repo = Debci::Repository.new
         @entries = []
       end
 
       def add(pkgname)
-        pkg = @repo.find_package(pkgname)
+        pkg = Debci::Package.find_by!(name: pkgname)
 
         # add data files
-        suites = pkg.suites
-        architectures = pkg.architectures
+        suites = Debci.config.suite_list
+        architectures = Debci.config.arch_list
         glob = "{packages,autopkgtest}/{#{suites.join(',')}}/{#{architectures.join(',')}}/#{pkg.prefix}/#{pkg.name}"
-        Dir.chdir(repo.path) do
+        Dir.chdir(root) do
           Dir[glob].each do |d|
             entries << d
           end
@@ -42,10 +40,10 @@ module Debci
 
         # add database data
         # FIXME make directory unique
-        Dir.chdir(repo.path) do
+        Dir.chdir(root) do
           FileUtils.mkdir_p('export')
           File.open("export/#{pkg.name}.json", 'w') do |f|
-            f.write(Debci::Job.where(package: pkg.name).to_json)
+            f.write(Debci::Job.where(package: pkg).to_json)
           end
         end
         entries << "export/#{pkg.name}.json"
@@ -56,7 +54,7 @@ module Debci
         files_from.puts(entries.sort)
         files_from.close
         target = File.expand_path(tarball)
-        Dir.chdir(repo.path) do
+        Dir.chdir(root) do
           system('tar', 'caf', target, '--files-from=' + files_from.path)
         end
       end
@@ -66,10 +64,10 @@ module Debci
     class Import
 
       attr_reader :tarball
-      attr_reader :repo
+      attr_reader :root
 
       def initialize(tarball)
-        @repo = Debci::Repository.new
+        @root = Debci.config.data_basedir
         @tarball = tarball
       end
 
@@ -91,25 +89,7 @@ module Debci
 
                 mapping[orig_run_id] = job.run_id
                 puts"# loaded job: #{orig_run_id} -> #{job.run_id}"
-                if orig_run_id != job.run_id
-                  # rename files to match database
-                  to_rename = Dir["autopkgtest/#{job.suite}/#{job.arch}/*/#{job.package}/#{orig_run_id}"]
-                  to_rename += Dir["packages/#{job.suite}/#{job.arch}/*/#{job.package}/#{orig_run_id}.*"]
-                  to_rename.each do |src|
-                    dest = src.sub("/#{orig_run_id}", "/#{job.run_id}")
-                    if File.basename(dest) =~ /\.json$/
-                      # rewrite run_id
-                      File.open(dest, 'w') do |f|
-                        f.write(JSON.pretty_generate(data.merge({"run_id" => job.run_id.to_s})))
-                        FileUtils.rm_f(src)
-                        puts "# rewrite #{src} -> #{dest}"
-                      end
-                    else
-                      puts "mv #{src} #{dest}"
-                      FileUtils.mv src, dest
-                    end
-                  end
-                end
+                rename_files(job, orig_run_id)
               end
             end
 
@@ -129,7 +109,7 @@ module Debci
             end
           end
           puts('# copying data files ...')
-          cmd = ['rsync', '-apq', '--exclude=/export', tmpdir + '/', repo.path + '/']
+          cmd = ['rsync', '-apq', '--exclude=/export', tmpdir + '/', root + '/']
           puts cmd.join(' ')
           system(*cmd)
         end
@@ -138,6 +118,7 @@ module Debci
 
       def load_job(data)
         job = Debci::Job.new
+        job.package = Debci::Package.find_or_create_by!(name: data.delete("package"))
         data.each do |attr, value|
           job[attr] = value if job.attributes.key?(attr)
         end
@@ -150,6 +131,30 @@ module Debci
           Debci::HTML.update_package(p)
         end
         Debci::HTML.update unless pkgs.empty?
+      end
+
+      private
+
+      def rename_files(job, orig_run_id)
+        return if orig_run_id == job.run_id
+
+        # rename files to match database
+        to_rename = Dir["autopkgtest/#{job.suite}/#{job.arch}/*/#{job.package.name}/#{orig_run_id}"]
+        to_rename += Dir["packages/#{job.suite}/#{job.arch}/*/#{job.package.name}/#{orig_run_id}.*"]
+        to_rename.each do |src|
+          dest = src.sub("/#{orig_run_id}", "/#{job.run_id}")
+          if File.basename(dest) =~ /\.json$/
+            # rewrite file with new run_id
+            File.open(dest, 'w') do |f|
+              f.write(JSON.pretty_generate(job.as_json))
+              FileUtils.rm_f(src)
+              puts "# rewrite #{src} -> #{dest}"
+            end
+          else
+            puts "mv #{src} #{dest}"
+            FileUtils.mv src, dest
+          end
+        end
       end
     end
 

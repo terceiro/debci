@@ -1,19 +1,25 @@
+require 'active_record'
+
+require 'debci'
+require 'debci/package_status'
+
 module Debci
-  # This class represents a single package. See Debci::Repository for how to
-  # obtain one of these.
+  # This class represents a single package.
 
-  Package = Struct.new(:name, :repository) do
-    # Returns the architectures in which this package is available
-    def architectures
-      repository.architectures_for(self)
-    end
+  class Package < ::ActiveRecord::Base
+    has_many :jobs, class_name: 'Debci::Job'
+    has_many :package_status, class_name: 'Debci::PackageStatus'
+    validates_format_of :name, with: /\A[a-z0-9][a-z0-9+.-]+\z/
 
-    # Returns the suites in which this package is available
-    def suites
-      repository.suites_for(self)
-    end
+    scope :by_prefix, lambda { |p|
+      if p == 'l'
+        where("name LIKE :prefix AND name NOT LIKE 'lib%'", prefix: p + '%')
+      else
+        where("name LIKE :prefix", prefix: p + '%')
+      end
+    }
 
-    # Returns a matrix of Debci::Status objects, where rows represent
+    # Returns a matrix of Debci::Job objects, where rows represent
     # architectures and columns represent suites:
     #
     #     [
@@ -21,66 +27,36 @@ module Debci
     #       [ i386_unstable, i386_testing ],
     #     ]
     #
-    # Each cell of the matrix contains a Debci::Status object.
+    # Each cell of the matrix contains a Debci::Job object.
     # Note: Contains statuses which are not blacklisted
     def status
-      repository.status_for(self)
+      @status ||=
+        begin
+          map = package_status.includes(:job).each_with_object({}) do |st, memo|
+            memo[st.arch] ||= {}
+            memo[st.arch][st.suite] = st.job
+          end
+          Debci.config.arch_list.map do |arch|
+            Debci.config.suite_list.map do |suite|
+              map[arch] && map[arch][suite]
+            end
+          end
+        end
     end
 
-    # Returns a matrix of Debci::Status objects, where rows represent
-    # architectures and columns represent suites:
-    #
-    #     [
-    #       [ amd64_unstable , amd64_testing ],
-    #       [ i386_unstable, i386_testing ],
-    #     ]
-    #
-    # Each cell of the matrix contains a Debci::Status object.
-    # Note: Contains all statuses
-    def all_status
-      repository.all_status_for(self)
-    end
-
-    # Returns a matrix of Debci::Status objects, where rows represent
-    # architectures and columns represent suites:
-    #
-    #     [
-    #       [ amd64_unstable , amd64_testing ],
-    #       [ i386_unstable, i386_testing ],
-    #     ]
-    #
-    # Each cell of the matrix contains a Debci::Status object.
-    # Note: Contains blacklisted statuses
-    def blacklisted_status
-      repository.blacklisted_status_for(self)
-    end
-
-    # Returns an array of Debci::Status objects that represent the test
+    # Returns an array of Debci::Job objects that represent the test
     # history for this package
     def history(suite, architecture)
-      repository.history_for(self, suite, architecture)
+      jobs.finished.where(suite: suite, arch: architecture).order('date DESC')
     end
 
-    # Returns a list of Debci::Status objects that are newsworthy for this
-    # package. The list is sorted with the most recent entries first and the
-    # older entries last.
     def news
-      repository.news_for(self)
-    end
-
-    # Returns an Array of statuses where this package is failing.
-    def failures
-      status.flatten.select { |p| p.status == :fail }
+      jobs.newsworthy.order('date DESC').first(10)
     end
 
     # Returns an Array of statuses where this package is failing or neutral.
     def fail_or_neutral
-      status.flatten.select { |p| (p.status == :fail) || (p.status == :neutral) }
-    end
-
-    # Returns an Array of statuses where this package is temporarily failing. If
-    def tmpfail
-      status.flatten.select { |p| p.status == :tmpfail }
+      status.flatten.compact.select { |p| (p.status.to_sym == :fail) || (p.status.to_sym == :neutral) }
     end
 
     def to_s
@@ -93,9 +69,18 @@ module Debci
       name
     end
 
-    def prefix
+    def self.prefixes
+      # FIXME: optimize(?)
+      select(:name).distinct.pluck(:name).map { |n| prefix(n) }.sort.uniq
+    end
+
+    def self.prefix(name)
       name =~ /^((lib)?.)/
       Regexp.last_match(1)
+    end
+
+    def prefix
+      self.class.prefix(name)
     end
 
     def blacklisted?(params = {})
@@ -106,18 +91,8 @@ module Debci
       Debci.blacklist.comment(name, params)
     end
 
-    def had_success?(suite = nil)
-      status.flatten.select { |p| p.suite == suite || !suite }.any? do |s|
-        s.had_success?
-      end
-    end
-
-    def always_failing?(suite = nil)
-      !had_success?(suite)
-    end
-
     def last_updated_at(suite = nil)
-      statuses = status.flatten.select { |s| s.suite == suite || !suite }
+      statuses = status.flatten.compact.select { |s| s.suite == suite || !suite }
       statuses.map(&:date).compact.max
     end
   end

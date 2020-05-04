@@ -6,9 +6,9 @@ require 'pathname'
 require 'debci'
 require 'debci/feed'
 require 'debci/job'
+require 'debci/package'
 require 'debci/graph'
 require 'debci/html_helpers'
-require 'debci/repository'
 require 'fileutils'
 
 module Debci
@@ -30,7 +30,7 @@ module Debci
         end
 
         html.index('index.html')
-        html.obsolete_packages_page('packages/index.html')
+        html.packages_page('packages/index.html')
         html.status('status/index.html')
         html.status_alerts('status/alerts/index.html')
         html.status_slow('status/slow/index.html')
@@ -40,13 +40,11 @@ module Debci
         html.platform_specific_issues('status/platform-specific-issues')
       end
 
-      def update_package(pkg, suite = nil, arch = nil)
+      def update_package(package, suite = nil, arch = nil)
         html = new
         pkgjson = Debci::HTML::PackageJSON.new
         autopkgtest = Debci::HTML::Autopkgtest.new
         feed = Debci::HTML::Feed.new
-        repository = Debci::Repository.new
-        package = Debci::Package.new(pkg, repository)
 
         suites = suite && [suite] || Debci.config.suite_list
         archs = arch && [arch] || Debci.config.arch_list
@@ -60,14 +58,6 @@ module Debci
         end
 
         feed.package(package)
-
-        # reload data from disk
-        # #
-        # FIXME this should not be necessary but it fixes a design flaw:
-        # Repository reads from disk, but HTML writes new data based on it.
-        html = new
-        repository = Debci::Repository.new
-        package = Debci::Package.new(pkg, repository)
 
         html.package(package)
         html.prefix(package.prefix)
@@ -85,11 +75,6 @@ module Debci
         data_basedir = Debci.config.data_basedir
         @root = Pathname(data_basedir) / datadir
       end
-
-      def repository
-        @repository ||= Debci::Repository.new
-      end
-
     end
 
     class JSON < Rooted
@@ -107,7 +92,7 @@ module Debci
       end
 
       def status_packages_data
-        @status_packages_data ||= repository.status_packages_data(suite, arch)
+        @status_packages_data ||= Debci::Job.status_on(suite, arch)
       end
 
       def status
@@ -135,27 +120,30 @@ module Debci
       end
 
       def history
+        status_history = (root / suite / arch).glob('[0-9]*/[0-9]*/[0-9]*.json')
+        status_history_data = status_history.sort.map { |f| ::JSON.parse(f.read) }
+
         h = root / suite / arch / 'history.json'
-        h.write(::JSON.pretty_generate(repository.status_history_data(suite, arch)))
+        h.write(::JSON.pretty_generate(status_history_data))
       end
 
       def packages
         p = root / suite / arch / 'packages.json'
-        p.write(::JSON.pretty_generate(status_packages_data))
+        p.write(::JSON.pretty_generate(status_packages_data.as_json))
       end
     end
 
     class PackageJSON < Rooted
       def history(package, suite, arch)
         write_json(
-          Debci::Job.history(package.name, suite, arch),
+          Debci::Job.history(package, suite, arch),
           [suite, arch, package.prefix, package.name, 'history.json']
         )
       end
 
       def latest(package, suite, arch)
         write_json(
-          Debci::Job.history(package.name, suite, arch).last,
+          Debci::Job.history(package, suite, arch).last,
           [suite, arch, package.prefix, package.name, 'latest.json']
         )
       end
@@ -176,7 +164,7 @@ module Debci
 
     class Autopkgtest < Rooted
       def link_latest(package, suite, arch)
-        job = Debci::Job.history(package.name, suite, arch).last
+        job = Debci::Job.history(package, suite, arch).last
         return unless job
 
         link = root / suite / arch / package.prefix / package.name / 'latest-autopkgtest'
@@ -195,7 +183,7 @@ module Debci
       end
 
       def package(pkg)
-        news = repository.news_for(pkg)
+        news = pkg.news
         write_feed(news, root / pkg.prefix / "#{pkg.name}.xml") do |feed|
           feed.channel.title = "#{pkg.name} CI news feed"
           feed.channel.about = Debci.config.url_base + "/packages/#{pkg.prefix}/#{pkg.name}/"
@@ -224,8 +212,7 @@ module Debci
 
     def initialize(root_directory=Debci.config.html_dir)
       @root_directory = root_directory
-      @repository = Debci::Repository.new
-      @package_prefixes = @repository.prefixes
+      @package_prefixes = Debci::Package.prefixes
 
       @head = read_config_file('head.html')
       @footer = read_config_file('footer.html')
@@ -242,23 +229,22 @@ module Debci
 
     def status_alerts(filename)
       # Packages with atleast one visible tmpfail status
-      @tmpfail = @repository.tmpfail_packages.select { |package| package.tmpfail.any?(&:visible?) }
-
+      @tmpfail = Debci::Job.tmpfail.visible
       @alert_number = @tmpfail.length
       expand_template(:status_alerts, filename)
     end
 
     def status_slow(filename)
-      @slow = @repository.slow_statuses.select(&:visible?)
+      @slow = Debci::Job.slow.sort_by { |j| j.package.name }
       expand_template(:status_slow, filename)
     end
 
     def status_pending_jobs(dirname)
       @status_nav = load_template(:status_nav)
       @status_per_page = Debci.config.pending_status_per_page.to_i
-      @pending_jobs = Debci::Job.pending.length
+      @pending_jobs = Debci::Job.pending.count
 
-      @suites_jobs = Hash[@repository.suites.map do |x|
+      @suites_jobs = Hash[Debci.config.suite_list.map do |x|
         [x, Debci::Job.pending.where(suite: x).count]
       end
       ]
@@ -269,13 +255,13 @@ module Debci
     def status_failing(dirname)
       @status_nav = load_template(:status_nav)
 
-      packages = @repository.failing_packages
-      @packages_per_page = Debci.config.failing_packages_per_page.to_i
+      jobs = Debci::Job.fail
+      @packages_per_page = Debci.config.failing_packages_per_page
 
-      generate_status_failing(dirname, packages)
+      generate_status_failing(dirname, jobs)
 
-      @repository.suites.map do |suite|
-        generate_status_failing(dirname, packages, suite)
+      Debci.config.suite_list.each do |suite|
+        generate_status_failing(dirname, jobs, suite)
       end
     end
 
@@ -289,8 +275,9 @@ module Debci
         "#{dirname}/last_year": ["Last Year", 365]
       }
 
+      issues = Debci::Job.platform_specific_issues
       @filters.each do |target, filter|
-        generate_platform_specific_issues(target, filter)
+        generate_platform_specific_issues(issues, target, filter)
       end
     end
 
@@ -311,11 +298,12 @@ module Debci
     def prefix(prefix)
       @prefix = prefix
       @moretitle = prefix
+      @packages = Debci::Package.by_prefix(prefix).order('name')
       filename = "packages/#{prefix}/index.html"
       expand_template(:packagelist, filename)
     end
 
-    def obsolete_packages_page(filename)
+    def packages_page(filename)
       expand_template(:packages, filename)
     end
 
@@ -333,10 +321,7 @@ module Debci
       @site_url = expand_url(Debci.config.url_base, @suite)
       @artifacts_url_base = expand_url(Debci.config.artifacts_url_base, @suite)
       @moretitle = "#{package.name}/#{suite}/#{architecture}"
-      history = package.history(@suite, @architecture)
-      @latest = history && history.first
       @history = package.history(@suite, @architecture)
-      @latest = @history && @history.first
       @package_links = load_template(:package_links)
 
       filename = "packages/#{package.prefix}/#{package.name}/#{suite}/#{architecture}/index.html"
@@ -344,6 +329,14 @@ module Debci
     end
 
     private
+
+    def history_url(job)
+      "/packages/#{job.package.prefix}/#{job.package.name}/#{job.suite}/#{job.arch}/"
+    end
+
+    def package_url(package)
+      "/packages/#{package.prefix}/#{package.name}/"
+    end
 
     def templates
       @templates ||= {}
@@ -386,11 +379,16 @@ module Debci
       end
     end
 
-    def generate_platform_specific_issues(target, filter)
-      days = filter[1]
-      @issues = @repository.platform_specific_issues.select do |_, statuses|
-        statuses.any? do |status|
-          status.date && status.newer?(days)
+    def generate_platform_specific_issues(issues, target, filter)
+      @issues = issues
+
+      n = filter[1]
+      if n > 0
+        cutoff = Time.now - n.days
+        @issues = @issues.select do |_, statuses|
+          statuses.any? do |status|
+            status.date && status.date > cutoff
+          end
         end
       end
       expand_template(:platform_specific_issues, target.to_s + '/' + 'index.html')
@@ -428,49 +426,52 @@ module Debci
       end
     end
 
-    def generate_status_failing(dirname, packages, suite = nil)
+    def generate_status_failing(dirname, jobs, suite = nil)
       base = "#{dirname}#{'/' + suite if suite}"
       @suite = suite
 
-      packages = packages.select do |package|
-        package.failures.any? { |failure| (failure.suite == suite) || !suite }
-      end
+      jobs = jobs.where(suite: suite) if suite
+      jobs = jobs.order('date DESC')
 
-      sorted_packages = sort_packages_by_date(packages, suite)
-
-      generate_status_failing_all(sorted_packages, base)
-      generate_status_failing_index(sorted_packages, base)
-      generate_status_failing_always_failing(sorted_packages, base)
-      generate_status_failing_had_success(sorted_packages, base)
+      generate_status_failing_index(jobs, base)
+      generate_status_failing_all(jobs, base)
+      generate_status_failing_always_failing(jobs, base)
+      generate_status_failing_had_success(jobs, base)
     end
 
-    def generate_status_failing_all(packages, base)
-      @packages = packages
-      @packages_length = @packages.length
+    def status_failing_title(title)
+      @suite && [title, "on", @suite].join(' ') || title
+    end
+
+    def generate_status_failing_all(jobs, base)
+      @title = 'All failures'
+      @jobs = jobs
 
       filename = "#{base}/all/index.html"
       expand_template(:status_failing, filename)
     end
 
-    def generate_status_failing_index(packages, base)
-      @packages = packages.first(@packages_per_page)
-      @packages_length = @packages.length
+    def generate_status_failing_index(jobs, base)
+      @title = status_failing_title(
+        'Last %<packages_per_page>d failures' % { packages_per_page: @packages_per_page }
+      )
+      @jobs = jobs.first(@packages_per_page)
 
       filename = "#{base}/index.html"
       expand_template(:status_failing, filename)
     end
 
-    def generate_status_failing_always_failing(packages, base)
-      @packages = packages.select { |p| p.always_failing?(@suite) }
-      @packages_length = @packages.length
+    def generate_status_failing_always_failing(jobs, base)
+      @title = status_failing_title('Always failing')
+      @jobs = jobs.select { |j| j.always_failing? }
 
       filename = "#{base}/always_failing/index.html"
       expand_template(:status_failing, filename)
     end
 
-    def generate_status_failing_had_success(packages, base)
-      @packages = packages.select { |p| p.had_success?(@suite) }
-      @packages_length = @packages.length
+    def generate_status_failing_had_success(jobs, base)
+      @title = status_failing_title('Had success')
+      @jobs = jobs.select { |j| j.had_success? }
 
       filename = "#{base}/had_success/index.html"
       expand_template(:status_failing, filename)

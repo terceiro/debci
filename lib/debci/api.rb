@@ -341,8 +341,13 @@ module Debci
       EOF
       post '/test/:suite/:arch' do
         tests = load_json(params[:tests])
-        self.request_tests(tests, suite, arch, @user, @priority)
-        201
+        errors = validate_tests(tests)
+        if errors.empty?
+          self.request_tests(tests, suite, arch, @user, @priority)
+          201
+        else
+          halt(400, "Invalid request: #{errors.join("\n")}")
+        end
       end
 
       doc <<-EOF
@@ -370,8 +375,9 @@ module Debci
           halt(400, "Invalid package name: #{pkg}\n")
         end
 
+        package = Debci::Package.find_or_create_by!(name: pkg)
         job = Debci::Job.create!(
-            package: pkg,
+            package: package,
             suite: params[:suite],
             arch: params[:arch],
             requestor: @user,

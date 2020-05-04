@@ -1,7 +1,6 @@
 #!/usr/bin/ruby
 
 require 'debci'
-require 'debci/status'
 require 'debci/job'
 require 'thor'
 
@@ -13,7 +12,7 @@ module Debci
     def import(*status_files)
       status_files.each do |status_file|
         begin
-          Debci::Job.import(status_file, suite, arch)
+          Debci::Job.import(status_file)
           puts('I: imported %<status_file>s' % { status_file: status_file }) if options { :verbose }
           if options[:remove]
             File.unlink(status_file)

@@ -14,24 +14,21 @@
           <th>Status</th>
         </tr>
 
-      <% @tmpfail.each do |package| %>
-        <% package.tmpfail.select(&:visible?).each do |s| %>
+      <% @tmpfail.each do |job| %>
           <tr>
             <td>
-              <a href="/packages/<%= package.prefix %>/<%= package.name %>"><%= package.name %></a>
-            </td>
-
-            <td>
-                <%= s.suite %>
+              <a href="<%= package_url(job.package) %>"><%= job.package.name %></a>
             </td>
             <td>
-                <%= s.architecture %>
+                <%= job.suite %>
             </td>
             <td>
-              <a class='tmpfail' href='/packages/<%= package.prefix %>/<%= package.name %>/<%= s.suite %>/<%= s.architecture %>/'><%= s.version %> <%= s.status %></a>
+                <%= job.arch %>
+            </td>
+            <td>
+              <a href='<%= history_url(job)%>'/><%= icon(:tmpfail) %> <%= job.title %></a>
             </td>
           </tr>
-        <% end %>
       <% end %>
       </table>
     <% end %>

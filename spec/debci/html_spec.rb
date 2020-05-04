@@ -20,9 +20,11 @@ describe Debci::HTML do
     it('produces status page') { expect(html / 'status/index.html').to exist }
   end
 
+  let(:package) { Debci::Package.create!(name: 'foobar') }
+
   let(:job) do
     Debci::Job.create!(
-      package: 'foobar',
+      package: package,
       suite: 'unstable',
       arch: 'amd64',
       requestor: 'user',
@@ -100,13 +102,15 @@ describe Debci::HTML do
     it 'produces history.json' do
       history_json = pkgdata / 'history.json'
       expect(history_json).to exist
-      ::JSON.parse(history_json.read)
+      data = ::JSON.parse(history_json.read)
+      expect(data.size).to eq(1)
     end
 
     it 'produces latest.json' do
       latest_json = pkgdata / 'latest.json'
       expect(latest_json).to exist
-      ::JSON.parse(latest_json.read)
+      data = ::JSON.parse(latest_json.read)
+      expect(data).to be_a(Hash)
     end
 
     it 'links to latest-autopkgtest' do
@@ -132,7 +136,7 @@ describe Debci::HTML do
 
       Debci::HTML.update_package(job.package)
 
-      feed = data / 'feeds' / job.prefix / "#{job.package}.xml"
+      feed = data / 'feeds' / job.package.prefix / "#{job.package.name}.xml"
       expect(feed).to exist
       feed = RSS::Parser.parse(feed.open)
       expect(feed.items.size).to eq(1)

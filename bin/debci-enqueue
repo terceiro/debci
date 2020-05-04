@@ -59,16 +59,17 @@ end
 optparse.parse!
 
 ARGV.each do |pkg|
+  package = Debci::Package.find_or_create_by!(name: pkg)
   job = Debci::Job.new(
-    package: pkg,
+    package: package,
     arch: arch,
     suite: suite,
     requestor: requestor,
     status: nil,
     trigger: trigger,
     pin_packages: pin_packages,
-    run_id: run_id
   )
+  job.run_id = run_id if run_id
   job.save!
   job.enqueue(priority)
   Debci.log "#{pkg} #{suite}/#{arch} requested"

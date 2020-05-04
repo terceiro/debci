@@ -19,32 +19,30 @@
   </div>
 
   <div class="col-md-9">
-    <% @repository.search('^' + (@prefix || '-')).tap do |packages| %>
-      <table class="table" style="text-align: left">
+    <table class="table" style="text-align: left">
+      <tr>
+        <td><b>Package</b></td>
+        <td><b>Status</b></td>
+      </tr>
+      <% @packages.each do |package| %>
         <tr>
-          <td><b>Package</b></td>
-          <td><b>Status</b></td>
+          <td><a href="/packages/<%= @prefix %>/<%= package.name %>"><%= package.name %></a></td>
+          <% if package.fail_or_neutral.any? %>
+            <td>
+              <% package.fail_or_neutral.each do |s| %>
+                <a href='<%= "/packages/#{@prefix}/#{package.name}/#{s.suite}/#{s.arch}"%>'>
+                  <%= icon(s.status) %>
+                  <%= s.version %> <%= s.status.upcase %> <%= s.suite %>/<%= s.arch%>
+                </a>
+              <% end %>
+            </td>
+          <% else %>
+            <td>
+              <div><i class='pass fa fa-thumbs-up'></i> Passing everywhere</div>
+            </td>
+          <% end %>
         </tr>
-        <% packages.each do |package| %>
-          <tr>
-            <td><a href="/packages/<%= @prefix %>/<%= package.name %>"><%= package.name %></a></td>
-            <% if package.fail_or_neutral.any? %>
-              <td>
-                <% package.fail_or_neutral.each do |s| %>
-                  <a href='<%= "/packages/#{@prefix}/#{package.name}/#{s.suite}/#{s.architecture}"%>'>
-                    <%= icon(s.extended_status) %>
-                    <%= s.version %> <%= s.status.upcase %> <%= s.suite %>/<%= s.architecture %> <%= s.failmsg && '(%s)' % s.failmsg %>
-                  </a>
-                <% end %>
-              </td>
-            <% else %>
-              <td>
-                <div><i class='pass fa fa-thumbs-up'></i> Passing everywhere</div>
-              </td>
-            <% end %>
-          </tr>
-        <% end %>
-      </table>
-    <% end %>
+      <% end %>
+    </table>
   </div>
 </div>

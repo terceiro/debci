@@ -18,6 +18,7 @@ describe Debci::Graph do
     data_element2 = generate_data_element(final_date, 200, 150, 20, 370)
     mkdir_p 'status/unstable/amd64'
     history 'status/unstable/amd64', [data_element1, data_element2]
+    allow(Debci.config).to receive(:data_basedir).and_return(tmpdir)
   end
 
   def mkdir_p(path)
@@ -30,8 +31,7 @@ describe Debci::Graph do
     end
   end
 
-  let(:repository) { Debci::Repository.new(tmpdir) }
-  let(:graph) { Debci::Graph.new(repository, 'unstable', 'amd64') }
+  let(:graph) { Debci::Graph.new('unstable', 'amd64') }
 
   it 'gets history snapshots as entries' do
     expect(graph.entries.size).to eq(2)

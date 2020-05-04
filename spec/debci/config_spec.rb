@@ -25,6 +25,14 @@ describe Debci::Config do
       it "knows about #{key}" do
         expect(config.send(key)).to be_a(Integer)
       end
+    elsif [:failing_packages_per_page].include?(key)
+      it "knows about #{key}" do
+        expect(config.send(key)).to be_a(Integer)
+      end
+    elsif [:status_visible_days].include?(key)
+      it "knows about #{key}" do
+        expect(config.send(key)).to be_a(Integer)
+      end
     else
       it "knows about #{key}" do
         expect(config.send(key)).to be_a(String)

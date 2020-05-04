@@ -4,6 +4,7 @@ require 'debci/data'
 RSpec.shared_context 'export/import' do
   include_context 'tmpdir'
 
+  let(:package) { Debci::Package.create!(name: 'rake') }
   let(:job_data) do
     {
       'run_id': '9999',
@@ -37,7 +38,7 @@ RSpec.shared_context 'export/import' do
         f.write(JSON.pretty_generate(job_data))
       end
     end
-    Debci::Job.create(job_data)
+    Debci::Job.create(job_data.merge(package: package))
 
     exporter.add('rake')
     exporter.save
@@ -87,15 +88,15 @@ describe Debci::Data::Import do
     importer.import!
   end
 
-  it 'extract files in data directory' do
-    repo = Debci::Repository.new
-    expect(repo.find_package('rake')).to_not be_nil
+  it 'creates package in the database' do
+    expect(Debci::Package.find_by(name: 'rake'))
   end
 
   it 'creates job in database' do
     expect(Debci::Job.count).to eq(1)
     job = Debci::Job.first
-    job_data.reject { |k, _v| k == :run_id }.each do |k, v|
+    expect(job.package).to eq(package)
+    job_data.reject { |k, _v| [:run_id, :package].include?(k) }.each do |k, v|
       expect(job.send(k)).to eq(v)
     end
   end

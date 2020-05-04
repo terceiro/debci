@@ -76,7 +76,7 @@ describe Debci::SelfService do
       post '/user/foo@bar.com/test/submit', pin_packages: '', trigger: 'test_trigger', package: 'test-package', suite: suite, arch: [arch]
       expect(last_response.status).to eq(201)
       job = Debci::Job.last
-      expect(job.package).to eq('test-package')
+      expect(job.package.name).to eq('test-package')
       expect(job.trigger).to eq('test_trigger')
       expect(job.arch).to eq(arch)
       expect(job.suite).to eq(suite)
@@ -128,7 +128,7 @@ describe Debci::SelfService do
       post '/user/foo@bar.com/test/upload', tests: Rack::Test::UploadedFile.new(test_file)
       expect(last_response.status).to eq(201)
       job = Debci::Job.last
-      expect(job.package).to eq('autodep8')
+      expect(job.package.name).to eq('autodep8')
       expect(job.suite).to eq(suite)
     end
 
@@ -217,7 +217,8 @@ describe Debci::SelfService do
       ]
 
       history_jobs.each do |job|
-        Debci::Job.create(job)
+        package = Debci::Package.find_or_create_by!(name: job.delete(:package))
+        Debci::Job.create(job.merge(package: package))
       end
     end
 

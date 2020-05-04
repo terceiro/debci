@@ -8,8 +8,7 @@ module Debci
   class Graph
     attr_accessor :suite, :architecture, :entries
 
-    def initialize(repository, suite, architecture)
-      @repository = repository
+    def initialize(suite, architecture)
       @suite = suite
       @architecture = architecture
       load_data
@@ -17,9 +16,14 @@ module Debci
 
     private
 
+    def read_status_history
+      history = Pathname(Debci.config.data_basedir) / 'status' / suite / architecture / 'history.json'
+      ::JSON.parse(history.read)
+    end
+
     def load_data
       # load all the data
-      @entries = Array(@repository.status_history(@suite, @architecture))
+      @entries = read_status_history
 
       return unless @entries
       return if @entries.size <= 100

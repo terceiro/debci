@@ -8,15 +8,15 @@ module Debci
       end
 
       def autopkgtest_dir
-        @autopkgtest_dir ||= root / 'autopkgtest' / suite / arch / prefix / package / run_id.to_s
+        @autopkgtest_dir ||= root / 'autopkgtest' / suite / arch / package.prefix / package.name / run_id.to_s
       end
 
       def debci_log
-        @debci_log ||= root / 'packages' / suite / arch / prefix / package / (run_id.to_s + '.log')
+        @debci_log ||= root / 'packages' / suite / arch / package.prefix / package.name / (run_id.to_s + '.log')
       end
 
       def result_json
-        @result_json ||= root / 'packages' / suite / arch / prefix / package / (run_id.to_s + '.json')
+        @result_json ||= root / 'packages' / suite / arch / package.prefix / package.name / (run_id.to_s + '.json')
       end
 
       def cleanup

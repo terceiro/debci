@@ -4,9 +4,10 @@ require 'debci/collector'
 describe Debci::Collector do
   include_context 'tmpdir'
   let(:collector) { Debci::Collector.new }
+  let(:package) { Debci::Package.create!(name: 'mypkg') }
   let(:job) do
     Debci::Job.create!(
-      package: 'mypkg',
+      package: package,
       suite: 'unstable',
       arch: 'amd64',
       requestor: 'debci',
@@ -20,7 +21,7 @@ describe Debci::Collector do
   end
 
   it 'receives payload, updates database and HTML' do
-    expect(Debci::HTML).to receive(:update_package).with('mypkg')
+    expect(Debci::HTML).to receive(:update_package).with(package)
     collector.receive_payload(tmpdir, payload)
     job.reload
     expect(job.status).to eq('pass')

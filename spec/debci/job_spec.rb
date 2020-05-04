@@ -2,29 +2,32 @@ require 'spec_helper'
 require 'tempfile'
 
 require 'debci/job'
+require 'debci/package'
 
 describe Debci::Job do
   include_context 'tmpdir'
 
+  let(:package) { Debci::Package.create!(name: 'mypackage') }
+  let(:new_job) { Debci::Job.create!(package: package) }
+
   it 'sets created_at' do
-    job = Debci::Job.create
-    expect(job.created_at).to_not be_nil
+    expect(new_job.created_at).to_not be_nil
   end
+
   it 'sets updated_at' do
-    job = Debci::Job.create
-    job.save!
-    expect(job.updated_at).to_not be_nil
+    new_job.save!
+    expect(new_job.updated_at).to_not be_nil
   end
 
   it 'lists pending jobs' do
-    job = Debci::Job.create
+    job = new_job
     expect(Debci::Job.pending).to include(job)
   end
 
   it 'sorts pending jobs with older first' do
     yesterday = Time.now - 1.day
-    job1 = Debci::Job.create(created_at: Time.now)
-    job0 = Debci::Job.create(created_at: yesterday)
+    job1 = Debci::Job.create(package: package, created_at: Time.now)
+    job0 = Debci::Job.create(package: package, created_at: yesterday)
 
     expect(Debci::Job.pending).to eq([job0, job1])
   end
@@ -51,10 +54,11 @@ describe Debci::Job do
   let(:arch) { 'amd64' }
 
   it 'imports status file' do
-    job = Debci::Job.create(suite: suite, arch: arch)
+    job = Debci::Job.create(package: package, suite: suite, arch: arch)
     file = Tempfile.new('foo')
     file.write(
       {
+        'package': package.name,
         'run_id': job.run_id,
         'status': 'pass',
         'version': '1.0-1',
@@ -68,7 +72,7 @@ describe Debci::Job do
     )
     file.close
 
-    imported = Debci::Job.import(file.path, suite, arch)
+    imported = Debci::Job.import(file.path)
     expect(imported).to eq(job)
 
     job.reload
@@ -83,7 +87,7 @@ describe Debci::Job do
   end
 
   it 'refuses to import incorrect jobs' do
-    job = Debci::Job.create(package: "foo", suite: suite, arch: arch)
+    job = Debci::Job.create(package: package, suite: suite, arch: arch)
     file = Tempfile.new('foo')
     file.write(
       {
@@ -101,28 +105,28 @@ describe Debci::Job do
     )
     file.close
 
-    expect(-> { Debci::Job.import(file.path, suite, arch) }).to raise_error(Debci::Job::InvalidStatusFile)
+    expect(-> { Debci::Job.import(file.path) }).to raise_error(Debci::Job::InvalidStatusFile)
     job.reload
     expect(job.status).to be_nil
   end
 
   it 'takes ridiculously large version numbers' do
     v = '1.' * 100 + '0'
-    Debci::Job.create!(package: 'foo', version: v)
+    Debci::Job.create!(package: package, version: v)
   end
 
   context "history" do
     before(:each) do
       # latest job created first on purpose, to check ordering by date
       @job2 = Debci::Job.create(
-        package: 'foo',
+        package: package,
         suite: 'testing',
         arch: 'amd64',
         status: 'pass',
         date: '2019-02-02 11:00'
       )
       @job1 = Debci::Job.create(
-        package: 'foo',
+        package: package,
         suite: 'testing',
         arch: 'amd64',
         status: 'pass',
@@ -130,13 +134,13 @@ describe Debci::Job do
       )
       # pending/unfinished job
       @job3 = Debci::Job.create(
-        package: 'foo',
+        package: package,
         suite: 'testing',
         arch: 'amd64',
       )
       # migration test
       @job4 = Debci::Job.create(
-        package: 'foo',
+        package: package,
         suite: 'testing',
         arch: 'amd64',
         status: 'fail',
@@ -145,7 +149,7 @@ describe Debci::Job do
         pin_packages: [['src:bar', 'unstable']]
       )
 
-      @history = Debci::Job.history('foo', 'testing', 'amd64')
+      @history = Debci::Job.history(package, 'testing', 'amd64')
     end
 
     it 'orders by date' do
@@ -165,19 +169,19 @@ describe Debci::Job do
 
   context 'generating JSON' do
     it 'provides duration_human' do
-      job = Debci::Job.new(duration_seconds: 65)
+      job = Debci::Job.new(package: package, duration_seconds: 65)
       expect(job.as_json["duration_human"]).to be_a(String)
     end
   end
 
   context 'converting to string' do
-    let(:job) { Debci::Job.new(package: 'pkg', suite: 'testing', arch: 'amd64') }
+    let(:job) { Debci::Job.new(package: package, suite: 'testing', arch: 'amd64') }
     it 'uses status' do
       job.status = 'pass'
-      expect(job.to_s).to eq('pkg testing/amd64 (pass)')
+      expect(job.to_s).to eq('mypackage testing/amd64 (pass)')
     end
     it 'uses pending as status when status is nil' do
-      expect(job.to_s).to eq('pkg testing/amd64 (pending)')
+      expect(job.to_s).to eq('mypackage testing/amd64 (pending)')
     end
   end
 
@@ -196,7 +200,7 @@ describe Debci::Job do
   context 'receiving autopkgtest results' do
     let(:original_job) do
       Debci::Job.create!(
-        package: 'foobar',
+        package: package,
         suite: 'unstable',
         arch: 'amd64',
         requestor: 'user'
@@ -222,21 +226,21 @@ describe Debci::Job do
     it('gets version') { expect(job.version).to eq('1.0-1') }
     it 'moves directory into autopkgtest dir' do
       id = job.id.to_s
-      received = Pathname(Debci.config.autopkgtest_basedir) / "unstable/amd64/f/foobar" / id
+      received = Pathname(Debci.config.autopkgtest_basedir) / "unstable/amd64/m/mypackage" / id
       expect(received).to exist
       expect(Pathname(incoming)).to_not exist
     end
 
     it 'compresses artifacts' do
       id = job.id.to_s
-      received = Pathname(Debci.config.autopkgtest_basedir) / "unstable/amd64/f/foobar" / id
+      received = Pathname(Debci.config.autopkgtest_basedir) / "unstable/amd64/m/mypackage" / id
       contents = received.children.map { |f| f.basename.to_s }.sort
       expect(contents).to eq(["artifacts.tar.gz", "log.gz"])
     end
 
     let(:second_original_job) do
       Debci::Job.create!(
-        package: 'foobar',
+        package: package,
         suite: 'unstable',
         arch: 'amd64',
         requestor: 'user'
@@ -268,5 +272,100 @@ describe Debci::Job do
       testpkg_version.unlink
       expect(job.version).to eq('n/a')
     end
+
+    it 'cleans up upon request' do
+      job.cleanup
+      expect(job.autopkgtest_dir).to_not exist
+      expect(job.debci_log).to_not exist
+      expect(job.result_json).to_not exist
+    end
+  end
+
+  context 'maintaining package status' do
+    let(:data) do
+      {
+        package: package,
+        suite: 'unstable',
+        arch: 'amd64',
+        status: 'pass',
+        date: Time.now - 1.day,
+      }
+    end
+
+    let(:first_job) do
+      Debci::Job.create!(data)
+    end
+
+    let(:package_status) do
+      Debci::PackageStatus.where(
+        package: package,
+        suite: 'unstable',
+        arch: 'amd64'
+      ).first
+    end
+
+    it 'creates package status' do
+      job = first_job
+      expect(package_status.job).to eq(job)
+    end
+
+    it 'updates package status when a new job arrives' do
+      job = first_job
+      new_job = Debci::Job.create!(data.merge(date: Time.now))
+      job.save! # even if an earlier job is later modified
+      expect(package_status.job).to eq(new_job)
+    end
+
+    it 'ignores unfinshed tests' do
+      job = first_job
+      Debci::Job.create!(data.merge(status: nil))
+      Debci::Job.create!(data.merge(date: nil))
+      expect(package_status.job).to eq(job)
+    end
+
+    it 'ignores migration tests' do
+      job = first_job
+      Debci::Job.create!(data.merge(date: Time.now, pin_packages: ['experimental', 'src:foobar']))
+      expect(package_status.job).to eq(job)
+    end
+  end
+
+  context 'getting status' do
+    it 'picks finished jobs for status' do
+      j1 = Debci::Job.create!(package: package, suite: 'unstable', arch: 'amd64', status: 'pass', date: Time.now - 1.day)
+      j2 = Debci::Job.create!(package: package, suite: 'unstable', arch: 'i386', status: 'fail', date: Time.now - 1.day)
+      j3 = Debci::Job.create!(package: package, suite: 'unstable', arch: 'amd64')
+
+      s = Debci::Job.status_on('unstable', 'amd64')
+      expect(s).to include(j1)
+      expect(s).to_not include(j2)
+      expect(s).to_not include(j3)
+    end
+  end
+
+  context 'getting platform specific issues' do
+    before(:each) do
+      @pass = package.jobs.create!(date: Time.now, status: 'pass', suite: 'unstable', arch: 'amd64')
+      @fail = package.jobs.create!(date: Time.now, status: 'fail', suite: 'unstable', arch: 'arm64')
+    end
+    it 'lists job that have different results on different architectures' do
+      issues = Debci::Job.platform_specific_issues
+
+      expect(issues[package]).to include(@pass)
+      expect(issues[package]).to include(@fail)
+    end
+
+    it 'ignores packages without different results' do
+      other_package = Debci::Package.create!(name: 'otherpackage')
+      other_package.jobs.create!(date: Time.now, status: 'pass', suite: 'unstable', arch: 'amd64')
+      other_package.jobs.create!(date: Time.now, status: 'pass', suite: 'unstable', arch: 'arm64')
+
+      issues = Debci::Job.platform_specific_issues
+      expect(issues).to_not include(other_package)
+    end
+  end
+
+  it 'includes package name in JSON representation' do
+    expect(new_job.as_json["package"]).to eq(package.name)
   end
 end

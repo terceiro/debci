@@ -186,7 +186,7 @@ interface:
     $ ./bin/debci html update             # update non package-related pages
     $ ./bin/debci html update-package PKG # update all pages for PKG
 
-If you make changes to the documentation (HACKING.md, RUBYAPI.md, etc.),
+If you make changes to the documentation (HACKING.md, etc.),
 run the following to regenerate it:
 
     $ make
@@ -201,8 +201,8 @@ the code to look weird or less readable.**
 
 If you are developing a new feature for the debci web UI, make sure that
 if you develop any new debci Ruby API calls that you add tests for them in the
-appropriate test file. (e.g. If you add a method to {Debci::Repository}, make
-sure that the method has tests in `spec/debci/repository_spec.rb`)
+appropriate test file. (e.g. If you add a method to {Debci::Job}, make sure
+that the method has tests in `spec/debci/job_spec.rb`)
 
 ### Running tests on your code
 

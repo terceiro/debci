@@ -24,17 +24,17 @@ module Debci
     def insert_items(news, feed)
       news.each do |status|
         feed.items.new_item do |item|
-          prefix = status.package.sub(/^((lib)?.).*/, '\1')
-          item.link = "#{site_base}/data/packages/#{status.suite}/#{status.architecture}/#{prefix}/#{status.package}/#{status.run_id}.log"
+          prefix = status.package.prefix
+          item.link = "#{site_base}/data/packages/#{status.suite}/#{status.arch}/#{prefix}/#{status.package}/#{status.run_id}.log"
           item.title = status.headline
           item.date = status.date
           item.description = [
-            "<p>#{status.description}</p>",
+            "<p>#{status.headline}</p>",
             '<ul>',
             "<li>Version: #{status.version}</li>",
             "<li>Date: #{status.date}</li>",
             "<li>Test run duration: #{status.duration_human}</li>",
-            "<li><a href=\"#{site_base}/packages/#{prefix}/#{status.package}/#{status.suite}/#{status.architecture}\">Package history page</a></li>",
+            "<li><a href=\"#{site_base}/packages/#{prefix}/#{status.package}/#{status.suite}/#{status.arch}\">Package history page</a></li>",
           ]
 
           item.description += [
@@ -56,9 +56,9 @@ module Debci
       [
         expand_url(artifacts_url_base, status.suite),
         status.suite,
-        status.architecture,
-        status.prefix,
-        status.package,
+        status.arch,
+        status.package.prefix,
+        status.package.name,
         status.run_id,
       ].join('/')
     end

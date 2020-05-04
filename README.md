@@ -35,7 +35,6 @@ in the [Debian BTS](https://bugs.debian.org/).
 * Get source: `git clone https://salsa.debian.org/ci-team/debci.git`
 * [Browse source](https://salsa.debian.org/ci-team/debci)
 * {file:docs/HACKING.md How to setup a development environment}
-* {file:docs/RUBYAPI.md The Ruby API to the debci data store}
 
 ## Contact
 

@@ -66,7 +66,7 @@
   <% Array(@history).each do |test| %>
   <tr>
     <td><%= test.date %></td>
-    <td><%= test.package %></td>
+    <td><%= test.package.name %></td>
     <td><%= test.suite %></td>
     <td><%= test.arch %></td>
     <td>
@@ -78,7 +78,7 @@
     </td>
     <td><%= h test.trigger %></td>
     <td><%= test.pin_packages %></td>
-    <% package_dir = [test.suite, test.arch, test.prefix, test.package].join('/') %>
+    <% package_dir = [test.suite, test.arch, test.package.prefix, test.package.name].join('/') %>
     <% if !test.status %>
       <td><span class='fa fa-clock-o' title='Results are not in yet'></span></td>
       <td><span class='fa fa-clock-o' title='Results are not in yet'></span></td>

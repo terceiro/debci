@@ -5,9 +5,9 @@
     <%= @status_nav %>
 
     <div id='status'>
-      <% @repository.architectures.each do |arch| %>
-        <% @repository.suites.each do |suite| %>
-          <% chart = Debci::Graph.new(@repository, suite, arch) %>
+      <% Debci.config.arch_list.each do |arch| %>
+        <% Debci.config.suite_list.each do |suite| %>
+          <% chart = Debci::Graph.new(suite, arch) %>
           <meta name='data-<%= suite %>-<%= arch %>' content='<%= chart.entries.to_json%>'/>
           <h3><%= "#{suite}/#{arch}" %></h3>
           <noscript>

@@ -82,7 +82,7 @@ describe Debci::API do
         post '/api/v1/test/%<suite>s/%<arch>s/mypackage' % { suite: suite, arch: arch }
 
         job = Debci::Job.last
-        expect(job.package).to eq('mypackage')
+        expect(job.package.name).to eq('mypackage')
         expect(job.suite).to eq(suite)
         expect(job.arch).to eq(arch)
         expect(job.requestor).to eq('theuser')
@@ -135,7 +135,8 @@ describe Debci::API do
         post '/api/v1/test/%<suite>s/%<arch>s' % { suite: suite, arch: arch }, tests: '[{"package": "package1"}, {"package": "package2"}]'
 
         %w[package1 package2].each do |pkg|
-          job = Debci::Job.where(package: pkg).last
+          package = Debci::Package.find_by!(name: pkg)
+          job = Debci::Job.where(package: package).last
           expect(job.suite).to eq(suite)
           expect(job.arch).to eq(arch)
           expect(job.requestor).to eq('theuser')
@@ -165,24 +166,22 @@ describe Debci::API do
         post '/api/v1/test/%<suite>s/%<arch>s' % { suite: suite, arch: arch }, tests: '[{"package": "package1"}, {"package": "package2"}]'
         expect(last_response.status).to eq(201)
 
-        job1 = Debci::Job.find_by(package: 'package1', suite: suite, arch: arch)
+        package1 = Debci::Package.find_by!(name: 'package1')
+        job1 = Debci::Job.find_by(package: package1, suite: suite, arch: arch)
         expect(job1.status).to eq('fail')
         expect(job1.date).to_not be_nil
 
-        job2 = Debci::Job.find_by(package: 'package2', suite: suite, arch: arch)
+        package2 = Debci::Package.find_by!(name: 'package2')
+        job2 = Debci::Job.find_by(package: package2, suite: suite, arch: arch)
         expect(job2.status).to be_nil
         expect(job2.date).to be_nil
       end
 
-      it 'marks invalid package names as failed right away' do
+      it 'rejects invalid package names right away' do
+        jobs = Debci::Job.count
         post '/api/v1/test/%<suite>s/%<arch>s' % { suite: suite, arch: arch }, tests: '[{"package": "package1"}, {"package": "foo=package2"}]'
-        expect(last_response.status).to eq(201)
-
-        job1 = Debci::Job.find_by(package: 'package1', suite: suite, arch: arch)
-        expect(job1.status).to be_nil
-
-        job2 = Debci::Job.find_by(package: 'foo=package2', suite: suite, arch: arch)
-        expect(job2.status).to eq('fail')
+        expect(last_response.status).to eq(400)
+        expect(Debci::Job.count).to eq(jobs)
       end
 
       it 'handles invalid JSON gracefully' do
@@ -199,7 +198,8 @@ describe Debci::API do
         post '/api/v1/test/%<suite>s/%<arch>s' % { suite: suite, arch: arch }, tests: File.read(test_file)
         expect(last_response.status).to eq(201)
 
-        job = Debci::Job.find_by(suite: suite, arch: arch, package: 'package1')
+        package1 = Debci::Package.find_by(name: 'package1')
+        job = Debci::Job.find_by(suite: suite, arch: arch, package: package1)
         expect(job.trigger).to eq('foo/1.0')
         expect(job.pin_packages).to eq([['src:foo', 'unstable']])
       end
@@ -209,7 +209,8 @@ describe Debci::API do
         post '/api/v1/test/%<suite>s/%<arch>s' % { suite: suite, arch: arch }, tests: Rack::Test::UploadedFile.new(test_file, 'application/json')
         expect(last_response.status).to eq(201)
 
-        job = Debci::Job.find_by(suite: suite, arch: arch, package: 'package1')
+        package1 = Debci::Package.find_by(name: 'package1')
+        job = Debci::Job.find_by(suite: suite, arch: arch, package: package1)
         expect(job.trigger).to eq('foo/1.0')
         expect(job.pin_packages).to eq([['src:foo', 'unstable']])
       end
@@ -273,7 +274,7 @@ describe Debci::API do
     end
 
     it 'can retrigger a valid request with key' do
-      package = 'mypackage'
+      package = Debci::Package.create!(name: 'mypackage')
       user = 'myuser'
       trigger = 'mypackage/0.0.1'
       pin_packages = ['src:mypackage', 'unstable']
@@ -306,7 +307,7 @@ describe Debci::API do
     end
 
     it 'can retrigger a valid request with client certificate' do
-      package = 'mypackage'
+      package = Debci::Package.create!(name: 'mypackage')
       user = 'myuser'
       trigger = 'mypackage/0.0.1'
       pin_packages = ['src:mypackage', 'unstable']

@@ -16,12 +16,12 @@
       </tr>
       <% @issues.each do |package, statuses| %>
         <tr>
-          <td><%= package %></td>
+          <td><%= package.name %></td>
           <td>
             <% statuses.each do |status| %>
-              <a  href="/packages/<%= Debci::Package.new(package).prefix %>/<%= package %>/<%= status.suite %>/<%= status.architecture %>/">
-                <%= icon(status.extended_status) %>
-                <%= status.suite %>/<%= status.architecture%> <%= status.status %> (<%= status.duration_human %>)
+              <a  href="/packages/<%= package.prefix %>/<%= package.name %>/<%= status.suite %>/<%= status.arch %>/">
+                <%= icon(status.status) %>
+                <%= status.suite %>/<%= status.arch %> <%= status.status %> (<%= status.duration_human %>)
               </a>
               &nbsp;
             <% end %>
