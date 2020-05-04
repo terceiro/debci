@@ -345,6 +345,7 @@ describe Debci::Job do
 
   context 'getting platform specific issues' do
     before(:each) do
+      allow(Debci.config).to receive(:arch_list).and_return(['amd64', 'arm64'])
       @pass = package.jobs.create!(date: Time.now, status: 'pass', suite: 'unstable', arch: 'amd64')
       @fail = package.jobs.create!(date: Time.now, status: 'fail', suite: 'unstable', arch: 'arm64')
     end
