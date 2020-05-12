@@ -59,9 +59,7 @@
     <td>Duration</td>
     <td>Trigger</td>
     <td>Pin-Packages</td>
-    <td>Results</td>
-    <td></td>
-    <td></td>
+    <td colspan='2'>Results</td>
   </tr>
   <% Array(@history).each do |test| %>
   <tr>
@@ -88,9 +86,6 @@
       <td><span class='fa fa-trash' title='file has been removed due to data retention policy'></span></td>
       <td><span class='fa fa-trash' title='file has been removed due to data retention policy'></span></td>
     <% else %>
-      <td>
-        <%= filesize(File.join(Debci.config.data_basedir, 'packages', package_dir, "#{test.run_id}.log"), "<a href=\"/data/packages/#{package_dir}/#{test.run_id}.log\">debci log</a>") %>
-      </td>
       <% dirname = File.join(Debci.config.data_basedir, 'autopkgtest', package_dir, test.run_id.to_s) %>
       <td>
         <%= filesize(File.join(dirname,'log.gz'),"<a href=\"/data/autopkgtest/#{package_dir}/#{test.run_id}/log.gz\">test log</a> <small>(%s)</small>")%>
