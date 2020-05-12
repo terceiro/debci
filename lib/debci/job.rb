@@ -22,6 +22,10 @@ module Debci
 
     scope :not_pinned, -> { where('pin_packages is NULL') }
 
+    def pinned?
+      !pin_packages.empty?
+    end
+
     scope :status_on, lambda { |suite, arch|
       joins(:package_status).where(['package_statuses.suite IN (?) AND package_statuses.arch IN (?)', suite, arch])
     }
@@ -49,7 +53,7 @@ module Debci
     after_save do |job|
       next unless job.status
       next unless job.date
-      next unless job.pin_packages.empty?
+      next if job.pinned?
       next if job.history.where(['date > ?', date]).exists?
 
       job.transaction do
@@ -169,7 +173,7 @@ module Debci
         package: package,
         suite: suite,
         arch: arch
-      ).where.not(status: nil).where(pin_packages: nil).order('date')
+      ).where.not(status: nil).order('date')
     end
 
     def history

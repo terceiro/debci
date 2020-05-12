@@ -206,7 +206,6 @@ module Debci
       end
     end
 
-    include ERB::Util
     include Debci::HTMLHelpers
     attr_reader :root_directory
 

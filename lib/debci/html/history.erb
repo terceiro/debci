@@ -14,37 +14,57 @@
       <%= @package_links %>
     </h2>
 
+    <div class='job-list-legend'>
+      Legend:
+      <span class='pinned-false'>Test with packages from <em><%= @suite %></em> only</span>
+      <span class='pinned-true'>Test with packages from other suites</span>
+    </div>
+
     <% if @package.blacklisted? %>
       <div class='alert alert-warning'>
         This package is currently <a href="/status/blacklist/">blacklisted</a> and will not have any new test runs.
       </div>
     <% end %>
 
-    <table class="table">
+    <table class="table job-list">
       <tr>
-        <td><b>Version</b></td>
-        <td><b>Date</b></td>
-        <td><b>Trigger</b></td>
-        <td><b>Duration</b></td>
-        <td><b>Status</b></td>
-        <td><b>Requestor</b></td>
-        <td><b>Results</b></td>
-        <td></td>
-        <td></td>
+        <th>Version</th>
+        <th>Date</th>
+        <th>Trigger/Pinned packages</th>
+        <th>Duration</th>
+        <th colspan='2'>Status</th>
+        <th>Requestor</th>
+        <th>Results</th>
+        <th></th>
+        <th></th>
       </tr>
 
       <% Array(@history).each do |test| %>
-	<tr>
+	<tr class='pinned-<%= test.pinned? %>'>
 	  <td><%= test.version %></td>
 	  <td><%= test.date %></td>
-	  <td><%= h test.trigger %></td>
+	  <td>
+	    <% title = title_test_trigger_pin(test) %>
+	    <% if title %>
+	      <div class='trigger-pinned-packages' title='<%= title %>'>
+		<div class='trigger'>
+		  <em><%= h test.trigger&.truncate(40) %></em>
+		</div>
+		<% if test.pinned? %>
+		  <div class='pinned-packages'>
+		    <%= expand_pin_packages(test).truncate(40).gsub("\n", '<br/>') %>
+		  </div>
+		<% end %>
+	      </div>
+	    <% end %>
+	  </td>
 	  <td><%= test.duration_human %></td>
 	  <td>
 	    <%= icon(test.status) %>
 	    <%= test.status %>
-	    <% if test.status.to_s != "pass" %>
-	      <a href="/api/v1/retry/<%= test.run_id %>"><i class='fa fa-recycle'></i></a>
-	    <% end %>
+	  </td>
+	  <td>
+	    <a href="/api/v1/retry/<%= test.run_id %>"><i class='fa fa-recycle'></i></a>
 	  </td>
 	  <td><a href="/user/<%= test.requestor %>/jobs?package=<%= @package.name %>&suite[]=<%= @suite %>&arch[]=<%= @architecture %>"><%= test.requestor %></a></td>
 	  <% package_dir = [test.suite, test.arch, test.package.prefix, test.package.name].join('/') %>

@@ -369,4 +369,14 @@ describe Debci::Job do
   it 'includes package name in JSON representation' do
     expect(new_job.as_json["package"]).to eq(package.name)
   end
+
+  context 'pinned?' do
+    it 'returns true when pin_packages is not empty' do
+      expect(Debci::Job.new(pin_packages: ['src:foo', 'unstable=src:foo'])).to be_pinned
+    end
+    it 'returns false when pin_packages is empty' do
+      expect(Debci::Job.new).to_not be_pinned
+      expect(Debci::Job.new(pin_packages: [])).to_not be_pinned
+    end
+  end
 end
