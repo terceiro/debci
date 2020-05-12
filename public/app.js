@@ -1,11 +1,5 @@
 jQuery(function($) {
 
-  var PACKAGES_HTML_DIR = '/data/.html/packages';
-
-  function pkg_dir(pkg) {
-    return pkg.replace(/^((lib)?.)/, "$1/$&");
-  }
-
   function on(selector, handler) {
     if ($.find(selector).length > 0) {
       handler();
@@ -103,13 +97,5 @@ jQuery(function($) {
       }
     });
   });
-
-  if (window.location.pathname == '/') {
-    var match = window.location.hash.match(/^#package\/(\S+)$/);
-    if (match) {
-      var pkg = match[1];
-      window.location.href = '/packages/' + pkg_dir(pkg);
-    }
-  }
 
 });
