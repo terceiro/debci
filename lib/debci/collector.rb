@@ -50,7 +50,7 @@ module Debci
 
     def receive(directory)
       job = Debci::Job.receive(directory)
-      Debci::HTML.update_package(job.package)
+      Debci::HTML.update_package(job.package, job.suite, job.arch)
 
       data = {
         package: job.package.name,

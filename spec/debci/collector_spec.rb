@@ -21,7 +21,7 @@ describe Debci::Collector do
   end
 
   it 'receives payload, updates database and HTML' do
-    expect(Debci::HTML).to receive(:update_package).with(package)
+    expect(Debci::HTML).to receive(:update_package).with(package, 'unstable', 'amd64')
     collector.receive_payload(tmpdir, payload)
     job.reload
     expect(job.status).to eq('pass')
