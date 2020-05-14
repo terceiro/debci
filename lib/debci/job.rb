@@ -26,10 +26,12 @@ module Debci
       !pin_packages.empty?
     end
 
+    # FIXME: move to Debci::PackageStatus
     scope :status_on, lambda { |suite, arch|
       joins(:package_status).where(['package_statuses.suite IN (?) AND package_statuses.arch IN (?)', suite, arch])
     }
 
+    # FIXME: move to Debci::PackageStatus
     scope :all_status, lambda {
       status_on(
         Debci.config.suite_list,
@@ -37,15 +39,19 @@ module Debci
       )
     }
 
+    # FIXME: move to Debci::PackageStatus
     scope :tmpfail, -> { all_status.where(status: 'tmpfail') }
 
+    # FIXME: move to Debci::PackageStatus
     scope :fail, -> { all_status.where(status: 'fail') }
 
+    # FIXME: move to Debci::PackageStatus
     scope :visible, lambda {
       last_visible_time = Time.now - Debci.config.status_visible_days.days
       where('date > :time', time: last_visible_time)
     }
 
+    # FIXME: move to Debci::PackageStatus
     scope :slow, lambda {
       all_status.where('duration_seconds > :time', time: 1.hour)
     }
