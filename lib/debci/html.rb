@@ -7,6 +7,7 @@ require 'debci'
 require 'debci/feed'
 require 'debci/job'
 require 'debci/package'
+require 'debci/package_status'
 require 'debci/graph'
 require 'debci/html_helpers'
 require 'fileutils'
@@ -92,7 +93,8 @@ module Debci
       end
 
       def status_packages_data
-        @status_packages_data ||= Debci::Job.status_on(suite, arch)
+        @status_packages_data ||=
+          Debci::PackageStatus.where(suite: suite, arch: arch).includes(:job)
       end
 
       def status
@@ -103,8 +105,9 @@ module Debci
           tmpfail: 0,
           total: 0,
         }
-        status_packages_data.each do |pkg|
-          data[pkg["status"].to_sym] += 1
+        status_packages_data.each do |package_status|
+          status = package_status.job.status
+          data[status.to_sym] += 1
           data[:total] += 1
         end
         data[:date] = Time.now.strftime('%Y-%m-%dT%H:%M:%S')
@@ -129,7 +132,7 @@ module Debci
 
       def packages
         p = root / suite / arch / 'packages.json'
-        p.write(::JSON.pretty_generate(status_packages_data.as_json))
+        p.write(::JSON.pretty_generate(status_packages_data.map(&:job).as_json))
       end
     end
 
