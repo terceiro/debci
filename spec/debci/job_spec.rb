@@ -238,6 +238,15 @@ describe Debci::Job do
       expect(contents).to eq(["artifacts.tar.gz", "log.gz"])
     end
 
+    it 'recovers from an interrupted receiving' do
+      FileUtils.mkdir_p incoming
+      id = original_job.id.to_s
+      received = Pathname(Debci.config.autopkgtest_basedir) / "unstable/amd64/m/mypackage" / id
+      FileUtils.mkdir_p received
+      FileUtils.touch File.join(received, 'artifacts.tar.gz')
+      job
+    end
+
     let(:second_original_job) do
       Debci::Job.create!(
         package: package,

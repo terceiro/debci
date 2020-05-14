@@ -135,6 +135,11 @@ module Debci
         base = Pathname(Debci.config.autopkgtest_basedir)
         dest = base / job.suite / job.arch / job.package.prefix / job.package.name / id
         dest.parent.mkpath
+
+        # remove destination directory if it exists; this can happen is a
+        # previous receiving was interrupted (e.g. if the daemon is restarte)
+        dest.rmtree if dest.exist?
+
         FileUtils.cp_r src, dest
         Dir.chdir dest do
           artifacts = Dir['*'] - ['log.gz']
