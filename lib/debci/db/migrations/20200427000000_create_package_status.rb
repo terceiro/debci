@@ -15,6 +15,7 @@ class CreatePackageStatus < Debci::DB::LEGACY_MIGRATION
       SELECT max(run_id) as run_id
       FROM jobs
       WHERE pin_packages is NULL
+            AND status is not NULL
       GROUP BY package_id, suite, arch
     ]).map { |item| item['run_id'] }
     return if ids.empty?
