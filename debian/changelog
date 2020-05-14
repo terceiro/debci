@@ -1,3 +1,15 @@
+debci (2.12) unstable; urgency=medium
+
+  * Debci::Job.receive: support jobs with no version
+  * Debci::HTML: fix usage with broken symlinks
+  * Debci::Collector: handle all types of errors
+  * html: drop global feed
+  * Debci::HTML: use only data from the database
+  * self service/jobs: drop column for "debci log"
+  * ui: display migration tests in the package history page
+
+ -- Antonio Terceiro <terceiro@debian.org>  Wed, 13 May 2020 21:55:42 -0300
+
 debci (2.11) unstable; urgency=medium
 
   * Debci::Test::Duration.duration_human: handle zero
