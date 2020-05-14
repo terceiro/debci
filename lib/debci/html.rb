@@ -39,6 +39,7 @@ module Debci
         html.status_failing('status/failing')
         html.blacklist
         html.platform_specific_issues('status/platform-specific-issues')
+        html.prefixes
       end
 
       def update_package(package, suite = nil, arch = nil)
@@ -61,7 +62,6 @@ module Debci
         feed.package(package)
 
         html.package(package)
-        html.prefix(package.prefix)
       end
     end
 
@@ -298,12 +298,15 @@ module Debci
       expand_template(:package, filename)
     end
 
-    def prefix(prefix)
-      @prefix = prefix
-      @moretitle = prefix
-      @packages = Debci::Package.by_prefix(prefix).order('name')
-      filename = "packages/#{prefix}/index.html"
-      expand_template(:packagelist, filename)
+    def prefixes
+      Debci::Package.order('name').group_by(&:prefix).each do |prefix, packages|
+        @prefix = prefix
+        @moretitle = prefix
+        @packages = packages
+        @packages.sort_by!(&:name)
+        filename = "packages/#{prefix}/index.html"
+        expand_template(:packagelist, filename)
+      end
     end
 
     def packages_page(filename)

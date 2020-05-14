@@ -37,6 +37,14 @@ describe Debci::HTML do
     end
   end
 
+  it 'produces package list page' do
+    job
+    Debci::HTML.update
+    pkglist = html / 'packages/f/index.html'
+    expect(pkglist).to exist
+    expect(pkglist.read).to include('foobar')
+  end
+
   context 'producing JSON data' do
     before do
       Debci::HTML.update_package(job.package)
@@ -94,12 +102,6 @@ describe Debci::HTML do
     end
 
     let(:pkgdata) { data / 'packages/unstable/amd64/f/foobar' }
-
-    it 'produces package list page' do
-      pkglist = html / 'packages/f/index.html'
-      expect(pkglist).to exist
-      expect(pkglist.read).to include('foobar')
-    end
 
     it 'produces package page' do
       pkgpage = html / 'packages/f/foobar/index.html'
