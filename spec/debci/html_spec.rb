@@ -74,6 +74,20 @@ describe Debci::HTML do
     end
   end
 
+  context 'producing status pages' do
+    let(:h) { Debci::HTML.new }
+    let(:blacklist_data) do
+      { "foobar" => { "*" => { "*" => { "*" => "" } } } }
+    end
+    it 'produces blacklist page' do
+      allow_any_instance_of(Debci::Blacklist).to receive(:data).and_return(blacklist_data)
+      h.blacklist
+
+      page = html / 'status/blacklist/index.html'
+      expect(page).to exist
+    end
+  end
+
   context 'package pages' do
     before(:each) do
       Debci::HTML.update_package(job.package)

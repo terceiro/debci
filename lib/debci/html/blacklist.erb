@@ -13,13 +13,13 @@
         </tr>
       </thead>
       <tbody>
-        <% data = Debci.blacklist.data %>
+        <% data = @blacklist.data %>
         <% data.keys.each do |package| %>
           <% data[package].keys.each do |suite| %>
             <% data[package][suite].keys.each do |arch| %>
               <% data[package][suite][arch].keys.each do |version| %>
                 <tr>
-                  <td><a href="/packages/<%= Debci::Package.new(package).prefix %>/<%= package %>/"><%= package %></a></td>
+                  <td><a href="/packages/<%= Debci::Package.prefix(package) %>/<%= package %>/"><%= package %></a></td>
                   <td>
                     <% if suite == '*'%>
                       <%= "All" %>

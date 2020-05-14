@@ -37,7 +37,7 @@ module Debci
         html.status_slow('status/slow/index.html')
         html.status_pending_jobs('status/pending')
         html.status_failing('status/failing')
-        html.blacklist('status/blacklist/index.html')
+        html.blacklist
         html.platform_specific_issues('status/platform-specific-issues')
       end
 
@@ -283,9 +283,10 @@ module Debci
       end
     end
 
-    def blacklist(filename)
+    def blacklist
       @status_nav = load_template(:status_nav)
-      expand_template(:blacklist, filename)
+      @blacklist = Debci.blacklist
+      expand_template(:blacklist, 'status/blacklist/index.html')
     end
 
     def package(package)
