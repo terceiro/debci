@@ -1,3 +1,12 @@
+debci (2.12.1) unstable; urgency=medium
+
+  * Debci::HTML: fix creation of global status.json
+  * migrations: fix creation of Debci::PackageStatus
+  * Debci::HTML: fix blacklist
+  * Debci::Job.receive: handle repeating previously interruped receivements
+
+ -- Antonio Terceiro <terceiro@debian.org>  Thu, 14 May 2020 14:24:48 -0300
+
 debci (2.12) unstable; urgency=medium
 
   * Debci::Job.receive: support jobs with no version
