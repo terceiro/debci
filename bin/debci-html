@@ -1,5 +1,5 @@
 #!/usr/bin/ruby
 
-require 'debci/html_cli'
+require 'debci/html/cli'
 
 Debci::HTML::CLI.start
