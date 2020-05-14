@@ -1,5 +1,6 @@
 require 'cgi'
 require 'erb'
+require 'forwardable'
 require 'json'
 require 'pathname'
 
@@ -52,10 +53,11 @@ module Debci
         archs = arch && [arch] || Debci.config.arch_list
         suites.each do |s|
           archs.each do |a|
-            pkgjson.history(package, s, a)
-            pkgjson.latest(package, s, a)
-            autopkgtest.link_latest(package, s, a)
-            html.history(package, s, a)
+            history = PackageHistory.new(package, s, a)
+            pkgjson.history(history)
+            pkgjson.latest(history)
+            autopkgtest.link_latest(history)
+            html.history(history)
           end
         end
 
@@ -136,17 +138,36 @@ module Debci
       end
     end
 
+    PackageHistory = Struct.new(:package, :suite, :arch) do
+      extend Forwardable
+      include Enumerable
+
+      def_delegators :jobs, :each, :last, :reverse, :as_json
+
+      private
+
+      def jobs
+        @jobs ||= package.history(suite, arch)
+      end
+    end
+
     class PackageJSON < Rooted
-      def history(package, suite, arch)
+      def history(hist)
+        package = hist.package
+        suite = hist.suite
+        arch = hist.arch
         write_json(
-          Debci::Job.history(package, suite, arch),
+          hist,
           [suite, arch, package.prefix, package.name, 'history.json']
         )
       end
 
-      def latest(package, suite, arch)
+      def latest(hist)
+        package = hist.package
+        suite = hist.suite
+        arch = hist.arch
         write_json(
-          Debci::Job.history(package, suite, arch).last,
+          hist.last,
           [suite, arch, package.prefix, package.name, 'latest.json']
         )
       end
@@ -166,8 +187,11 @@ module Debci
     end
 
     class Autopkgtest < Rooted
-      def link_latest(package, suite, arch)
-        job = Debci::Job.history(package, suite, arch).last
+      def link_latest(hist)
+        package = hist.package
+        suite = hist.suite
+        arch = hist.arch
+        job = hist.last
         return unless job
 
         link = root / suite / arch / package.prefix / package.name / 'latest-autopkgtest'
@@ -318,7 +342,10 @@ module Debci
       url && url.gsub('{SUITE}', suite)
     end
 
-    def history(package, suite, architecture)
+    def history(hist)
+      package = hist.package
+      suite = hist.suite
+      architecture = hist.arch
       @package = package
       @suite = suite
       @architecture = architecture
@@ -327,7 +354,8 @@ module Debci
       @site_url = expand_url(Debci.config.url_base, @suite)
       @artifacts_url_base = expand_url(Debci.config.artifacts_url_base, @suite)
       @moretitle = "#{package.name}/#{suite}/#{architecture}"
-      @history = package.history(@suite, @architecture)
+      @history = hist.reverse
+
       @package_links = load_template(:package_links)
 
       filename = "packages/#{package.prefix}/#{package.name}/#{suite}/#{architecture}/index.html"

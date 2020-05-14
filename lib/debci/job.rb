@@ -180,11 +180,11 @@ module Debci
     end
 
     def self.history(package, suite, arch)
-      Debci::Job.where(
+      Debci::Job.finished.where(
         package: package,
         suite: suite,
         arch: arch
-      ).where.not(status: nil).order('date')
+      ).order('date')
     end
 
     def history
