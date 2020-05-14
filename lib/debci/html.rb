@@ -382,7 +382,7 @@ module Debci
 
     def read_template(name)
       templates[name] ||= begin
-        filename = File.join(File.dirname(__FILE__), 'html', name.to_s + '.erb')
+        filename = File.join(File.dirname(__FILE__), 'html/templates', name.to_s + '.erb')
         template = ERB.new(File.read(filename))
         template.filename = filename
         template
