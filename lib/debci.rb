@@ -25,7 +25,10 @@ module Debci
     end
 
     def log(*str)
-      puts(*str) unless config.quiet
+      return if config.quiet
+
+      puts(*str)
+      STDOUT.flush
     end
 
     def warn(*str)
