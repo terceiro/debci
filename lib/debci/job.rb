@@ -191,16 +191,16 @@ module Debci
       @history ||= self.class.history(package, suite, arch)
     end
 
-    def past
-      @past ||= history.where(["date < ?", date])
+    def previous_unpinned_jobs
+      @past ||= history.not_pinned.where(["date < ?", date])
     end
 
     def previous
-      @previous ||= past.last
+      @previous ||= previous_unpinned_jobs.last
     end
 
     def last_pass
-      @last_pass ||= past.where(status: 'pass').last
+      @last_pass ||= previous_unpinned_jobs.where(status: 'pass').last
     end
 
     # Returns the amount of time since the date for this status object

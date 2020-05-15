@@ -216,13 +216,17 @@ describe Debci::Job do
       FileUtils.cp_r 'spec/debci/job_spec/autopkgtest-incoming', incoming
       allow_any_instance_of(Debci::Config).to receive(:autopkgtest_basedir).and_return(File.join(tmpdir, 'autopkgtest'))
     end
-    let(:job) { Debci::Job.receive(incoming) }
+    let(:past) { Time.now - 7.days }
+    let(:job) do
+      FileUtils.touch(File.join(incoming, 'duration'), mtime: past)
+      Debci::Job.receive(incoming)
+    end
 
     it('returns job instance') { expect(job.id).to eq(original_job.id) }
     it('gets status') { expect(job.status).to eq('pass') }
     it('gets message') { expect(job.message).to eq('All tests passed') }
     it('gets duration') { expect(job.duration_seconds).to eq(9) }
-    it('gets date') { expect(job.date).to_not be_nil }
+    it('gets date') { expect(job.date).to eq(past) }
     it('gets version') { expect(job.version).to eq('1.0-1') }
     it 'moves directory into autopkgtest dir' do
       id = job.id.to_s
@@ -266,6 +270,20 @@ describe Debci::Job do
 
     it 'records previous_status' do
       first_job = job
+      expect(second_job.status).to eq('fail')
+      expect(second_job.previous_status).to eq(first_job.status)
+    end
+
+    it 'ignores pinned jobs for previous_status' do
+      first_job = job
+      Debci::Job.create!(
+        package: package,
+        suite: 'unstable',
+        arch: 'amd64',
+        status: 'neutral',
+        date: past + 1.day,
+        pin_packages: [["src:bla", "unstable"]],
+      )
       expect(second_job.status).to eq('fail')
       expect(second_job.previous_status).to eq(first_job.status)
     end
