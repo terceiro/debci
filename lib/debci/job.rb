@@ -192,7 +192,7 @@ module Debci
     end
 
     def previous_unpinned_jobs
-      @past ||= history.not_pinned.where(["date < ?", date])
+      @previous_unpinned_jobs ||= history.not_pinned.where(["date < ?", date])
     end
 
     def previous
