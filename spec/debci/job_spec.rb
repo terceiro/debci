@@ -263,6 +263,7 @@ describe Debci::Job do
     let(:second_job) do
       second_incoming = File.join(tmpdir, 'autopkgtest-incoming', second_original_job.id.to_s)
       FileUtils.cp_r 'spec/debci/job_spec/autopkgtest-incoming', second_incoming
+      FileUtils.touch(File.join(second_incoming, 'duration'), mtime: Time.now)
       File.open(File.join(second_incoming, 'exitcode'), 'w') { |f| f.write('4') }
       File.open(File.join(second_incoming, 'testpkg-version'), 'w') { |f| f.write('foobar 99-1') }
       Debci::Job.receive(second_incoming)
