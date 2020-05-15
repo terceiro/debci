@@ -47,7 +47,7 @@ module Debci
     # Returns an array of Debci::Job objects that represent the test
     # history for this package
     def history(suite, architecture)
-      jobs.where(suite: suite, arch: architecture)
+      Debci::Job.history(self, suite, architecture)
     end
 
     def news

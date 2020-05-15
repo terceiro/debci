@@ -103,4 +103,18 @@ describe Debci::Package do
       end
     end
   end
+
+  context 'listing test history' do
+    it 'orders by date' do
+      job2 = package.jobs.finished.where(suite: 'unstable', arch: 'amd64').last
+      job1 = package.jobs.create!(
+        suite: 'unstable',
+        arch: 'amd64',
+        status: 'pass',
+        previous_status: 'fail',
+        date: Time.now - 1.day
+      )
+      expect(package.history('unstable', 'amd64').to_a).to eq([job1, job2])
+    end
+  end
 end
