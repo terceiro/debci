@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-  <li><a href="/user">Welcome <%= @user %>!</a></li>
+  <li><a href="/user">Welcome <%= @user.username %>!</a></li>
   <li class="active">Request Test</li>
 </ol>
 <% if @error_msg %>
@@ -21,7 +21,7 @@
   <div class="page-header">
     <h3>Send Request by Uploading JSON File</h3>
   </div>
-  <form action="/user/<%= @user %>/test/upload" method="post" enctype="multipart/form-data">
+  <form action="/user/<%= @user.username %>/test/upload" method="post" enctype="multipart/form-data">
     <div class="form-group">
       <input name="tests" type="file" id="submit-json">
       <p class="help-block">You can get an example JSON through exporting the filled-out form below or click <a
@@ -36,7 +36,7 @@
   <div class="page-header">
     <h3>Send Request by Form</h3>
   </div>
-  <form action="/user/<%= @user %>/test/submit" method="post">
+  <form action="/user/<%= @user.username %>/test/submit" method="post">
     <div class="row">
       <div class="col-xs-12 col-sm-6">
         <div class="form-group">

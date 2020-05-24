@@ -1,6 +1,6 @@
-<% if @user == params[:user] %>
+<% if @user&.username == params[:user] %>
 <ol class="breadcrumb">
-  <li><a href="/user">Welcome <%= @user %>!</a></li>
+  <li><a href="/user">Welcome <%= @user.username %>!</a></li>
   <li class="active">Job History</li>
 </ol>
 <% end %>

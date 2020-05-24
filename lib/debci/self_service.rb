@@ -36,14 +36,14 @@ module Debci
     end
 
     get '/' do
-      redirect("/user/#{@user}")
+      redirect("/user/#{@user.username}")
     end
 
     get '/login' do
       user = read_request_user
       if user
         session[:user] = user
-        redirect("/user/#{user}")
+        redirect("/user/#{user.username}")
       else
         content = "Unauthenticated!\n"
         content = File.read(Debci.config.auth_fail_page) if Debci.config.auth_fail_page
@@ -57,7 +57,7 @@ module Debci
     end
 
     get '/:user' do
-      redirect("/user/#{params[:user]}/jobs") unless @user == params[:user]
+      redirect("/user/#{params[:user]}/jobs") unless @user.username == params[:user]
       erb :self_service
     end
 

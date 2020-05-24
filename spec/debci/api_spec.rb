@@ -22,6 +22,10 @@ describe Debci::API do
   let(:suite) { Debci.config.suite }
   let(:arch) { Debci.config.arch }
 
+  let(:theuser) do
+    Debci::User.create!(username: 'theuser')
+  end
+
   before do
     allow(Debci.config).to receive(:secrets_dir).and_return(tmpdir)
   end
@@ -34,7 +38,7 @@ describe Debci::API do
     end
 
     it 'authenticates with a good key' do
-      key = Debci::Key.create!(user: 'theuser').key
+      key = Debci::Key.create!(user: theuser).key
 
       header 'Auth-Key', key
       get '/api/v1/auth'
@@ -57,7 +61,8 @@ describe Debci::API do
       post '/api/v1/getkey', {}, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
       expect(last_response.status).to eq(201)
 
-      key = Debci::Key.find_by(user: 'foo@bar.com')
+      user = Debci::User.find_by(username: 'foo@bar.com')
+      key = user.keys.first
       expect(key).to_not be_nil
     end
 
@@ -70,7 +75,7 @@ describe Debci::API do
 
   context 'receiving test requests' do
     before do
-      key = Debci::Key.create!(user: 'theuser').key
+      key = Debci::Key.create!(user: theuser).key
 
       header 'Auth-Key', key
     end
@@ -290,7 +295,7 @@ describe Debci::API do
       job_org = Debci::Job.last
 
       # Here we are going to retrigger it
-      key = Debci::Key.create!(user: 'theuser').key
+      key = Debci::Key.create!(user: theuser).key
       header 'Auth-Key', key
       post "/api/v1/retry/#{job_org.run_id}"
 
@@ -332,7 +337,7 @@ describe Debci::API do
     end
 
     it 'rejects to retrigger an unknown run_id' do
-      key = Debci::Key.create!(user: 'theuser').key
+      key = Debci::Key.create!(user: theuser).key
       header 'Auth-Key', key
       post '/api/v1/retry/1'
 

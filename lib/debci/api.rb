@@ -9,7 +9,7 @@ require 'time'
 require 'debci'
 require 'debci/app'
 require 'debci/job'
-require 'debci/key'
+require 'debci/user'
 require 'debci/test_handler'
 
 
@@ -233,7 +233,7 @@ module Debci
       EOF
       get '/test' do
         authenticate_key!
-        jobs = Debci::Job.where(requestor: @user)
+        jobs = Debci::Job.where(requestor: @user.username)
         if params[:since]
           since = Time.strptime(params[:since], '%s')
           jobs = jobs.where('updated_at >= ?', since)
@@ -380,7 +380,7 @@ module Debci
             package: package,
             suite: params[:suite],
             arch: params[:arch],
-            requestor: @user,
+            requestor: @user.username,
         )
         self.enqueue(job, @priority)
 
@@ -409,7 +409,7 @@ module Debci
     def authenticate_key!
       key = env['HTTP_AUTH_KEY']
       if key && @user = Debci::Key.authenticate(key)
-        response['Auth-User'] = @user
+        response['Auth-User'] = @user.username
       else
         halt(403, "Invalid key\n")
       end

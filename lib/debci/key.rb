@@ -5,6 +5,8 @@ require 'debci/db'
 
 module Debci
   class Key < ActiveRecord::Base
+    belongs_to :user, class_name: 'Debci::User'
+
     attr_accessor :key
 
     before_create do |key|
@@ -12,9 +14,9 @@ module Debci
       key.encrypted_key = key.class.encrypt(key.key)
     end
 
-    def self.reset!(username)
-      find_by(user: username)&.destroy
-      create!(user: username)
+    def self.reset!(user)
+      find_by(user: user)&.destroy
+      create!(user: user)
     end
 
     def self.authenticate(key)
@@ -22,7 +24,7 @@ module Debci
       entry&.user || nil
     end
 
-    # Since the key being encrypt is random, there is no point is using salts
+    # Since the key being encrypted is random, there is no point is using salts
     # to protect against rainbow tables. So let's just use a good old SHA1
     # hash.
     def self.encrypt(key)
