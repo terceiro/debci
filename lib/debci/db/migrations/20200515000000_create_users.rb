@@ -8,12 +8,12 @@ class CreateUsers < Debci::DB::LEGACY_MIGRATION
     add_column :keys, :user_id, :integer, null: true
     add_foreign_key :keys, :users
     execute <<~SQL
-    INSERT INTO users (username)
-    SELECT DISTINCT("user") from keys;
+      INSERT INTO users (username)
+      SELECT DISTINCT("user") from keys;
 
-    UPDATE keys SET user_id = users.id
-    FROM users
-    WHERE users.username = keys.user;
+      UPDATE keys SET user_id = users.id
+      FROM users
+      WHERE users.username = keys.user;
     SQL
     change_column_null :keys, :user_id, false
     remove_column :keys, :user
@@ -22,10 +22,10 @@ class CreateUsers < Debci::DB::LEGACY_MIGRATION
   def down
     add_column :keys, :user, :string, limit: 256, null: true
     execute <<~SQL
-    UPDATE keys
-    SET "user" = users.username
-    FROM users
-    WHERE users.id = keys.user_id
+      UPDATE keys
+      SET "user" = users.username
+      FROM users
+      WHERE users.id = keys.user_id
     SQL
     remove_foreign_key :keys, :users
     change_column_null :keys, :user, false
