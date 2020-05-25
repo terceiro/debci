@@ -1,13 +1,15 @@
 #!/usr/bin/ruby
 
 require 'debci/key'
+require 'debci/user'
 require 'thor'
 
 module Debci
   class APICLI < Thor
     desc 'setkey USERNAME [KEYNAME]', 'Sets a API key for the given user'
     def setkey(username, _keyname = 'default')
-      key = Debci::Key.create!(user: username)
+      user = Debci::User.find_or_create_by!(username: username)
+      key = Debci::Key.create!(user: user)
       puts key.key
     end
 
