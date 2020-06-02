@@ -47,5 +47,10 @@ describe Debci::HTMLHelpers do
       test.pin_packages = [["src:rake,src:ruby", "unstable"]]
       expect(expand_pin_packages(test)).to eq("src:rake from unstable\nsrc:ruby from unstable")
     end
+
+    it 'expands pin_packages with invalid entry' do
+      test.pin_packages = [[nil, "unstable"]]
+      expect(expand_pin_packages(test)).to be_a(String)
+    end
   end
 end

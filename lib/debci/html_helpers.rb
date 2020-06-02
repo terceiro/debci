@@ -50,7 +50,7 @@ module Debci
       return nil unless test.pinned?
 
       test.pin_packages.map do |packages, suite|
-        packages.split(/\s*,\s*/).map do |pkg|
+        String(packages).split(/\s*,\s*/).map do |pkg|
           "#{pkg} from #{suite}"
         end
       end.flatten.join("\n")
