@@ -70,7 +70,7 @@ If you disabled rabbitmq-server, you will have to remember to start it before
 hacking on debci:
 
 ```
-$ service rabbitmq-server start
+$ sudo systemctl start rabbitmq-server
 ```
 
 ### Set up the test environment
@@ -99,7 +99,7 @@ example if you are on Debian stable, when "running tests" for package `foo`,
 the `fake` backend will report as testing the version of `foo` that is
 available on Debian stable. If for some reason you want or need it to report,
 say, versions that look like the ones from Debian unstable, all you have to do
-is add a `sources.list` entry for Debian unstable, like this:
+is add a `sources.list` entry for Debian unstable.
 
 If you want to work on an actual test backend, then you will want to modify
 `config/conf.d/dev.conf` to set the backend to the one you want to work on.
