@@ -13,7 +13,7 @@ vim-addon-manager'
 
 if [ ! -f $configdir/whitelist ]; then
   echo "$WHITELIST" > "$configdir/whitelist"
-  tail -n 1000 config/whitelist config/conf.d/*.conf
+  tail -n 1000 config/whitelist config/conf.d/*.conf || :
   echo
 fi
 

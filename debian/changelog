@@ -4,7 +4,7 @@ debci (2.12.2) unstable; urgency=medium
   * Debci::Collector: update only given suite/arch
   * Drop status from package list (prefix) pages.
     Unfortunately it's too expensive to produce those pages at the moment,
-    so we can't affort to rebuild them on every new job.
+    so we can't afford to rebuild them on every new job.
   * Debci.log: flush STDOUT on each message
   * Debci::HTML: avoid extra queries
   * Debci::Package.history: fix ordering
