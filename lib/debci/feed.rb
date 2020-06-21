@@ -25,7 +25,7 @@ module Debci
       news.each do |status|
         feed.items.new_item do |item|
           prefix = status.package.prefix
-          item.link = "#{site_base}/data/packages/#{status.suite}/#{status.arch}/#{prefix}/#{status.package}/#{status.run_id}.log"
+          item.link = "#{site_base}/data/packages/#{status.suite}/#{status.arch}/#{prefix}/#{status.package.name}/#{status.run_id}.log"
           item.title = status.headline
           item.date = status.date
           item.description = [
@@ -34,7 +34,7 @@ module Debci
             "<li>Version: #{status.version}</li>",
             "<li>Date: #{status.date}</li>",
             "<li>Test run duration: #{status.duration_human}</li>",
-            "<li><a href=\"#{site_base}/packages/#{prefix}/#{status.package}/#{status.suite}/#{status.arch}\">Package history page</a></li>",
+            "<li><a href=\"#{site_base}/packages/#{prefix}/#{status.package.name}/#{status.suite}/#{status.arch}\">Package history page</a></li>",
           ]
 
           item.description += [
