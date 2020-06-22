@@ -20,13 +20,55 @@
   settings as the original will be triggered on the infrastructure.
   </p>
 
+  <table class="table">
+    <% prefix = @original_job.package.prefix %>
+    <tbody>
+
+      <tr>
+        <td>Package name:</td>
+        <td><a href="/packages/<%= prefix %>/<%= @original_job.package.name %>/"><%= @original_job.package.name %></a></td>
+      </tr>
+      <tr>
+        <td>Suite and Arch:</td>
+        <td>
+          <a href="<%= '/packages/%s/%s/%s/%s/' % [prefix, @original_job.package.name, @original_job.suite, @original_job.arch] %>">
+            <%= @original_job.suite %>/<%= @original_job.arch %>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td>Trigger:</td>
+        <td><%= @original_job.trigger.nil? ? '&mdash;' : @original_job.trigger %></td>
+      </tr>
+      <tr>
+        <td>Pinned packages:&nbsp;</td>
+        <td>
+          <% if @original_job.pin_packages.empty? %>
+            &mdash;
+          <% else %>
+            <% @original_job.pin_packages.each do |package| %>
+              <p>
+                <% prefix = @original_job.package.prefix %>
+                <a href="/packages/<%= prefix %>/<%= package %>/">
+                  <%= package %>
+                </a>
+              </p>
+            <% end %>
+          <% end %>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+
   <div id='result-info' style='display: none'>
-  <p>
-  Your request has been successfully submitted.
-  </p>
+    <p>
+      Your request has been successfully submitted.
+    </p>
   </div>
 
-  <input type='button' value='Retry' onclick='retry(this)'/>
+  </br>
+  <input type='button' value='Retry' onclick='retry(this)' class='btn btn-primary'/>
 </form>
 
 <script type='text/javascript'>

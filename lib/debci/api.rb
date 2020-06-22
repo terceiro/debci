@@ -132,6 +132,12 @@ module Debci
       EOF
       get '/retry/:run_id' do
         if @user
+          run_id = params[:run_id]
+          begin
+            @original_job = Debci::Job.find(run_id)
+          rescue ActiveRecord::RecordNotFound => error
+            halt(404, "Job ID not known: #{run_id}")
+          end
           erb :retry
         else
           [403, erb(:cant_retry)]

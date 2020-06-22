@@ -267,7 +267,19 @@ describe Debci::API do
     end
 
     it 'displays a user friendly page to authenticated users' do
-      get '/api/v1/retry/1', {}, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+      package = Debci::Package.create!(name: 'mypackage')
+      user = 'myuser'
+      trigger = 'mypackage/0.0.1'
+      pin_packages = ['src:mypackage', 'unstable']
+      job = Debci::Job.create(
+        package: package,
+        suite: suite,
+        arch: arch,
+        requestor: user,
+        trigger: trigger,
+        pin_packages: pin_packages
+      )
+      get "/api/v1/retry/#{job.id}", {}, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
       expect(last_response.status).to eq(200)
       expect(last_response.content_type).to match('text/html')
     end
