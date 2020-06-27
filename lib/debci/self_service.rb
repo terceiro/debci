@@ -61,7 +61,7 @@ module Debci
     end
 
     get '/:user/test' do
-      redirect("/user/#{params[:user]}/jobs") unless @user == params[:user]
+      redirect("/user/#{params[:user]}/jobs") unless @user.username == params[:user]
       erb :self_service_test
     end
 
