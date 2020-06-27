@@ -18,7 +18,7 @@ export COVERAGE = no
 
 spec:
 	@./test/banner 'Ruby unit tests'
-	LANG=C.UTF-8 rspec --color
+	rspec --color
 
 spec-postgresql:
 	@./test/banner 'Ruby unit tests (PostgreSQL)'
