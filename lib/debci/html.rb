@@ -378,7 +378,7 @@ module Debci
     end
 
     def load_template(template)
-      binding.eval(read_template(template).src)
+      binding.eval(read_template(template).src) # rubocop:disable Security/Eval
     end
 
     def read_template(name)
