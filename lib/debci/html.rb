@@ -1,6 +1,6 @@
 require 'cgi'
 require 'erb'
-require 'erubis'
+require 'erubi'
 require 'forwardable'
 require 'json'
 require 'pathname'
@@ -378,15 +378,17 @@ module Debci
     end
 
     def load_template(template)
-      read_template(template).result(binding)
+      binding.eval(read_template(template).src)
     end
 
     def read_template(name)
       templates[name] ||= begin
         filename = File.join(File.dirname(__FILE__), 'html/templates', name.to_s + '.erb')
-        template = Erubis::EscapedEruby.new(File.read(filename))
-        template.filename = filename
-        template
+        Erubi::Engine.new(
+          File.read(filename),
+          escape: true,
+          filename: filename,
+        )
       end
     end
 
@@ -399,7 +401,7 @@ module Debci
       @root = directory.split('/').map { |_| '..' }.join('/')
 
       html = load_template(:layout) do
-        read_template(template).result(binding)
+        load_template(template)
       end
 
       File.open(abs_filename, 'w') do |f|

@@ -1,4 +1,4 @@
-require 'erubis'
+require 'erubi'
 require 'sinatra'
 require 'erb'
 require 'debci/user'
