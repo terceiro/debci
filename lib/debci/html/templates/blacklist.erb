@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12">
     <h1 class='page-header'>Status <small>/ Blacklist</small></h1>
-    <%= @status_nav %>
+    <%== @status_nav %>
     <table class='table table-striped'>
       <thead>
         <tr>
@@ -35,7 +35,7 @@
                     <% end %>
                   </td>
                   <td><%= version %></td>
-                  <td><%= Debci.blacklist.comment(package, suite: suite, arch: arch, version: version) %></td>
+                  <td><%== Debci.blacklist.comment(package, suite: suite, arch: arch, version: version) %></td>
                 </tr>
               <% end %>
             <% end %>

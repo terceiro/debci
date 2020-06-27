@@ -1,7 +1,7 @@
 <div class='row'>
   <div class='col-md-12'>
     <h1 class='page-header'>Status <small>/ Alerts</small></h1>
-    <%= @status_nav %>
+    <%== @status_nav %>
 
     <h4>There are currently <b><%= @alert_number %></b> packages with status alerts.</h4>
 
@@ -26,7 +26,7 @@
                 <%= job.arch %>
             </td>
             <td>
-              <a href='<%= history_url(job)%>'/><%= icon(:tmpfail) %> <%= job.title %></a>
+              <a href='<%= history_url(job)%>'/><%== icon(:tmpfail) %> <%= job.title %></a>
             </td>
           </tr>
       <% end %>

@@ -1,4 +1,3 @@
-require 'sinatra'
 require 'json'
 require 'kaminari/core'
 require 'kaminari/activerecord'

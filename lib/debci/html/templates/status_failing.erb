@@ -1,7 +1,7 @@
 <div class='row'>
   <div class='col-md-12'>
     <h1 class='page-header'>Status <small> / Failing / <%= @title %></small></h1>
-    <%= @status_nav %>
+    <%== @status_nav %>
 
     <ol id='failing-nav' class='breadcrumb'>
       <li class='<%= "#{'active' if @suite.nil?}" %>'>
@@ -65,7 +65,7 @@
 
             <td>
               <a href='<%= history_url(job) %>'>
-                <%= icon(job.status) %>
+                <%== icon(job.status) %>
                 <%= job.title %>
               </a>
             </td>

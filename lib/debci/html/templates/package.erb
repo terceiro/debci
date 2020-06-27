@@ -7,7 +7,7 @@
 
     <h2>
       <%= @package.name %>
-      <%= @package_links %>
+      <%== @package_links %>
     </h2>
 
   <% if @package.blacklisted? %>
@@ -31,10 +31,10 @@
           <% @package.status[i].each do |status| %>
             <td>
               <% if status %>
-                <%= icon(status.status) %>
+                <%== icon(status.status) %>
                 <a href="<%= history_url(status) %>"><%= status.title %></a>
               <% else %>
-                <%= icon(:no_test_data) %>
+                <%== icon(:no_test_data) %>
                 No test data
               <% end %>
             </td>

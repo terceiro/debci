@@ -68,14 +68,14 @@
     <td><%= test.suite %></td>
     <td><%= test.arch %></td>
     <td>
-      <%= icon(test.status) %>
+      <%== icon(test.status) %>
       <%= test.status %>
     </td>
     <td>
       <%= test.duration_human %>
     </td>
     <td><%= h test.trigger %></td>
-    <td><%= test.pin_packages %></td>
+    <td><%= expand_pin_packages(test) %></td>
     <% package_dir = [test.suite, test.arch, test.package.prefix, test.package.name].join('/') %>
     <% if !test.status %>
       <td><span class='fa fa-clock-o' title='Results are not in yet'></span></td>
@@ -88,10 +88,10 @@
     <% else %>
       <% dirname = File.join(Debci.config.data_basedir, 'autopkgtest', package_dir, test.run_id.to_s) %>
       <td>
-        <%= filesize(File.join(dirname,'log.gz'),"<a href=\"/data/autopkgtest/#{package_dir}/#{test.run_id}/log.gz\">test log</a> <small>(%s)</small>")%>
+        <%== filesize(File.join(dirname,'log.gz'),"<a href=\"/data/autopkgtest/#{package_dir}/#{test.run_id}/log.gz\">test log</a> <small>(%s)</small>")%>
       </td>
       <td>
-        <%= filesize(File.join(dirname,'artifacts.tar.gz'),"<a href=\"/data/autopkgtest/#{package_dir}/#{test.run_id}/artifacts.tar.gz\">artifacts</a> <small>(%s)</small>")%>
+        <%== filesize(File.join(dirname,'artifacts.tar.gz'),"<a href=\"/data/autopkgtest/#{package_dir}/#{test.run_id}/artifacts.tar.gz\">artifacts</a> <small>(%s)</small>")%>
       </td>
     <% end %>
   </tr>

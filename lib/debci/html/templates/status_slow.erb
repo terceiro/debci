@@ -1,7 +1,7 @@
 <div class='row'>
   <div class='col-md-12'>
     <h1 class='page-header'>Status <small>/ Slow running tests</small></h1>
-    <%= @status_nav %>
+    <%== @status_nav %>
 
     <% if @slow.empty? %>
       <em>No items</em>
@@ -36,7 +36,7 @@
             </td>
 
             <td>
-              <%= icon(status.status)%> <%= status.title %>
+              <%== icon(status.status)%> <%= status.title %>
             </td>
 
             <td>

@@ -11,7 +11,7 @@
       <small>
         [ <%= @suite %>/<%= @architecture %> ]
       </small>
-      <%= @package_links %>
+      <%== @package_links %>
     </h2>
 
     <div class='job-list-legend'>
@@ -58,7 +58,7 @@
 	  </td>
 	  <td><%= test.duration_human %></td>
 	  <td>
-	    <%= icon(test.status) %>
+	    <%== icon(test.status) %>
 	    <%= test.status %>
 	  </td>
 	  <td>
@@ -76,10 +76,10 @@
 	    <% else %>
 	      <% dirname = File.join(Debci.config.data_basedir, 'autopkgtest', @package_dir, test.run_id.to_s) %>
 	      <td>
-		<%= filesize(File.join(dirname,'log.gz'),"<a href=\"/data/autopkgtest/#{package_dir}/#{test.run_id}/log.gz\">test log</a> <small>(%s)</small>")%>
+		<%== filesize(File.join(dirname,'log.gz'),"<a href=\"/data/autopkgtest/#{package_dir}/#{test.run_id}/log.gz\">test log</a> <small>(%s)</small>")%>
 	      </td>
 	      <td>
-		<%= filesize(File.join(dirname,'artifacts.tar.gz'),"<a href=\"/data/autopkgtest/#{package_dir}/#{test.run_id}/artifacts.tar.gz\">artifacts</a> <small>(%s)</small>")%>
+		<%== filesize(File.join(dirname,'artifacts.tar.gz'),"<a href=\"/data/autopkgtest/#{package_dir}/#{test.run_id}/artifacts.tar.gz\">artifacts</a> <small>(%s)</small>")%>
 	      </td>
 
 	    <% end %>

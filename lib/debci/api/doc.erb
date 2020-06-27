@@ -25,6 +25,6 @@ $ curl --header "Auth-Key: $KEY" <%= host %>/api/v1/auth</pre>
     <%= request.script_name %><%= entry[:path] %>
     <a href="#<%= entry[:anchor] %>">&para;</a>
   </h2>
-  <%= entry[:text].gsub('https://host', host) %>
+  <%== entry[:text].gsub('https://host', host) %>
 <% end %>
 </div>

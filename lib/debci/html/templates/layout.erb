@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="/style.css"/>
     <link rel="stylesheet" type="text/css" href="/font-awesome/css/font-awesome.min.css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <%= @head %>
+    <%== @head %>
   </head>
   <body>
     <div id='wrap'>
@@ -46,7 +46,7 @@
       </div>
 
       <div class="container">
-        <%= yield %>
+        <%== yield %>
       </div>
 
       <div id="footer">
@@ -72,6 +72,6 @@
     <script type="text/javascript" src="<%= @root %>/jquery.flot.stack.js"></script>
     <script type="text/javascript" src="<%= @root %>/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="<%= @root %>/app.js"></script>
-    <%= @footer %>
+    <%== @footer %>
   </body>
 </html>

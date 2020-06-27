@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12">
     <h1 class='page-header'>Status <small>/ Platform-Specific issues</small></h1>
-    <%= @status_nav %>
+    <%== @status_nav %>
 
     <ol id='platform-specific-links' class='breadcrumb'>
       <% @filters.each do |filter, data| %>
@@ -20,7 +20,7 @@
           <td>
             <% statuses.each do |status| %>
               <a  href="/packages/<%= package.prefix %>/<%= package.name %>/<%= status.suite %>/<%= status.arch %>/">
-                <%= icon(status.status) %>
+                <%== icon(status.status) %>
                 <%= status.suite %>/<%= status.arch %> <%= status.status %> (<%= status.duration_human %>)
               </a>
               &nbsp;
