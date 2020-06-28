@@ -1,3 +1,23 @@
+debci (2.13) unstable; urgency=medium
+
+  [ Antonio Terceiro ]
+  * Add a proper user model
+  * Debci::HTMLHelpers: fix parsing invalid pinnings
+  * ui: switch to escaped HTML by default (Closes: #962862)
+  * Set default external encoding to UTF-8
+
+  [ Milos Knezevic ]
+  * Fix missing build dependency (debootstrap)
+  * Fix issue with init script exiting prior creating dev.conf
+  * Fix lintian 'spelling-error-in-changelog' warning
+  * Improve slight inconsistencies in docs/HACKING.md
+
+  [ Utkarsh Gupta ]
+  * Fix broken link for feed
+  * Show package details on the retry page
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 28 Jun 2020 09:36:14 -0300
+
 debci (2.12.2) unstable; urgency=medium
 
   * ui: fix table header in package history page
