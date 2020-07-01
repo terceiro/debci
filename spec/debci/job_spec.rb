@@ -52,7 +52,7 @@ describe Debci::Job do
     end
 
     it 'handles multiple pinned packages' do
-      job = job = Debci::Job.new(pin_packages: [["src:foo", "src:bar", "unstable"]])
+      job = Debci::Job.new(pin_packages: [["src:foo", "src:bar", "unstable"]])
       expect(job.enqueue_parameters).to include('pin-packages:unstable=src:foo')
       expect(job.enqueue_parameters).to include('pin-packages:unstable=src:bar')
     end
