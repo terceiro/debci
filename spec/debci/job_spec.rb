@@ -32,21 +32,23 @@ describe Debci::Job do
     expect(Debci::Job.pending).to eq([job0, job1])
   end
 
-  it 'escapes trigger' do
-    job = Debci::Job.new(trigger: 'foo bar')
-    expect(job.enqueue_parameters).to_not include('trigger:foo bar')
-    expect(job.enqueue_parameters).to include('trigger:foo+bar')
-  end
+  context 'when enqueing' do
+    it 'escapes trigger' do
+      job = Debci::Job.new(trigger: 'foo bar')
+      expect(job.enqueue_parameters).to_not include('trigger:foo bar')
+      expect(job.enqueue_parameters).to include('trigger:foo+bar')
+    end
 
-  [
-    'áéíóú',
-    '`cat /etc/passwd`',
-    '$(cat /etc/passwd)',
-    "a\nb"
-  ].each do |invalid|
-    it('escapes \"%<invalid>s" in trigger' % { invalid: invalid }) do
-      job = Debci::Job.new(trigger: invalid)
-      expect(job.enqueue_parameters).to_not include(invalid)
+    [
+      'áéíóú',
+      '`cat /etc/passwd`',
+      '$(cat /etc/passwd)',
+      "a\nb"
+    ].each do |invalid|
+      it('escapes \"%<invalid>s" in trigger' % { invalid: invalid }) do
+        job = Debci::Job.new(trigger: invalid)
+        expect(job.enqueue_parameters).to_not include(invalid)
+      end
     end
   end
 
