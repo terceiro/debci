@@ -227,8 +227,10 @@ module Debci
         parameters << "trigger:#{CGI.escape(trigger)}"
       end
       Array(self.pin_packages).each do |pin|
-        pkg, suite = pin
-        parameters << "pin-packages:#{suite}=#{pkg}"
+        suite = pin.last
+        pin[0..-2].each do |pkg|
+          parameters << "pin-packages:#{suite}=#{pkg}"
+        end
       end
       parameters
     end
