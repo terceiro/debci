@@ -29,28 +29,28 @@ describe Debci::HTMLHelpers do
     end
     it 'adds pin_packages if any' do
       test.pin_packages = [["src:rake", "unstable"]]
-      expect(title_test_trigger_pin(test)).to match("Pinned packages:\nsrc:rake from unstable")
+      expect(title_test_trigger_pin(test)).to eq("Pinned packages:\nsrc:rake from unstable\n")
     end
   end
 
   context 'expand_pin_packages' do
     it 'expands no pin_packages to nil' do
-      expect(expand_pin_packages(test)).to be_nil
+      expect(expand_pin_packages(test)).to eq([])
     end
 
     it 'expands pin_packages with one' do
       test.pin_packages = [["src:rake", "unstable"]]
-      expect(expand_pin_packages(test)).to eq("src:rake from unstable")
+      expect(expand_pin_packages(test)).to eq(["src:rake from unstable"])
     end
 
     it 'expands pin_packages with multiple' do
       test.pin_packages = [["src:rake,src:ruby", "unstable"]]
-      expect(expand_pin_packages(test)).to eq("src:rake from unstable\nsrc:ruby from unstable")
+      expect(expand_pin_packages(test)).to eq(["src:rake from unstable", "src:ruby from unstable"])
     end
 
     it 'expands pin_packages with invalid entry' do
       test.pin_packages = [[nil, "unstable"]]
-      expect(expand_pin_packages(test)).to be_a(String)
+      expect(expand_pin_packages(test)).to be_an(Array)
     end
   end
 end

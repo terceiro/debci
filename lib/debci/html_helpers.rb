@@ -39,21 +39,23 @@ module Debci
         title << h(test.trigger)
       end
       if test.pinned?
-        title << "\n\n"
+        title << "\n\n" unless test.trigger.blank?
         title << "Pinned packages:\n"
-        title << expand_pin_packages(test)
+        expand_pin_packages(test).each do |pin|
+          title << pin << "\n"
+        end
       end
       title
     end
 
     def expand_pin_packages(test)
-      return nil unless test.pinned?
+      return [] unless test.pinned?
 
       test.pin_packages.map do |packages, suite|
         String(packages).split(/\s*,\s*/).map do |pkg|
           "#{pkg} from #{suite}"
         end
-      end.flatten.join("\n")
+      end.flatten
     end
   end
 end

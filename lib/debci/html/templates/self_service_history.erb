@@ -75,7 +75,11 @@
       <%= test.duration_human %>
     </td>
     <td><%= h test.trigger %></td>
-    <td><%= expand_pin_packages(test) %></td>
+    <td>
+      <% expand_pin_packages(test).each do |pin| %>
+        <%= pin.truncate(40) %> <br/>
+      <% end %>
+    </td>
     <% package_dir = [test.suite, test.arch, test.package.prefix, test.package.name].join('/') %>
     <% if !test.status %>
       <td><span class='fa fa-clock-o' title='Results are not in yet'></span></td>

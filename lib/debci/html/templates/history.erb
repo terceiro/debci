@@ -43,14 +43,16 @@
 	  <td><%= test.date %></td>
 	  <td>
 	    <% title = title_test_trigger_pin(test) %>
-	    <% if title %>
+	    <% unless title.blank? %>
 	      <div class='trigger-pinned-packages' title='<%= title %>'>
 		<div class='trigger'>
 		  <em><%= h test.trigger&.truncate(40) %></em>
 		</div>
 		<% if test.pinned? %>
 		  <div class='pinned-packages'>
-		    <%= expand_pin_packages(test).truncate(40).gsub("\n", '<br/>') %>
+		  <% expand_pin_packages(test).each do |p| %>
+		    <%= p.truncate(40) %> <br/>
+		  <% end %>
 		  </div>
 		<% end %>
 	      </div>
