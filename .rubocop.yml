@@ -67,3 +67,6 @@ Style/HashTransformValues:
 
 Lint/AmbiguousRegexpLiteral:
   Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
