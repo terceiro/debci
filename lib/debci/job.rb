@@ -16,7 +16,7 @@ module Debci
     belongs_to :package, class_name: 'Debci::Package'
     has_many :package_status, class_name: 'Debci::PackageStatus'
 
-    scope :newsworthy, -> { where(['status in (?) AND previous_status in (?) and status != previous_status', ['pass', 'fail', 'neutral'], ['pass', 'fail', 'neutral']]) }
+    scope :newsworthy, -> { not_pinned.where(['status in (?) AND previous_status in (?) and status != previous_status', ['pass', 'fail', 'neutral'], ['pass', 'fail', 'neutral']]) }
 
     scope :finished, -> { where('status is NOT NULL') }
 

@@ -415,4 +415,21 @@ describe Debci::Job do
       expect(Debci::Job.new(pin_packages: [])).to_not be_pinned
     end
   end
+
+  context 'testing for newsworthiness' do
+    it 'is newsworthy on status transitions' do
+      job1 = package.jobs.create!(date: Time.now - 1.day, status: 'fail', previous_status: 'pass', suite: 'unstable', arch: 'amd64')
+      job2 = package.jobs.create!(date: Time.now, status: 'fail', previous_status: 'fail', suite: 'unstable', arch: 'amd64')
+      news = Debci::Job.newsworthy
+      expect(news).to include(job1)
+      expect(news).to_not include(job2)
+    end
+
+    it 'is not newsworthy with pinned packages' do
+      job = package.jobs.create!(date: Time.now - 1.day, status: 'fail', previous_status: 'pass', suite: 'unstable', arch: 'amd64', pin_packages: [["src:foo", "src:bar", "unstable"]])
+      expect(Debci::Job.newsworthy).to_not include(job)
+    end
+  end
+
+
 end
