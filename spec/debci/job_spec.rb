@@ -430,6 +430,4 @@ describe Debci::Job do
       expect(Debci::Job.newsworthy).to_not include(job)
     end
   end
-
-
 end
