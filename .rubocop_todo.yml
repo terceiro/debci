@@ -8,22 +8,6 @@
 
 # Offense count: 1
 # Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleAlignWith.
-# SupportedStylesAlignWith: either, start_of_block, start_of_line
-Layout/BlockAlignment:
-  Exclude:
-    - 'spec/debci/status_spec.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentOneStep, IndentationWidth.
-# SupportedStyles: case, end
-Layout/CaseIndentation:
-  Exclude:
-    - 'lib/debci/status.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
 Layout/ClosingParenthesisIndentation:
   Exclude:
     - 'lib/debci/api.rb'
@@ -64,8 +48,6 @@ Layout/EmptyLinesAroundClassBody:
     - 'lib/debci/db/migrations/20180809232852_complete_job_fields.rb'
     - 'lib/debci/html.rb'
     - 'lib/debci/job.rb'
-    - 'lib/debci/repository.rb'
-    - 'lib/debci/status.rb'
 
 # Offense count: 11
 # Cop supports --auto-correct.
@@ -77,16 +59,6 @@ Layout/EmptyLinesAroundModuleBody:
     - 'lib/debci/config.rb'
     - 'lib/debci/data.rb'
     - 'lib/debci/html.rb'
-    - 'lib/debci/repository.rb'
-    - 'lib/debci/status.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleAlignWith, AutoCorrect, Severity.
-# SupportedStylesAlignWith: keyword, variable, start_of_line
-Layout/EndAlignment:
-  Exclude:
-    - 'lib/debci/status.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -120,20 +92,11 @@ Layout/HashAlignment:
   Exclude:
     - 'lib/debci/amqp.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: normal, indented_internal_methods
-Layout/IndentationConsistency:
-  Exclude:
-    - 'spec/debci/status_spec.rb'
-
 # Offense count: 3
 # Cop supports --auto-correct.
 Layout/SpaceAfterComma:
   Exclude:
     - 'lib/debci/config.rb'
-    - 'spec/debci/status_spec.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -149,7 +112,6 @@ Layout/SpaceAroundEqualsInParameterDefault:
   Exclude:
     - 'lib/debci/api.rb'
     - 'lib/debci/html.rb'
-    - 'lib/debci/repository.rb'
 
 # Offense count: 14
 # Cop supports --auto-correct.
@@ -159,8 +121,6 @@ Layout/SpaceAroundOperators:
   Exclude:
     - 'backends/fake/test-package'
     - 'lib/debci/job.rb'
-    - 'lib/debci/status.rb'
-    - 'spec/debci/status_spec.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -186,7 +146,6 @@ Layout/SpaceInsideArrayLiteralBrackets:
 Layout/SpaceInsideBlockBraces:
   Exclude:
     - 'lib/debci/config.rb'
-    - 'spec/debci/status_spec.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -206,13 +165,6 @@ Layout/TrailingEmptyLines:
     - 'lib/debci/data.rb'
     - 'lib/debci/job.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: AllowInHeredoc.
-Layout/TrailingWhitespace:
-  Exclude:
-    - 'lib/debci/repository.rb'
-
 # Offense count: 1
 # Configuration parameters: AllowSafeAssignment.
 Lint/AssignmentInCondition:
@@ -224,22 +176,6 @@ Lint/AssignmentInCondition:
 Lint/DeprecatedClassMethods:
   Exclude:
     - 'lib/debci/config.rb'
-    - 'lib/debci/repository.rb'
-    - 'lib/debci/status.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: runtime_error, standard_error
-Lint/InheritException:
-  Exclude:
-    - 'lib/debci/repository.rb'
-
-# Offense count: 3
-# Configuration parameters: AllowKeywordBlockArguments.
-Lint/UnderscorePrefixedVariableName:
-  Exclude:
-    - 'spec/debci/status_spec.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -255,8 +191,6 @@ Lint/UselessAssignment:
     - 'backends/fake/test-package'
     - 'lib/debci/api.rb'
     - 'lib/debci/job.rb'
-    - 'lib/debci/status.rb'
-    - 'spec/debci/status_spec.rb'
 
 # Offense count: 17
 Metrics/AbcSize:
@@ -297,7 +231,6 @@ Naming/MethodParameterName:
   Exclude:
     - 'bin/debci-status'
     - 'lib/debci/api.rb'
-    - 'lib/debci/repository.rb'
 
 # Offense count: 7
 # Cop supports --auto-correct.
@@ -346,7 +279,6 @@ Style/FormatStringToken:
     - 'backends/fake/debci-list-dependencies'
     - 'backends/fake/test-package'
     - 'lib/debci/job.rb'
-    - 'tools/analysis/Rakefile'
 
 # Offense count: 40
 # Configuration parameters: AllowedVariables.
@@ -368,8 +300,6 @@ Style/GuardClause:
 Style/HashSyntax:
   Exclude:
     - 'lib/debci/api.rb'
-    - 'lib/debci/status.rb'
-    - 'tools/analysis/Rakefile'
 
 # Offense count: 18
 # Cop supports --auto-correct.
@@ -381,8 +311,6 @@ Style/IfUnlessModifier:
     - 'lib/debci/data.rb'
     - 'lib/debci/html.rb'
     - 'lib/debci/job.rb'
-    - 'lib/debci/repository.rb'
-    - 'lib/debci/status.rb'
 
 # Offense count: 4
 # Cop supports --auto-correct.
@@ -414,13 +342,6 @@ Style/NegatedIf:
     - 'lib/debci/api.rb'
     - 'lib/debci/config.rb'
     - 'lib/debci/data.rb'
-    - 'lib/debci/repository.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/NegatedWhile:
-  Exclude:
-    - 'lib/debci/repository.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -469,12 +390,6 @@ Style/RedundantBegin:
     - 'bin/debci-job'
     - 'lib/debci/api.rb'
     - 'lib/debci/self_service.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Style/RedundantInterpolation:
-  Exclude:
-    - 'lib/debci/repository.rb'
 
 # Offense count: 4
 # Cop supports --auto-correct.
