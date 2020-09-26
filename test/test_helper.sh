@@ -98,6 +98,7 @@ start_rabbitmq_server() {
     RABBITMQ_SCHEMA_DIR=$TEST_RABBIT_SERVER_DIR/schema \
     RABBITMQ_GENERATED_CONFIG_DIR=$TEST_RABBIT_SERVER_DIR/config \
     RABBITMQ_NODE_IP_ADDRESS=127.0.0.1 \
+    RABBITMQ_CONFIG_FILE=/dev/null \
     HOME=$TEST_RABBIT_SERVER_DIR \
     /usr/lib/rabbitmq/bin/rabbitmq-server > $TEST_RABBIT_SERVER_DIR/log/output.txt 2>&1 &
   TEST_RABBIT_SERVER_PID=$!
