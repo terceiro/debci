@@ -14,10 +14,14 @@ export debci_backend='fake'
 export debci_amqp_server="amqp://localhost:$TEST_RABBIT_PORT"
 export debci_amqp_queue="debci-$(dpkg --print-architecture)-test"
 
-if [ -n "${TESTCASE:-}" ]; then
+if [ $# -gt 0 ]; then
+  export TESTCASES="$@"
   suite() {
-    suite_addTest "$TESTCASE"
+    for t in $TESTCASES; do
+      suite_addTest "$t"
+    done
   }
+  set --
 fi
 
 setUp() {
