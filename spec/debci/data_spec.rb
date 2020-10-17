@@ -10,7 +10,7 @@ RSpec.shared_context 'export/import' do
       'run_id': '9999',
       'package': 'rake',
       'suite': 'unstable',
-      'arch': 'amd64',
+      'arch': arch,
       'version': '12.3.1-1',
       'status': 'pass'
     }
@@ -29,12 +29,12 @@ RSpec.shared_context 'export/import' do
 
   def export!
     Dir.chdir(tmpdir) do
-      FileUtils.mkdir_p 'autopkgtest/unstable/amd64/r/rake/9999'
-      FileUtils.touch 'autopkgtest/unstable/amd64/r/rake/9999/log.gz'
-      FileUtils.touch 'autopkgtest/unstable/amd64/r/rake/9999/exitcode'
-      FileUtils.mkdir_p 'packages/unstable/amd64/r/rake'
-      FileUtils.touch 'packages/unstable/amd64/r/rake/9999.log'
-      File.open('packages/unstable/amd64/r/rake/9999.json', 'w') do |f|
+      FileUtils.mkdir_p "autopkgtest/unstable/#{arch}/r/rake/9999"
+      FileUtils.touch "autopkgtest/unstable/#{arch}/r/rake/9999/log.gz"
+      FileUtils.touch "autopkgtest/unstable/#{arch}/r/rake/9999/exitcode"
+      FileUtils.mkdir_p "packages/unstable/#{arch}/r/rake"
+      FileUtils.touch "packages/unstable/#{arch}/r/rake/9999.log"
+      File.open("packages/unstable/#{arch}/r/rake/9999.json", 'w') do |f|
         f.write(JSON.pretty_generate(job_data))
       end
     end
@@ -67,12 +67,12 @@ describe Debci::Data::Export do
     expect(exported_files).to include('export/rake.json')
   end
   it 'exports autopkgtest data' do
-    expect(exported_files).to include('autopkgtest/unstable/amd64/r/rake/9999/log.gz')
-    expect(exported_files).to include('autopkgtest/unstable/amd64/r/rake/9999/exitcode')
+    expect(exported_files).to include("autopkgtest/unstable/#{arch}/r/rake/9999/log.gz")
+    expect(exported_files).to include("autopkgtest/unstable/#{arch}/r/rake/9999/exitcode")
   end
   it 'exports package data' do
     system('cp', output_tarball, '/tmp/')
-    expect(exported_files).to include('packages/unstable/amd64/r/rake/9999.log')
+    expect(exported_files).to include("packages/unstable/#{arch}/r/rake/9999.log")
   end
 end
 
@@ -103,7 +103,7 @@ describe Debci::Data::Import do
 
   it 'renames files to match job run_id in database' do
     job = Debci::Job.first
-    pkgdir = File.join(tmpdir, 'packages/unstable/amd64/r/rake')
+    pkgdir = File.join(tmpdir, "packages/unstable/#{arch}/r/rake")
     logs = Dir.chdir(pkgdir) { Dir['*.log'] }
     expect(logs).to include('%<id>d.log' % { id: job.run_id })
   end

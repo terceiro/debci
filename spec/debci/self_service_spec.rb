@@ -144,7 +144,7 @@ describe Debci::SelfService do
         {
           # invalid suite
           "suite": "xyz",
-          "arch": ["arm64", "amd64"],
+          "arch": ["arm64", arch],
           "tests": [
             {
               "trigger": "testing",
@@ -166,7 +166,7 @@ describe Debci::SelfService do
         {
           "suite": "unstable",
           # invalid arch
-          "arch": ["xyz", "amd64"],
+          "arch": ["xyz", arch],
           "tests": [
             {
               "trigger": "testing",
@@ -189,7 +189,7 @@ describe Debci::SelfService do
       history_jobs = [
         {
           suite: "unstable",
-          arch: "amd64",
+          arch: arch,
           trigger: "mypackage/0.0.1",
           package: "mypackage",
           pin_packages: ["src:mypackage", "unstable"],
@@ -198,7 +198,7 @@ describe Debci::SelfService do
         },
         {
           suite: "unstable",
-          arch: "amd64",
+          arch: arch,
           trigger: "testpackage/0.0.1",
           package: "testpackage",
           pin_packages: ["src:testpackage", "unstable"],

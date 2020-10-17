@@ -24,6 +24,7 @@ Debci.config.quiet = true
 Debci::DB.migrate
 
 RSpec.shared_context 'tmpdir' do
+  let(:arch) { `dpkg --print-architecture`.strip }
   let(:tmpdir) { Dir.mktmpdir }
   after(:each) { FileUtils.rm_rf(tmpdir) }
 end
@@ -34,6 +35,7 @@ RSpec.configure do |config|
   end
   config.before(:each) do
     allow(Debci).to receive(:warn)
+    allow_any_instance_of(Debci::Config).to receive(:arch_list).and_return([`dpkg --print-architecture`.strip])
   end
   config.before(:each) do
     DatabaseCleaner.start
