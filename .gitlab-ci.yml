@@ -10,7 +10,7 @@ variables:
 autopkgtest-stable:
   extends: .test-autopkgtest
   variables:
-    RELEASE: 'stable'
+    RELEASE: 'buster-backports'
 
 coverage:
   image: 'debian:unstable'

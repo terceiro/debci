@@ -111,7 +111,7 @@ do_request() {
   # publish results
   result_dir=${result_dir##$tmp_dir/}
 
-  ( cd $tmp_dir && tar czf - "$result_dir" ) | amqp-publish \
+  ( cd $tmp_dir && tar czf - "$result_dir" ) | retry -- amqp-publish \
     --url="${debci_amqp_server}" \
     $debci_amqp_tools_options \
     --persistent \
