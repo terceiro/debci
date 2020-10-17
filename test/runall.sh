@@ -22,23 +22,27 @@ failed=""
 for test_script in $@; do
   tmpdir=$(mktemp -d)
   echo "$test_script"
+  start_test=$(date +%s)
   (
     set +e
     sh $test_script
     echo "$?" > $tmpdir/.exit_status
   ) 2>&1 | sed -e 's/^/    /; /warning: Insecure world writable dir/d'
+  end_test=$(date +%s)
+  test_duration=$(($end_test - $start_test))
   rc=$(cat $tmpdir/.exit_status)
   if [ "$rc" -eq 0 ]; then
-    report 32 "☑ $test_script passed all tests"
+    report 32 "☑ $test_script passed all tests in ${test_duration}s"
   else
     failed="$failed $test_script"
-    report 31 "☐ $test_script failed at least one test"
+    report 31 "☐ $test_script failed at least one test in ${test_duration}s"
   fi
   rm -rf "$tmpdir"
 done
 end_time=$(date +%s)
+duration=$(($end_time - $start_time))
 echo
-echo "Finished in $(($end_time - $start_time)) seconds"
+echo "Finished in ${duration} seconds"
 for t in $failed; do
   echo "Failed: $t"
 done
