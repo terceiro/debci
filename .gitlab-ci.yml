@@ -14,6 +14,7 @@ autopkgtest-stable:
 
 coverage:
   image: 'debian:unstable'
+  needs: []
   script:
     - apt-get -q update
     - apt-get build-dep --quiet --assume-yes .
@@ -21,6 +22,7 @@ coverage:
     - COVERAGE=yes rspec
 
 ruby-style:
+  needs: []
   image: 'debian:unstable'
   before_script:
     - apt-get -q update
