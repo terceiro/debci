@@ -36,6 +36,7 @@ RSpec.configure do |config|
   config.before(:each) do
     allow(Debci).to receive(:warn)
     allow_any_instance_of(Debci::Config).to receive(:arch_list).and_return([`dpkg --print-architecture`.strip])
+    allow_any_instance_of(Debci::Config).to receive(:suite_list).and_return(['unstable', 'testing'])
   end
   config.before(:each) do
     DatabaseCleaner.start
