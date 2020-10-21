@@ -33,8 +33,8 @@ $ vagrant ssh
 Once inside vagrant, you can start run debci with the following commands
 
 ```
-vagrant@stretch $ cd /vagrant
-vagrant@stretch $ foreman start
+$ cd /vagrant
+$ foreman start
 ```
 
 Note: The other commands are the same as the ones mentioned in manual setup.
