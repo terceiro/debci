@@ -112,7 +112,7 @@ You will also need permissions to run the `lxc-*` commands as root, preserving
 your environment. An easy way to do that is to add yourself to the debci group.
 
 ```
-$ sudo addgroup YOUR_USERNAME debci
+$ sudo adduser YOUR_USERNAME debci
 ```
 
 You're now ready to create the lxc container:
