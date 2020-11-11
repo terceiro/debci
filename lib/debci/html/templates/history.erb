@@ -38,55 +38,55 @@
       </tr>
 
       <% Array(@history).each do |test| %>
-	<tr class='pinned-<%= test.pinned? %>'>
-	  <td><%= test.version %></td>
-	  <td><%= test.date %></td>
-	  <td>
-	    <% title = title_test_trigger_pin(test) %>
-	    <% unless title.blank? %>
-	      <div class='trigger-pinned-packages' title='<%= title %>'>
-		<div class='trigger'>
-		  <em><%= h test.trigger&.truncate(40) %></em>
-		</div>
-		<% if test.pinned? %>
-		  <div class='pinned-packages'>
-		  <% expand_pin_packages(test).each do |p| %>
-		    <%= p.truncate(40) %> <br/>
-		  <% end %>
-		  </div>
-		<% end %>
-	      </div>
-	    <% end %>
-	  </td>
-	  <td><%= test.duration_human %></td>
-	  <td>
-	    <%== icon(test.status) %>
-	    <%= test.status %>
-	  </td>
-	  <td>
-	    <a href="/api/v1/retry/<%= test.run_id %>"><i class='fa fa-recycle'></i></a>
-	  </td>
-	  <td><a href="/user/<%= test.requestor %>/jobs?package=<%= @package.name %>&suite[]=<%= @suite %>&arch[]=<%= @architecture %>"><%= test.requestor %></a></td>
-	  <% package_dir = [test.suite, test.arch, test.package.prefix, test.package.name].join('/') %>
-	  <% if @artifacts_url_base %>
-	    <td><a href="<%= @artifacts_url_base %>/<%= @package_dir %>/<%= test.run_id %>/log.gz">test log</a></td>
-	    <td><a href="<%= @artifacts_url_base %>/<%= @package_dir %>/<%= test.run_id %>/artifacts.tar.gz">artifacts</a></td>
-	  <% else %>
-	    <% if test.expired? %>
-	      <td><span class='fa fa-trash' title='file has been removed due to data retention policy'></span></td>
-	      <td><span class='fa fa-trash' title='file has been removed due to data retention policy'></span></td>
-	    <% else %>
-	      <% dirname = File.join(Debci.config.data_basedir, 'autopkgtest', @package_dir, test.run_id.to_s) %>
-	      <td>
-		<%== filesize(File.join(dirname,'log.gz'),"<a href=\"/data/autopkgtest/#{package_dir}/#{test.run_id}/log.gz\">test log</a> <small>(%s)</small>")%>
-	      </td>
-	      <td>
-		<%== filesize(File.join(dirname,'artifacts.tar.gz'),"<a href=\"/data/autopkgtest/#{package_dir}/#{test.run_id}/artifacts.tar.gz\">artifacts</a> <small>(%s)</small>")%>
-	      </td>
+        <tr class='pinned-<%= test.pinned? %>'>
+          <td><%= test.version %></td>
+          <td><%= test.date %></td>
+          <td>
+            <% title = title_test_trigger_pin(test) %>
+            <% unless title.blank? %>
+              <div class='trigger-pinned-packages' title='<%= title %>'>
+                <div class='trigger'>
+                  <em><%= h test.trigger&.truncate(40) %></em>
+                </div>
+                <% if test.pinned? %>
+                  <div class='pinned-packages'>
+                  <% expand_pin_packages(test).each do |p| %>
+                    <%= p.truncate(40) %> <br/>
+                  <% end %>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </td>
+          <td><%= test.duration_human %></td>
+          <td>
+            <%== icon(test.status) %>
+            <%= test.status %>
+          </td>
+          <td>
+            <a href="/api/v1/retry/<%= test.run_id %>"><i class='fa fa-recycle'></i></a>
+          </td>
+          <td><a href="/user/<%= test.requestor %>/jobs?package=<%= @package.name %>&suite[]=<%= @suite %>&arch[]=<%= @architecture %>"><%= test.requestor %></a></td>
+          <% package_dir = [test.suite, test.arch, test.package.prefix, test.package.name].join('/') %>
+          <% if @artifacts_url_base %>
+            <td><a href="<%= @artifacts_url_base %>/<%= @package_dir %>/<%= test.run_id %>/log.gz">test log</a></td>
+            <td><a href="<%= @artifacts_url_base %>/<%= @package_dir %>/<%= test.run_id %>/artifacts.tar.gz">artifacts</a></td>
+          <% else %>
+            <% if test.expired? %>
+              <td><span class='fa fa-trash' title='file has been removed due to data retention policy'></span></td>
+              <td><span class='fa fa-trash' title='file has been removed due to data retention policy'></span></td>
+            <% else %>
+              <% dirname = File.join(Debci.config.data_basedir, 'autopkgtest', @package_dir, test.run_id.to_s) %>
+              <td>
+                <%== filesize(File.join(dirname,'log.gz'),"<a href=\"/data/autopkgtest/#{package_dir}/#{test.run_id}/log.gz\">test log</a> <small>(%s)</small>")%>
+              </td>
+              <td>
+                <%== filesize(File.join(dirname,'artifacts.tar.gz'),"<a href=\"/data/autopkgtest/#{package_dir}/#{test.run_id}/artifacts.tar.gz\">artifacts</a> <small>(%s)</small>")%>
+              </td>
 
-	    <% end %>
-	  <% end %>
-	</tr>
+            <% end %>
+          <% end %>
+        </tr>
       <% end %>
 
     </table>
