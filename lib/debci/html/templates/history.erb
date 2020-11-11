@@ -93,7 +93,7 @@
 
     <p>Automate:</p>
 
-    <% automation_info = "<code># latest status of the package\n" +
+    <% automation_info = "# latest status of the package\n" +
                           "$ curl #{@site_url}/#{@packages_dir}/#{@package_dir}/latest.json\n\n"
 
         if not @artifacts_url_base
@@ -102,7 +102,7 @@
         end
 
         automation_info += "# test run history of the package\n" +
-                          "$ curl #{@site_url}/#{@packages_dir}/#{@package_dir}/history.json</code>"
+                          "$ curl #{@site_url}/#{@packages_dir}/#{@package_dir}/history.json"
     %>
 
     <pre><%= automation_info %></pre>
