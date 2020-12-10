@@ -153,7 +153,7 @@ module Debci
       * `:run_id`: which Job ID to retry
       EOF
       post '/retry/:run_id' do
-        if not @user
+        if !@user
           authenticate_key!
         end
         run_id = params[:run_id]
