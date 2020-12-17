@@ -16,5 +16,6 @@ autopkgtest \
 
 if [ -n "${debci_test_outputdir:-}" ] && [ -d "${debci_test_outputdir}" ]; then
   echo $rc > "$debci_test_outputdir/exitcode"
+  hostname -s > "$debci_test_outputdir/worker"
 fi
 exit $rc

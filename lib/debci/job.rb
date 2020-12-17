@@ -117,6 +117,11 @@ module Debci
         job.duration_seconds = duration.read.to_i
         job.date = duration.stat.mtime
 
+        worker_file = (src / 'worker')
+        if worker_file.exist?
+          job.worker = worker_file.read.strip
+        end
+
         testpkg_version = src / 'testpkg-version'
         if testpkg_version.exist?
           job.version = testpkg_version.read.split.last if testpkg_version
