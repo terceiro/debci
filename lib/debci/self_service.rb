@@ -12,7 +12,7 @@ module Debci
     include Debci::TestHandler
     include Debci::HTMLHelpers
 
-    set :views, File.dirname(__FILE__) + '/html/templates'
+    set :views, "#{File.dirname(__FILE__)}/html/templates"
 
     configure do
       set :suites, Debci.config.suite_list

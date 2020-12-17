@@ -15,9 +15,7 @@ module Debci
 
     class Export
 
-      attr_reader :tarball
-      attr_reader :root
-      attr_reader :entries
+      attr_reader :tarball, :root, :entries
 
       def initialize(tarball)
         @tarball = tarball
@@ -55,7 +53,7 @@ module Debci
         files_from.close
         target = File.expand_path(tarball)
         Dir.chdir(root) do
-          system('tar', 'caf', target, '--files-from=' + files_from.path)
+          system('tar', 'caf', target, "--files-from=#{files_from.path}")
         end
       end
     end
@@ -63,8 +61,7 @@ module Debci
 
     class Import
 
-      attr_reader :tarball
-      attr_reader :root
+      attr_reader :tarball, :root
 
       def initialize(tarball)
         @root = Debci.config.data_basedir
@@ -109,7 +106,7 @@ module Debci
             end
           end
           puts('# copying data files ...')
-          cmd = ['rsync', '-apq', '--exclude=/export', tmpdir + '/', root + '/']
+          cmd = ['rsync', '-apq', '--exclude=/export', "#{tmpdir}/", "#{root}/"]
           puts cmd.join(' ')
           system(*cmd)
         end

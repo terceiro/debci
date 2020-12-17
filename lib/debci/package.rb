@@ -13,9 +13,9 @@ module Debci
 
     scope :by_prefix, lambda { |p|
       if p == 'l'
-        where("name LIKE :prefix AND name NOT LIKE 'lib%'", prefix: p + '%')
+        where("name LIKE :prefix AND name NOT LIKE 'lib%'", prefix: "#{p}%")
       else
-        where("name LIKE :prefix", prefix: p + '%')
+        where("name LIKE :prefix", prefix: "#{p}%")
       end
     }
 

@@ -13,7 +13,7 @@ def migrate(dir)
     last = day.glob('*.json').max
     next unless last
 
-    new = day.parent / (day.basename.to_s + '.json')
+    new = day.parent / "#{day.basename}.json"
     last.rename(new)
     puts "#{last} -> #{new}"
     newest = new

@@ -28,7 +28,7 @@ class ServeStatic < Sinatra::Base
   end
 
   get '/*' do
-    return redirect(request.path + '/') if request.path !~ %r{/$}
+    return redirect("#{request.path}/") if request.path !~ %r{/$}
 
     index = File.join(settings.public_folder, request.path, 'index.html')
     if File.exist?(index)

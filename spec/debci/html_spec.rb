@@ -7,8 +7,8 @@ describe Debci::HTML do
   include_context 'tmpdir'
 
   before(:each) do
-    allow_any_instance_of(Debci::Config).to receive(:html_dir).and_return(tmpdir + '/html')
-    allow_any_instance_of(Debci::Config).to receive(:data_basedir).and_return(tmpdir + '/data')
+    allow_any_instance_of(Debci::Config).to receive(:html_dir).and_return("#{tmpdir}/html")
+    allow_any_instance_of(Debci::Config).to receive(:data_basedir).and_return("#{tmpdir}/data")
   end
 
   let(:html) { Pathname(tmpdir) / 'html' }

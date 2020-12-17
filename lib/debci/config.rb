@@ -49,7 +49,7 @@ module Debci
 
     # for development usage
     if !ENV['AUTOPKGTEST_TMP']
-      bin = File.dirname(__FILE__) + '/../../bin'
+      bin = "#{File.dirname(__FILE__)}/../../bin"
       if File.exists?(bin)
         ENV['PATH'] = [bin,ENV['PATH']].join(':')
       end

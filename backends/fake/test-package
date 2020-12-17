@@ -7,7 +7,7 @@ require 'stringio'
 log = StringIO.new
 
 log.puts "autopkgtest [%s]: started \n" % Time.now.strftime('%Y-%m-%d %H:%M:%S')
-log.puts 'command line arguments: ' + ARGV.inspect
+log.puts "command line arguments: #{ARGV.inspect}"
 
 pkg = nil
 outdir = nil
@@ -73,7 +73,7 @@ File.open(File.join(outdir, 'testpkg-version'), 'w') { |f| f.puts "#{pkg} #{vers
 
 if ENV["DEBCI_FAKE_COMMAND"]
   io = IO.popen(ENV["DEBCI_FAKE_COMMAND"])
-  log.puts [ '$ ' + ENV['DEBCI_FAKE_COMMAND'], io.read]
+  log.puts [ "$ #{ENV['DEBCI_FAKE_COMMAND']}", io.read]
   io.close
   rc = $?.exitstatus
   if rc != 0

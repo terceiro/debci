@@ -67,7 +67,7 @@ module Debci
     include Debci::TestHandler
 
     register Sinatra::Namespace
-    set :views, File.dirname(__FILE__) + '/api'
+    set :views, "#{File.dirname(__FILE__)}/api"
 
     attr_reader :suite, :arch, :user
 
@@ -76,7 +76,7 @@ module Debci
     end
 
     get '/' do
-      redirect request.script_name + '/doc'
+      redirect "#{request.script_name}/doc"
     end
 
     namespace '/v1' do

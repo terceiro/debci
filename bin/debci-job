@@ -19,7 +19,7 @@ module Debci
             puts('I: removed %<status_file>s' % { status_file: status_file }) if options { :verbose }
           end
         rescue Debci::Job::InvalidStatusFile => exc
-          puts("E: " + exc.to_s)
+          puts("E: #{exc}")
         end
       end
     end

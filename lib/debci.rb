@@ -30,7 +30,7 @@ module Debci
       return if config.quiet
 
       puts(*str)
-      STDOUT.flush
+      $stdout.flush
     end
 
     def warn(*str)

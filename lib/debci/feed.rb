@@ -6,7 +6,7 @@ module Debci
   class Feed
     def initialize(news)
       @feed = RSS::Maker.make('atom') do |feed|
-        feed.channel.author = distro_name + ' Continuous Integration'
+        feed.channel.author = "#{distro_name} Continuous Integration"
         feed.channel.updated = news.first && news.first.date || Time.parse('2020-04-18T21:17:00 UTC')
         yield(feed) if block_given?
         insert_items(news, feed)

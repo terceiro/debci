@@ -82,8 +82,7 @@ module Debci
     end
 
     class JSON < Rooted
-      attr_accessor :suite
-      attr_accessor :arch
+      attr_accessor :suite, :arch
 
       def datadir
         'status'
@@ -225,10 +224,8 @@ module Debci
 
       private
 
-      def write_feed(news, feedfile)
-        feed = Debci::Feed.new(news) do |f|
-          yield(f)
-        end
+      def write_feed(news, feedfile, &block)
+        feed = Debci::Feed.new(news, &block)
         feedfile.parent.mkpath
         feed.write(feedfile)
       end
@@ -383,7 +380,7 @@ module Debci
 
     def read_template(name)
       templates[name] ||= begin
-        filename = File.join(File.dirname(__FILE__), 'html/templates', name.to_s + '.erb')
+        filename = File.join(File.dirname(__FILE__), 'html/templates', "#{name}.erb")
         Erubi::Engine.new(
           File.read(filename),
           escape: true,
@@ -428,7 +425,7 @@ module Debci
           end
         end
       end
-      expand_template(:platform_specific_issues, target.to_s + '/' + 'index.html')
+      expand_template(:platform_specific_issues, "#{target}/index.html")
     end
 
     def generate_status_pending(dirname, suite)
@@ -445,7 +442,7 @@ module Debci
                       'index.html')
       @current_page = base
       @pending = @pending.last(@status_per_page)
-      expand_template(:status_pending_jobs, @current_page + '/' + 'index.html')
+      expand_template(:status_pending_jobs, "#{@current_page}/index.html")
     end
 
     # Sorts packages by last updated date, then names
@@ -464,7 +461,7 @@ module Debci
     end
 
     def generate_status_failing(dirname, jobs, suite = nil)
-      base = "#{dirname}#{'/' + suite if suite}"
+      base = "#{dirname}#{"/#{suite}" if suite}"
       @suite = suite
 
       jobs = jobs.where(suite: suite) if suite

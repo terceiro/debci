@@ -12,11 +12,11 @@ module Debci
       end
 
       def debci_log
-        @debci_log ||= root / 'packages' / suite / arch / package.prefix / package.name / (run_id.to_s + '.log')
+        @debci_log ||= root / 'packages' / suite / arch / package.prefix / package.name / "#{run_id}.log"
       end
 
       def result_json
-        @result_json ||= root / 'packages' / suite / arch / package.prefix / package.name / (run_id.to_s + '.json')
+        @result_json ||= root / 'packages' / suite / arch / package.prefix / package.name / "#{run_id}.json"
       end
 
       def cleanup

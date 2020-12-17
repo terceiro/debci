@@ -119,7 +119,7 @@ describe Debci::Job do
   end
 
   it 'takes ridiculously large version numbers' do
-    v = '1.' * 100 + '0'
+    v = "#{'1.' * 100}0"
     Debci::Job.create!(package: package, version: v)
   end
 
