@@ -232,6 +232,7 @@ describe Debci::Job do
 
     it('returns job instance') { expect(job.id).to eq(original_job.id) }
     it('gets status') { expect(job.status).to eq('pass') }
+    it('gets worker') { expect(job.worker).to eq('ci-worker-1') }
     it('gets message') { expect(job.message).to eq('All tests passed') }
     it('gets duration') { expect(job.duration_seconds).to eq(9) }
     it('gets date') { expect(job.date).to eq(past) }
@@ -273,6 +274,7 @@ describe Debci::Job do
       FileUtils.cp_r 'spec/debci/job_spec/autopkgtest-incoming', second_incoming
       FileUtils.touch(File.join(second_incoming, 'duration'), mtime: Time.now)
       File.open(File.join(second_incoming, 'exitcode'), 'w') { |f| f.write('4') }
+      File.open(File.join(second_incoming, 'worker'), 'w') { |f| f.write('ci-worker-1') }
       File.open(File.join(second_incoming, 'testpkg-version'), 'w') { |f| f.write('foobar 99-1') }
       Debci::Job.receive(second_incoming)
     end

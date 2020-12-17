@@ -144,5 +144,8 @@ end
 File.open(File.join(outdir, 'exitcode'), 'w') do |f|
   f.puts rc
 end
+File.open(File.join(outdir, 'worker'), 'w') do |f|
+  f.puts `hostname -s`.strip
+end
 puts log.string
 exit rc

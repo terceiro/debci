@@ -32,6 +32,7 @@ RSpec.shared_context 'export/import' do
       FileUtils.mkdir_p "autopkgtest/unstable/#{arch}/r/rake/9999"
       FileUtils.touch "autopkgtest/unstable/#{arch}/r/rake/9999/log.gz"
       FileUtils.touch "autopkgtest/unstable/#{arch}/r/rake/9999/exitcode"
+      FileUtils.touch "autopkgtest/unstable/#{arch}/r/rake/9999/worker"
       FileUtils.mkdir_p "packages/unstable/#{arch}/r/rake"
       FileUtils.touch "packages/unstable/#{arch}/r/rake/9999.log"
       File.open("packages/unstable/#{arch}/r/rake/9999.json", 'w') do |f|
@@ -69,6 +70,7 @@ describe Debci::Data::Export do
   it 'exports autopkgtest data' do
     expect(exported_files).to include("autopkgtest/unstable/#{arch}/r/rake/9999/log.gz")
     expect(exported_files).to include("autopkgtest/unstable/#{arch}/r/rake/9999/exitcode")
+    expect(exported_files).to include("autopkgtest/unstable/#{arch}/r/rake/9999/worker")
   end
   it 'exports package data' do
     system('cp', output_tarball, '/tmp/')
