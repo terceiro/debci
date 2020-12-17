@@ -45,6 +45,9 @@ Style/TrailingCommaInHashLiteral:
 Style/WordArray:
   Enabled: false
 
+Metrics/AbcSize:
+  Enabled: false
+
 Metrics/BlockLength:
   Enabled: false
 
