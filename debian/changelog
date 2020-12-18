@@ -1,3 +1,24 @@
+debci (2.14) unstable; urgency=medium
+
+  [ Antonio Terceiro ]
+  * Debci::Job: fix parameters for multiple pinned packages
+  * ui: improve expansion of pinned packages
+  * Drop dependency on bsdmainutils (Closes: #964525)
+  * Debci::Job: fix newsworthiness check
+  * debci-worker: retry result submission until it works
+  * docs/HACKING.md: drop gratuitous reference to stretch
+
+  [ intrigeri ]
+  * MAINTAINERS.md: fix command that adds user to group
+
+  [ Baptiste Beauplat ]
+  * Remove redundant <code> tag in the Automate section of the history page
+
+  [ Sebastien Delafond ]
+  * Add 'worker' field to job result (Closes: #958975)
+
+ -- Antonio Terceiro <terceiro@debian.org>  Fri, 18 Dec 2020 16:59:26 -0300
+
 debci (2.13) unstable; urgency=medium
 
   [ Antonio Terceiro ]
