@@ -207,7 +207,7 @@ describe Debci::SelfService do
         },
         {
           suite: "unstable",
-          arch: "arm64",
+          arch: "#{arch}xx",
           trigger: "testpackage/0.0.2",
           package: "testpackage",
           pin_packages: ["src:testpackage", "unstable"],
