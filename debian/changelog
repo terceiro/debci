@@ -1,3 +1,9 @@
+debci (2.14.1) unstable; urgency=medium
+
+  * self_service_spec: fix test on arm64
+
+ -- Antonio Terceiro <terceiro@debian.org>  Mon, 21 Dec 2020 23:00:49 -0300
+
 debci (2.14) unstable; urgency=medium
 
   [ Antonio Terceiro ]
