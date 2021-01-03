@@ -25,7 +25,7 @@ if [ $# -gt 0 ]; then
 fi
 
 setUp() {
-  export __tmpdir="$(mktemp -d)"
+  export __tmpdir="$(mktemp -d --tmpdir debci.data.XXXXXX)"
   mkdir -p $__tmpdir/data
   mkdir -p $__tmpdir/config
   mkdir -p $__tmpdir/lock
