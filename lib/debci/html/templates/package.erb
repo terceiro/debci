@@ -7,7 +7,7 @@
 
     <h2>
       <%= @package.name %>
-      <%== @package_links %>
+      <%== erb(:package_links) %>
     </h2>
 
   <% if @package.blacklisted? %>

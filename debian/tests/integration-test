@@ -100,18 +100,8 @@ test_has_package_history_file() {
     "${data}/packages/unstable/$test_arch/$p/$pkg/history.json"
 }
 
-test_has_package_page() {
-  assertFileExists 'package page' \
-    "${html}/packages/$p/$pkg/index.html"
-  assertTrue "grep $test_arch ${html}/packages/$p/$pkg/index.html"
-  if [ -n $other_arch ]; then
-    assertTrue "grep $native_arch ${html}/packages/$p/$pkg/index.html"
-  fi
-}
-
-test_has_package_arch_page() {
-  assertFileExists 'architecture-specific package page' \
-    "${html}/packages/$p/$pkg/unstable/$test_arch/index.html"
+test_has_home_page() {
+  assertFileExists 'home page' "${html}/index.html"
 }
 
 . shunit2

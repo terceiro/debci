@@ -33,7 +33,6 @@ module Debci
         end
 
         html.index('index.html')
-        html.packages_page('packages/index.html')
         html.status('status/index.html')
         html.status_alerts('status/alerts/index.html')
         html.status_slow('status/slow/index.html')
@@ -41,11 +40,9 @@ module Debci
         html.status_failing('status/failing')
         html.blacklist
         html.platform_specific_issues('status/platform-specific-issues')
-        html.prefixes
       end
 
       def update_package(package, suite = nil, arch = nil)
-        html = new
         pkgjson = Debci::HTML::PackageJSON.new
         autopkgtest = Debci::HTML::Autopkgtest.new
         feed = Debci::HTML::Feed.new
@@ -58,13 +55,10 @@ module Debci
             pkgjson.history(history)
             pkgjson.latest(history)
             autopkgtest.link_latest(history)
-            html.history(history)
           end
         end
 
         feed.package(package)
-
-        html.package(package)
       end
     end
 
@@ -311,53 +305,9 @@ module Debci
       expand_template(:blacklist, 'status/blacklist/index.html')
     end
 
-    def package(package)
-      @package = package
-      @moretitle = package.name
-      @package_links = load_template(:package_links)
-
-      filename = "packages/#{package.prefix}/#{package.name}/index.html"
-      expand_template(:package, filename)
-    end
-
-    def prefixes
-      Debci::Package.order('name').group_by(&:prefix).each do |prefix, packages|
-        @prefix = prefix
-        @moretitle = prefix
-        @packages = packages
-        @packages.sort_by!(&:name)
-        filename = "packages/#{prefix}/index.html"
-        expand_template(:packagelist, filename)
-      end
-    end
-
-    def packages_page(filename)
-      expand_template(:packages, filename)
-    end
-
     # expand { SUITE } macro in URLs
     def expand_url(url, suite)
       url && url.gsub('{SUITE}', suite)
-    end
-
-    def history(hist)
-      package = hist.package
-      suite = hist.suite
-      architecture = hist.arch
-      @package = package
-      @suite = suite
-      @architecture = architecture
-      @packages_dir = 'data/packages'
-      @package_dir = File.join(suite, architecture, package.prefix, package.name)
-      @site_url = expand_url(Debci.config.url_base, @suite)
-      @artifacts_url_base = expand_url(Debci.config.artifacts_url_base, @suite)
-      @moretitle = "#{package.name}/#{suite}/#{architecture}"
-      @history = hist.reverse
-
-      @package_links = load_template(:package_links)
-
-      filename = "packages/#{package.prefix}/#{package.name}/#{suite}/#{architecture}/index.html"
-      expand_template(:history, filename)
     end
 
     private
