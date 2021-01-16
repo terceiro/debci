@@ -9,6 +9,7 @@ require 'debci/job'
 module Debci
   class Collector
     def run
+      Debci.log "debci collector started"
       channel = Debci::AMQP.amqp_channel
       queue = Debci::AMQP.results_queue
       queue.subscribe(manual_ack: true) do |delivery_info, _properties, payload|
@@ -20,8 +21,7 @@ module Debci
       begin
         loop { sleep 1 }
       rescue Interrupt
-        puts
-        puts "debci collector stopped"
+        Debci.log "debci collector stopped"
       end
     end
 
