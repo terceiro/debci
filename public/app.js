@@ -66,7 +66,7 @@ jQuery(function($) {
           legend: {
             show: true,
             backgroundOpacity: 0.2,
-            position: 'sw'
+            position: 'nw'
           },
           xaxis: {
             mode: "time"
