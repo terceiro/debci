@@ -11,10 +11,8 @@ jQuery(function($) {
       var platform = $(this).attr('name').replace('data-', '');
       var json = $('meta[name=data-' + platform + ']').attr("content");
       var data = $.parseJSON(json);
-      console.log(platform + ' data: ' + data);
       if (data.length < 2) {
         $('.chart-' + platform).html("Not enough data for plot. Wait until we get more data.");
-        console.log('skipping ' + platform + '...')
       } else {
         var pass = [];
         var neutral = [];
