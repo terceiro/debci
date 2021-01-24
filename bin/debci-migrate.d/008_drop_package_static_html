@@ -6,7 +6,7 @@ debci_base_dir=$(readlink -f $(dirname $(readlink -f $0))/../..)
 . "$debci_base_dir/lib/environment.sh"
 
 
-cd $debci_config_dir
+cd $debci_html_dir
 if [ -d packages ]; then
   mv -f packages packages.off
   echo "$(pwd)/packages.off is now unused, and can be removed"
