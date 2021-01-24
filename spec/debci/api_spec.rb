@@ -273,6 +273,26 @@ describe Debci::API do
       expect(ids).to include(new_job.id)
       expect(ids).to_not include(old_job.id)
     end
+    it 'sorts by date' do
+      package = Debci::Package.create!(name: 'mypackage')
+      job2 = Debci::Job.create(
+        package: package,
+        suite: suite,
+        arch: arch,
+        requestor: theuser.username,
+        updated_at: Time.now,
+      )
+      job1 = Debci::Job.create(
+        package: package,
+        suite: suite,
+        arch: arch,
+        requestor: theuser.username,
+        updated_at: Time.now - 1.hour
+      )
+      get '/api/v1/test'
+      ids = JSON.parse(last_response.body)["results"].map { |e| e["run_id"] }
+      expect(ids).to eq([job1.run_id, job2.run_id])
+    end
   end
 
   context 'validating package names' do
