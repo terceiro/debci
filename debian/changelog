@@ -1,3 +1,19 @@
+debci (2.15) unstable; urgency=medium
+
+  * js: drop console.log noise when loading chart data
+  * js: position chart legends at the top left
+  * test_helper: improve temporary directory name
+  * Debci::Collector: log when starting and stopping
+  * Debci::App: add common 404 handler
+  * Generate package pages dynamically
+  * Move all static HTML for /packages away
+  * Drop obsolete config.ru file
+  * Add some unit tests for Debci::HTML::CLI
+  * api: add basic tests for fetching test results
+  * api: sort results by updated_at
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 24 Jan 2021 14:36:26 -0300
+
 debci (2.14.1) unstable; urgency=medium
 
   * self_service_spec: fix test on arm64
