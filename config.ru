@@ -1,5 +1,6 @@
 require 'debci/api'
 require 'debci/self_service'
+require 'debci/frontend'
 
 LISTING = <<~HTMLBLOCK.freeze
   <!DOCTYPE html>
@@ -46,6 +47,9 @@ end
 
 app = Rack::Builder.new do
   run ServeStatic if ENV['RACK_ENV'] == 'development'
+  map '/packages' do
+    run Debci::Frontend
+  end
   map '/api' do
     run Debci::API
   end

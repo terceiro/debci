@@ -57,5 +57,14 @@ module Debci
         end
       end.flatten
     end
+
+    def history_url(job)
+      "/packages/#{job.package.prefix}/#{job.package.name}/#{job.suite}/#{job.arch}/"
+    end
+
+    # expand { SUITE } macro in URLs
+    def expand_url(url, suite)
+      url&.gsub('{SUITE}', suite)
+    end
   end
 end

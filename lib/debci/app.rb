@@ -7,6 +7,10 @@ module Debci
   class App < Sinatra::Base
     set :erb, escape_html: true
 
+    not_found do
+      erb :not_found
+    end
+
     include ERB::Util
     def read_request_user
       username = ENV['FAKE_CERTIFICATE_USER'] || env['SSL_CLIENT_S_DN_CN']
