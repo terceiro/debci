@@ -239,7 +239,7 @@ module Debci
       EOF
       get '/test' do
         authenticate_key!
-        jobs = Debci::Job.where(requestor: @user.username)
+        jobs = Debci::Job.where(requestor: @user.username).order('updated_at')
         if params[:since]
           since = Time.strptime(params[:since], '%s')
           jobs = jobs.where('updated_at >= ?', since)
