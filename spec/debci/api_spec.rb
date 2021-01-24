@@ -233,6 +233,48 @@ describe Debci::API do
     end
   end
 
+  context 'fetching test results' do
+    before do
+      key = Debci::Key.create!(user: theuser).key
+      header 'Auth-Key', key
+    end
+
+    it 'gets jobs' do
+      package = Debci::Package.create!(name: 'mypackage')
+      job = Debci::Job.create(
+        package: package,
+        suite: suite,
+        arch: arch,
+        requestor: theuser.username,
+      )
+      get '/api/v1/test'
+      data = JSON.parse(last_response.body)
+      expect(data["results"].first["run_id"]).to eq(job.run_id)
+      expect(data["until"]).to eq(job.created_at.to_i)
+    end
+
+    it 'fetchs after a timestamp' do
+      package = Debci::Package.create!(name: 'mypackage')
+      old_job = Debci::Job.create(
+        package: package,
+        suite: suite,
+        arch: arch,
+        requestor: theuser.username,
+        updated_at: Time.now - 1.day
+      )
+      new_job = Debci::Job.create(
+        package: package,
+        suite: suite,
+        arch: arch,
+        requestor: theuser.username,
+      )
+      get '/api/v1/test', since: (Time.now - 1.hour).to_i.to_s
+      ids = JSON.parse(last_response.body)["results"].map { |e| e["run_id"] }
+      expect(ids).to include(new_job.id)
+      expect(ids).to_not include(old_job.id)
+    end
+  end
+
   context 'validating package names' do
     %w[
       foo
