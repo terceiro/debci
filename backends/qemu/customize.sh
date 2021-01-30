@@ -38,7 +38,7 @@ fi
 
 DEBIAN_FRONTEND=noninteractive \
   chroot "$rootfs"  \
-  apt-get install dpkg-dev -q -y --no-install-recommends
+  apt-get install dpkg-dev ca-certificates -q -y --no-install-recommends
 
 DEBIAN_FRONTEND=noninteractive \
   chroot "$rootfs"  \
