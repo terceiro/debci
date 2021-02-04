@@ -192,5 +192,5 @@ if [ -n "$dbgsym" ] && [ -n "$dbgsym_suite" ]; then
 fi
 
 if [ -n "$buildd" ] && [ -n "$buildd_suite" ]; then
-  echo_deb_and_maybe_src "https://incoming.debian.org/debian-buildd ${buildd_suite} ${components}"
+  echo_deb_and_maybe_src "http://incoming.debian.org/debian-buildd ${buildd_suite} ${components}"
 fi
