@@ -62,11 +62,7 @@ def read_status_file(pkg)
   end
 end
 
-if $all
-  packages = `debci-list-packages`.split
-else
-  packages = ARGV
-end
+packages = $all ? `debci-list-packages`.split : ARGV
 
 def format_field(v)
   v || 'unknown'
