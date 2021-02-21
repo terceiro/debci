@@ -271,12 +271,6 @@ Style/FormatStringToken:
     - 'backends/fake/test-package'
     - 'lib/debci/job.rb'
 
-# Offense count: 40
-# Configuration parameters: AllowedVariables.
-Style/GlobalVars:
-  Exclude:
-    - 'bin/debci-status'
-
 # Offense count: 2
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:
