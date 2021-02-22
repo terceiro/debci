@@ -6,12 +6,14 @@ require 'optparse'
 require 'debci'
 require 'debci/package_status'
 
-$all = false
-$json = false
-$status_file = false
-$field = 'status'
+options = {
+  all: false,
+  json: false,
+  status_file: false,
+  field: 'status'
+}
 
-optparse = OptionParser.new do |opts|
+OptionParser.new do |opts|
   opts.banner = 'Usage: debci status [OPTIONS] [PACKAGE]'
   opts.separator 'Options:'
 
@@ -24,25 +26,24 @@ optparse = OptionParser.new do |opts|
   end
 
   opts.on('-l', '--all', 'show status for all packages') do
-    $all = true
+    options[:all] = true
   end
 
   opts.on('j', '--json', 'outputs JSON') do
-    $json = true
+    options[:json] = true
   end
 
   opts.on('--status-file', 'outputs the full status file (implies --json)') do
-    $status_file = true
-    $json = true
+    options[:status_file] = true
+    options[:json] = true
   end
 
   opts.on('-f FIELD', '--field FIELD', 'displays FIELD from the status file (default: status)') do |f|
-    $field = f
+    options[:field] = f
   end
-end
-optparse.parse!
+end.parse!
 
-if !$all && ARGV.size == 0
+if !options[:all] && ARGV.size == 0
   puts "debci-status: when not using -l/--all, one or more PACKAGEs have to be specified."
   exit 1
 end
@@ -58,11 +59,11 @@ def read_status_file(pkg)
   if File.exist?(status_file)
     JSON.parse(File.read(status_file))
   else
-    { 'package' => pkg, $field => nil }
+    { 'package' => pkg, options[:field] => nil }
   end
 end
 
-packages = $all ? `debci-list-packages`.split : ARGV
+packages = options[:all] ? `debci-list-packages`.split : ARGV
 
 def format_field(v)
   v || 'unknown'
@@ -74,24 +75,24 @@ results = Debci::PackageStatus.includes(:package, :job).where(
   arch: Debci.config.arch,
 ).group_by { |status| status.package.name }
 
-if !$all && packages.size == 1
+if !options[:all] && packages.size == 1
   status = results[packages.first]&.first
-  if $json
-    if $status_file
+  if options[:json]
+    if options[:status_file]
       puts JSON.pretty_generate(status.job.as_json)
     else
-      puts((status && status.job[$field]).to_json)
+      puts((status && status.job[options[:field]]).to_json)
     end
   else
-    puts(format_field(status && status.job[$field]))
+    puts(format_field(status && status.job[options[:field]]))
   end
-elsif $json
+elsif options[:json]
   puts JSON.pretty_generate(results.values.flatten.map(&:job).as_json)
 else
   max_length = packages.map(&:length).max
   fmt = "%-#{max_length}s %s"
   packages.each do |pkg|
     status = results[pkg]&.first
-    puts fmt % [pkg, format_field(status && status.job[$field])]
+    puts fmt % [pkg, format_field(status && status.job[options[:field]])]
   end
 end
