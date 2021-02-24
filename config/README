@@ -1,7 +1,7 @@
 Files you may want to put in this directory:
 
 - whitelist
-- blacklist
+- reject_list
 - debci.conf: main debci configuration file
 - conf.d/*.conf: debci configuration snippets. They need to match
   w[0-9a-z-_]*.conf, and will be loaded after debci.conf in the order produced

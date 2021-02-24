@@ -10,9 +10,9 @@
       <%== erb(:package_links) %>
     </h2>
 
-  <% if @package.blacklisted? %>
+  <% if @package.reject_listed? %>
     <div class='alert alert-warning'>
-      This package is currently <a href="/status/blacklist/">blacklisted</a> and will not have any new test runs.
+      This package is currently <a href="/status/reject_list/">reject_listed</a> and will not have any new test runs.
     </div>
   <% end %>
 

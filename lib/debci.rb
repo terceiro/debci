@@ -3,7 +3,7 @@ Encoding.default_external = Encoding::UTF_8
 require 'shellwords'
 
 require 'debci/config'
-require 'debci/blacklist'
+require 'debci/reject_list'
 
 module Debci
   class CommandFailed < RuntimeError
@@ -14,8 +14,8 @@ module Debci
       @config ||= Debci::Config.new
     end
 
-    def blacklist
-      @blacklist ||= Debci::Blacklist.new
+    def reject_list
+      @reject_list ||= Debci::RejectList.new
     end
 
     def config!(data)
@@ -23,7 +23,7 @@ module Debci
         ENV["debci_#{k}"] = v
       end
       @config = nil
-      @blacklist = nil
+      @reject_list = nil
     end
 
     def log(*str)

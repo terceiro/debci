@@ -1,5 +1,5 @@
 module Debci
-  class Blacklist
+  class RejectList
     def initialize
       @config_dir = Debci.config.config_dir
       @suite_list = Debci.config.suite_list
@@ -72,7 +72,7 @@ module Debci
     end
 
     def packages
-      # A package is blacklisted only if it is blacklisted for all suites,
+      # A package is rejectlisted only if it is rejectlisted for all suites,
       # architectures and versions.
       @packages ||= data.keys.select { |key| !key.include?("*") && include?(key) }
     end
@@ -80,35 +80,38 @@ module Debci
     def data
       @data ||=
         begin
+          reject_list_file = File.join(@config_dir, 'reject_list')
           blacklist_file = File.join(@config_dir, 'blacklist')
-          if File.exist?(blacklist_file)
-            data = {}
-            reason = ''
-            File.readlines(blacklist_file).each do |line|
-              if line =~ /^\s*$/
-                true # skip blank lines
-              elsif line =~ /^\s*#/
-                old_str = %r{(https?://\S*)}
-                new_str = '<a href="\1">\1</a>'
-                reason << line.sub(/^\s*#\s*/, '').gsub(old_str, new_str)
-              else
-                pkg, suite, arch, version = line.strip.split
+          unless File.exist?(reject_list_file)
+            return {} unless File.exist?(blacklist_file)
 
-                suite ||= '*'
-                arch ||= '*'
-                version ||= '*'
-
-                data[pkg] ||= {}
-                data[pkg][suite] ||= {}
-                data[pkg][suite][arch] ||= {}
-                data[pkg][suite][arch][version] = reason
-                reason = ''
-              end
-            end
-            data
-          else
-            {}
+            Debci.warn("#{blacklist_file} is deprecated; please rename it to #{reject_list_file}")
+            reject_list_file = blacklist_file
           end
+          data = {}
+          reason = ''
+          File.readlines(reject_list_file).each do |line|
+            if line =~ /^\s*$/
+              true # skip blank lines
+            elsif line =~ /^\s*#/
+              old_str = %r{(https?://\S*)}
+              new_str = '<a href="\1">\1</a>'
+              reason << line.sub(/^\s*#\s*/, '').gsub(old_str, new_str)
+            else
+              pkg, suite, arch, version = line.strip.split
+
+              suite ||= '*'
+              arch ||= '*'
+              version ||= '*'
+
+              data[pkg] ||= {}
+              data[pkg][suite] ||= {}
+              data[pkg][suite][arch] ||= {}
+              data[pkg][suite][arch][version] = reason
+              reason = ''
+            end
+          end
+          data
         end
     end
   end

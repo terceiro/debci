@@ -27,13 +27,21 @@ _process_whitelist() {
   fi
 }
 
-blacklist="${debci_config_dir}/blacklist"
-if [ -e "$blacklist" ]; then
+_process_reject_list() {
   for pkg in $(_process_whitelist); do
-    if ! grep -q "^\s*${pkg}\s*$" "$blacklist"; then
+    if ! grep -q "^\s*${pkg}\s*$" "$1"; then
       echo "$pkg"
     fi
   done
+}
+
+blacklist="${debci_config_dir}/blacklist"
+reject_list="${debci_config_dir}/reject_list"
+if [ -e "$blacklist" ]; then
+  echo "W: blacklist is deprecated, use reject_list instead" >&2
+  _process_reject_list "$blacklist"
+elif [ -e "$reject_list" ]; then
+  _process_reject_list "$reject_list"
 else
   _process_whitelist
 fi

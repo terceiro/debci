@@ -54,7 +54,7 @@ module Debci
         enqueue = true
         status = nil
         date = nil
-        if Debci.blacklist.include?(pkg, suite: suite, arch: arch) || !valid_package_name?(pkg)
+        if Debci.reject_list.include?(pkg, suite: suite, arch: arch) || !valid_package_name?(pkg)
           enqueue = false
           status = 'fail'
           date = Time.now
