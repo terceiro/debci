@@ -36,9 +36,17 @@ if [ "$distro" = debian ]; then
   done
 fi
 
+# convert apt proxy pointing to the VM's host back to localhost
+proxy_opt=
+RES=`chroot "${rootfs}" apt-config shell PROXY Acquire::http::Proxy`
+eval "$RES"
+if [ -n "$PROXY" ]; then
+  proxy_opt="-o Acquire::http::Proxy=$(echo "${PROXY}" | sed -e 's/10.0.2.2/127.0.0.1/')"
+fi
+
 DEBIAN_FRONTEND=noninteractive \
   chroot "$rootfs"  \
-  apt-get install dpkg-dev ca-certificates -q -y --no-install-recommends
+  apt-get install $proxy_opt dpkg-dev ca-certificates -q -y --no-install-recommends
 
 DEBIAN_FRONTEND=noninteractive \
   chroot "$rootfs"  \
