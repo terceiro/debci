@@ -53,9 +53,7 @@ DEBIAN_FRONTEND=noninteractive \
   apt-get clean
 
 chroot "$rootfs"  \
-  adduser \
-    --system \
-    --disabled-password \
-    --shell /bin/sh \
+  useradd \
     --home /home/debci \
+    --create-home \
     debci
