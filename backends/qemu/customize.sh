@@ -46,6 +46,7 @@ DEBIAN_FRONTEND=noninteractive \
 
 chroot "$rootfs"  \
   adduser \
+    --system \
     --disabled-password \
     --shell /bin/sh \
     --home /home/debci \
