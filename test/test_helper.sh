@@ -29,7 +29,7 @@ setUp() {
   mkdir -p $__tmpdir/data
   mkdir -p $__tmpdir/config
   mkdir -p $__tmpdir/lock
-  cat > "$__tmpdir/config/whitelist" <<EOF
+  cat > "$__tmpdir/config/seed_list" <<EOF
 ruby
 ruby-ffi
 rubygems-integration

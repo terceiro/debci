@@ -1,6 +1,6 @@
 Files you may want to put in this directory:
 
-- whitelist
+- seed_list
 - reject_list
 - debci.conf: main debci configuration file
 - conf.d/*.conf: debci configuration snippets. They need to match

@@ -17,9 +17,17 @@ if [ -z "${WORKER_START_TIMESTAMP:-}" ]; then
   exit 1
 fi
 
+whitelist="${debci_config_dir}/whitelist"
+seed_list="${debci_config_dir}/seed_list"
+
+if [ -e "${whitelist}" ]; then
+  echo "W: whitelist is deprecated, rename it to seed_list instead" >&2
+  seed_list="$whitelist"
+fi
+
 requested_packages="$@"
 if [ -z "$requested_packages" ]; then
-  requested_packages=$(cat $debci_config_dir/whitelist)
+  requested_packages=$(cat "$seed_list")
 fi
 
 shopt -s nullglob
