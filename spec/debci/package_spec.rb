@@ -70,10 +70,10 @@ describe Debci::Package do
     expect(prefixes).to include('n')
   end
 
-  it 'may be blacklisted' do
+  it 'may be rejectlisted' do
     pkg = Debci::Package.new(name: 'mypkg')
-    allow(Debci.blacklist).to receive(:include?).with('mypkg', {}).and_return(true)
-    expect(pkg).to be_blacklisted
+    allow(Debci.reject_list).to receive(:include?).with('mypkg', {}).and_return(true)
+    expect(pkg).to be_reject_listed
   end
 
   context 'validating package names' do

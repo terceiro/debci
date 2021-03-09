@@ -76,14 +76,14 @@ describe Debci::HTML do
 
   context 'producing status pages' do
     let(:h) { Debci::HTML.new }
-    let(:blacklist_data) do
+    let(:reject_list_data) do
       { "foobar" => { "*" => { "*" => { "*" => "" } } } }
     end
-    it 'produces blacklist page' do
-      allow_any_instance_of(Debci::Blacklist).to receive(:data).and_return(blacklist_data)
-      h.blacklist
+    it 'produces rejectlist page' do
+      allow_any_instance_of(Debci::RejectList).to receive(:data).and_return(reject_list_data)
+      h.reject_list
 
-      page = html / 'status/blacklist/index.html'
+      page = html / 'status/reject_list/index.html'
       expect(page).to exist
     end
   end

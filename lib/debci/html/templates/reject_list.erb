@@ -1,0 +1,47 @@
+<div class="row">
+  <div class="col-md-12">
+    <h1 class='page-header'>Status <small>/ RejectList</small></h1>
+    <%== @status_nav %>
+    <table class='table table-striped'>
+      <thead>
+        <tr>
+          <th>Package</th>
+          <th>Suite</th>
+          <th>Architecture</th>
+          <th>Version</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% data = @reject_list.data %>
+        <% data.keys.each do |package| %>
+          <% data[package].keys.each do |suite| %>
+            <% data[package][suite].keys.each do |arch| %>
+              <% data[package][suite][arch].keys.each do |version| %>
+                <tr>
+                  <td><a href="/packages/<%= Debci::Package.prefix(package) %>/<%= package %>/"><%= package %></a></td>
+                  <td>
+                    <% if suite == '*'%>
+                      <%= "All" %>
+                    <% else %>
+                      <%= suite %>
+                    <% end %>
+                  </td>
+                  <td>
+                    <% if arch == '*' %>
+                      <%= "All" %>
+                    <% else %>
+                      <%= arch %>
+                    <% end %>
+                  </td>
+                  <td><%= version %></td>
+                  <td><%== Debci.reject_list.comment(package, suite: suite, arch: arch, version: version) %></td>
+                </tr>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

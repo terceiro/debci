@@ -100,8 +100,8 @@ describe Debci::API do
         post '/api/v1/test/%<suite>s/%<arch>s/mypackage' % { suite: suite, arch: arch, priority: 8 }
       end
 
-      it 'rejects blacklisted package' do
-        allow_any_instance_of(Debci::Blacklist).to receive(:include?)
+      it 'rejects rejectlisted package' do
+        allow_any_instance_of(Debci::RejectList).to receive(:include?)
           .with('mypackage', suite: suite, arch: arch).and_return(true)
         post '/api/v1/test/%<suite>s/%<arch>s/mypackage' % { suite: suite, arch: arch }
         expect(last_response.status).to eq(400)
@@ -162,9 +162,9 @@ describe Debci::API do
         expect(last_response.status).to eq(400)
       end
 
-      it 'marks blacklisted packages as failed right away' do
-        allow_any_instance_of(Debci::Blacklist).to receive(:include?).with('package1', suite: suite, arch: arch).and_return(true)
-        allow_any_instance_of(Debci::Blacklist).to receive(:include?).with('package2', suite: suite, arch: arch).and_return(false)
+      it 'marks rejectlisted packages as failed right away' do
+        allow_any_instance_of(Debci::RejectList).to receive(:include?).with('package1', suite: suite, arch: arch).and_return(true)
+        allow_any_instance_of(Debci::RejectList).to receive(:include?).with('package2', suite: suite, arch: arch).and_return(false)
 
         expect_any_instance_of(Debci::Job).to receive(:enqueue).once
 

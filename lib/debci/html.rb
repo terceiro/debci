@@ -38,6 +38,7 @@ module Debci
         html.status_slow('status/slow/index.html')
         html.status_pending_jobs('status/pending')
         html.status_failing('status/failing')
+        html.reject_list
         html.blacklist
         html.platform_specific_issues('status/platform-specific-issues')
       end
@@ -299,10 +300,22 @@ module Debci
       end
     end
 
-    def blacklist
+    def reject_list
       @status_nav = load_template(:status_nav)
-      @blacklist = Debci.blacklist
-      expand_template(:blacklist, 'status/blacklist/index.html')
+      @reject_list = Debci.reject_list
+      expand_template(:reject_list, 'status/reject_list/index.html')
+    end
+
+    def blacklist
+      abs_filename = File.join(root_directory, 'status/blacklist/index.html')
+      FileUtils.mkdir_p(File.dirname(abs_filename))
+
+      File.open(abs_filename, 'w') do |f|
+        blacklist_html = File.join(File.dirname(__FILE__), 'html/templates/blacklist.erb')
+        File.open(blacklist_html, 'r') do |html|
+          f.write(html.read)
+        end
+      end
     end
 
     # expand { SUITE } macro in URLs

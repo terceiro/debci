@@ -28,7 +28,7 @@ module Debci
     #     ]
     #
     # Each cell of the matrix contains a Debci::Job object.
-    # Note: Contains statuses which are not blacklisted
+    # Note: Contains statuses which are not rejectlisted
     def status
       @status ||=
         begin
@@ -83,12 +83,12 @@ module Debci
       self.class.prefix(name)
     end
 
-    def blacklisted?(params = {})
-      Debci.blacklist.include?(name, params)
+    def reject_listed?(params = {})
+      Debci.reject_list.include?(name, params)
     end
 
-    def blacklist_comment(params = {})
-      Debci.blacklist.comment(name, params)
+    def reject_list_comment(params = {})
+      Debci.reject_list.comment(name, params)
     end
 
     def last_updated_at(suite = nil)
