@@ -43,3 +43,14 @@ shell-best-practices:
     - apt-get install -qy shellcheck
   script:
     - ./tools/check-shell-scripts.sh
+
+codespell:
+  stage: test
+  needs: []
+  image: 'debian:unstable'
+  before_script:
+    - apt-get -q update
+    - apt-get -q -y dist-upgrade
+    - apt-get install -qy codespell
+  script:
+    - codespell

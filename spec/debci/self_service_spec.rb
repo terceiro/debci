@@ -72,7 +72,7 @@ describe Debci::SelfService do
       expect(last_response.status).to eq(400)
     end
 
-    it 'submits a task succesfully from the form' do
+    it 'submits a task successfully from the form' do
       post '/user/foo@bar.com/test/submit', pin_packages: '', trigger: 'test_trigger', package: 'test-package', suite: suite, arch: [arch]
       expect(last_response.status).to eq(201)
       job = Debci::Job.last
@@ -110,7 +110,7 @@ describe Debci::SelfService do
       login('foo@bar.com')
     end
 
-    it 'submits a task succesfully on a valid json file upload' do
+    it 'submits a task successfully on a valid json file upload' do
       test_json = [
         {
           "suite": suite,

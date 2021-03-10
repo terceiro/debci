@@ -106,7 +106,7 @@ else
     log.puts "Failed :-("
     rc = 4
   when 9
-    log.puts "Some error ocurred"
+    log.puts "Some error occurred"
     rc = 16
   end
 end

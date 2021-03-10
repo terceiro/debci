@@ -3,7 +3,7 @@ set -u
 
 . $(dirname $0)/test_helper.sh
 
-# let's mess with a seperate queue just for this test
+# let's mess with a separate queue just for this test
 export debci_amqp_queue="${debci_amqp_queue}-stress"
 
 request() {

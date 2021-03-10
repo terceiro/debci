@@ -52,7 +52,7 @@ deb:
 ruby-console:
 	./bin/debci shell
 
-check: all check-ui-and-docs check-ruby-style check-shell spec spec-postgresql functional-tests
+check: all check-ui-and-docs check-ruby-style check-shell codespell spec spec-postgresql functional-tests
 
 check-ui-and-docs: all
 	test -d public/doc
@@ -67,9 +67,12 @@ check-ruby-style:
 check-shell:
 	./tools/check-shell-scripts.sh
 
+codespell:
+	if type codespell; then codespell; fi
+
 test: check
 
-quick-check: check-ruby-style check-shell spec
+quick-check: check-ruby-style check-shell codespell spec
 
 doc: public/doc/index.html public/doc/architecture.svg
 

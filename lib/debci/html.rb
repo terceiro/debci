@@ -146,22 +146,22 @@ module Debci
     end
 
     class PackageJSON < Rooted
-      def history(hist)
-        package = hist.package
-        suite = hist.suite
-        arch = hist.arch
+      def history(job_history)
+        package = job_history.package
+        suite = job_history.suite
+        arch = job_history.arch
         write_json(
-          hist,
+          job_history,
           [suite, arch, package.prefix, package.name, 'history.json']
         )
       end
 
-      def latest(hist)
-        package = hist.package
-        suite = hist.suite
-        arch = hist.arch
+      def latest(job_history)
+        package = job_history.package
+        suite = job_history.suite
+        arch = job_history.arch
         write_json(
-          hist.last,
+          job_history.last,
           [suite, arch, package.prefix, package.name, 'latest.json']
         )
       end
@@ -181,11 +181,11 @@ module Debci
     end
 
     class Autopkgtest < Rooted
-      def link_latest(hist)
-        package = hist.package
-        suite = hist.suite
-        arch = hist.arch
-        job = hist.last
+      def link_latest(job_history)
+        package = job_history.package
+        suite = job_history.suite
+        arch = job_history.arch
+        job = job_history.last
         return unless job
 
         link = root / suite / arch / package.prefix / package.name / 'latest-autopkgtest'
@@ -246,7 +246,7 @@ module Debci
     end
 
     def status_alerts(filename)
-      # Packages with atleast one visible tmpfail status
+      # Packages with at least one visible tmpfail status
       @tmpfail = Debci::Job.tmpfail.visible
       @alert_number = @tmpfail.length
       expand_template(:status_alerts, filename)

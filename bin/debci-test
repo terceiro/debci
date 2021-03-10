@@ -18,7 +18,7 @@ Options:
   --pin-packages RELEASE=pkgname,src:srcname,...
       Force specific packages to be installed from the given RELEASE. The
       format is the same as the --pin-packages option from autopkgtest. RELEASE
-      will be automatically addded to the testbed APT sources.
+      will be automatically added to the testbed APT sources.
   -i ID, --run-id ID
       Use the specific ID as the run id for this test run, instead of
       generating one based on the current date.
@@ -85,7 +85,7 @@ process_package() {
   # XXX This is a hack to handle the fact that the --add-apt-source option
   # has spaces in it. $options is separated by | with a bogus first item
   # (to avoid an empty first argument; it is split on | into "$@", then
-  # the first item is dicarded. "$@" is then used when calling the backend
+  # the first item is discarded. "$@" is then used when calling the backend
   # test-package command
   ########################################################################
   old_IFS="$IFS"
