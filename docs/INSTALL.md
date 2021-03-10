@@ -56,7 +56,7 @@ default. To make it connect to a remote rabbitmq-server you can do the same as
 above.
 
 Note that when first installed, `debci-worker` will first build a testbed (a
-chroot, container, or a virtual machine image, depening on the selected
+chroot, container, or a virtual machine image, depending on the selected
 backend), and only after that is finished the worker will be able to start
 processing test jobs.
 

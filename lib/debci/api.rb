@@ -288,7 +288,7 @@ module Debci
 
       Other parameters:
 
-      * `tests`: a JSON object decribing the tests to be executed. This parameter can
+      * `tests`: a JSON object describing the tests to be executed. This parameter can
         be either a file upload or a regular POST parameter.
       * `priority`: an integer between 1 and 10 describing the priority to assign the
         requested tests

@@ -81,7 +81,7 @@ debci (2.12.1) unstable; urgency=medium
   * Debci::HTML: fix creation of global status.json
   * migrations: fix creation of Debci::PackageStatus
   * Debci::HTML: fix blacklist
-  * Debci::Job.receive: handle repeating previously interruped receivements
+  * Debci::Job.receive: handle repeating previously interrupted receivements
 
  -- Antonio Terceiro <terceiro@debian.org>  Thu, 14 May 2020 14:24:48 -0300
 
@@ -186,7 +186,7 @@ debci (2.7) unstable; urgency=medium
   * self_service_history.erb: get fields directly as method calls
   * Debci::Status.from_file: always set a package name
   * Debci::Blacklist: add support for wildcards in package names
-  * self-service: job history: improve nagivation links
+  * self-service: job history: improve navigation links
   * Debci::SelfService: make sure @user is set when available
   * Debci::Blacklist: avoid crashes when passed nil
   * debci-autopkgtest: record package/suite/arch inside testbed
@@ -613,7 +613,7 @@ debci (1.8) unstable; urgency=medium
   * debci test: Extract autopkgtest calls into a central helper program
   * backends/lxc: drop the unstable → sid renaming
   * Add script to run a Ruby shell
-  * Move enqueing process to Ruby for performance reasons
+  * Move enqueuing process to Ruby for performance reasons
   * debian/control
     * replace build dependency on dh-systemd with debhelper (>= 9.20160709)
     * Bump Standards-Version to 4.1.3; no changes needed
@@ -987,7 +987,7 @@ debci (0.10.2) unstable; urgency=medium
 
   [ Antonio Terceiro ]
   * lib/functions.sh: accept any value of Testsuite matching `autopkgtest`
-    insted of only exact matches when looking for source packages with test
+    instead of only exact matches when looking for source packages with test
     suites. This will allow detecting packages with specialized values such as
     autopkgtest-pkg-ruby and autopkgtest-pkg-perl.
 
@@ -1058,7 +1058,7 @@ debci (0.8.1) unstable; urgency=medium
   * debci-test: revert to updating only package-specific data; it turns out
     that updating global data after every package is too expensive.
   * debci-batch: update global data every 1 hour or so
-  * debci-generate-index: avoid crash when regenerating data for extenal
+  * debci-generate-index: avoid crash when regenerating data for external
     consumption from scratch. This process is not completely idempotent yet,
     so it needs more work.
 
@@ -1067,7 +1067,7 @@ debci (0.8.1) unstable; urgency=medium
 debci (0.8) unstable; urgency=medium
 
   * debci-test: update global data files, not only package-specific data file,
-    after each successfull test run.
+    after each successful test run.
   * debci-generate-index: ensure that no two instances can run at the same
     time.
 
