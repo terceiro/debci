@@ -52,7 +52,7 @@ deb:
 ruby-console:
 	./bin/debci shell
 
-check: all check-ui-and-docs check-ruby-style spec spec-postgresql functional-tests
+check: all check-ui-and-docs check-ruby-style check-shell spec spec-postgresql functional-tests
 
 check-ui-and-docs: all
 	test -d public/doc
@@ -64,9 +64,12 @@ check-ui-and-docs: all
 check-ruby-style:
 	if type rubocop; then rubocop; fi
 
+check-shell:
+	./tools/check-shell-scripts.sh
+
 test: check
 
-quick-check: check-ruby-style spec
+quick-check: check-ruby-style check-shell spec
 
 doc: public/doc/index.html public/doc/architecture.svg
 
