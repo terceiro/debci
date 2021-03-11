@@ -6,7 +6,7 @@ set -eu
 
 get_packages() {
   if [ $# -eq 0 ]; then
-    set -- $(shuf --head-count=50 config/whitelist)
+    set -- $(shuf --head-count=50 config/seed_list)
   fi
   echo "$@"
 }

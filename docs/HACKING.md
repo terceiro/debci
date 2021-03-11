@@ -86,7 +86,7 @@ For that, you can use helper script to to the setup for you:
 
 The above script will create:
 
-* a package whitelist in `config/whitelist`; this limits the set of packages
+* a package seed_list in `config/seed_list`; this limits the set of packages
    that will be worked on, reducing the time it takes for processing everything
    on your local tests.
 * a configuration file at `config/conf.d/dev.conf` which sets architectures and

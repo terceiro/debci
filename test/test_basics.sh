@@ -42,13 +42,13 @@ test_packages_without_runs_yet() {
 }
 
 test_status_no_runs() {
-  echo 'mypkg' > $debci_config_dir/whitelist
+  echo 'mypkg' > $debci_config_dir/seed_list
   status="$(debci status -l)"
   (echo "$status" | grep -q '^mypkg\s*unknown$') || fail "invalid status: $status"
 }
 
 test_single_package() {
-  echo "mypkg" > $debci_config_dir/whitelist
+  echo "mypkg" > $debci_config_dir/seed_list
   result_pass start_worker
   debci batch
   wait_for_results
@@ -59,7 +59,7 @@ test_single_package() {
 # dependency change
 test_batch_skip_after_result() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
-  echo "mypkg" > $debci_config_dir/whitelist
+  echo "mypkg" > $debci_config_dir/seed_list
   result_pass start_worker
   debci batch
   wait_for_results
@@ -78,7 +78,7 @@ test_batch_skip_after_result() {
 # batch re-runs a package after it previously tmpfailed
 test_batch_rerun_after_tmpfail() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
-  echo "mypkg" > $debci_config_dir/whitelist
+  echo "mypkg" > $debci_config_dir/seed_list
   result_tmpfail start_worker
   debci batch
   wait_for_results
@@ -95,7 +95,7 @@ test_batch_rerun_after_tmpfail() {
 # batch re-runs a package on changed dependencies
 test_batch_rerun_dep_change() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
-  echo "mypkg" > $debci_config_dir/whitelist
+  echo "mypkg" > $debci_config_dir/seed_list
   result_pass start_worker
   debci batch
   wait_for_results
@@ -113,7 +113,7 @@ test_batch_rerun_dep_change() {
 # batch runs a package without changes with --force
 test_batch_force() {
   export DEBCI_FAKE_DEPS="foo 1.2.3"
-  echo "mypkg" > $debci_config_dir/whitelist
+  echo "mypkg" > $debci_config_dir/seed_list
   result_pass start_worker
   debci batch
   wait_for_results
@@ -129,7 +129,7 @@ test_batch_force() {
 
 test_batch_wont_enqueue_twice() {
   start_rabbitmq_server
-  echo "mypkg" > $debci_config_dir/whitelist
+  echo "mypkg" > $debci_config_dir/seed_list
   debci batch --force
   debci batch --force
 

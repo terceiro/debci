@@ -7,6 +7,7 @@
 /config/blacklist
 /config/reject_list
 /config/whitelist*
+/config/seed_list*
 /config/debci
 /config/*.html
 /config/debci.conf

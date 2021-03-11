@@ -4,16 +4,20 @@ set -eu
 
 configdir=`./bin/debci config --values-only config_dir`
 
-WHITELIST='autodep8
+SEED_LIST='autodep8
 pinpoint
 python-whitenoise
 ruby-defaults
 rubygems-integration
 vim-addon-manager'
 
-if [ ! -f $configdir/whitelist ]; then
-  echo "$WHITELIST" > "$configdir/whitelist"
-  tail -n 1000 config/whitelist config/conf.d/*.conf || :
+if [ -e $configdir/whitelist ]; then
+  mv "${configdir}/whitelist" "${configdir}/seed_list"
+fi
+
+if [ ! -f $configdir/seed_list ]; then
+  echo "$SEED_LIST" > "${configdir}/seed_list"
+  tail -n 1000 config/seed_list config/conf.d/*.conf || :
   echo
 fi
 
