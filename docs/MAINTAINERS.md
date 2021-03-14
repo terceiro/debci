@@ -217,8 +217,12 @@ For more details, see the documentation for the `autopkgtest` package.
 Test suites must be included in source packages as defined in
 the [DEP-8 specification](http://dep.debian.net/deps/dep8/). In short.
 
-* The fact that the package has a test suite must be declared by adding a
-  `Testsuite: autopkgtest` entry to the source stanza in `debian/control`.
+* The fact that the package has a test suite must be declared in the source
+  control file. With dpkg-source version 1.17.11 or later this is added
+  automatically when debian/tests/control is present.
+  * if the package is built with dpkg earlier than 1.17.11, you need to
+    add an `Testsuite: autopkgtest` entry to the source stanza in
+    `debian/control`.
   * if the package is built with dpkg earlier than 1.17.6, you need to use
     `XS-Testsuite: autopkgtest` instead.
 * tests are declared in `debian/tests/control`.
