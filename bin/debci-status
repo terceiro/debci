@@ -43,7 +43,7 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-if !options[:all] && ARGV.size == 0
+if !options[:all] && ARGV.empty?
   puts "debci-status: when not using -l/--all, one or more PACKAGEs have to be specified."
   exit 1
 end
