@@ -1,5 +1,9 @@
 # Deploying debci to your own infrastructure
 
+This document describes how to install debci for production usage. If you are
+trying to setup a development environment, see
+{file:docs/HACKING.md How to setup a development environment} instead.
+
 ## Architecture
 
 The following picture represents the debci architecture:

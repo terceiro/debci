@@ -20,11 +20,6 @@ Additionally, we have these extra tutorial-style documentation:
   is a paper describing patterns (as in "design patterns") for writing tests
   for Debian packages.
 
-## Deployment
-
-See the {file:docs/INSTALL.md installation guide} for instructions on how to
-deploy debci to your own infrastructure.
-
 ## Reporting Bugs
 
 Please report bugs against the [debci package](https://bugs.debian.org/debci)
@@ -35,6 +30,11 @@ in the [Debian BTS](https://bugs.debian.org/).
 * Get source: `git clone https://salsa.debian.org/ci-team/debci.git`
 * [Browse source](https://salsa.debian.org/ci-team/debci)
 * {file:docs/HACKING.md How to setup a development environment}
+
+## Production deployments
+
+See the {file:docs/INSTALL.md installation guide} for instructions on how to
+deploy debci to your own infrastructure.
 
 ## Contact
 
