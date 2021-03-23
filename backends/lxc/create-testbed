@@ -2,10 +2,10 @@
 
 set -eu
 
-base=$(readlink -f $(dirname $(readlink -f $0))/../..)
-. $base/lib/environment.sh
+base=$(readlink -f "$(dirname "$(readlink -f "$0")")/../..")
+. "$base/lib/environment.sh"
 
-if [ $(whoami) != root ]; then
+if [ "$(whoami)" != root ]; then
   echo "E: This script must be run as root"
   exit 1
 fi
@@ -17,11 +17,11 @@ if ! which lxc-create >/dev/null; then
 fi
 
 # determine whether it's Debian or Ubuntu
-script=/usr/share/debootstrap/scripts/$debci_suite
-if [ -r $script ]; then
-  if grep -q ubuntu.com $script; then
+script="/usr/share/debootstrap/scripts/${debci_suite:?}"
+if [ -r "$script" ]; then
+  if grep -q ubuntu.com "$script"; then
     distro=ubuntu
-  elif grep -q kali.org $script; then
+  elif grep -q kali.org "$script"; then
     distro=kali
   else
     distro=debian
@@ -42,7 +42,7 @@ fi
 
 # also lookup up proxy in the apt configuration
 if [ -z "$http_proxy" ]; then
-  eval $(apt-config shell http_proxy Acquire::http::Proxy)
+  eval "$(apt-config shell http_proxy Acquire::http::Proxy)"
   if [ -n "$http_proxy" ]; then
     export http_proxy
   fi
@@ -73,20 +73,19 @@ if [ -n "$http_proxy" ]; then
   fi
 fi
 
-container=autopkgtest-${debci_suite}-${debci_arch}
-
 script=$(mktemp --tmpdir debci-lxc-customize.XXXXXXXXXXX.sh)
 if [ "$distro" = debian ]; then
-  echo "cat > /etc/apt/sources.list <<EOF" >> "$script"
-  debci-generate-apt-sources \
-    --source \
-    --buildd \
-    --dbgsym \
-    -- \
-    "$debci_suite" \
-    >> "$script"
-  echo "EOF" >> "$script"
-  echo "while ! apt-get update; do sleep 10; done" >> "$script"
+  {
+    echo "cat > /etc/apt/sources.list <<EOF"
+    debci-generate-apt-sources \
+      --source \
+      --buildd \
+      --dbgsym \
+      -- \
+      "$debci_suite"
+    echo "EOF"
+    echo "while ! apt-get update; do sleep 10; done"
+  } >> "$script"
 fi
 # configure guest proxy
 if [ -n "$GUEST_PROXY" ]; then
@@ -105,4 +104,4 @@ useradd \
   debci
 EOF
 
-autopkgtest-build-lxc $distro $debci_suite $debci_arch $script
+autopkgtest-build-lxc "$distro" "$debci_suite" "${debci_arch:?}" "$script"
