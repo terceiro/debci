@@ -11,6 +11,7 @@ rc=0
 autopkgtest \
   --no-built-binaries \
   --setup-commands="echo '${debci_test_package} ${debci_suite}/${debci_arch}' > /var/tmp/debci.pkg 2>&1 || true" \
+  --setup-commands="echo 'Acquire::Retries \"10\";' > /etc/apt/apt.conf.d/75retry 2>&1 || true" \
   ${debci_autopkgtest_args:-} \
   "$@" || rc=$?
 
