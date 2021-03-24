@@ -242,14 +242,6 @@ Naming/RescuedExceptionsVariableName:
     - 'lib/debci/self_service.rb'
 
 # Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: always, conditionals
-Style/AndOr:
-  Exclude:
-    - 'backends/fake/test-package'
-
-# Offense count: 1
 Style/CaseEquality:
   Exclude:
     - 'lib/debci/config.rb'
