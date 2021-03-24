@@ -46,7 +46,7 @@ optparse = OptionParser.new do |opts|
 end
 optparse.parse!
 
-if ARGV.length != 1 or outdir.nil?
+if ARGV.length != 1 || outdir.nil?
   log.puts optparse
   puts log.string
   exit(1)
