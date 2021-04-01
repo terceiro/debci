@@ -53,7 +53,7 @@ module Debci
 
     # FIXME: move to Debci::PackageStatus
     scope :slow, lambda {
-      all_status.where('duration_seconds > :time', time: 1.hour)
+      all_status.where('duration_seconds > :time', time: Debci.config.slow_tests_duration_minutes.minutes)
     }
 
     after_save do |job|
