@@ -162,11 +162,14 @@
   </table>
   <h4>Pin-packages Array</h4>
   <ul>
-    <li>An array of Strings with at least 2 elements</li>
-    <li>The last element should be a suite and can only be used <strong>once</strong>, Suites available: <%= settings.suites %></li>
-    <li><code>:bar</code> can be added to the pin-package to retrieve all binaries for the specified pin-package</li>
+    <li>An array of arrays, wich each item containing 2 elements</li>
+    <li>The first element must be a comma-separated list of package names</li>
+    <li>The second slement must be a suite name, which can only be used <strong>once</strong>. Suites available: <%= settings.suites %></li>
+    <li>You can use <code>scr:bar</code> to pin all binaries from the specified source package <code>bar</code></li>
   </ul>
-  <p>Example JSON file</p>
+  <h4>Example JSON file</h4>
+  <p>The example below requests a test of <code>testpackage</code>, pulling all binaries from source <code>bar</code> from <code>unstable</code>, as well as <code>foo</code> and all <code>baz</code> binaries from <code>experimental</code>.
+  </p>
   <pre><code>[
   {
     "arch": ["amd64"],
@@ -177,7 +180,7 @@
         "package": "testpackage",
         "pin-packages": [
           ["src:bar", "unstable"],
-          ["foo", "src:bar", "experimental"]
+          ["foo,src:baz", "experimental"]
         ]
       }
     ]
