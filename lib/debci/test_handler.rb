@@ -29,7 +29,7 @@ module Debci
         request_suite = request['suite']
         errors.push("No suite at request index #{index}") if request_suite == ''
         errors.push("Wrong suite (#{request_suite}) at request index #{index}, available suites: #{Debci.config.suite_list.join(', ')}") unless Debci.config.suite_list.include?(request_suite)
-        archs = request['arch'].reject(&:empty?)
+        archs = Array(request['arch']).reject(&:empty?)
         errors.push("No archs are specified at request index #{index}") if archs.empty?
         errors.push("Wrong archs (#{archs.join(', ')}) at request index #{index}, available archs: #{Debci.config.arch_list.join(', ')}") if (Debci.config.arch_list & archs).length != archs.length
         request['tests'].each_with_index do |t, i|
