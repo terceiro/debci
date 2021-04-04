@@ -94,7 +94,7 @@ module Debci
         archs.each do |arch|
           request_tests(test_request['tests'], suite, arch, @user)
         end
-      rescue StandardError => error
+      rescue InvalidRequest => error
         @error_msg = error
         halt(400, erb(:self_service_test))
       end
@@ -110,22 +110,25 @@ module Debci
       end
     end
 
+    class InvalidRequest < RuntimeError
+    end
+
     def validate_form_submission(package, suite, archs)
-      raise 'Please enter a valid package name' unless valid_package_name?(package)
-      raise 'Please select a suite' if suite == ''
-      raise 'Please select an architecture' if archs.empty?
+      raise InvalidRequest.new('Please enter a valid package name') unless valid_package_name?(package)
+      raise InvalidRequest.new('Please select a suite') if suite == ''
+      raise InvalidRequest.new('Please select an architecture') if archs.empty?
     end
 
     post '/:user/test/upload' do
       begin
-        raise "Please select a JSON file to upload" if params[:tests].nil?
+        raise InvalidRequest.new("Please select a JSON file to upload") if params[:tests].nil?
         test_requests = JSON.parse(File.read(params[:tests][:tempfile]))
         errors = validate_batch_test(test_requests)
-        raise errors.join("<br>") unless errors.empty?
+        raise InvalidRequest.new(errors.join("; ")) unless errors.empty?
         request_batch_tests(test_requests, @user)
       rescue JSON::ParserError => error
         halt(400, "Invalid JSON: #{error}")
-      rescue StandardError => error
+      rescue InvalidRequest => error
         @error_msg = error
         halt(400, erb(:self_service_test))
       else
