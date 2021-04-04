@@ -1,6 +1,4 @@
 require 'json'
-require 'kaminari/core'
-require 'kaminari/activerecord'
 require 'securerandom'
 
 require 'debci/app'

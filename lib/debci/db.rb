@@ -1,5 +1,7 @@
 require 'debci'
 require 'active_record'
+require 'kaminari/core'
+require 'kaminari/activerecord'
 
 module Debci
   module DB
