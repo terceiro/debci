@@ -1,6 +1,4 @@
 require 'json'
-require 'kaminari/core'
-require 'kaminari/activerecord'
 require 'securerandom'
 
 require 'debci/app'
@@ -168,7 +166,7 @@ module Debci
       @current_page = params[:page] || 1
       @history = @history.page(@current_page).per(20)
       @total_pages = @history.total_pages
-      @pages = self.class.get_page_range(Integer(@current_page), @total_pages)
+      @pages = get_page_range(Integer(@current_page), @total_pages)
 
       # generate query params
       query_params = {}
@@ -181,14 +179,6 @@ module Debci
         end
       end
       erb :self_service_history, locals: { query_params: query_params, arch_filter: arch_filter, suite_filter: suite_filter, package_filter: package_filter, trigger_filter: trigger_filter }
-    end
-
-    def self.get_page_range(current, total)
-      full_range = (1..total)
-      middle = ((current - 5)..(current + 5)).select { |i| full_range.include?(i) }
-      start = middle.include?(1) ? [] : [1, nil]
-      finish = middle.include?(total) ? [] : [nil, total]
-      start + middle + finish
     end
   end
 end

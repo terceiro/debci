@@ -1,0 +1,29 @@
+<% if @total_pages > 1 %>
+  <nav class="text-center" aria-label="Pagination">
+    <ul class="pagination">
+      <% if @current_page.to_i != 1 %>
+      <li>
+        <a href="?<%= URI.encode_www_form(query.update(page: @current_page.to_i - 1)) %>" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <% end %>
+      <% for n in @pages %>
+      <li class="<%= "active" if @current_page.to_i == n %>">
+        <% if n %>
+          <a href="?<%= URI.encode_www_form(query.update(page: n)) %>"><%= n %></a>
+        <% else %>
+          <a>…</a>
+        <% end %>
+      </li>
+      <% end %>
+      <% if @current_page.to_i != @total_pages %>
+      <li>
+        <a href="?<%= URI.encode_www_form(query.update(page: @current_page.to_i + 1)) %>" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+      <% end %>
+    </ul>
+  </nav>
+<% end %>

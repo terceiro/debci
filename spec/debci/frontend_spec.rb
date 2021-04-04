@@ -96,4 +96,18 @@ describe Debci::Frontend do
       expect(last_response.headers['Cache-Control']).to match(/max-age=31556952/)
     end
   end
+
+  context "searching" do
+    it 'finds packages by name' do
+      Debci::Package.create(name: "foobar")
+      get '/packages/-/search', query: "foo"
+      expect(last_response.body).to match(/foobar/)
+    end
+
+    it 'displays second page' do
+      ('a'..'z').each { |i| Debci::Package.create(name: "foobar-#{i}") }
+      get '/packages/-/search', query: "foo", page: "2"
+      expect(last_response.body).to match(/foobar-m/)
+    end
+  end
 end
