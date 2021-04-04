@@ -51,9 +51,12 @@ module Debci
     def expand_pin_packages(test)
       return [] unless test.pinned?
 
-      test.pin_packages.map do |packages, suite|
-        String(packages).split(/\s*,\s*/).map do |pkg|
-          "#{pkg} from #{suite}"
+      test.pin_packages.map do |pin|
+        *packages, suite = pin
+        Array(packages).map do |pkglist|
+          String(pkglist).split(/\s*,\s*/).map do |pkg|
+            "#{pkg} from #{suite}"
+          end
         end
       end.flatten
     end

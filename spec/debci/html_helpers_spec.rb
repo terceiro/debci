@@ -33,7 +33,7 @@ describe Debci::HTMLHelpers do
     end
   end
 
-  context 'expand_pin_packages' do
+  context 'expanding pin_packages' do
     it 'expands no pin_packages to nil' do
       expect(expand_pin_packages(test)).to eq([])
     end
@@ -45,6 +45,11 @@ describe Debci::HTMLHelpers do
 
     it 'expands pin_packages with multiple' do
       test.pin_packages = [["src:rake,src:ruby", "unstable"]]
+      expect(expand_pin_packages(test)).to eq(["src:rake from unstable", "src:ruby from unstable"])
+    end
+
+    it 'expands pin_packages entry with multiple packages' do
+      test.pin_packages = [["src:rake", "src:ruby", "unstable"]]
       expect(expand_pin_packages(test)).to eq(["src:rake from unstable", "src:ruby from unstable"])
     end
 
