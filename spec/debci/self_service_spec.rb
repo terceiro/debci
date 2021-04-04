@@ -182,6 +182,26 @@ describe Debci::SelfService do
       expect(last_response.status).to eq(400)
       expect(Debci::Job.count).to eq(job_count)
     end
+
+    it 'should not crash on missing arch' do
+      test_json = [
+        {
+          "suite": "unstable",
+          "tests": [
+            {
+              "trigger": "testing",
+              "package": "autodep8",
+              "pin-packages": [["src:bar", "unstable"], ["foo", "src:bar", "stable"]]
+            }
+          ]
+        }
+      ]
+      test_file = create_json_file(test_json)
+      job_count = Debci::Job.count
+      post '/user/foo@bar.com/test/upload', tests: Rack::Test::UploadedFile.new(test_file)
+      expect(last_response.status).to eq(400)
+      expect(Debci::Job.count).to eq(job_count)
+    end
   end
 
   context 'history' do
