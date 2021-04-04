@@ -1,2 +1,2 @@
 [codespell]
-skip = ./data,./public/data,./log,./public/doc,./coverage,./.git,./public/jquery.js
+skip = ./data,./public/data,./log,./public/doc,./coverage,./.git,./public/jquery.js,tags
