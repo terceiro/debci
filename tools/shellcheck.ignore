@@ -22,7 +22,6 @@ bin/debci-generate-apt-sources
 bin/debci-setup-chdist
 backends/qemu/test-package
 backends/qemu/create-testbed
-backends/qemu/customize.sh
 backends/schroot/test-package
 backends/schroot/create-testbed
 backends/lxc/test-package
