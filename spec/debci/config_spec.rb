@@ -33,6 +33,10 @@ describe Debci::Config do
       it "knows about #{key}" do
         expect(config.send(key)).to be_a(Integer)
       end
+    elsif [:slow_tests_duration_minutes].include?(key)
+      it "knows about #{key}" do
+        expect(config.send(key)).to be_a(Integer)
+      end
     else
       it "knows about #{key}" do
         expect(config.send(key)).to be_a(String)

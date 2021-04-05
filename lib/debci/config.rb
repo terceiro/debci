@@ -35,6 +35,7 @@ module Debci
     :html_dir,
     :packages_dir,
     :pending_status_per_page,
+    :slow_tests_duration_minutes,
     :status_visible_days,
     :quiet,
     :secrets_dir,
@@ -63,6 +64,7 @@ module Debci
         'data_retention_days' => lambda { |x| x.to_i },
         'status_visible_days' => lambda { |x| x.to_i },
         'failing_packages_per_page' => lambda { |x| x.to_i },
+        'slow_tests_duration_minutes' => lambda { |x| x.to_i }
       }
     end
 
