@@ -93,9 +93,9 @@ start_rabbitmq_server() {
   if [ -n "$TEST_RABBIT_SERVER_DIR" ]; then
     return
   fi
-  TEST_RABBIT_SERVER_DIR=$(mktemp -d --tmpdir debci.rabbitmq.XXXXXX)
+  TEST_RABBIT_SERVER_DIR=$(mktemp -d --tmpdir debci-rabbitmq-$(hostname)-XXXXXX)
   mkdir -p $TEST_RABBIT_SERVER_DIR/log
-  export RABBITMQ_NODENAME=debci-test
+  export RABBITMQ_NODENAME=$(basename "${TEST_RABBIT_SERVER_DIR}")
   export RABBITMQ_NODE_PORT=$TEST_RABBIT_PORT
   env RABBITMQ_MNESIA_BASE=$TEST_RABBIT_SERVER_DIR/mnesia \
     RABBITMQ_LOG_BASE=$TEST_RABBIT_SERVER_DIR/log \
