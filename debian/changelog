@@ -1,3 +1,12 @@
+debci (2.15.1) unstable; urgency=medium
+
+  * test_helper: ensure a unique rabbitmq node name on CI environments.
+    This hopefully fixes the unreliability of the functional tests on
+    ci.debian.net. (Closes: #953947)
+  * debian/tests/integration-test: don't install lxc or schroot
+
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 06 Apr 2021 18:53:57 -0300
+
 debci (2.15) unstable; urgency=medium
 
   * js: drop console.log noise when loading chart data
