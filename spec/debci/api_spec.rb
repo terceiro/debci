@@ -417,5 +417,28 @@ describe Debci::API do
 
       expect(last_response.status).to eq(400)
     end
+
+    it 'rejects to retrigger run_id of a rejectlisted package' do
+      key = Debci::Key.create!(user: theuser).key
+      header 'Auth-Key', key
+
+      package = Debci::Package.create!(name: 'mypackage')
+      user = 'myuser'
+      trigger = 'mypackage/0.0.1'
+      pin_packages = ['src:mypackage', 'unstable']
+      Debci::Job.create(
+        package: package,
+        suite: suite,
+        arch: arch,
+        requestor: user,
+        trigger: trigger,
+        pin_packages: pin_packages
+      )
+      job = Debci::Job.last
+      allow_any_instance_of(Debci::RejectList).to receive(:include?).with(package, suite: suite, arch: arch).and_return(true)
+      post "/api/v1/retry/#{job.run_id}"
+
+      expect(last_response.status).to eq(403)
+    end
   end
 end

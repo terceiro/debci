@@ -133,11 +133,7 @@ module Debci
       get '/retry/:run_id' do
         if @user
           run_id = params[:run_id]
-          begin
-            @original_job = Debci::Job.find(run_id)
-          rescue ActiveRecord::RecordNotFound => error
-            halt(404, "Job ID not known: #{run_id}")
-          end
+          @original_job = get_job_to_retry(run_id)
           erb :retry
         else
           [403, erb(:cant_retry)]
@@ -157,11 +153,7 @@ module Debci
           authenticate_key!
         end
         run_id = params[:run_id]
-        begin
-          j = Debci::Job.find(run_id)
-        rescue ActiveRecord::RecordNotFound => error
-          halt(400, "Job ID not known: #{run_id}")
-        end
+        j = get_job_to_retry(run_id)
         job = Debci::Job.create!(
           package: j.package,
           suite: j.suite,
@@ -419,6 +411,18 @@ module Debci
       else
         halt(403, "Invalid key\n")
       end
+    end
+
+    def get_job_to_retry(run_id)
+      begin
+        job = Debci::Job.find(run_id)
+      rescue ActiveRecord::RecordNotFound => error
+        halt(400, "Job ID not known: #{run_id}")
+      end
+      if Debci.reject_list.include?(job.package, suite: job.suite, arch: job.arch)
+        halt(403, "Package #{job.package.name} is in the REJECT list and cannot be retried")
+      end
+      job
     end
 
   end
