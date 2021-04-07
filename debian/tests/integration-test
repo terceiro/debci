@@ -22,6 +22,7 @@ else
   test_arch="$native_arch"
 fi
 
+apt-mark hold lxc schroot
 apt-get install -qy --no-install-recommends \
   debci-collector debci-worker
 
