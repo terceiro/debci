@@ -270,14 +270,6 @@ Style/GuardClause:
     - 'lib/debci/data.rb'
     - 'lib/debci/html.rb'
 
-# Offense count: 13
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
-# SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
-Style/HashSyntax:
-  Exclude:
-    - 'lib/debci/api.rb'
-
 # Offense count: 18
 # Cop supports --auto-correct.
 Style/IfUnlessModifier:

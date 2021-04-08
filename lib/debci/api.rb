@@ -26,10 +26,10 @@ class SelfDocAPI < Debci::App
     def register_doc(method, path)
       return unless @last_doc
       entry = {
-        :method => method,
-        :path => path,
-        :text => @last_doc,
-        :anchor => [method, path].join('_'),
+        method: method,
+        path: path,
+        text: @last_doc,
+        anchor: [method, path].join('_'),
       }
       @last_doc = nil
       doc.push(entry)
