@@ -20,15 +20,18 @@ check_shell_usage() {
     failed_checks=$((failed_checks + 1))
   fi
 
-  if ! shellcheck --external-sources --shell dash "$script" >/dev/null 2>&1; then
+  log=$(mktemp)
+
+  if ! shellcheck --external-sources --shell dash "$script" > "$log" 2>&1; then
     if grep -q "^${script}\$" tools/shellcheck.ignore; then
       echo "W: shellcheck reports warnings on $script; please fix them"
     else
+      echo "E: shellcheck reports unexpected warnings on $script"
+      cat "${log}" | sed -e 's/^/  /'
       failed_checks=$((failed_checks + 1))
     fi
   fi
-
-  return $failed_checks
+  rm -f "${log}"
 }
 
 scripts="$@"
