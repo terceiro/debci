@@ -32,13 +32,13 @@ if [ -d "${debci_conf_d}" ]; then
   for config in \
     $(find "${debci_conf_d}" -type f -name '[0-9a-z-_]*.conf' | sort)
   do
-    . $config
+    . "$config"
   done
 fi
 
 # default values
 # for Debian, NAME is "Debian GNU/Linux", shorten this
-debci_distro_name="${debci_distro_name:-$(. /etc/os-release; echo ${NAME% *})}"
+debci_distro_name="${debci_distro_name:-$(. /etc/os-release; echo "${NAME% *}")}"
 debci_suite=${debci_suite:-unstable}
 debci_suite_list=${debci_suite_list:-${debci_suite}}
 debci_arch=${debci_arch:-$(dpkg --print-architecture)}
@@ -90,8 +90,9 @@ usage_shared_options="Common options:
 "
 
 program_name=${0##*/}
-TEMP=`getopt --name $program_name -o ${shared_short_options}${short_options:-} --long ${shared_long_options},${long_options:-} -- "$@"`
+TEMP=$(getopt --name "$program_name" -o ${shared_short_options}"${short_options:-}" --long ${shared_long_options},"${long_options:-}" -- "$@")
 
+# shellcheck disable=SC2181
 if [ $? != 0 ]; then
   exit 1
 fi
@@ -100,7 +101,7 @@ eval set -- "$TEMP"
 
 var=''
 for arg in "$@"; do
-  if [ $var ]; then
+  if [ "$var" ]; then
     eval "export $var=\"$arg\""
     var=''
   else
@@ -143,33 +144,39 @@ done
 # This is used in lxc by the lxc-debian template, and by autopkgtest-build-*
 export MIRROR="${debci_mirror}"
 
+# shellcheck disable=SC2142
 alias prepare_args='while [ "$1" != "--" ]; do shift; done; shift'
 
 debci_autopkgtest_basedir="${debci_data_basedir}/autopkgtest"
-debci_autopkgtest_dir="${debci_autopkgtest_basedir}/${debci_suite}/${debci_arch}"
+export debci_autopkgtest_dir="${debci_autopkgtest_basedir}/${debci_suite}/${debci_arch}"
 debci_autopkgtest_incoming_basedir="${debci_data_basedir}/autopkgtest-incoming"
-debci_autopkgtest_incoming_dir="${debci_autopkgtest_incoming_basedir}/${debci_suite}/${debci_arch}"
-debci_packages_dir="${debci_data_basedir}/packages/${debci_suite}/${debci_arch}"
-debci_status_dir="${debci_data_basedir}/status/${debci_suite}/${debci_arch}"
-debci_html_dir="${debci_data_basedir}/.html"
+export debci_autopkgtest_incoming_dir="${debci_autopkgtest_incoming_basedir}/${debci_suite}/${debci_arch}"
+export debci_packages_dir="${debci_data_basedir}/packages/${debci_suite}/${debci_arch}"
+export debci_status_dir="${debci_data_basedir}/status/${debci_suite}/${debci_arch}"
+export debci_html_dir="${debci_data_basedir}/.html"
 
-debci_gnupg_dir="${debci_base_dir}/gnupg"
+export debci_gnupg_dir="${debci_base_dir}/gnupg"
 
 debci_bin_dir="${debci_base_dir}/bin"
 
-debci_log_dir="${debci_base_dir}/log"
+export debci_log_dir="${debci_base_dir}/log"
 
 debci_user=$(stat -c %U "${debci_data_basedir}")
 debci_uid=$(stat -c %u "${debci_data_basedir}")
 debci_group=$(stat -c %G "${debci_data_basedir}")
 
+export debci_user
+export debci_uid
+export debci_group
+
 debci_amqp_queue=${debci_amqp_queue:-"debci-tests-${debci_arch}-${debci_backend}"}
 
 # hide password when displaying AMPQ server
 debci_amqp_server_display="$(echo "$debci_amqp_server" | sed -e 's#:[^/]*@#:*********@#')"
+export debci_amqp_server_display
 
 debci_amqp_tools_options=
-if [ $debci_amqp_ssl = true ]; then
+if [ "$debci_amqp_ssl" = true ]; then
   debci_amqp_tools_options="--ssl"
 fi
 for var in cacert cert key; do
@@ -182,12 +189,12 @@ done
 debci_lock_dir=${debci_lock_dir:-/var/lock}
 
 # per-suite/architecture lock/timestamp files
-debci_testbed_timestamp=${debci_lock_dir}/debci-testbed-${debci_suite}-${debci_arch}-${debci_backend}.stamp
-debci_chdist_lock=${debci_lock_dir}/debci-chdist-${debci_suite}-${debci_arch}.lock
-debci_batch_lock=${debci_lock_dir}/debci-batch-${debci_suite}-${debci_arch}.lock
+export debci_testbed_timestamp=${debci_lock_dir}/debci-testbed-${debci_suite}-${debci_arch}-${debci_backend}.stamp
+export debci_chdist_lock=${debci_lock_dir}/debci-chdist-${debci_suite}-${debci_arch}.lock
+export debci_batch_lock=${debci_lock_dir}/debci-batch-${debci_suite}-${debci_arch}.lock
 
 # global lock/timestamp files
-debci_generate_index_lock=${debci_lock_dir}/debci-generate-index.lock
+export debci_generate_index_lock=${debci_lock_dir}/debci-generate-index.lock
 
 # data retention policy (numbers of days)
 debci_data_retention_days=${debci_data_retention_days:-180}

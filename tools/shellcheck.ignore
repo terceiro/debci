@@ -25,5 +25,4 @@ backends/qemu/create-testbed
 backends/schroot/test-package
 backends/schroot/create-testbed
 backends/lxc/test-package
-lib/environment.sh
 lib/functions.sh
