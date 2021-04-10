@@ -15,4 +15,4 @@ EOF
 container_name=ci-$(date +%j)-$(openssl rand -hex 4)
 
 debci-autopkgtest --user debci --apt-upgrade "$@" \
-  -- lxc --sudo --name "${container_name}" "autopkgtest-${debci_suite}-${debci_arch}"
+  -- lxc --sudo --name "${container_name}" "autopkgtest-${debci_suite:?}-${debci_arch:?}"
