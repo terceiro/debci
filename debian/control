@@ -53,13 +53,12 @@ Package: debci
 Architecture: all
 Depends: adduser,
          debootstrap,
-         netcat-openbsd | netcat-traditional,
          ruby-sqlite3 | ruby-pg,
          sudo,
          ${debci:Depends},
          ${misc:Depends},
 Recommends: ntp | time-daemon
-Suggests: apt-cacher-ng,
+Suggests: apt-cacher-ng, auto-apt-proxy
 Description: continuous integration system for Debian
  debci will scan the Debian archive for packages that contain DEP-8 compliant
  test suites, and run those test suites whenever a new version of the package,

@@ -73,21 +73,6 @@ case "$mirror" in
     ;;
 esac
 
-# use a local proxy if available
-http_proxy="${http_proxy:-}"
-if [ -z "$http_proxy" ]; then
-  # detect a local apt-cacher-ng cache running.  10.0.2.2 = default IP
-  # assigned to host system as seen from a kvm/virtualbox virtual machine
-  for ip in 127.0.0.1 10.0.2.2; do
-    if nc -z -w 1 $ip 3142; then
-      export http_proxy=http://$ip:3142
-    fi
-  done
-fi
-if [ -n "$http_proxy" ]; then
-  echo "Acquire::http::Proxy \"$http_proxy\";" > "$TARGET/etc/apt/apt.conf.d/01proxy"
-fi
-
 # disable multi-arch
 echo "Apt::Architectures {\"$ARCH\";};" > "$TARGET/etc/apt/apt.conf.d/97_no_multiarch"
 
@@ -112,7 +97,7 @@ update_chdist() {
 }
 
 if [ "$debci_quiet" = 'true' ]; then
-  update_chdist >/dev/null 2>&1
+  maybe_with_proxy update_chdist >/dev/null 2>&1
 else
-  update_chdist
+  maybe_with_proxy update_chdist
 fi

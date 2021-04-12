@@ -19,28 +19,9 @@ create_chroot() {
   local chroot_path
   chroot_path="$1"
 
-  http_proxy="${http_proxy:-}"
-  if [ -z "$http_proxy" ]; then
-    # detect a local apt-cacher-ng cache running.  10.0.2.2 = default IP
-    # assigned to host system as seen from a kvm/virtualbox virtual machine
-    for ip in 127.0.0.1 10.0.2.2; do
-      if nc -z -w 1 $ip 3142; then
-        export http_proxy=http://$ip:3142
-      fi
-    done
-  fi
-
-  if [ -z "$http_proxy" ]; then
-    # also lookup up proxy in the apt configuration
-    eval $(apt-config shell http_proxy Acquire::http::Proxy)
-    if [ -n "$http_proxy" ]; then
-      export http_proxy
-    fi
-  fi
-
   # FIXME automate chroot creation for foreign architectures where a
   # qemu-user-static binary is needed
-  debootstrap --include=dpkg-dev,ca-certificates --arch="$debci_arch" "$debci_suite" "$chroot_path" ${debci_mirror}
+  debootstrap --include=dpkg-dev,ca-certificates,auto-apt-proxy --arch="$debci_arch" "$debci_suite" "$chroot_path" ${debci_mirror}
 
   # use proxy
   if [ -n "$http_proxy" ]; then
