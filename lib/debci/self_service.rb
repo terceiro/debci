@@ -108,6 +108,35 @@ module Debci
       end
     end
 
+    get '/:user/retry/:run_id' do
+      if @user
+        run_id = params[:run_id]
+        @original_job = get_job_to_retry(run_id)
+        erb :retry
+      else
+        [403, erb(:cant_retry)]
+      end
+    end
+
+
+    post '/:user/retry/:run_id' do
+      if !@user
+        authenticate_key!
+      end
+      run_id = params[:run_id]
+      j = get_job_to_retry(run_id)
+      job = Debci::Job.create!(
+        package: j.package,
+        suite: j.suite,
+        arch: j.arch,
+        requestor: j.requestor,
+        trigger: j.trigger,
+        pin_packages: j.pin_packages,
+      )
+      self.enqueue(job)
+      201
+    end
+
     class InvalidRequest < RuntimeError
     end
 
@@ -179,6 +208,18 @@ module Debci
         end
       end
       erb :self_service_history, locals: { query_params: query_params, arch_filter: arch_filter, suite_filter: suite_filter, package_filter: package_filter, trigger_filter: trigger_filter }
+    end
+
+    def get_job_to_retry(run_id)
+      begin
+        job = Debci::Job.find(run_id)
+      rescue ActiveRecord::RecordNotFound => error
+        halt(400, "Job ID not known: #{run_id}")
+      end
+      if Debci.reject_list.include?(job.package, suite: job.suite, arch: job.arch)
+        halt(403, "Package #{job.package.name} is in the REJECT list and cannot be retried")
+      end
+      job
     end
   end
 end

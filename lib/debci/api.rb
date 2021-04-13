@@ -131,13 +131,8 @@ module Debci
       Presents a simple UI for retrying a test
       EOF
       get '/retry/:run_id' do
-        if @user
-          run_id = params[:run_id]
-          @original_job = get_job_to_retry(run_id)
-          erb :retry
-        else
-          [403, erb(:cant_retry)]
-        end
+        run_id = params[:run_id]
+        redirect "user/#{@user.username}/retry/#{run_id}"
       end
 
       doc <<-EOF
