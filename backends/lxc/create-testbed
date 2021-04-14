@@ -31,48 +31,6 @@ else
   exit 1
 fi
 
-# detect a local apt-cacher-ng and use it in the container
-http_proxy="${http_proxy:-}"
-if [ -z "$http_proxy" ]; then
-  if nc -z -w 1 127.0.0.1 3142; then
-    # for debootstrap:
-    export http_proxy=http://127.0.0.1:3142
-  fi
-fi
-
-# also lookup up proxy in the apt configuration
-if [ -z "$http_proxy" ]; then
-  eval "$(apt-config shell http_proxy Acquire::http::Proxy)"
-  if [ -n "$http_proxy" ]; then
-    export http_proxy
-  fi
-fi
-
-# guess apt proxy for the guest:
-GUEST_PROXY=
-if [ -n "$http_proxy" ]; then
-  local_proxy=no
-  case "$http_proxy" in
-    http://127.0.0.1:*)
-      local_proxy=yes
-      ;;
-    http://localhost:*)
-      local_proxy=yes
-      ;;
-  esac
-
-  if [ "$local_proxy" = yes ]; then
-    # translate 127.0.0.1 to a valid address as seen from the guest
-    bridge_interface=$(awk '{ if ($1 == "lxc.network.link" || $1 == "lxc.net.0.link") print($3)}' /etc/lxc/default.conf)
-    if [ -n "$bridge_interface" ]; then
-      bridge_ip=$(ip -4 a show dev "$bridge_interface" | awk '/ inet / {sub(/\/.*$/, "", $2); print $2}')
-      export GUEST_PROXY=http://$bridge_ip:3142
-    fi
-  else
-    export GUEST_PROXY=$http_proxy
-  fi
-fi
-
 script=$(mktemp --tmpdir debci-lxc-customize.XXXXXXXXXXX.sh)
 if [ "$distro" = debian ]; then
   {
@@ -93,7 +51,7 @@ if [ -n "$GUEST_PROXY" ]; then
 fi
 cat >> "$script" <<EOF
 DEBIAN_FRONTEND=noninteractive \
-  apt-get install dpkg-dev ca-certificates -q -y --no-install-recommends
+  apt-get install dpkg-dev ca-certificates auto-apt-proxy -q -y --no-install-recommends
 
 DEBIAN_FRONTEND=noninteractive \
   apt-get clean

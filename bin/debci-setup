@@ -67,9 +67,9 @@ if which create-testbed >/dev/null 2>/dev/null; then
   ) >> $log 2>&1
 
   if [ "$debci_quiet" = false ]; then
-    mispipe "create-testbed --suite '$debci_suite' 2>&1" "tee --append $log"
+    maybe_with_proxy mispipe "create-testbed --suite '$debci_suite' 2>&1" "tee --append $log"
   else
-    create-testbed --suite "$debci_suite" >>$log 2>&1
+    maybe_with_proxy create-testbed --suite "$debci_suite" >>$log 2>&1
   fi
 
   # record timestamp

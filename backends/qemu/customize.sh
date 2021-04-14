@@ -46,7 +46,7 @@ fi
 # shellcheck disable=SC2086
 DEBIAN_FRONTEND=noninteractive \
   chroot "$rootfs"  \
-  apt-get install $proxy_opt dpkg-dev ca-certificates -q -y --no-install-recommends
+  apt-get install $proxy_opt dpkg-dev ca-certificates auto-apt-proxy -q -y --no-install-recommends
 
 DEBIAN_FRONTEND=noninteractive \
   chroot "$rootfs"  \

@@ -175,3 +175,10 @@ run_with_exclusive_lock() {
     "$@"
   ) 9> "$lockfile"
 }
+
+maybe_with_proxy() {
+  if command -v auto-apt-proxy >/dev/null; then
+    export http_proxy=$(auto-apt-proxy 2>/dev/null || true)
+  fi
+  "$@"
+}

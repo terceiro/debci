@@ -12,11 +12,6 @@ if [ $(whoami) != root ]; then
   exit 1
 fi
 
-# detect local apt-cacher-ng
-if nc -z -w 1 localhost 3142; then
-  export http_proxy=http://localhost:3142
-fi
-
 mkdir -p "$image_dir"
 
 customize_script="$(dirname "$0")/customize.sh"
