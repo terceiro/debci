@@ -86,25 +86,24 @@ module Debci
         'tests' => [test_obj]
       }
 
-      # validate inputs
       begin
+        # validate inputs
         validate_form_submission(package, suite, archs)
-        archs.each do |arch|
-          request_tests(test_request['tests'], suite, arch, @user)
+        # user clicks on export to json
+        if params[:export]
+          content_type :json
+          [200, [test_request].to_json]
+        else
+          # user submits test
+          archs.each do |arch|
+            request_tests(test_request['tests'], suite, arch, @user)
+          end
+          @success = true
+          [201, erb(:self_service_test)]
         end
       rescue InvalidRequest => error
         @error_msg = error
         halt(400, erb(:self_service_test))
-      end
-
-      # user clicks on export to json
-      if params[:export]
-        content_type :json
-        [200, [test_request].to_json]
-      # user submits test
-      else
-        @success = true
-        [201, erb(:self_service_test)]
       end
     end
 
