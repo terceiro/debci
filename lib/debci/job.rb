@@ -28,7 +28,7 @@ module Debci
 
     # FIXME: move to Debci::PackageStatus
     scope :status_on, lambda { |suite, arch|
-      joins(:package_status).where(['package_statuses.suite IN (?) AND package_statuses.arch IN (?)', suite, arch])
+      joins(:package_status, :package).where(packages: { removed: false }).where(['package_statuses.suite IN (?) AND package_statuses.arch IN (?)', suite, arch])
     }
 
     # FIXME: move to Debci::PackageStatus
