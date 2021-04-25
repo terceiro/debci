@@ -289,8 +289,19 @@ describe Debci::SelfService do
     end
   end
   context 'retriggers' do
-    before(:each) do
-      login('foo@bar.com')
+    before(:each) do |test|
+      login('foo@bar.com') unless test.metadata[:not_logged_in]
+    end
+
+    it 'rejects non-authenticated requests',:not_logged_in do
+      post '/user/foo@bar.com/retry/1'
+      expect(last_response.status).to eq(403)
+    end
+
+    it 'displays a "Forbidden" page to non-authenticated users',:not_logged_in do
+      get '/user/foo@bar.com/retry/1'
+      expect(last_response.status).to eq(403)
+      expect(last_response.content_type).to match('text/html')
     end
 
     it 'displays a user friendly page to authenticated users' do

@@ -118,11 +118,7 @@ module Debci
       end
     end
 
-
     post '/:user/retry/:run_id' do
-      if !@user
-        authenticate_key!
-      end
       run_id = params[:run_id]
       j = get_job_to_retry(run_id)
       job = Debci::Job.create!(
@@ -213,12 +209,10 @@ module Debci
     def get_job_to_retry(run_id)
       begin
         job = Debci::Job.find(run_id)
-      rescue ActiveRecord::RecordNotFound => error
+      rescue ActiveRecord::RecordNotFound
         halt(400, "Job ID not known: #{run_id}")
       end
-      if Debci.reject_list.include?(job.package, suite: job.suite, arch: job.arch)
-        halt(403, "Package #{job.package.name} is in the REJECT list and cannot be retried")
-      end
+      halt(403, "Package #{job.package.name} is in the REJECT list and cannot be retried") if Debci.reject_list.include?(job.package, suite: job.suite, arch: job.arch)
       job
     end
   end
