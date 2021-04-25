@@ -127,6 +127,58 @@ module Debci
         end
       end
 
+
+      doc <<-EOF
+      Gets the reject list i.e. list of packages which won't be tested by this
+      DebCI instance.
+
+      The response is a JSON object where each key is a package. The value of
+      each package is an object where each key is a suite for which it is
+      blocked. Each suite key has an object with blocked architecture as key
+      which is followed by a level of versions. The wildcard `*` is a valid
+      value signifying all suites.
+
+      ```
+      {
+        "package": {
+          "suite": {
+            "arch": {
+              "version": ""
+            }
+          }
+        }
+      }
+      ```
+
+      Example:
+
+      ```
+      {
+        "bash": {
+          "testing": {
+            "*": {
+              "*": ""
+            }
+          },
+          "unstable": {
+            "amd64": {
+              "5.0.0": ""
+            }
+          }
+        }
+      }
+      ```
+
+      This blocks `bash` from `testing` for all architectures and versions. It
+      also blocks it for unstable but only for amd64 and version 5.0.0.
+
+      EOF
+      get '/reject_list' do
+        authenticate_key!
+        content_type :json
+        Debci.reject_list.data.to_json
+      end
+
       doc <<-EOF
       Presents a simple UI for retrying a test
       EOF

@@ -3,6 +3,7 @@ require 'debci/api'
 require 'debci/test_handler'
 require 'rack/test'
 require 'spec_mock_server'
+require 'json'
 
 describe Debci::API do
   include Rack::Test::Methods
@@ -439,6 +440,92 @@ describe Debci::API do
       post "/api/v1/retry/#{job.run_id}"
 
       expect(last_response.status).to eq(403)
+    end
+  end
+
+  context 'reject list' do
+    it 'rejects without auth key' do
+      get '/api/v1/reject_list'
+      expect(last_response.status).to eq(403)
+    end
+
+    it 'expects json response' do
+      key = Debci::Key.create!(user: theuser).key
+      header 'Auth-Key', key
+      get '/api/v1/reject_list'
+      expect(last_response.content_type).to match('application/json')
+    end
+
+    it 'expects the given example as response' do
+      # Mock the reject_list file
+      content = [
+        "# bug #999\n",
+        "foo\n",
+        "bar unstable\n",
+        "baz unstable\n",
+        "baz testing amd64\n",
+        "fox * * 1.0.1\n",
+        "xyz-*\n",
+        "pinpoint * * *\n"
+      ]
+      reject_list_file = File.join(Debci.config.config_dir, 'reject_list')
+      allow(File).to receive(:exist?).and_call_original
+      allow(File).to receive(:exist?).with(reject_list_file).and_return(true)
+      allow(File).to receive(:readlines).with(reject_list_file).and_return(content)
+      expected_result = {
+        "bar" => {
+          "unstable" => {
+            "*" => {
+              "*" => ""
+            }
+          }
+        },
+        "baz" => {
+          "testing" => {
+            "amd64" => {
+              "*" => ""
+            }
+          },
+          "unstable" => {
+            "*" => {
+              "*" => ""
+            }
+          }
+        },
+        "foo" => {
+          "*" => {
+            "*" => {
+              "*" => "bug #999\n"
+            }
+          }
+        },
+        "fox" => {
+          "*" => {
+            "*" => {
+              "1.0.1" => ""
+            }
+          }
+        },
+        "pinpoint" => {
+          "*" => {
+            "*" => {
+              "*" => ""
+            }
+          }
+        },
+        "xyz-*" => {
+          "*" => {
+            "*" => {
+              "*" => ""
+            }
+          }
+        }
+      }
+
+      key = Debci::Key.create!(user: theuser).key
+      header 'Auth-Key', key
+      get '/api/v1/reject_list'
+      expect(JSON.parse(last_response.body)).to eq(expected_result)
     end
   end
 end
