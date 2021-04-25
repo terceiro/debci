@@ -62,9 +62,11 @@ describe Debci::SelfService do
     end
 
     it 'exports a json file successfully from test form' do
+      job_count = Debci::Job.count
       post '/user/foo@bar.com/test/submit', pin_packages: '', trigger: 'test_trigger', package: 'test-package', suite: suite, arch: [arch], export: true
       expect(last_response.status).to eq(200)
       expect(last_response.content_type).to match('application/json')
+      expect(Debci::Job.count).to eq(job_count)
     end
 
     it 'should return error when exporting a json file from incomplete test form' do
