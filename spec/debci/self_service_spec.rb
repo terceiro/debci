@@ -289,126 +289,127 @@ describe Debci::SelfService do
     end
   end
   context 'retriggers' do
-    before(:each) do |test|
-      login('foo@bar.com') unless test.metadata[:not_logged_in]
-    end
-
-    it 'rejects non-authenticated requests',:not_logged_in do
+    it 'rejects non-authenticated requests' do
       post '/user/foo@bar.com/retry/1'
-      expect(last_response.status).to eq(403)
+      expect(last_response.status).to eq(302)
     end
 
-    it 'displays a "Forbidden" page to non-authenticated users',:not_logged_in do
+    it 'displays a "Forbidden" page to non-authenticated users' do
       get '/user/foo@bar.com/retry/1'
-      expect(last_response.status).to eq(403)
+      expect(last_response.status).to eq(302)
       expect(last_response.content_type).to match('text/html')
     end
 
-    it 'displays a user friendly page to authenticated users' do
-      package = Debci::Package.create!(name: 'mypackage')
-      user = 'foo@bar.com'
-      trigger = 'mypackage/0.0.1'
-      pin_packages = ['src:mypackage', 'unstable']
-      job = Debci::Job.create(
-        package: package,
-        suite: suite,
-        arch: arch,
-        requestor: user,
-        trigger: trigger,
-        pin_packages: pin_packages
-      )
-      get "/user/foo@bar.com/retry/#{job.id}", {}, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
-      expect(last_response.status).to eq(200)
-      expect(last_response.content_type).to match('text/html')
-    end
+    context 'authenticated' do
+      before(:each) do
+        login('foo@bar.com')
+      end
 
-    it 'can retrigger a valid request with key' do
-      package = Debci::Package.create!(name: 'mypackage')
-      user = 'foo@bar.com'
-      trigger = 'mypackage/0.0.1'
-      pin_packages = ['src:mypackage', 'unstable']
-      Debci::Job.create(
-        package: package,
-        suite: suite,
-        arch: arch,
-        requestor: user,
-        trigger: trigger,
-        pin_packages: pin_packages
-      )
+      it 'displays a user friendly page to authenticated users' do
+        package = Debci::Package.create!(name: 'mypackage')
+        user = 'foo@bar.com'
+        trigger = 'mypackage/0.0.1'
+        pin_packages = ['src:mypackage', 'unstable']
+        job = Debci::Job.create(
+          package: package,
+          suite: suite,
+          arch: arch,
+          requestor: user,
+          trigger: trigger,
+          pin_packages: pin_packages
+        )
+        get "/user/foo@bar.com/retry/#{job.id}", {}, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+        expect(last_response.status).to eq(200)
+        expect(last_response.content_type).to match('text/html')
+      end
+      it 'can retrigger a valid request with key' do
+        package = Debci::Package.create!(name: 'mypackage')
+        user = 'foo@bar.com'
+        trigger = 'mypackage/0.0.1'
+        pin_packages = ['src:mypackage', 'unstable']
+        Debci::Job.create(
+          package: package,
+          suite: suite,
+          arch: arch,
+          requestor: user,
+          trigger: trigger,
+          pin_packages: pin_packages
+        )
 
-      job_org = Debci::Job.last
+        job_org = Debci::Job.last
 
-      # Here we are going to retrigger it
-      key = Debci::Key.create!(user: theuser).key
-      header 'Auth-Key', key
-      post "/user/foo@bar.com/retry/#{job_org.run_id}"
+        # Here we are going to retrigger it
+        key = Debci::Key.create!(user: theuser).key
+        header 'Auth-Key', key
+        post "/user/foo@bar.com/retry/#{job_org.run_id}"
 
-      job = Debci::Job.last
-      expect(job.run_id).to eq(job_org.run_id + 1)
-      expect(job.package).to eq(package)
-      expect(job.suite).to eq(suite)
-      expect(job.arch).to eq(arch)
-      expect(job.requestor).to eq(user)
-      expect(job.trigger).to eq(trigger)
-      expect(job.pin_packages).to eq(pin_packages)
+        job = Debci::Job.last
+        expect(job.run_id).to eq(job_org.run_id + 1)
+        expect(job.package).to eq(package)
+        expect(job.suite).to eq(suite)
+        expect(job.arch).to eq(arch)
+        expect(job.requestor).to eq(user)
+        expect(job.trigger).to eq(trigger)
+        expect(job.pin_packages).to eq(pin_packages)
 
-      expect(last_response.status).to eq(201)
-    end
+        expect(last_response.status).to eq(201)
+      end
 
-    it 'can retrigger a valid request with client certificate' do
-      package = Debci::Package.create!(name: 'mypackage')
-      user = 'foo@bar.com'
-      trigger = 'mypackage/0.0.1'
-      pin_packages = ['src:mypackage', 'unstable']
-      Debci::Job.create(
-        package: package,
-        suite: suite,
-        arch: arch,
-        requestor: user,
-        trigger: trigger,
-        pin_packages: pin_packages
-      )
+      it 'can retrigger a valid request with client certificate' do
+        package = Debci::Package.create!(name: 'mypackage')
+        user = 'foo@bar.com'
+        trigger = 'mypackage/0.0.1'
+        pin_packages = ['src:mypackage', 'unstable']
+        Debci::Job.create(
+          package: package,
+          suite: suite,
+          arch: arch,
+          requestor: user,
+          trigger: trigger,
+          pin_packages: pin_packages
+        )
 
-      job_org = Debci::Job.last
+        job_org = Debci::Job.last
 
-      # Here we are going to retrigger it
-      post "/user/foo@bar.com/retry/#{job_org.run_id}", {}, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+        # Here we are going to retrigger it
+        post "/user/foo@bar.com/retry/#{job_org.run_id}", {}, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
 
-      expect(last_response.status).to eq(201)
+        expect(last_response.status).to eq(201)
 
-      job = Debci::Job.last
-      expect(job.run_id).to eq(job_org.run_id + 1)
-    end
+        job = Debci::Job.last
+        expect(job.run_id).to eq(job_org.run_id + 1)
+      end
 
-    it 'rejects to retrigger an unknown run_id' do
-      key = Debci::Key.create!(user: theuser).key
-      header 'Auth-Key', key
-      post '/user/foo@bar.com/retry/1'
+      it 'rejects to retrigger an unknown run_id' do
+        key = Debci::Key.create!(user: theuser).key
+        header 'Auth-Key', key
+        post '/user/foo@bar.com/retry/1'
 
-      expect(last_response.status).to eq(400)
-    end
+        expect(last_response.status).to eq(400)
+      end
 
-    it 'rejects to retrigger run_id of a rejectlisted package' do
-      key = Debci::Key.create!(user: theuser).key
-      header 'Auth-Key', key
+      it 'rejects to retrigger run_id of a rejectlisted package' do
+        key = Debci::Key.create!(user: theuser).key
+        header 'Auth-Key', key
 
-      package = Debci::Package.create!(name: 'mypackage')
-      user = 'foo@bar.com'
-      trigger = 'mypackage/0.0.1'
-      pin_packages = ['src:mypackage', 'unstable']
-      Debci::Job.create(
-        package: package,
-        suite: suite,
-        arch: arch,
-        requestor: user,
-        trigger: trigger,
-        pin_packages: pin_packages
-      )
-      job = Debci::Job.last
-      allow_any_instance_of(Debci::RejectList).to receive(:include?).with(package, suite: suite, arch: arch).and_return(true)
-      post "/user/foo@bar.com/retry/#{job.run_id}"
+        package = Debci::Package.create!(name: 'mypackage')
+        user = 'foo@bar.com'
+        trigger = 'mypackage/0.0.1'
+        pin_packages = ['src:mypackage', 'unstable']
+        Debci::Job.create(
+          package: package,
+          suite: suite,
+          arch: arch,
+          requestor: user,
+          trigger: trigger,
+          pin_packages: pin_packages
+        )
+        job = Debci::Job.last
+        allow_any_instance_of(Debci::RejectList).to receive(:include?).with(package, suite: suite, arch: arch).and_return(true)
+        post "/user/foo@bar.com/retry/#{job.run_id}"
 
-      expect(last_response.status).to eq(403)
+        expect(last_response.status).to eq(403)
+      end
     end
   end
 end
