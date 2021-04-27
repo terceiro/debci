@@ -9,3 +9,4 @@ apt-get -qqyt buster-backports install autopkgtest
 apt-get -qqy install make ruby git debootstrap
 cd /vagrant
 apt-get -qqy build-dep .
+apt-get -qqy install ruby-simplecov
