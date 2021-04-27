@@ -38,7 +38,13 @@
       </tr>
       <tr>
         <td>Trigger:</td>
-        <td><%= @original_job.trigger.nil? ? '&mdash;' : @original_job.trigger %></td>
+        <td>
+          <% if @original_job.trigger.nil? %>
+            &mdash;
+          <% else %>
+            <%= @original_job.trigger %>
+          <% end %>
+        </td>
       </tr>
       <tr>
         <td>Pinned packages:&nbsp;</td>
