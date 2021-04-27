@@ -6,7 +6,7 @@ VAGRANTFILE_API_VERSION = '2'.freeze
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # contrib has the vboxsf kernel module, which is needed for guest addition
-  config.vm.box = ENV['BOX'] || 'debian/buster64'
+  config.vm.box = ENV['BOX'] || 'debian/bullseye64'
   config.vm.network 'forwarded_port', guest: 8080, host: 8080
   config.vm.synced_folder '.', '/vagrant'
 
