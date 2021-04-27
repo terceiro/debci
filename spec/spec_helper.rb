@@ -1,10 +1,14 @@
 if ENV["COVERAGE"] != "no"
-  require 'simplecov'
-  SimpleCov.start do
-    minimum_coverage 87.5
-    track_files 'lib/**/*.rb'
-    add_filter /migrations/
-    add_filter /spec/
+  begin
+    require 'simplecov'
+    SimpleCov.start do
+      minimum_coverage 87.5
+      track_files 'lib/**/*.rb'
+      add_filter /migrations/
+      add_filter /spec/
+    end
+  rescue LoadError
+    $stderr.puts "W: simplecov not installed, not checking test coverage"
   end
 end
 
