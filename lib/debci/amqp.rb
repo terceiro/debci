@@ -4,7 +4,7 @@ require 'debci'
 
 module Debci
   module AMQP
-    def self.get_queue(arch)
+    def self.get_queue(arch, backend = Debci.config.backend)
       @queues ||= {}
       @queues[arch] ||=
         begin
@@ -14,7 +14,7 @@ module Debci
               'x-max-priority': 10,
             }
           }
-          q = ENV['debci_amqp_queue'] || "debci-tests-#{arch}-#{Debci.config.backend}"
+          q = ENV['debci_amqp_queue'] || "debci-tests-#{arch}-#{backend}"
           self.amqp_channel.queue(q, opts)
         end
     end

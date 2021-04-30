@@ -26,6 +26,7 @@ module Debci
     :autopkgtest_basedir,
     :auth_fail_page,
     :backend,
+    :backend_list,
     :config_dir,
     :data_basedir,
     :data_retention_days,
