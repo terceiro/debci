@@ -111,6 +111,34 @@ describe Debci::SelfService do
     end
   end
 
+  context 'getting a key' do
+    it "can't get a key with invalid auth" do
+      keys = Debci::Key.count
+
+      post '/user/foo@bar.com/getkey'
+      expect(last_response.status).to eq(302) # redirected to login page
+
+      expect(Debci::Key.count).to eq(keys)
+    end
+
+    it 'gets a key based on client certificate' do
+      login('foo@bar.com')
+      post '/user/foo@bar.com/getkey', {}, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+      expect(last_response.status).to eq(201)
+
+      user = Debci::User.find_by(username: 'foo@bar.com')
+      key = user.keys.first
+      expect(key).to_not be_nil
+    end
+
+    it 'displays a user-friendly page' do
+      login('foo@bar.com')
+      get '/user/foo@bar.com/getkey'
+      expect(last_response.status).to eq(200)
+      expect(last_response.content_type).to match('text/html')
+    end
+  end
+
   context 'upload json file' do
     before(:each) do
       login('foo@bar.com')

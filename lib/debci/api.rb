@@ -98,37 +98,6 @@ module Debci
       end
 
       doc <<-EOF
-      Displays a user-friendly HTML page that can be used by users to get an
-      API key using this existing in-browser client certificate.
-
-      This endpoint does not require an existing API key, but does require
-      proper authentication with a client certificate (e.g.
-      [Debian SSO](https://wiki.debian.org/DebianSingleSignOn)).
-      EOF
-      get '/getkey' do
-        erb :getkey
-      end
-
-      doc <<-EOF
-      Gets a new API key. Any existing API key is invalidated after a new one
-      is obtained.
-
-      This endpoint does not require an existing API key, but does require
-      proper authentication with a client certificate (e.g.  [Debian
-      SSO](https://wiki.debian.org/DebianSingleSignOn))
-      EOF
-      post '/getkey' do
-        if @user
-          key = Debci::Key.reset!(@user)
-          headers['Content-Type'] = 'text/plain'
-          [201, key.key]
-        else
-          403
-        end
-      end
-
-
-      doc <<-EOF
       Gets the reject list i.e. list of packages which won't be tested by this
       DebCI instance.
 

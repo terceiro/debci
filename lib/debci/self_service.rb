@@ -132,6 +132,20 @@ module Debci
       201
     end
 
+    get '/:user/getkey' do
+      erb :getkey
+    end
+
+    post '/:user/getkey' do
+      if @user
+        key = Debci::Key.reset!(@user)
+        headers['Content-Type'] = 'text/plain'
+        [201, key.key]
+      else
+        403
+      end
+    end
+
     class InvalidRequest < RuntimeError
     end
 
