@@ -111,6 +111,7 @@ module Debci
       if @user
         run_id = params[:run_id]
         @original_job = get_job_to_retry(run_id)
+        @same_jobs = get_same_pending_jobs(@original_job).count
         erb :retry
       else
         [403, erb(:cant_retry)]
@@ -227,6 +228,16 @@ module Debci
       end
       halt(403, "Package #{job.package.name} is in the REJECT list and cannot be retried") if Debci.reject_list.include?(job.package, suite: job.suite, arch: job.arch)
       job
+    end
+
+    def get_same_pending_jobs(job)
+      Debci::Job.pending.where(
+        package_id: job.package_id,
+        suite: job.suite,
+        arch: job.arch,
+        requestor: job.requestor,
+        trigger: job.trigger,
+      ).select { |j| Set.new(j.pin_packages) == Set.new(job.pin_packages) }
     end
   end
 end

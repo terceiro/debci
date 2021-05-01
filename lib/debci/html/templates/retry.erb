@@ -38,7 +38,13 @@
       </tr>
       <tr>
         <td>Trigger:</td>
-        <td><%= @original_job.trigger.nil? ? '&mdash;' : @original_job.trigger %></td>
+        <td>
+          <% if @original_job.trigger.nil? %>
+            &mdash;
+          <% else %>
+            <%= @original_job.trigger %>
+          <% end %>
+        </td>
       </tr>
       <tr>
         <td>Pinned packages:&nbsp;</td>
@@ -67,7 +73,12 @@
     </p>
   </div>
 
-  </br>
+  <% if @same_jobs > 0 %>
+    <p class="retry-warning">
+      <i class="fa fa-exclamation-triangle"></i>
+      <strong>Warning: There <%= @same_jobs == 1 ? " is 1 existing job ": "are #{@same_jobs} existing jobs" %> with the same parameters.</strong>
+    </p>
+  <% end %>
   <input type='button' value='Retry' onclick='retry(this)' class='btn btn-primary'/>
 </form>
 
