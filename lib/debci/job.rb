@@ -241,7 +241,11 @@ module Debci
     end
 
     def enqueue(priority = 0)
-      queue = Debci::AMQP.get_queue(arch)
+      queue = if package.backend.nil?
+                Debci::AMQP.get_queue(arch)
+              else
+                Debci::AMQP.get_queue(arch, package.backend)
+              end
       parameters = enqueue_parameters
       queue.publish("%s %s %s" % [package.name, suite, parameters.join(' ')], priority: priority)
     end

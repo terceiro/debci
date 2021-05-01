@@ -7,6 +7,7 @@ describe Debci::Package do
   before(:each) do
     allow(Debci.config).to receive(:arch_list).and_return(%w[amd64 i386])
     allow(Debci.config).to receive(:suite_list).and_return(%w[testing unstable])
+    allow(Debci.config).to receive(:backend_list).and_return(%w[lxc qemu])
   end
 
   let(:package) do
@@ -115,6 +116,14 @@ describe Debci::Package do
         date: Time.now - 1.day
       )
       expect(package.history('unstable', 'amd64').to_a).to eq([job1, job2])
+    end
+  end
+
+  context 'validating backend field' do
+    it 'it accepts only valid debci backend or nil value' do
+      expect(Debci::Package.new(name: 'foo1')).to be_valid
+      expect(Debci::Package.new(name: 'foo2', backend: 'lxc')).to be_valid
+      expect(Debci::Package.new(name: 'foo3', backend: 'abc')).to_not be_valid
     end
   end
 end

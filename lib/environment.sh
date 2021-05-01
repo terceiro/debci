@@ -45,6 +45,7 @@ debci_arch=${debci_arch:-$(dpkg --print-architecture)}
 debci_arch_list="${debci_arch_list:-${debci_arch}}"
 debci_mirror=${debci_mirror:-${MIRROR:-http://deb.debian.org/debian}}
 debci_backend=${debci_backend:-lxc}
+debci_backend_list=${debci_backend_list:-${debci_backend}}
 debci_data_basedir=${debci_data_basedir:-$(readlink -f "${debci_base_dir}/data")}
 debci_quiet="${debci_quiet:-false}"
 debci_amqp_server=${debci_amqp_server:-"amqp://localhost"}
