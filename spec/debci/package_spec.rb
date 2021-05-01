@@ -123,6 +123,7 @@ describe Debci::Package do
     it 'it accepts only valid debci backend or nil value' do
       expect(Debci::Package.new(name: 'foo1')).to be_valid
       expect(Debci::Package.new(name: 'foo2', backend: 'lxc')).to be_valid
+      expect(Debci::Package.new(name: 'foo2q', backend: 'qemu')).to be_valid
       expect(Debci::Package.new(name: 'foo3', backend: 'abc')).to_not be_valid
     end
   end

@@ -10,7 +10,7 @@ module Debci
     has_many :jobs, class_name: 'Debci::Job'
     has_many :package_status, class_name: 'Debci::PackageStatus'
     validates_format_of :name, with: /\A[a-z0-9][a-z0-9+.-]+\z/
-    validates :backend, inclusion: { in: Debci.config.backend_list }, allow_nil: true
+    validates :backend, inclusion: { in: ->(_) { Debci.config.backend_list } }, allow_nil: true
 
     scope :by_prefix, lambda { |p|
       if p == 'l'
