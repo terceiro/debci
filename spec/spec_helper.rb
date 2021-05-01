@@ -2,7 +2,7 @@ if ENV["COVERAGE"] != "no"
   begin
     require 'simplecov'
     SimpleCov.start do
-      minimum_coverage 87.5
+      minimum_coverage 91
       track_files 'lib/**/*.rb'
       add_filter /migrations/
       add_filter /spec/
