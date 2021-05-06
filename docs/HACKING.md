@@ -9,7 +9,7 @@ There are two ways to setup the development environment:
   derivative like Ubuntu), or if you don't want to install the development
   dependencies on your main system. vagrant will setup the development
   environment in a virtual machine for you. This will require you to have some
-  minimal understanding of [what Vagrant and how it
+  minimal understanding of [what Vagrant is and how it
   works](https://www.vagrantup.com/docs).
 * **Manual Setup**.
   This method is recommended if your machine **is** running Debian (or a
