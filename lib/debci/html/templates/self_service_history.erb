@@ -61,7 +61,7 @@
     <td>Pin-Packages</td>
     <td colspan='2'>Results</td>
   </tr>
-  <% Array(@history).each do |test| %>
+  <% Array(results.records).each do |test| %>
   <tr>
     <td><%= test.date %></td>
     <td><%= test.package.name %></td>
@@ -101,4 +101,4 @@
   </tr>
   <% end %>
 </table>
-<%== erb(:pagination, locals: {query: query_params}) %>
+<%== erb(:pagination, locals: {query: query_params, results: results}) %>

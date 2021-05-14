@@ -28,5 +28,15 @@ module Debci
     def get_page_range(current, total)
       self.class.get_page_range(current, total)
     end
+
+    Page = Struct.new(:current_page, :records, :total_pages, :pages)
+
+    def get_page_params(records, page, per_page_limit)
+      current_page = page || 1
+      records = records.page(current_page).per(per_page_limit)
+      total_pages = records.total_pages
+      pages = get_page_range(Integer(current_page), total_pages)
+      Page.new(current_page, records, total_pages, pages)
+    end
   end
 end

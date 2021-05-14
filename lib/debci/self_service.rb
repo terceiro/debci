@@ -202,10 +202,7 @@ module Debci
       @history = @history.order('date DESC')
 
       # pagination
-      @current_page = params[:page] || 1
-      @history = @history.page(@current_page).per(20)
-      @total_pages = @history.total_pages
-      @pages = get_page_range(Integer(@current_page), @total_pages)
+      results = get_page_params(@history, params[:page], 20)
 
       # generate query params
       query_params = {}
@@ -217,7 +214,9 @@ module Debci
           query_params[key] = val
         end
       end
-      erb :self_service_history, locals: { query_params: query_params, arch_filter: arch_filter, suite_filter: suite_filter, package_filter: package_filter, trigger_filter: trigger_filter }
+
+      erb :self_service_history, locals: { query_params: query_params, arch_filter: arch_filter, suite_filter: suite_filter, package_filter: package_filter, trigger_filter: trigger_filter,
+                                           results: results }
     end
 
     def get_job_to_retry(run_id)

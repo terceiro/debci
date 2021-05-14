@@ -1,15 +1,15 @@
-<% if @total_pages > 1 %>
+<% if results.total_pages > 1 %>
   <nav class="text-center" aria-label="Pagination">
     <ul class="pagination">
-      <% if @current_page.to_i != 1 %>
+      <% if results.current_page.to_i != 1 %>
       <li>
-        <a href="?<%= URI.encode_www_form(query.update(page: @current_page.to_i - 1)) %>" aria-label="Previous">
+        <a href="?<%= URI.encode_www_form(query.update(page: results.current_page.to_i - 1)) %>" aria-label="Previous">
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
       <% end %>
-      <% for n in @pages %>
-      <li class="<%= "active" if @current_page.to_i == n %>">
+      <% for n in results.pages%>
+      <li class="<%= "active" if results.current_page.to_i == n %>">
         <% if n %>
           <a href="?<%= URI.encode_www_form(query.update(page: n)) %>"><%= n %></a>
         <% else %>
@@ -17,9 +17,9 @@
         <% end %>
       </li>
       <% end %>
-      <% if @current_page.to_i != @total_pages %>
+      <% if results.current_page.to_i != results.total_pages %>
       <li>
-        <a href="?<%= URI.encode_www_form(query.update(page: @current_page.to_i + 1)) %>" aria-label="Next">
+        <a href="?<%= URI.encode_www_form(query.update(page: results.current_page.to_i + 1)) %>" aria-label="Next">
           <span aria-hidden="true">&raquo;</span>
         </a>
       </li>

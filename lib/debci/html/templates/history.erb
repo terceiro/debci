@@ -37,7 +37,7 @@
         <th colspan='2'>Results</th>
       </tr>
 
-      <% Array(@history).each do |test| %>
+      <% Array(results.records).each do |test| %>
         <tr class='pinned-<%= test.pinned? %>'>
           <td><%= test.version %></td>
           <td><%= test.date %></td>
@@ -90,6 +90,7 @@
       <% end %>
 
     </table>
+    <%== erb(:pagination, locals: { query: params, results: results }) %>
 
     <p>Automate:</p>
 
