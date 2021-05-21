@@ -432,4 +432,15 @@ describe Debci::Job do
       expect(Debci::Job.newsworthy).to_not include(job)
     end
   end
+
+  context 'status_on' do
+    it 'does not include jobs of removed packages' do
+      job1 = Debci::Job.create!(package: package, suite: 'unstable', arch: 'amd64', status: 'pass', date: Time.now)
+      other_package = Debci::Package.create!(name: 'otherpackage', removed: true)
+      job2 = Debci::Job.create!(package: other_package, suite: 'unstable', arch: 'amd64', status: 'pass', date: Time.now)
+      s = Debci::Job.status_on("unstable", "amd64")
+      expect(s).to include(job1)
+      expect(s).to_not include(job2)
+    end
+  end
 end
