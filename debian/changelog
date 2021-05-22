@@ -1,3 +1,9 @@
+debci (2.15.2) unstable; urgency=medium
+
+  * autopkgtest: mark test-suite as flaky
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 22 May 2021 07:30:43 -0300
+
 debci (2.15.1) unstable; urgency=medium
 
   * test_helper: ensure a unique rabbitmq node name on CI environments.
