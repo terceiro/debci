@@ -23,12 +23,12 @@ module Debci
     # Package search
     get '/-/search' do
       @query = params[:query]
-      @current_page = params[:page] || "1"
-      results = Debci::Package.where("name LIKE :query", query: "%#{@query}%").order(:name)
-      @results = results.page(@current_page).per(10)
-      @total_pages = @results.total_pages
-      @pages = get_page_range(Integer(@current_page), @total_pages)
-      erb :package_search_results
+      records = Debci::Package.where("name LIKE :query", query: "%#{@query}%").order(:name)
+
+      # pagination
+      results = get_page_params(records, params[:page], 10)
+
+      erb :package_search_results, locals: { results: results }
     end
 
     # Package listing pages
@@ -69,8 +69,12 @@ module Debci
       @site_url = expand_url(Debci.config.url_base, @suite)
       @artifacts_url_base = expand_url(Debci.config.artifacts_url_base, @suite)
       @moretitle = "#{package.name}/#{@suite}/#{@architecture}"
-      @history = package.history(@suite, @architecture).reverse
-      erb :history
+      @history = package.history(@suite, @architecture).reverse_order
+
+      # pagination
+      results = get_page_params(@history, params[:page], 500)
+
+      erb :history, locals: { results: results }
     end
     get "/:prefix/:package/:suite/:architecture" do
       redirect "#{request.path}/"
