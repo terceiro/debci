@@ -1,3 +1,81 @@
+debci (3.0) experimental; urgency=medium
+
+  [ Antonio Terceiro ]
+  * backends: install ca-certificates
+  * backends: qemu: don't make `debci` a system user (Closes: #983156)
+  * Revert "backends: qemu: don't make `debci` a system user"
+  * backends: qemu: translate proxy inside VM back
+  * backends: qemu: replace adduser with useradd
+  * Revamp shell best practices checks
+  * Run codespell on `make test` and gitlab CI
+  * doc: INSTALL.md: point to HACKING.md for development environments
+  * debci-autopkgtest: setup APT retries
+  * self service: fix example JSON file
+  * codespell: ignore tags file
+  * self_service: don't hide exceptions
+  * Debci::TestHandler: handle missing arch without crashing
+  * Debci::HTMLHelpers: display pinned packages correctly
+  * Debci::App: extract get_page_range from Debci::SelfService
+  * self_service_history: extract pagination code
+  * Move all kaminari requires do debci/db
+  * tools/check-shell-scripts.sh: don't finish on the first failure
+  * spec_helper: resist simplecov not being installed
+  * Debci::Package#backend: make test independent of local configuration
+  * Debci::Expiration: add basic tests
+  * spec_helper: bump required test coverage
+  * docs/HACKING.md: clarify the setup methods
+
+  [ daemon1024 ]
+  * Fix Style/ConditionalAssignment violations
+
+  [ Sergio de Almeida Cipriano Junior ]
+  * Fix Style/GlovalVars issue
+  * Rename blacklist to rejectlist
+
+  [ Paul Gevers ]
+  * docs/MAINTAINERS.md: update paragraph about Testsuite: header
+
+  [ Ceda EI ]
+  * backends/lxc/create-testbed: Fix shellcheck issues
+  * backends/fake/test-package: Fix style violation AndOr
+  * Fix incorrect key in self service documentation (archs -> arch)
+  * Update Vagrantfile from contrib-buster64 to buster64
+  * Replace proxy detection using netcat with auto-apt-proxy
+  * Add /api/v1/reject_list to access reject list via an API
+  * Update Vagrantfile to debian/bullseye64
+  * Fix &mdash; being escaped for Trigger on retry page
+  * Add warning on retry page when there are pending jobs
+
+  [ Candy Tsai ]
+  * frontend: implement server-side package search
+
+  [ Pavit Kaur ]
+  * rename whitelist to seed_list
+  * Make value of slow_tests configurable
+  * Update /api/v1/retry to check if package in reject list
+  * Update to disable submit test requests when selected "Export to JSON"
+  * Add a way to specify backend for a given package
+  * Update to remove removed packages' results in status
+  * Fix to reduce loading time on package pages
+
+  [ Kritika Srivastava ]
+  * lib/debci/api.rb : Fix style violation HashSyntax
+  * fixed customize.sh
+
+  [ Lizard Morrow ]
+  * Fix shellcheck errors/warnings in lib/environment.sh.
+
+  [ Gaurav Ahlawat ]
+  * Removed shellcheck warnings
+  * Moved the retry endpoints from API to SelfService
+  * Moved the retry endpoints from API to Self-Service and added tests
+
+  [ Ron Friedman ]
+  * Removed rubocop_todo entry & corrected style violation
+  * Move getkey endpoints from API to SelfService
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 29 May 2021 08:26:02 -0300
+
 debci (2.15.2) unstable; urgency=medium
 
   * autopkgtest: mark test-suite as flaky
