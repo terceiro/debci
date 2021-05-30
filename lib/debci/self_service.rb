@@ -4,11 +4,34 @@ require 'securerandom'
 require 'debci/app'
 require 'debci/test_handler'
 require 'debci/html_helpers'
+require 'omniauth'
+require 'omniauth-gitlab'
 
 module Debci
   class SelfService < Debci::App
     include Debci::TestHandler
     include Debci::HTMLHelpers
+
+    use OmniAuth::Builder do
+      if development?
+        provider :developer,
+                 fields: [:name],
+                 uid_field: :name,
+                 callback_path: '/user/auth/developer/callback'
+      end
+      provider :gitlab, Debci.config.salsa_client_id, Debci.config.salsa_client_secret,
+               redirect_url: "#{Debci.config.url_base}/user/auth/gitlab/callback",
+               scope: "read_user",
+               client_options: {
+                 site: 'https://salsa.debian.org/api/v4/'
+               }
+    end
+
+    OmniAuth.config.on_failure = proc do |env|
+      OmniAuth::FailureEndpoint.new(env).redirect_to_failure
+    end
+
+    OmniAuth.config.logger.level = Logger::UNKNOWN
 
     set :views, "#{File.dirname(__FILE__)}/html/templates"
 
@@ -21,7 +44,7 @@ module Debci
     set :session_secret, Debci.config.session_secret || SecureRandom.hex(64)
 
     before do
-      authenticate! unless request.path =~ %r{/user/[^/]+/jobs/?$} || request.path == '/user/login'
+      authenticate! unless request.path =~ %r{/user/[^/]+/jobs/?$} || request.path == '/user/login' || request.path =~ %r{/user/auth/\w*}
       @user = session[:user]
     end
 
@@ -37,15 +60,25 @@ module Debci
     end
 
     get '/login' do
-      user = read_request_user
-      if user
-        session[:user] = user
-        redirect("/user/#{user.username}")
-      else
-        content = "Unauthenticated!\n"
-        content = File.read(Debci.config.auth_fail_page) if Debci.config.auth_fail_page
-        halt(403, content)
+      erb :login, locals: { csrf: request.env['rack.session']['csrf'] }
+    end
+
+    get '/auth/gitlab/callback' do
+      uid = request.env['omniauth.auth']['uid']
+      username = request.env['omniauth.auth']['info']['username']
+      login_callback(uid, username)
+    end
+
+    if development?
+      post '/auth/developer/callback' do
+        uid = request.env['rack.request.form_hash']['name']
+        username = request.env['rack.request.form_hash']['name']
+        login_callback(uid, username)
       end
+    end
+
+    get '/auth/failure' do
+      halt(403, erb("<h2>Authentication Failed</h2><h4>Reason: </h4><pre>#{params[:message]}</pre>"))
     end
 
     get '/logout' do
@@ -238,6 +271,15 @@ module Debci
         requestor: job.requestor,
         trigger: job.trigger,
       ).select { |j| Set.new(j.pin_packages) == Set.new(job.pin_packages) }
+    end
+
+    def login_callback(uid, username)
+      user = Debci::User.find_or_create_by!(uid: uid) do |c|
+        c.username = username
+      end
+      user.update(username: username) if user.username != username
+      session[:user] = user
+      redirect("/user/#{user.username}")
     end
   end
 end

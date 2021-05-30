@@ -1,0 +1,14 @@
+<h2>Login via Salsa:</h2>
+<p>Please use Debian <a href="https://salsa.debian.org/">Salsa</a> account to login and access Self Service:</p>
+<form method="post" action="/user/auth/gitlab">
+<input type="hidden" name="authenticity_token" value="<%= csrf %>"/>
+<button type="submit"><img src="/debian.png">Login with Debian Salsa</button>
+</form>
+<% if settings.development? %>
+<br/>
+<p>You are able to view following because you are in developer environment. Use following button to sign in and access Self Service:</p>
+<form method="post" action="/user/auth/developer">
+<input type="hidden" name="authenticity_token" value="<%= csrf %>"/>
+<button type="submit">Login in Developer Environment</button>
+</form>
+<% end %>

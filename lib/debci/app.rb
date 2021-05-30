@@ -12,10 +12,6 @@ module Debci
     end
 
     include ERB::Util
-    def read_request_user
-      username = ENV['FAKE_CERTIFICATE_USER'] || env['SSL_CLIENT_S_DN_CN']
-      Debci::User.find_or_create_by!(username: username) if username
-    end
 
     def self.get_page_range(current, total)
       full_range = (1..total)

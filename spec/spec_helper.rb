@@ -20,6 +20,7 @@ require 'debci/db'
 require 'debci/job'
 
 require 'database_cleaner'
+require 'omniauth'
 DatabaseCleaner.allow_remote_database_url = true
 DatabaseCleaner.strategy = :transaction
 
@@ -49,3 +50,5 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 end
+
+OmniAuth.config.test_mode = true
