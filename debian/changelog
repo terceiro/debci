@@ -1,3 +1,9 @@
+debci (3.0.1) experimental; urgency=medium
+
+  * backends/lxc/create-testbed: guard against undefined variable
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 30 May 2021 11:14:12 -0300
+
 debci (3.0) experimental; urgency=medium
 
   [ Antonio Terceiro ]
