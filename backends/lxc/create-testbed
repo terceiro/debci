@@ -46,7 +46,7 @@ if [ "$distro" = debian ]; then
   } >> "$script"
 fi
 # configure guest proxy
-if [ -n "$GUEST_PROXY" ]; then
+if [ -n "${GUEST_PROXY:-}" ]; then
   echo "echo \"Acquire::http::Proxy \\\"$GUEST_PROXY\\\" ;\" > /etc/apt/apt.conf.d/70proxy" >> "$script"
 fi
 cat >> "$script" <<EOF
