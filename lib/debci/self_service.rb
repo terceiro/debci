@@ -110,6 +110,7 @@ module Debci
     get '/:user/retry/:run_id' do
       if @user
         run_id = params[:run_id]
+        redirect "user/#{@user.username}/retry/#{run_id}" if params[:user] == ":user"
         @original_job = get_job_to_retry(run_id)
         @same_jobs = get_same_pending_jobs(@original_job).count
         erb :retry

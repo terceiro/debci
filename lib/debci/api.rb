@@ -71,10 +71,6 @@ module Debci
 
     attr_reader :suite, :arch, :user
 
-    before do
-      @user = read_request_user
-    end
-
     get '/' do
       redirect "#{request.script_name}/doc"
     end
@@ -152,12 +148,7 @@ module Debci
       Presents a simple UI for retrying a test
       EOF
       get '/retry/:run_id' do
-        if @user
-          run_id = params[:run_id]
-          redirect "user/#{@user.username}/retry/#{run_id}"
-        else
-          403
-        end
+        redirect "user/:user/retry/#{params[:run_id]}"
       end
 
       doc <<-EOF
