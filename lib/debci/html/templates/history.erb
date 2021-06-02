@@ -64,7 +64,7 @@
             <%= test.status %>
           </td>
           <td>
-            <a href="/api/v1/retry/<%= test.run_id %>"><i class='fa fa-recycle'></i></a>
+            <a href="/user/:user/retry/<%= test.run_id %>" ><i class='fa fa-recycle'></i></a>
           </td>
           <td><a href="/user/<%= test.requestor %>/jobs?package=<%= @package.name %>&suite[]=<%= @suite %>&arch[]=<%= @architecture %>"><%= test.requestor %></a></td>
           <% package_dir = [test.suite, test.arch, test.package.prefix, test.package.name].join('/') %>

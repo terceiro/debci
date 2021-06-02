@@ -324,10 +324,22 @@ describe Debci::SelfService do
       expect(last_response.status).to eq(302)
     end
 
-    it 'displays a "Forbidden" page to non-authenticated users' do
+    it 'redirects non-authenticated users to login page' do
       get '/user/foo@bar.com/retry/1'
       expect(last_response.status).to eq(302)
       expect(last_response.content_type).to match('text/html')
+      expect(last_response.location).to match(%r{/user/login$})
+      get '/user/:user/retry/1'
+      expect(last_response.status).to eq(302)
+      expect(last_response.content_type).to match('text/html')
+      expect(last_response.location).to match(%r{/user/login$})
+    end
+
+    it 'redirects again to retry if authenticated user\'s username is missing in route' do
+      login("foo@bar.com")
+      get '/user/:user/retry/1'
+      expect(last_response.status).to eq(302)
+      expect(last_response.location).to match(%r{/user/foo@bar.com/retry/1$})
     end
 
     context 'authenticated' do

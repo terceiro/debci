@@ -296,4 +296,12 @@ describe Debci::API do
       end
     end
   end
+
+  context 'displays a user-friendly page to retrigger test' do
+    it 'redirects to self service section' do
+      get 'api/v1/retry/1'
+      expect(last_response.status).to eq(302)
+      expect(last_response.location).to match(%r{/user/:user/retry/1$})
+    end
+  end
 end
