@@ -215,7 +215,7 @@ module Debci
       package_filter = params[:package] || ''
       trigger_filter = params[:trigger] || ''
       query = {
-        requestor: user
+        requestor: Debci::User.find_by(username: user)
       }
       query[:arch] = arch_filter if arch_filter
       query[:suite] = suite_filter if suite_filter

@@ -5,14 +5,16 @@ RSpec.shared_context 'export/import' do
   include_context 'tmpdir'
 
   let(:package) { Debci::Package.create!(name: 'rake') }
+  let(:theuser) { Debci::User.create!(username: 'user') }
   let(:job_data) do
     {
-      'run_id': '9999',
-      'package': 'rake',
-      'suite': 'unstable',
-      'arch': arch,
-      'version': '12.3.1-1',
-      'status': 'pass'
+      run_id: '9999',
+      package: 'rake',
+      suite: 'unstable',
+      arch: arch,
+      version: '12.3.1-1',
+      status: 'pass',
+      requestor: theuser
     }
   end
 

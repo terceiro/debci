@@ -65,7 +65,7 @@ module Debci
           package: package,
           suite: suite,
           arch: arch,
-          requestor: requestor.username,
+          requestor: requestor,
           status: status,
           date: date,
           trigger: test['trigger'],

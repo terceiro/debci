@@ -52,7 +52,7 @@
               <a class='pending' href='/packages/<%= job.package.prefix %>/<%= job.package.name %>/<%= job.suite %>/<%= job.arch%>/'><%= job.arch %></a>
             </td>
             <td>
-              <a href="/user/<%= job.requestor %>/jobs?package=<%= job.package.name %>&suite[]=<%= job.suite %>&arch[]=<%= job.arch %>"><%= job.requestor %></a>
+              <a href="/user/<%= job.requestor.username %>/jobs?package=<%= job.package.name %>&suite[]=<%= job.suite %>&arch[]=<%= job.arch %>"><%= job.requestor.username %></a>
             </td>
             <td>
               <%= h job.trigger %></a>

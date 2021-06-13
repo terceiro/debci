@@ -5,12 +5,13 @@ describe Debci::Collector do
   include_context 'tmpdir'
   let(:collector) { Debci::Collector.new }
   let(:package) { Debci::Package.create!(name: 'mypkg') }
+  let(:theuser) { Debci::User.create!(username: 'debci') }
   let(:job) do
     Debci::Job.create!(
       package: package,
       suite: 'unstable',
       arch: 'amd64',
-      requestor: 'debci',
+      requestor: theuser,
     )
   end
 

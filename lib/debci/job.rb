@@ -1,4 +1,5 @@
 require 'debci'
+require 'debci/user'
 require 'debci/amqp'
 require 'debci/db'
 require 'debci/package'
@@ -14,6 +15,8 @@ module Debci
   class Job < ActiveRecord::Base
 
     belongs_to :package, class_name: 'Debci::Package'
+    belongs_to :requestor, class_name: 'Debci::User', foreign_key: 'requestor_id'
+    validates :requestor, presence: true
     has_many :package_status, class_name: 'Debci::PackageStatus'
 
     scope :newsworthy, -> { not_pinned.where(['status in (?) AND previous_status in (?) and status != previous_status', ['pass', 'fail', 'neutral'], ['pass', 'fail', 'neutral']]) }
@@ -181,11 +184,11 @@ module Debci
     end
 
     def self.pending
-      jobs = Debci::Job.where(status: nil).order(:created_at)
+      jobs = Debci::Job.includes(:requestor).where(status: nil).order(:created_at)
     end
 
     def self.history(package, suite, arch)
-      Debci::Job.finished.where(
+      Debci::Job.includes(:requestor).finished.where(
         package: package,
         suite: suite,
         arch: arch
