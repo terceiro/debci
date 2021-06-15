@@ -39,6 +39,8 @@ module Debci
     :slow_tests_duration_minutes,
     :status_visible_days,
     :quiet,
+    :salsa_client_id,
+    :salsa_client_secret,
     :secrets_dir,
     :sendmail_from,
     :sendmail_to,

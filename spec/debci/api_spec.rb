@@ -24,7 +24,7 @@ describe Debci::API do
   let(:arch) { Debci.config.arch }
 
   let(:theuser) do
-    Debci::User.create!(username: 'theuser')
+    Debci::User.create!(uid: '1234', username: 'theuser')
   end
 
   before do

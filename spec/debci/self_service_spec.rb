@@ -24,15 +24,21 @@ describe Debci::SelfService do
     temp_test_file
   end
 
-  def login(user)
-    get '/user/login', {}, 'SSL_CLIENT_S_DN_CN' => user
+  def login(username, uid = nil)
+    uid ||= username.hash % 1000
+    OmniAuth.config.mock_auth[:gitlab] = OmniAuth::AuthHash.new({
+      provider: 'gitlab',
+      uid: uid,
+      info: OmniAuth::AuthHash::InfoHash.new({ username: username })
+    })
+    get '/user/auth/gitlab/callback'
   end
 
   let(:suite) { Debci.config.suite }
   let(:arch) { Debci.config.arch }
 
   let(:theuser) do
-    Debci::User.create!(username: 'foo@bar.com')
+    Debci::User.create!(uid: '1111', username: 'foo2@bar.com')
   end
 
   context 'authentication' do
@@ -48,10 +54,11 @@ describe Debci::SelfService do
       expect(last_response.status).to eq(200)
       expect(last_response.content_type).to match('text/html')
     end
-    it 'directs to login to unauthenticated users' do
+    it 'directs to login page to unauthenticated users' do
       get '/user'
       expect(last_response.status).to eq(302)
       expect(last_response.location).to match(%r{/user/login$})
+      expect(last_response.content_type).to match('text/html')
     end
     it 'makes current user available even on public page' do
       login('foo@bar.com')
@@ -121,9 +128,9 @@ describe Debci::SelfService do
       expect(Debci::Key.count).to eq(keys)
     end
 
-    it 'gets a key based on client certificate' do
+    it 'gets a key when user is logged in' do
       login('foo@bar.com')
-      post '/user/foo@bar.com/getkey', {}, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+      post '/user/foo@bar.com/getkey'
       expect(last_response.status).to eq(201)
 
       user = Debci::User.find_by(username: 'foo@bar.com')
@@ -360,7 +367,7 @@ describe Debci::SelfService do
           trigger: trigger,
           pin_packages: pin_packages
         )
-        get "/user/foo@bar.com/retry/#{job.id}", {}, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+        get "/user/foo@bar.com/retry/#{job.id}"
         expect(last_response.status).to eq(200)
         expect(last_response.content_type).to match('text/html')
       end
@@ -397,7 +404,7 @@ describe Debci::SelfService do
         expect(last_response.status).to eq(201)
       end
 
-      it 'can retrigger a valid request with client certificate' do
+      it 'can retrigger a valid request when user is logged in' do
         package = Debci::Package.create!(name: 'mypackage')
         user = 'foo@bar.com'
         trigger = 'mypackage/0.0.1'
@@ -414,7 +421,7 @@ describe Debci::SelfService do
         job_org = Debci::Job.last
 
         # Here we are going to retrigger it
-        post "/user/foo@bar.com/retry/#{job_org.run_id}", {}, 'SSL_CLIENT_S_DN_CN' => 'foo@bar.com'
+        post "/user/foo@bar.com/retry/#{job_org.run_id}"
 
         expect(last_response.status).to eq(201)
 
@@ -452,6 +459,33 @@ describe Debci::SelfService do
 
         expect(last_response.status).to eq(403)
       end
+    end
+  end
+
+  context 'login callback' do
+    it 'creates a new user with username obtained from omniauth hash if user with the uid does not exist' do
+      user_count = Debci::User.count
+      expect(Debci::User.where(uid: '256')).to_not be_present
+      login('foo1@bar.com', '256')
+      expect(Debci::User.count).to eq(user_count + 1)
+      expect(Debci::User.where(uid: '256')).to be_present
+    end
+
+    it 'updates the username of user record if user with uid exists but its username does not matches' do
+      expect(Debci::User.where(uid: theuser.uid)).to be_present
+      expect(theuser.username).to_not eq('foo1@bar.com')
+      user_count = Debci::User.count
+      login('foo1@bar.com', theuser.uid)
+      user = Debci::User.find_by(uid: theuser.uid)
+      expect(user.username).to eq('foo1@bar.com')
+      expect(Debci::User.count).to eq(user_count)
+    end
+
+    it 'redirects to failure endpoint in case of any error' do
+      OmniAuth.config.mock_auth[:gitlab] = :invalid_credentials
+      get '/user/auth/gitlab/callback'
+      expect(last_response.status).to eq(302)
+      expect(last_response.location).to match(%r{/user/auth/failure})
     end
   end
 end

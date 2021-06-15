@@ -64,6 +64,8 @@ debci_pending_status_per_page="${debci_pending_status_per_page:-50}"
 debci_status_visible_days="${debci_status_visible_days:-35}"
 debci_failing_packages_per_page="${debci_failing_packages_per_page:-50}"
 debci_slow_tests_duration_minutes="${debci_slow_tests_duration_minutes:-60}"
+debci_salsa_client_id="${debci_salsa_client_id:-}"
+debci_salsa_client_secret="${debci_salsa_client_secret:-}"
 
 debci_secrets_dir=${debci_secrets_dir:-$(readlink -f "${debci_base_dir}/secrets")}
 
