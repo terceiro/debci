@@ -274,6 +274,16 @@ describe Debci::SelfService do
           pin_packages: ["src:testpackage", "unstable"],
           date: '2019-02-04',
           requestor: theuser
+        },
+        {
+          suite: "unstable",
+          arch: arch,
+          trigger: "mypackage/0.0.3",
+          package: "mypackage",
+          pin_packages: ["src:mypackage", "unstable"],
+          date: '2019-02-04',
+          requestor: theuser,
+          is_private: true
         }
       ]
 
@@ -324,7 +334,17 @@ describe Debci::SelfService do
       get "/user/#{theuser.username}/jobs", {}
       expect(last_response.body).to match(/testpackage.*mypackage/m)
     end
+
+    it 'includes private jobs only if the logged in user access its own history' do
+      login('foo@bar.com')
+      get '/user/foo2@bar.com/jobs'
+      expect(last_response.body).to_not match('mypackage/0.0.3')
+      login('foo2@bar.com')
+      get '/user/foo2@bar.com/jobs'
+      expect(last_response.body).to match('mypackage/0.0.3')
+    end
   end
+
   context 'retriggers' do
     it 'rejects non-authenticated requests' do
       post '/user/foo@bar.com/retry/1'
