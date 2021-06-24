@@ -10,14 +10,16 @@ describe Debci::Package do
     allow(Debci.config).to receive(:backend_list).and_return(%w[lxc qemu])
   end
 
+  let(:theuser) { Debci::User.create!(username: 'user') }
+
   let(:package) do
     Debci::Package.create!(name: 'rake').tap do |p|
       # pending
-      p.jobs.create!(suite: 'unstable', arch: 'amd64')
+      p.jobs.create!(suite: 'unstable', arch: 'amd64', requestor: theuser)
 
       # finished
-      p.jobs.create!(suite: 'unstable', arch: 'amd64', status: 'pass', previous_status: 'fail', date: Time.now)
-      p.jobs.create!(suite: 'testing', arch: 'i386', status: 'fail', date: Time.now)
+      p.jobs.create!(suite: 'unstable', arch: 'amd64', status: 'pass', previous_status: 'fail', date: Time.now, requestor: theuser)
+      p.jobs.create!(suite: 'testing', arch: 'i386', status: 'fail', date: Time.now, requestor: theuser)
     end
   end
 
@@ -113,7 +115,8 @@ describe Debci::Package do
         arch: 'amd64',
         status: 'pass',
         previous_status: 'fail',
-        date: Time.now - 1.day
+        date: Time.now - 1.day,
+        requestor: theuser
       )
       expect(package.history('unstable', 'amd64').to_a).to eq([job1, job2])
     end

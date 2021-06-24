@@ -66,7 +66,7 @@
           <td>
             <a href="/user/:user/retry/<%= test.run_id %>" ><i class='fa fa-recycle'></i></a>
           </td>
-          <td><a href="/user/<%= test.requestor %>/jobs?package=<%= @package.name %>&suite[]=<%= @suite %>&arch[]=<%= @architecture %>"><%= test.requestor %></a></td>
+          <td><a href="/user/<%= test.requestor.username %>/jobs?package=<%= @package.name %>&suite[]=<%= @suite %>&arch[]=<%= @architecture %>"><%= test.requestor.username %></a></td>
           <% package_dir = [test.suite, test.arch, test.package.prefix, test.package.name].join('/') %>
           <% if @artifacts_url_base %>
             <td><a href="<%= @artifacts_url_base %>/<%= @package_dir %>/<%= test.run_id %>/log.gz">test log</a></td>

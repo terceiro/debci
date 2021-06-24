@@ -9,6 +9,8 @@ require 'rack/test'
 describe Debci::Frontend do
   include Rack::Test::Methods
 
+  let(:theuser) { Debci::User.create!(username: 'debci') }
+
   class Frontend < Debci::Frontend
     set :raise_errors, true
     set :show_exceptions, false
@@ -64,6 +66,7 @@ describe Debci::Frontend do
         status: "pass",
         created_at: Time.now,
         updated_at: Time.now,
+        requestor: theuser
       )
 
       get "/packages/r/rake/#{suite}/#{arch}/"

@@ -2,6 +2,8 @@ require 'spec_helper'
 require 'debci/expiration'
 
 describe Debci::Expiration do
+  let(:theuser) { Debci::User.create!(username: 'debci') }
+
   context 'command line' do
     it 'runs' do
       expect_any_instance_of(Debci::Expiration).to receive(:run)
@@ -18,7 +20,7 @@ describe Debci::Expiration do
 
     it 'expires jobs' do
       pkg = Debci::Package.create!(name: "pkg1")
-      Debci::Job.create!(package: pkg, suite: 'unstable', arch: "amd64", date: Time.now - 31.days)
+      Debci::Job.create!(package: pkg, suite: 'unstable', arch: "amd64", date: Time.now - 31.days, requestor: theuser)
       expect_any_instance_of(Debci::Job).to receive(:cleanup)
 
       Debci::Expiration.new.run

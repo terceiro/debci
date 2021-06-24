@@ -58,13 +58,15 @@ optparse = OptionParser.new do |opts|
 end
 optparse.parse!
 
+user = Debci::User.find_or_create_by!(username: requestor)
+
 ARGV.each do |pkg|
   package = Debci::Package.find_or_create_by!(name: pkg)
   job = Debci::Job.new(
     package: package,
     arch: arch,
     suite: suite,
-    requestor: requestor,
+    requestor: user,
     status: nil,
     trigger: trigger,
     pin_packages: pin_packages,

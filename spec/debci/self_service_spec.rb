@@ -255,7 +255,7 @@ describe Debci::SelfService do
           package: "mypackage",
           pin_packages: ["src:mypackage", "unstable"],
           date: '2019-02-03',
-          requestor: "foo@bar.com"
+          requestor: theuser
         },
         {
           suite: "unstable",
@@ -264,7 +264,7 @@ describe Debci::SelfService do
           package: "testpackage",
           pin_packages: ["src:testpackage", "unstable"],
           date: '2019-02-05',
-          requestor: "foo@bar.com"
+          requestor: theuser
         },
         {
           suite: "unstable",
@@ -273,7 +273,7 @@ describe Debci::SelfService do
           package: "testpackage",
           pin_packages: ["src:testpackage", "unstable"],
           date: '2019-02-04',
-          requestor: "foo@bar.com"
+          requestor: theuser
         }
       ]
 
@@ -284,14 +284,14 @@ describe Debci::SelfService do
     end
 
     it 'displays correct results with package filter' do
-      get '/user/foo@bar.com/jobs', package: 'testpackage', trigger: ''
+      get "/user/#{theuser.username}/jobs", package: 'testpackage', trigger: ''
       expect(last_response.status).to eq(200)
       expect(last_response.body).to match('testpackage/0.0.1')
       expect(last_response.body).to match('testpackage/0.0.2')
     end
 
     it 'accepts * as wildcard' do
-      get '/user/foo@bar.com/jobs', package: '*package', trigger: ''
+      get "/user/#{theuser.username}/jobs", package: '*package', trigger: ''
       expect(last_response.status).to eq(200)
       expect(last_response.body).to match('mypackage/0.0.1')
       expect(last_response.body).to match('testpackage/0.0.1')
@@ -299,13 +299,13 @@ describe Debci::SelfService do
     end
 
     it 'displays correct results with trigger and arch filters' do
-      get '/user/foo@bar.com/jobs', package: '', trigger: 'mypackage/0.0.1', arch: [arch]
+      get "/user/#{theuser.username}/jobs", package: '', trigger: 'mypackage/0.0.1', arch: [arch]
       expect(last_response.status).to eq(200)
       expect(last_response.body).to match('mypackage/0.0.1')
     end
 
     it 'displays correct results with arch filter' do
-      get '/user/foo@bar.com/jobs', package: '', trigger: '', arch: [arch]
+      get "/user/#{theuser.username}/jobs", package: '', trigger: '', arch: [arch]
       expect(last_response.status).to eq(200)
       expect(last_response.body).to match('mypackage/0.0.1')
       expect(last_response.body).to match('testpackage/0.0.1')
@@ -313,7 +313,7 @@ describe Debci::SelfService do
     end
 
     it 'displays correct results with all filters' do
-      get '/user/foo@bar.com/jobs', package: '%package', trigger: 'package/0.0.1', arch: [arch], suite: [suite]
+      get "/user/#{theuser.username}/jobs", package: '%package', trigger: 'package/0.0.1', arch: [arch], suite: [suite]
       expect(last_response.status).to eq(200)
       expect(last_response.body).to match('mypackage/0.0.1')
       expect(last_response.body).to match('testpackage/0.0.1')
@@ -321,7 +321,7 @@ describe Debci::SelfService do
     end
 
     it 'sorts by date with newest first' do
-      get '/user/foo@bar.com/jobs', {}
+      get "/user/#{theuser.username}/jobs", {}
       expect(last_response.body).to match(/testpackage.*mypackage/m)
     end
   end
@@ -356,7 +356,7 @@ describe Debci::SelfService do
 
       it 'displays a user friendly page to authenticated users' do
         package = Debci::Package.create!(name: 'mypackage')
-        user = 'foo@bar.com'
+        user = Debci::User.find_by(username: 'foo@bar.com')
         trigger = 'mypackage/0.0.1'
         pin_packages = ['src:mypackage', 'unstable']
         job = Debci::Job.create(
@@ -373,7 +373,7 @@ describe Debci::SelfService do
       end
       it 'can retrigger a valid request with key' do
         package = Debci::Package.create!(name: 'mypackage')
-        user = 'foo@bar.com'
+        user = Debci::User.find_by(username: 'foo@bar.com')
         trigger = 'mypackage/0.0.1'
         pin_packages = ['src:mypackage', 'unstable']
         Debci::Job.create(
@@ -406,7 +406,7 @@ describe Debci::SelfService do
 
       it 'can retrigger a valid request when user is logged in' do
         package = Debci::Package.create!(name: 'mypackage')
-        user = 'foo@bar.com'
+        user = Debci::User.find_by(username: 'foo@bar.com')
         trigger = 'mypackage/0.0.1'
         pin_packages = ['src:mypackage', 'unstable']
         Debci::Job.create(
@@ -442,14 +442,13 @@ describe Debci::SelfService do
         header 'Auth-Key', key
 
         package = Debci::Package.create!(name: 'mypackage')
-        user = 'foo@bar.com'
         trigger = 'mypackage/0.0.1'
         pin_packages = ['src:mypackage', 'unstable']
         Debci::Job.create(
           package: package,
           suite: suite,
           arch: arch,
-          requestor: user,
+          requestor: theuser,
           trigger: trigger,
           pin_packages: pin_packages
         )

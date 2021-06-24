@@ -22,12 +22,14 @@ describe Debci::HTML do
 
   let(:package) { Debci::Package.create!(name: 'foobar') }
 
+  let(:theuser) { Debci::User.create!(username: 'user') }
+
   let(:job) do
     Debci::Job.create!(
       package: package,
       suite: 'unstable',
       arch: arch,
-      requestor: 'user',
+      requestor: theuser,
       status: 'pass',
       date: Time.now,
       duration_seconds: 42,
@@ -36,6 +38,8 @@ describe Debci::HTML do
       (data / ("autopkgtest/unstable/#{arch}/f/foobar/%<id>d" % { id: j.id })).mkpath
     end
   end
+
+  let(:theuser) { Debci::User.create!(username: 'debci') }
 
   context 'producing JSON data' do
     before do

@@ -23,9 +23,7 @@ describe Debci::API do
   let(:suite) { Debci.config.suite }
   let(:arch) { Debci.config.arch }
 
-  let(:theuser) do
-    Debci::User.create!(uid: '1234', username: 'theuser')
-  end
+  let(:theuser) { Debci::User.create!(username: 'theuser') }
 
   before do
     allow(Debci.config).to receive(:secrets_dir).and_return(tmpdir)
@@ -65,7 +63,7 @@ describe Debci::API do
         expect(job.package.name).to eq('mypackage')
         expect(job.suite).to eq(suite)
         expect(job.arch).to eq(arch)
-        expect(job.requestor).to eq('theuser')
+        expect(job.requestor).to eq(theuser)
 
         expect(last_response.status).to eq(201)
       end
@@ -119,7 +117,7 @@ describe Debci::API do
           job = Debci::Job.where(package: package).last
           expect(job.suite).to eq(suite)
           expect(job.arch).to eq(arch)
-          expect(job.requestor).to eq('theuser')
+          expect(job.requestor).to eq(theuser)
         end
 
         expect(last_response.status).to eq(201)
@@ -220,7 +218,7 @@ describe Debci::API do
         package: package,
         suite: suite,
         arch: arch,
-        requestor: theuser.username,
+        requestor: theuser,
       )
       get '/api/v1/test'
       data = JSON.parse(last_response.body)
@@ -234,14 +232,14 @@ describe Debci::API do
         package: package,
         suite: suite,
         arch: arch,
-        requestor: theuser.username,
+        requestor: theuser,
         updated_at: Time.now - 1.day
       )
       new_job = Debci::Job.create(
         package: package,
         suite: suite,
         arch: arch,
-        requestor: theuser.username,
+        requestor: theuser,
       )
       get '/api/v1/test', since: (Time.now - 1.hour).to_i.to_s
       ids = JSON.parse(last_response.body)["results"].map { |e| e["run_id"] }
@@ -254,14 +252,14 @@ describe Debci::API do
         package: package,
         suite: suite,
         arch: arch,
-        requestor: theuser.username,
+        requestor: theuser,
         updated_at: Time.now,
       )
       job1 = Debci::Job.create(
         package: package,
         suite: suite,
         arch: arch,
-        requestor: theuser.username,
+        requestor: theuser,
         updated_at: Time.now - 1.hour
       )
       get '/api/v1/test'

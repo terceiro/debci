@@ -215,7 +215,7 @@ module Debci
       EOF
       get '/test' do
         authenticate_key!
-        jobs = Debci::Job.where(requestor: @user.username).order('updated_at')
+        jobs = Debci::Job.where(requestor: @user).order('updated_at')
         if params[:since]
           since = Time.strptime(params[:since], '%s')
           jobs = jobs.where('updated_at >= ?', since)
@@ -362,7 +362,7 @@ module Debci
             package: package,
             suite: params[:suite],
             arch: params[:arch],
-            requestor: @user.username,
+            requestor: @user,
         )
         self.enqueue(job, @priority)
 

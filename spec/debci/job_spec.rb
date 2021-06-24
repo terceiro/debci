@@ -8,7 +8,8 @@ describe Debci::Job do
   include_context 'tmpdir'
 
   let(:package) { Debci::Package.create!(name: 'mypackage') }
-  let(:new_job) { Debci::Job.create!(package: package) }
+  let(:theuser) { Debci::User.create!(username: 'user') }
+  let(:new_job) { Debci::Job.create!(package: package, requestor: theuser) }
 
   it 'sets created_at' do
     expect(new_job.created_at).to_not be_nil
@@ -26,8 +27,8 @@ describe Debci::Job do
 
   it 'sorts pending jobs with older first' do
     yesterday = Time.now - 1.day
-    job1 = Debci::Job.create(package: package, created_at: Time.now)
-    job0 = Debci::Job.create(package: package, created_at: yesterday)
+    job1 = Debci::Job.create(package: package, created_at: Time.now, requestor: theuser)
+    job0 = Debci::Job.create(package: package, created_at: yesterday, requestor: theuser)
 
     expect(Debci::Job.pending).to eq([job0, job1])
   end
@@ -62,7 +63,7 @@ describe Debci::Job do
   let(:arch) { 'amd64' }
 
   it 'imports status file' do
-    job = Debci::Job.create(package: package, suite: suite, arch: arch)
+    job = Debci::Job.create(package: package, suite: suite, arch: arch, requestor: theuser)
     file = Tempfile.new('foo')
     file.write(
       {
@@ -95,7 +96,7 @@ describe Debci::Job do
   end
 
   it 'refuses to import incorrect jobs' do
-    job = Debci::Job.create(package: package, suite: suite, arch: arch)
+    job = Debci::Job.create(package: package, suite: suite, arch: arch, requestor: theuser)
     file = Tempfile.new('foo')
     file.write(
       {
@@ -120,7 +121,7 @@ describe Debci::Job do
 
   it 'takes ridiculously large version numbers' do
     v = "#{'1.' * 100}0"
-    Debci::Job.create!(package: package, version: v)
+    Debci::Job.create!(package: package, version: v, requestor: theuser)
   end
 
   context "history" do
@@ -131,20 +132,23 @@ describe Debci::Job do
         suite: 'testing',
         arch: 'amd64',
         status: 'pass',
-        date: '2019-02-02 11:00'
+        date: '2019-02-02 11:00',
+        requestor: theuser
       )
       @job1 = Debci::Job.create(
         package: package,
         suite: 'testing',
         arch: 'amd64',
         status: 'pass',
-        date: '2019-02-01 11:00'
+        date: '2019-02-01 11:00',
+        requestor: theuser
       )
       # pending/unfinished job
       @job3 = Debci::Job.create(
         package: package,
         suite: 'testing',
         arch: 'amd64',
+        requestor: theuser
       )
       # migration test
       @job4 = Debci::Job.create(
@@ -154,7 +158,8 @@ describe Debci::Job do
         status: 'fail',
         date: '2019-02-03 11:00',
         trigger: 'bar/1.1-1',
-        pin_packages: [['src:bar', 'unstable']]
+        pin_packages: [['src:bar', 'unstable']],
+        requestor: theuser
       )
 
       @history = Debci::Job.history(package, 'testing', 'amd64')
@@ -211,7 +216,7 @@ describe Debci::Job do
         package: package,
         suite: 'unstable',
         arch: 'amd64',
-        requestor: 'user'
+        requestor: theuser
       )
     end
 
@@ -265,7 +270,7 @@ describe Debci::Job do
         package: package,
         suite: 'unstable',
         arch: 'amd64',
-        requestor: 'user'
+        requestor: theuser
       )
     end
 
@@ -294,6 +299,7 @@ describe Debci::Job do
         status: 'neutral',
         date: past + 1.day,
         pin_packages: [["src:bla", "unstable"]],
+        requestor: theuser
       )
       expect(second_job.status).to eq('fail')
       expect(second_job.previous_status).to eq(first_job.status)
@@ -327,6 +333,7 @@ describe Debci::Job do
         arch: 'amd64',
         status: 'pass',
         date: Time.now - 1.day,
+        requestor: theuser
       }
     end
 
@@ -370,9 +377,9 @@ describe Debci::Job do
 
   context 'getting status' do
     it 'picks finished jobs for status' do
-      j1 = Debci::Job.create!(package: package, suite: 'unstable', arch: 'amd64', status: 'pass', date: Time.now - 1.day)
-      j2 = Debci::Job.create!(package: package, suite: 'unstable', arch: 'i386', status: 'fail', date: Time.now - 1.day)
-      j3 = Debci::Job.create!(package: package, suite: 'unstable', arch: 'amd64')
+      j1 = Debci::Job.create!(package: package, suite: 'unstable', arch: 'amd64', status: 'pass', date: Time.now - 1.day, requestor: theuser)
+      j2 = Debci::Job.create!(package: package, suite: 'unstable', arch: 'i386', status: 'fail', date: Time.now - 1.day, requestor: theuser)
+      j3 = Debci::Job.create!(package: package, suite: 'unstable', arch: 'amd64', requestor: theuser)
 
       s = Debci::Job.status_on('unstable', 'amd64')
       expect(s).to include(j1)
@@ -384,8 +391,8 @@ describe Debci::Job do
   context 'getting platform specific issues' do
     before(:each) do
       allow(Debci.config).to receive(:arch_list).and_return(['amd64', 'arm64'])
-      @pass = package.jobs.create!(date: Time.now, status: 'pass', suite: 'unstable', arch: 'amd64')
-      @fail = package.jobs.create!(date: Time.now, status: 'fail', suite: 'unstable', arch: 'arm64')
+      @pass = package.jobs.create!(date: Time.now, status: 'pass', suite: 'unstable', arch: 'amd64', requestor: theuser)
+      @fail = package.jobs.create!(date: Time.now, status: 'fail', suite: 'unstable', arch: 'arm64', requestor: theuser)
     end
     it 'lists job that have different results on different architectures' do
       issues = Debci::Job.platform_specific_issues
@@ -396,8 +403,8 @@ describe Debci::Job do
 
     it 'ignores packages without different results' do
       other_package = Debci::Package.create!(name: 'otherpackage')
-      other_package.jobs.create!(date: Time.now, status: 'pass', suite: 'unstable', arch: 'amd64')
-      other_package.jobs.create!(date: Time.now, status: 'pass', suite: 'unstable', arch: 'arm64')
+      other_package.jobs.create!(date: Time.now, status: 'pass', suite: 'unstable', arch: 'amd64', requestor: theuser)
+      other_package.jobs.create!(date: Time.now, status: 'pass', suite: 'unstable', arch: 'arm64', requestor: theuser)
 
       issues = Debci::Job.platform_specific_issues
       expect(issues).to_not include(other_package)
@@ -420,27 +427,40 @@ describe Debci::Job do
 
   context 'testing for newsworthiness' do
     it 'is newsworthy on status transitions' do
-      job1 = package.jobs.create!(date: Time.now - 1.day, status: 'fail', previous_status: 'pass', suite: 'unstable', arch: 'amd64')
-      job2 = package.jobs.create!(date: Time.now, status: 'fail', previous_status: 'fail', suite: 'unstable', arch: 'amd64')
+      job1 = package.jobs.create!(date: Time.now - 1.day, status: 'fail', previous_status: 'pass', suite: 'unstable', arch: 'amd64', requestor: theuser)
+      job2 = package.jobs.create!(date: Time.now, status: 'fail', previous_status: 'fail', suite: 'unstable', arch: 'amd64', requestor: theuser)
       news = Debci::Job.newsworthy
       expect(news).to include(job1)
       expect(news).to_not include(job2)
     end
 
     it 'is not newsworthy with pinned packages' do
-      job = package.jobs.create!(date: Time.now - 1.day, status: 'fail', previous_status: 'pass', suite: 'unstable', arch: 'amd64', pin_packages: [["src:foo", "src:bar", "unstable"]])
+      job = package.jobs.create!(date: Time.now - 1.day, status: 'fail', previous_status: 'pass', suite: 'unstable', arch: 'amd64', pin_packages: [["src:foo", "src:bar", "unstable"]], requestor: theuser)
       expect(Debci::Job.newsworthy).to_not include(job)
     end
   end
 
   context 'status_on' do
     it 'does not include jobs of removed packages' do
-      job1 = Debci::Job.create!(package: package, suite: 'unstable', arch: 'amd64', status: 'pass', date: Time.now)
+      job1 = Debci::Job.create!(package: package, suite: 'unstable', arch: 'amd64', status: 'pass', date: Time.now, requestor: theuser)
       other_package = Debci::Package.create!(name: 'otherpackage', removed: true)
-      job2 = Debci::Job.create!(package: other_package, suite: 'unstable', arch: 'amd64', status: 'pass', date: Time.now)
+      job2 = Debci::Job.create!(package: other_package, suite: 'unstable', arch: 'amd64', status: 'pass', date: Time.now, requestor: theuser)
       s = Debci::Job.status_on("unstable", "amd64")
       expect(s).to include(job1)
       expect(s).to_not include(job2)
+    end
+  end
+
+  context 'creating jobs' do
+    it 'does not create jobs with requestor missing' do
+      expect { Debci::Job.create!(package: package, suite: 'unstable', arch: 'amd64', status: 'pass', date: Time.now) }.to raise_error(ActiveRecord::RecordInvalid)
+      expect { Debci::Job.create!(package: package, suite: 'unstable', arch: 'amd64', status: 'pass', date: Time.now, requestor: theuser) }.to_not raise_error
+    end
+
+    it 'creates jobs with only valid requestor_id present in users' do
+      expect(Debci::User.where(id: 12345)).to be_empty
+      expect { Debci::Job.create!(package: package, suite: 'unstable', arch: 'amd64', status: 'pass', date: Time.now, requestor_id: 12345) }.to raise_error(ActiveRecord::RecordInvalid)
+      expect { Debci::Job.create!(package: package, suite: 'unstable', arch: 'amd64', status: 'pass', date: Time.now, requestor: theuser) }.to_not raise_error
     end
   end
 end
