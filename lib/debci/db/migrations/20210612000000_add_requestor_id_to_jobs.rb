@@ -11,7 +11,6 @@ class AddRequestorIdToJobs < Debci::DB::LEGACY_MIGRATION
   def down
     add_column :jobs, :requestor, :string
     execute "UPDATE jobs SET requestor = (SELECT users.username FROM users WHERE jobs.requestor_id = users.id)"
-    remove_foreign_key :jobs, column: :requestor_id
     remove_column :jobs, :requestor_id
   end
 end
