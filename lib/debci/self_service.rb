@@ -217,6 +217,7 @@ module Debci
       query = {
         requestor: Debci::User.find_by(username: user)
       }
+      query[:is_private] = false if session[:user].nil? || session[:user].username != user
       query[:arch] = arch_filter if arch_filter
       query[:suite] = suite_filter if suite_filter
       @history = Debci::Job.where(query)

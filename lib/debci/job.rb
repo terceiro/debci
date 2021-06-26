@@ -25,13 +25,15 @@ module Debci
 
     scope :not_pinned, -> { where('pin_packages is NULL') }
 
+    scope :not_private, -> { where(is_private: false) }
+
     def pinned?
       !pin_packages.empty?
     end
 
     # FIXME: move to Debci::PackageStatus
     scope :status_on, lambda { |suite, arch|
-      joins(:package_status, :package).where(packages: { removed: false }).where(['package_statuses.suite IN (?) AND package_statuses.arch IN (?)', suite, arch])
+      not_private.joins(:package_status, :package).where(packages: { removed: false }).where(['package_statuses.suite IN (?) AND package_statuses.arch IN (?)', suite, arch])
     }
 
     # FIXME: move to Debci::PackageStatus
@@ -184,11 +186,11 @@ module Debci
     end
 
     def self.pending
-      jobs = Debci::Job.includes(:requestor).where(status: nil).order(:created_at)
+      jobs = Debci::Job.includes(:requestor).not_private.where(status: nil).order(:created_at)
     end
 
     def self.history(package, suite, arch)
-      Debci::Job.includes(:requestor).finished.where(
+      Debci::Job.includes(:requestor).not_private.finished.where(
         package: package,
         suite: suite,
         arch: arch

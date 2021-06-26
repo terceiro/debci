@@ -33,6 +33,13 @@ describe Debci::Job do
     expect(Debci::Job.pending).to eq([job0, job1])
   end
 
+  it 'excludes private jobs from pending jobs' do
+    job1 = Debci::Job.create(package: package, created_at: Time.now, is_private: true, requestor: theuser)
+    job2 = Debci::Job.create(package: package, created_at: Time.now, requestor: theuser)
+    expect(Debci::Job.pending).to_not include(job1)
+    expect(Debci::Job.pending).to include(job2)
+  end
+
   context 'when enqueing' do
     it 'escapes trigger' do
       job = Debci::Job.new(trigger: 'foo bar')
@@ -161,6 +168,16 @@ describe Debci::Job do
         pin_packages: [['src:bar', 'unstable']],
         requestor: theuser
       )
+      # private jobs test
+      @job5 = Debci::Job.create(
+        package: package,
+        suite: 'testing',
+        arch: 'amd64',
+        status: 'fail',
+        date: '2019-02-03 11:00',
+        pin_packages: [['src:bar', 'unstable']],
+        is_private: true
+      )
 
       @history = Debci::Job.history(package, 'testing', 'amd64')
     end
@@ -177,6 +194,10 @@ describe Debci::Job do
 
     it 'does not include jobs with pinned packages' do
       expect(@history).to_not include(@job3)
+    end
+
+    it 'does not include private jobs' do
+      expect(@history).to_not include(@job5)
     end
   end
 
@@ -448,6 +469,14 @@ describe Debci::Job do
       s = Debci::Job.status_on("unstable", "amd64")
       expect(s).to include(job1)
       expect(s).to_not include(job2)
+    end
+
+    it 'does not include private jobs' do
+      job1 = Debci::Job.create!(package: package, suite: 'unstable', arch: 'amd64', status: 'pass', date: Time.now, requestor: theuser, is_private: true)
+      job2 = Debci::Job.create!(package: package, suite: 'unstable', arch: 'amd64', status: 'pass', date: Time.now, requestor: theuser)
+      s = Debci::Job.status_on("unstable", "amd64")
+      expect(s).to_not include(job1)
+      expect(s).to include(job2)
     end
   end
 
