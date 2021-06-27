@@ -1,3 +1,17 @@
+debci (3.1) experimental; urgency=medium
+
+  [ Pavit Kaur ]
+  * Change Retry link to point to the self service interface
+  * Migrate to logins using Salsa
+  * Update the jobs table to add real reference to users table
+  * Add private jobs flag to jobs
+
+  [ Antonio Terceiro ]
+  * Debci::Job: add index for field package_id
+  * Debci::Job: index requestor_id
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 27 Jun 2021 08:39:41 -0300
+
 debci (3.0.1) experimental; urgency=medium
 
   * backends/lxc/create-testbed: guard against undefined variable
